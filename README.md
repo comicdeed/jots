@@ -1,120 +1,42 @@
-
 <div align="center">
-  <img alt="An icon representing a stack of little squared blue sticky notes. The first one, and the second one hinted below, have scribbles over them" src="data/icons/default/hicolor/128.png" />
+  <img alt="Jots Icon" src="data/icons/default/hicolor/128.png" />
   <h1>Jots</h1>
-  <h3>Neither jeans nor shorts, just like jots. A sticky notes app for elementary OS</h3>
+  <h3>A simple, lightweight sticky notes application for the Linux desktop</h3>
 
   <a href="https://elementary.io">
     <img src="https://ellie-commons.github.io/community-badge.svg" alt="Made for elementary OS">
   </a>
   
-<span align="center"> <img class="center" src="https://github.com/comicdeed/jots/blob/main/data/screenshots/spread.png" alt="Several colourful sticky notes in a spread. Most are covered in scribbles. One in forefront is blue and has the text 'Lovely little colourful squares for all of your notes! 🥰'"></span>
+  <span align="center">
+    <img class="center" src="https://github.com/comicdeed/jots/blob/main/data/screenshots/spread.png" alt="Jots screenshot">
+  </span>
 </div>
 
 <br/>
 
+## 🦺 Installation & Compilation
 
+Jots is distributed as a sandboxed Flatpak application:
 
-## 🦺 Installation
-
-You can download and install Jots from various sources:
-
-[![Get it on AppCenter](https://appcenter.elementary.io/badge.svg?new)](https://appcenter.elementary.io/io.github.comicdeed.jots) 
-[<img src="https://flathub.org/api/badge?svg&locale=en" width="160" alt="Download on Flathub">](https://flathub.org/apps/io.github.comicdeed.jots)
-
-
-On Windows: Grab the Exe installer in Release
-Not all releases have an exe, because bundling for Windows and testing it works is a HASSLE.
+* **Flathub**: [Download on Flathub](https://flathub.org/apps/io.github.comicdeed.jots)
+* **AppCenter**: [Get it on AppCenter](https://appcenter.elementary.io/io.github.comicdeed.jots)
+* **Local Build / Compilation**: Refer to the [Building Guide](docs/development/building.md) for native and sandbox compilation instructions.
+* **Windows**: Basic experimental installers are available in the Releases section. Detailed MSYS2 build steps are available in the [Windows Build Guide](docs/development/windows.md).
 
 <br/>
 
-
-## ❓ Questions, building, etc
-
-
-You may want to check the [documentation](https://github.com/comicdeed/jots/tree/main/docs)
-
-Issues are all filed [here in the Issues tab](https://github.com/comicdeed/jots/issues)
-
-You can also [come over in matrix](https://matrix.to/#/#comicdeed:matrix.org) to talk to me directly
-
+## ❓ Support & Discussions
+* **Discussions**: Ask questions or discuss new features in the [GitHub Discussions tab](https://github.com/comicdeed/jots/discussions).
+* **Issue Tracker**: Report bugs or suggest enhancements via the [Issues tab](https://github.com/comicdeed/jots/issues).
 
 <br/>
-
-## 🛣️ The Future
-
-The app is destined to stay simple. If anything there is already too much in the UI for my comfort, so do not expect /more/
-
-Roadmap:
- - Document stuff
- - Fix an annoying memory leak where deleted notes linger in memory
- - Use Gtk 4.24 save-state new thing if it ever lands
- - More icon variants
- - Unit testing
- - Co-maintainers would be nice
- - More translations would be nice
-
-
-
-## 💝 Donations
-
-On the right you can donate to various contributors:
- - Ko-Fi: teamcons, the main devs and maintainers behind jots
- - Github: wpkelso, the author of the modern icon and its Pride variant
- - Patreon: lains, the initial creator of the app (It was Notejot, now something very different)
-
-<br/>
-
 
 ## 💾 Notes Storage
+All notes are serialized into a simple JSON array in `saved_state.json`. 
 
-"saved_state.json" contains all notes in JSON format. The structure is quite simple, it is an array of objects, each representing the data of a sticky note
+> [!NOTE]
+> The JSON structure is an internal format and may change without notice as the application evolves. However, the application will always include automatic migrations to ensure your existing notes are safely upgraded during updates.
 
-The app reads from it only during startup (rest of the time it writes in) so you could quite easily swap it up to swap between sets of notes.
-
-The app writes to it everytime there is a sticky note change
-
-
-<br/>
-
-### If installed from flathub (if you are not on elementary OS)
-
-You can get it all by entering in the search bar of your file explorer:
-
-~/.var/app/io.github.comicdeed.jots/data/io.github.comicdeed.jots/
-
-Or typing the below in a terminal, to move it to your Home folder:
-
-```bash
-cp ~/.var/app/io.github.comicdeed.jots/data/io.github.comicdeed.jots/saved_data.json ~/
-```
-
-<br/>
-
-### If installed from elementary OS appcenter
-
-The app id is slightly different
-
-Enter the path:
-
-~/.var/app/io.github.comicdeed.jots/data/io.github.comicdeed.jots/
-
-Or the command:
-
-```bash
-cp ~/.var/app/io.github.comicdeed.jots/data/io.github.comicdeed.jots/saved_data.json ~/
-```
-
-
-### WINDOWS
-
-Paste in the explorer window:
-
-%localappdata%\io.github.comicdeed.jots\
-
-
-### UNSUPPORTED PACKAGINGS
-
-Check out in ~/.local/share
-
-It likely is there
+### Flatpak / Sandbox Storage Paths
+If installed via Flathub or AppCenter, notes are saved inside the application sandbox:
+`~/.var/app/io.github.comicdeed.jots/data/io.github.comicdeed.jots/saved_state.json`

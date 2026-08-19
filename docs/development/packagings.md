@@ -1,33 +1,25 @@
+# Alternative Packaging Formats & Operating Systems
 
-# Other packaging formats and OSes
+This document outlines the current support status and considerations for packaging Jots across different distribution formats and platforms.
 
-## Snap
+---
 
-Idk how to do that, havent looked into it and not sure if worth it.
+## 1. Snap & AppImage
+* **Status**: There are currently no official Snap or AppImage packages maintained.
+* **Considerations**: If you are interested in creating or maintaining a Snapcraft or AppImage packaging configuration for Jots, contributions are welcome.
 
+---
 
-## Appimage
+## 2. Native Distribution Packages (DEB / RPM)
+If packaging Jots natively for a Linux distribution (such as Debian, Ubuntu, Fedora, or Arch), please note:
+* **Storage Directory**: Jots assumes it runs within a sandbox environment (like Flatpak) by default. Native packages may need to adjust the data directory paths or configurations to align with standard filesystem hierarchies (FHS).
+* **Dependency Plumbings**: Check the `meson.build` build configuration to ensure that dependencies (such as `libportal`) compile and link correctly against system libraries.
 
-No
+---
 
-
-
-## DEB/RPM/etc
-
-Is there demand? I dont wanna bother with that...
-For packagers: A tweak would be to have Jots create a data directory instead of using its root.
-
-Jots just checks whether DATA_DIR exists since in a fresh sandbox it isnt a given, then just dump into it with no regards (since it is expected it does not share the space with other apps) 
-
-Windows has a check in place, you can just remove the "#if WINDOWS"-"#endif" plumbing, and ensure Jots create a folder with rdnn instead of just "Jots" (there is no way to rebase between app-id on windows and other apps dont use rdnn anyway)
-
-
-## Mac OS
-
-[An attempt has been made](https://github.com/comicdeed/jots/pull/115)
-
-The big hurdles are:
-- DBus isnt a thing on MacOS
-- Just like Windows, no LibPortal
-- CSS theming seems broken?
-- It apparently is crashy
+## 3. macOS Support
+* **Status**: Experimental.
+* **Hurdles**: 
+  * DBus messaging is not natively supported on macOS.
+  * Integration helpers (`libportal`) are not available on macOS.
+  * GTK4 CSS styling and rendering issues may exist.

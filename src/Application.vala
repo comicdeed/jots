@@ -38,14 +38,14 @@ Jason deals with all the hassle in between all saving/loading steps
 Constants is because i am lazy
 */
 
-public class Jorts.Application : Gtk.Application {
+public class Jots.Application : Gtk.Application {
 
     // Needed by all windows
     public static GLib.Settings settings;
     public static Gtk.Settings gtk_settings;
 
-    public static Jorts.NoteManager note_manager;
-    public static Jorts.PreferenceWindow? preferences;
+    public static Jots.NoteManager note_manager;
+    public static Jots.PreferenceWindow? preferences;
 
     // Used for commandline option handling
     public static bool new_note = false;
@@ -100,7 +100,7 @@ public class Jorts.Application : Gtk.Application {
 
     /*************************************************/
     public override void startup () {
-        debug ("Jorts Startup…");
+        debug ("Jots Startup…");
         base.startup ();
         Gtk.init ();
         Granite.init ();
@@ -115,7 +115,7 @@ public class Jorts.Application : Gtk.Application {
         set_accels_for_action (ACTION_PREFIX + ACTION_SAVE, {"<Control>S"});
         set_accels_for_action (ACTION_PREFIX + ACTION_RESTORE_LAST, {"<Control>R"});
 
-        note_manager = new Jorts.NoteManager (this);
+        note_manager = new Jots.NoteManager (this);
         var action_restore = lookup_action (Application.ACTION_RESTORE_LAST);
         ((SimpleAction)action_restore).set_enabled (false);
 
@@ -141,7 +141,7 @@ public class Jorts.Application : Gtk.Application {
         });
 
         print ("""
-🎉✨ ACTIVATING: SUPER COOL JORTS 😎🔥❗🎶🤌
+🎉✨ ACTIVATING: SUPER COOL JOTS 😎🔥❗🎶🤌
 Your Notes are all belong to us!
       _       _
     (\o/)   (\o/)    <--- Tiny electric angels working in the background
@@ -173,7 +173,7 @@ Please wait while the app remembers all the things…
 
     // Clicked: Either show all windows, or rebuild from storage
     protected override void activate () {
-        debug ("Jorts, activate!");
+        debug ("Jots, activate!");
 
         // Test Lang
         //GLib.Environment.set_variable ("LANGUAGE", "pt_br", true);
@@ -202,7 +202,7 @@ Please wait while the app remembers all the things…
         debug ("Showing preferences!");
 
         if (Application.preferences == null) {
-            Application.preferences = new Jorts.PreferenceWindow (this);
+            Application.preferences = new Jots.PreferenceWindow (this);
             Application.preferences.close_request.connect_after (() => {Application.preferences = null; return false;});
         }
 

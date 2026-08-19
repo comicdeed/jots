@@ -1,14 +1,14 @@
 
 <div align="center">
   <img alt="An icon representing a stack of little squared blue sticky notes. The first one, and the second one hinted below, have scribbles over them" src="data/icons/default/hicolor/128.png" />
-  <h1>Jorts</h1>
-  <h3>Neither jeans nor shorts, just like jorts. A sticky notes app for elementary OS</h3>
+  <h1>Jots</h1>
+  <h3>Neither jeans nor shorts, just like jots. A sticky notes app for elementary OS</h3>
 
   <a href="https://elementary.io">
     <img src="https://ellie-commons.github.io/community-badge.svg" alt="Made for elementary OS">
   </a>
   
-<span align="center"> <img class="center" src="https://github.com/elly-code/jorts/blob/main/data/screenshots/spread.png" alt="Several colourful sticky notes in a spread. Most are covered in scribbles. One in forefront is blue and has the text 'Lovely little colourful squares for all of your notes! 🥰'"></span>
+<span align="center"> <img class="center" src="https://github.com/comicdeed/jots/blob/main/data/screenshots/spread.png" alt="Several colourful sticky notes in a spread. Most are covered in scribbles. One in forefront is blue and has the text 'Lovely little colourful squares for all of your notes! 🥰'"></span>
 </div>
 
 <br/>
@@ -17,10 +17,10 @@
 
 ## 🦺 Installation
 
-You can download and install Jorts from various sources:
+You can download and install Jots from various sources:
 
-[![Get it on AppCenter](https://appcenter.elementary.io/badge.svg?new)](https://appcenter.elementary.io/io.github.elly_code.jorts) 
-[<img src="https://flathub.org/api/badge?svg&locale=en" width="160" alt="Download on Flathub">](https://flathub.org/apps/io.github.ellie_commons.jorts)
+[![Get it on AppCenter](https://appcenter.elementary.io/badge.svg?new)](https://appcenter.elementary.io/io.github.comicdeed.jots) 
+[<img src="https://flathub.org/api/badge?svg&locale=en" width="160" alt="Download on Flathub">](https://flathub.org/apps/io.github.comicdeed.jots)
 
 
 On Windows: Grab the Exe installer in Release
@@ -32,11 +32,11 @@ Not all releases have an exe, because bundling for Windows and testing it works 
 ## ❓ Questions, building, etc
 
 
-You may want to check the [documentation](https://github.com/elly-code/jorts/tree/main/docs)
+You may want to check the [documentation](https://github.com/comicdeed/jots/tree/main/docs)
 
-Issues are all filed [here in the Issues tab](https://github.com/elly-code/jorts/issues)
+Issues are all filed [here in the Issues tab](https://github.com/comicdeed/jots/issues)
 
-You can also [come over in matrix](https://matrix.to/#/#elly-code:matrix.org) to talk to me directly
+You can also [come over in matrix](https://matrix.to/#/#comicdeed:matrix.org) to talk to me directly
 
 
 <br/>
@@ -59,7 +59,7 @@ Roadmap:
 ## 💝 Donations
 
 On the right you can donate to various contributors:
- - Ko-Fi: teamcons, the main devs and maintainers behind jorts
+ - Ko-Fi: teamcons, the main devs and maintainers behind jots
  - Github: wpkelso, the author of the modern icon and its Pride variant
  - Patreon: lains, the initial creator of the app (It was Notejot, now something very different)
 
@@ -81,12 +81,12 @@ The app writes to it everytime there is a sticky note change
 
 You can get it all by entering in the search bar of your file explorer:
 
-~/.var/app/io.github.ellie_commons.jorts/data/io.github.ellie_commons.jorts/
+~/.var/app/io.github.comicdeed.jots/data/io.github.comicdeed.jots/
 
 Or typing the below in a terminal, to move it to your Home folder:
 
 ```bash
-cp ~/.var/app/io.github.ellie_commons.jorts/data/io.github.ellie_commons.jorts/saved_data.json ~/
+cp ~/.var/app/io.github.comicdeed.jots/data/io.github.comicdeed.jots/saved_data.json ~/
 ```
 
 <br/>
@@ -97,12 +97,12 @@ The app id is slightly different
 
 Enter the path:
 
-~/.var/app/io.github.elly_code.jorts/data/io.github.elly_code.jorts/
+~/.var/app/io.github.comicdeed.jots/data/io.github.comicdeed.jots/
 
 Or the command:
 
 ```bash
-cp ~/.var/app/io.github.elly_code.jorts/data/io.github.elly_code.jorts/saved_data.json ~/
+cp ~/.var/app/io.github.comicdeed.jots/data/io.github.comicdeed.jots/saved_data.json ~/
 ```
 
 
@@ -110,7 +110,7 @@ cp ~/.var/app/io.github.elly_code.jorts/data/io.github.elly_code.jorts/saved_dat
 
 Paste in the explorer window:
 
-%localappdata%\io.github.elly_code.jorts\
+%localappdata%\io.github.comicdeed.jots\
 
 
 ### UNSUPPORTED PACKAGINGS

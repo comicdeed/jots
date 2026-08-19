@@ -11,10 +11,10 @@
 * Mainly, this abstracts zoom into an int and swap CSS classes
 * As a treat it includes also the plumbing for ctrl+scroll zooming
 */
-public class Jorts.ZoomController : Object {
+public class Jots.ZoomController : Object {
 
     private static bool is_control_key_pressed = false;
-    private weak Jorts.StickyNoteWindow window {get; set;}
+    private weak Jots.StickyNoteWindow window {get; set;}
 
     // Avoid setting this unless it is to restore a specific value, do_set_zoom does not check input
     private int _old_zoom;
@@ -38,7 +38,7 @@ public class Jorts.ZoomController : Object {
     };
 
 
-    public ZoomController (Jorts.StickyNoteWindow window) {
+    public ZoomController (Jots.StickyNoteWindow window) {
         this.window = window;
     }
 
@@ -55,7 +55,7 @@ public class Jorts.ZoomController : Object {
     /**
     * Handler. Wraps a zoom enum into the correct function-
     */
-    public void zoom_changed (Jorts.ZoomType zoomtype) {
+    public void zoom_changed (Jots.ZoomType zoomtype) {
         debug ("Zoom changed!");
         switch (zoomtype) {
             case ZoomType.ZOOM_IN:              zoom_in (); return;          // vala-lint=double-spaces
@@ -102,14 +102,14 @@ public class Jorts.ZoomController : Object {
         debug ("Setting zoom: " + zoom.to_string ());
 
         // Switches the classes that control font size
-        window.remove_css_class (Jorts.Zoom.from_int ( _old_zoom).to_css_class ());
+        window.remove_css_class (Jots.Zoom.from_int ( _old_zoom).to_css_class ());
         _old_zoom = new_zoom;
-        window.add_css_class (Jorts.Zoom.from_int ( new_zoom).to_css_class ());
+        window.add_css_class (Jots.Zoom.from_int ( new_zoom).to_css_class ());
         window.textview.queue_refresh_indentation ();
 
 
         // Adapt headerbar size to avoid weird flickering
-        window.view.headerbar.height_request = Jorts.Zoom.from_int (new_zoom).to_ui_size ();
+        window.view.headerbar.height_request = Jots.Zoom.from_int (new_zoom).to_ui_size ();
 
         // Reflect the number in the popover
         window.popover.zoom = new_zoom;

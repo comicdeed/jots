@@ -10,7 +10,7 @@
 
 ## 1. Prerequisite
 
-Please make sure you have these dependencies first before building Jorts.
+Please make sure you have these dependencies first before building Jots.
 
 * libgranite-7-dev
 * gtk+-4.0
@@ -70,7 +70,7 @@ ninja
 Update translations
 
 ```bash
-ninja jorts-pot ; ninja jorts-update-po
+ninja jots-pot ; ninja jots-update-po
 ninja extra-pot ; ninja extra-update-po
 ```
 
@@ -78,16 +78,16 @@ ninja extra-pot ; ninja extra-update-po
 
 ## Installing
 
-Note that Jorts assume it is in a sandbox by default
+Note that Jots assume it is in a sandbox by default
 
-To install, use `ninja install`, then execute with `io.github.elly_code.jorts`
+To install, use `ninja install`, then execute with `io.github.comicdeed.jots`
 
 ```bash
 ninja install
 ```
 
 ```bash
-io.github.elly_code.jorts
+io.github.comicdeed.jots
 ```
 
 you can also just run the binary in builddir if you do not wish to install

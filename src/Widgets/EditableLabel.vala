@@ -8,7 +8,7 @@
 /**
 * A subclass of Gtk.EditableLabel, incorporating some conveniences
 */
-public class Jorts.EditableLabel : Granite.Bin {
+public class Jots.EditableLabel : Granite.Bin {
 
     private const string STYLE_MONOSPACE = "monospace";
     private Gtk.EditableLabel editablelabel;

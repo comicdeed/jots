@@ -5,7 +5,7 @@
  *                          2025-2026 Stella & Charlie (teamcons.carrd.co)
  */
 
-public class Jorts.Autostart {
+public class Jots.Autostart {
 
     Xdp.Portal portal;
     GenericArray<weak string> cmd;
@@ -22,7 +22,7 @@ public class Jorts.Autostart {
         try {
             var result = yield portal.request_background (
                 null,
-                _("Set Jorts to start with the computer"),
+                _("Set Jots to start with the computer"),
                 cmd,
                 Xdp.BackgroundFlags.AUTOSTART,
                 null);
@@ -39,7 +39,7 @@ public class Jorts.Autostart {
         try {
             var result = yield portal.request_background (
                 null,
-                _("Remove Jorts from system autostart"),
+                _("Remove Jots from system autostart"),
                 cmd,
                 Xdp.BackgroundFlags.NONE,
                 null);

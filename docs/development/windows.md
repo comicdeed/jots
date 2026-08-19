@@ -71,7 +71,7 @@ It is built so as to not need admin rights. You can distribute as is.
 
 ## Windows-specific bugs and papercuts
 
-Jorts is primarily a Linux app. It is built using linux toolkits, and bundles a lot of it in the installer.
+Jots is primarily a Linux app. It is built using linux toolkits, and bundles a lot of it in the installer.
 
 The Windows Build has a few differences with the True OG:
  - There is no seasonal icons, such as Halloween or Pride app icons.
@@ -81,10 +81,10 @@ The Windows Build has a few differences with the True OG:
  It will always have the Blueberry, standard icon.
 
  - There is no inbuilt update method.
- You will have to uninstall Jorts, then reinstall it with a new version to update.
+ You will have to uninstall Jots, then reinstall it with a new version to update.
 Note about this one: Notes are not deleted on uninstall. Do not worry you wont lose them.
 
- - There is no setting to enable/disable Jorts starting with Windows.
+ - There is no setting to enable/disable Jots starting with Windows.
 The Installer sets it once, then it is between you and God.
 
  - Some icons dont render.

@@ -11,7 +11,7 @@
 /**
 * Used in a signal to tell windows in which way to change zoom
 */
- public enum Jorts.ZoomType {
+ public enum Jots.ZoomType {
     ZOOM_OUT,
     DEFAULT_ZOOM,
     ZOOM_IN,

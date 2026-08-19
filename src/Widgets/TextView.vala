@@ -10,11 +10,11 @@
  * Inherits Hypertextview to detect links and emails
  * Adds a list feature which is a hot mess
  */
-public class Jorts.TextView : Granite.HyperTextView {
+public class Jots.TextView : Granite.HyperTextView {
 
     // We subclass the buffer to manage the list feature at a lower level
     // We need to keep a reference to its "Extended version"
-    public Jorts.TextBuffer list_buffer;
+    public Jots.TextBuffer list_buffer;
 
    /**
     * We listen to the keyboard to intervene in some situations:
@@ -83,7 +83,7 @@ public class Jorts.TextView : Granite.HyperTextView {
         );
 
         var menuitem_quit = new GLib.MenuItem (
-            _("Quit Jorts"),
+            _("Quit Jots"),
             Application.ACTION_PREFIX + Application.ACTION_QUIT
         );
 
@@ -96,7 +96,7 @@ public class Jorts.TextView : Granite.HyperTextView {
         extra_menu = extra;
 
         // We pretty much only use list_buffer since it has the added features
-        list_buffer = new Jorts.TextBuffer ();
+        list_buffer = new Jots.TextBuffer ();
         buffer = (Gtk.TextBuffer)list_buffer;
 
 

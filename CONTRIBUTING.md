@@ -1,9 +1,9 @@
 # Want to contribute ?
 
 
-You may want to check the [documentation](https://github.com/elly-code/jorts/tree/main/docs)
+You may want to check the [documentation](https://github.com/comicdeed/jots/tree/main/docs)
 
-You can also [come over in matrix](https://matrix.to/#/#elly-code:matrix.org) to talk to us directly
+You can also [come over in matrix](https://matrix.to/#/#comicdeed:matrix.org) to talk to us directly
 
 
 

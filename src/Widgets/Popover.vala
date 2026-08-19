@@ -9,14 +9,14 @@
 * The popover menu to tweak individual notes
 * Contains a setting for color, one for monospace font, one for zoom
 */
-public class Jorts.Popover : Gtk.Popover {
+public class Jots.Popover : Gtk.Popover {
 
     public Gtk.EventControllerKey keypress_controller;
     public Gtk.EventControllerScroll scroll_controller;
 
-    private Jorts.ColorBox color_box;
-    private Jorts.MonospaceBox monospace_box;
-    private Jorts.ZoomBox font_size_box;
+    private Jots.ColorBox color_box;
+    private Jots.MonospaceBox monospace_box;
+    private Jots.ZoomBox font_size_box;
 
     public Themes color {
         get {return color_box.color;}
@@ -29,7 +29,7 @@ public class Jorts.Popover : Gtk.Popover {
     }
 
     public int zoom { set {font_size_box.zoom = value;}}
-    public signal void theme_changed (Jorts.Themes selected);
+    public signal void theme_changed (Jots.Themes selected);
 
     public Popover () {
         Object (
@@ -60,9 +60,9 @@ public class Jorts.Popover : Gtk.Popover {
             margin_bottom = SPACING_DOUBLE
         };
 
-        color_box = new Jorts.ColorBox ();
-        monospace_box = new Jorts.MonospaceBox ();
-        font_size_box = new Jorts.ZoomBox ();
+        color_box = new Jots.ColorBox ();
+        monospace_box = new Jots.MonospaceBox ();
+        font_size_box = new Jots.ZoomBox ();
 
         view.append (color_box);
         view.append (monospace_box);
@@ -89,7 +89,7 @@ public class Jorts.Popover : Gtk.Popover {
     private void on_monospace_changed (bool monospace) {
         debug ("Updating monospace to %s".printf (monospace.to_string ()));
         monospace_box.monospace = monospace;
-        Jorts.NoteData.latest_mono = monospace;
+        Jots.NoteData.latest_mono = monospace;
     }
 
     ~Popover () {

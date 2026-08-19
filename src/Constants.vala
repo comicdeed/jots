@@ -9,17 +9,17 @@
 /**
  * I just dump all my constants here
  */
-namespace Jorts {
+namespace Jots {
 
     /*************************************************/
     const string DONATE_LINK             = "https://ko-fi.com/teamcons/tip";
 
     // signature theme
 #if HALLOWEEN
-    const Jorts.Themes DEFAULT_THEME    = Jorts.Themes.ORANGE;
+    const Jots.Themes DEFAULT_THEME    = Jots.Themes.ORANGE;
     const string DEFAULT_STYLESHEET     = "io.elementary.stylesheet.orange";
 #else
-    const Jorts.Themes DEFAULT_THEME    = Jorts.Themes.BLUEBERRY;
+    const Jots.Themes DEFAULT_THEME    = Jots.Themes.BLUEBERRY;
     const string DEFAULT_STYLESHEET     = "io.elementary.stylesheet.blueberry";
 #endif
 

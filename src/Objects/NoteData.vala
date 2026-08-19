@@ -11,15 +11,15 @@
 /**
 * An object used to package all data conveniently as needed.
 */
-public class Jorts.NoteData {
+public class Jots.NoteData {
 
     // Will determine properties (or lack thereof) for any new note
-    public static Jorts.Themes latest_theme = DEFAULT_THEME;
+    public static Jots.Themes latest_theme = DEFAULT_THEME;
     public static int latest_zoom = DEFAULT_ZOOM;
     public static bool latest_mono = DEFAULT_MONO;
 
     public string title;
-    public Jorts.Themes theme;
+    public Jots.Themes theme;
     public string content;
     public bool monospace;
     public int zoom;
@@ -28,8 +28,8 @@ public class Jorts.NoteData {
 
     // The standard constructor only does random
     public NoteData () {
-        title = Jorts.Utils.random_title ();
-        theme = Jorts.Themes.random_theme (latest_theme);
+        title = Jots.Utils.random_title ();
+        theme = Jots.Themes.random_theme (latest_theme);
         content = "";
         monospace = latest_mono;
         zoom = latest_zoom;
@@ -44,7 +44,7 @@ public class Jorts.NoteData {
     public NoteData.from_json (Json.Object node) {
         // Translators: "Forgot title!" is optional. It never happened for me when testing, and may appear only if users tampered with the savefile
         title       = node.get_string_member_with_default ("title", (_("Forgot title!")));
-        theme       = (Jorts.Themes)node.get_int_member_with_default ("color", Jorts.Themes.random_theme ());
+        theme       = (Jots.Themes)node.get_int_member_with_default ("color", Jots.Themes.random_theme ());
         content     = node.get_string_member_with_default ("content", "");
         monospace   = node.get_boolean_member_with_default ("monospace", DEFAULT_MONO);
         zoom        = (int)node.get_int_member_with_default ("zoom", DEFAULT_ZOOM);

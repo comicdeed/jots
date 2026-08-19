@@ -28,8 +28,8 @@ jobs:
       - name: Build
         uses: flatpak/flatpak-github-actions/flatpak-builder@v6.7
         with:
-          bundle: Jorts.flatpak
-          manifest-path: io.github.elly_code.jorts.yml
+          bundle: Jots.flatpak
+          manifest-path: io.github.comicdeed.jots.yml
           run-tests: true
           repository-name: appcenter
           repository-url: https://flatpak.elementary.io/repo.flatpakrepo

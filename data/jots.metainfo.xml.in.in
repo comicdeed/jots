@@ -6,15 +6,15 @@
     <launchable type="desktop-id">@APP_ID@.desktop</launchable>
     <translation type="gettext">@APP_ID@</translation>
 
-    <name>Jorts</name>
+    <name>Jots</name>
     <summary>Write on colourful little squares</summary>
     <description>
-        <p>Neither jeans nor shorts, just like jorts! A thoughtful little sticky notes application, to display any sort of short term information on your screen.</p>
+        <p>Neither jeans nor shorts, just like jots! A thoughtful little sticky notes application, to display any sort of short term information on your screen.</p>
         <p>Features include:</p>
         <ul>
             <li>Colourful: Eleven pretty pastel themes</li>
             <li>Cute: Each new note has a funny or cute random (editable) title</li>
-            <li>Thoughtful: Jorts does its best to be comfortable to use, always!</li>
+            <li>Thoughtful: Jots does its best to be comfortable to use, always!</li>
             <li>Private: Try the scribbles mode!</li>
         </ul>
         <p>Windows installers are also available, and require no admin rights. So you can even use this at work!</p>
@@ -59,7 +59,7 @@
         <keyword>elementary OS</keyword>
     </keywords>
     <suggests>
-        <id>io.github.elly_code.reminduck</id>
+        <id>io.github.comicdeed.reminduck</id>
         <id>com.github.elfenware.badger</id>
         <id>io.github.xchan14.larawan</id>
     </suggests>
@@ -108,7 +108,7 @@
         </release>
         <release version="4.2.0" date="2026-05-31">
             <description>
-                <p>The Unyielding Jorts</p>
+                <p>The Unyielding Jots</p>
                 <ul>
                     <li>Lovely Pride variant thanks to @wpkelso!</li>
                     <li>Added indent for lists with help from @MysterieCatDev!</li>
@@ -128,7 +128,7 @@
         </release>
         <release version="4.1.0" date="2026-04-25">
             <description>
-                <p>Jorts of Spring</p>
+                <p>Jots of Spring</p>
                 <ul>
                     <li>New color: Latte!</li>
                     <li>Added Preferences and Quit to the note right-click</li>
@@ -140,7 +140,7 @@
             <description>
                 <p>Organization change</p>
                 <ul>
-                    <li>From ellie-commons to elly-code</li>
+                    <li>From ellie-commons to comicdeed</li>
                 </ul>
                 <p>Guests stars: 😎</p>
                 <ul>
@@ -154,7 +154,7 @@
         </release>
         <release version="4.0.0" date="2025-11-22">
             <description>
-                <p>4.0.0 Jorts of Hyperspace! 🚀</p>
+                <p>4.0.0 Jots of Hyperspace! 🚀</p>
                 <ul>
                     <li>Version 4 to align with Gtk version</li>
                     <li>Added button to toggle lists, and ability to customize them</li>

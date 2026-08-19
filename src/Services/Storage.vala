@@ -14,7 +14,7 @@
 * save() takes a Json.Node instead of an NoteData[] so we avoid looping twice through all notes
 * It is agressively persistent in 
 */
-public class Jorts.Storage : Object {
+public class Jots.Storage : Object {
 
     private const string FILENAME = "saved_state.json";
     private File datadir;

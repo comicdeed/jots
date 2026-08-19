@@ -8,9 +8,9 @@
  /**
 * Horizontal box with a +, label, and -, representing zoom controls
 * Gives off zoom_changed signal to tell the user has clicked one of three
-* The signal transmits a Jorts.ZoomType Enum
+* The signal transmits a Jots.ZoomType Enum
 */
-public class Jorts.ZoomBox : Gtk.Box {
+public class Jots.ZoomBox : Gtk.Box {
 
     private Gtk.Button zoom_default_button;
     private int _zoom = 100;

@@ -14,7 +14,7 @@ random_emote(skip_emote)
 random_note(skip_theme)
 
 */
-namespace Jorts.Utils {
+namespace Jots.Utils {
 
     /*************************************************/
     /**
@@ -125,7 +125,7 @@ Nobody will believe you hehehe ;)
 I hope my little app brings you a lot of joy
 Have a great day!🎇
 """);
-            blank_slate.theme = Jorts.Themes.BANANA;
+            blank_slate.theme = Jots.Themes.BANANA;
         }
 
         return blank_slate;

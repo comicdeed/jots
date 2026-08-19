@@ -16,12 +16,12 @@ the innerbox has widgets for settings.
 the actionbar has a donate me and a set back to defaults just like elementaryOS
 
 */
-public class Jorts.PreferenceWindow : Gtk.Window {
+public class Jots.PreferenceWindow : Gtk.Window {
 
     const int DEFAULT_PREF_HEIGHT = 230;
     const int DEFAULT_PREF_WIDTH = 460;
 
-    public PreferenceWindow (Jorts.Application app) {
+    public PreferenceWindow (Jots.Application app) {
         debug ("Creating preference window");
         Intl.setlocale ();
 
@@ -35,14 +35,14 @@ public class Jorts.PreferenceWindow : Gtk.Window {
         /*              HEADERBAR BS                */
         /********************************************/
 
-        title = _("Preferences - Jorts");
+        title = _("Preferences - Jots");
 
-        var title_label = new Gtk.Label (_("<b>Preferences for your Jorts</b>")) {
+        var title_label = new Gtk.Label (_("<b>Preferences for your Jots</b>")) {
             use_markup = true
         };
 
         var headerbar = new Gtk.HeaderBar () {
-            // TRANSLATORS: Feel free to improvise. The goal is a playful wording to convey the idea of app-wide settings for Jorts
+            // TRANSLATORS: Feel free to improvise. The goal is a playful wording to convey the idea of app-wide settings for Jots
             title_widget = title_label,
             show_title_buttons = false
         };
@@ -53,7 +53,7 @@ public class Jorts.PreferenceWindow : Gtk.Window {
         set_default_size (DEFAULT_PREF_WIDTH, DEFAULT_PREF_HEIGHT);
         resizable = false;
 
-        var prefview = new Jorts.PreferencesView ();
+        var prefview = new Jots.PreferencesView ();
 
         // Make the whole window grabbable
         var handle = new Gtk.WindowHandle () {

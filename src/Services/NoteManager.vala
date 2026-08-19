@@ -9,23 +9,23 @@
 * Responsible for keeping track of various Sticky Notes windows
 * It does its thing on its own. Make sure to call init() to summon all notes from storage
 */
-public class Jorts.NoteManager : Object {
+public class Jots.NoteManager : Object {
 
     private static uint debounce_timer_id;
     private static bool saving_lock = true;
     private static NoteData? last_deleted = null;
 
-    private Jorts.Application application;
+    private Jots.Application application;
     public Gee.ArrayList<StickyNoteWindow> open_notes;
-    public Jorts.Storage storage;
+    public Jots.Storage storage;
 
-    public NoteManager (Jorts.Application app) {
+    public NoteManager (Jots.Application app) {
         this.application = app;
     }
 
     construct {
         open_notes = new Gee.ArrayList<StickyNoteWindow> ();
-        storage = new Jorts.Storage ();
+        storage = new Jots.Storage ();
     }
 
     /*************************************************/
@@ -67,7 +67,7 @@ public class Jorts.NoteManager : Object {
     */
     public void create_note (NoteData? data = null) {
         debug ("Lets do a note");
-        Jorts.StickyNoteWindow note;
+        Jots.StickyNoteWindow note;
 
         if (data != null) {
             note = new StickyNoteWindow (application, data);
@@ -76,7 +76,7 @@ public class Jorts.NoteManager : Object {
             var random_data = new NoteData ();
 
             // One chance at the golden sticky
-            random_data = Jorts.Utils.golden_sticky (random_data);
+            random_data = Jots.Utils.golden_sticky (random_data);
             note = new StickyNoteWindow (application, random_data);
         }
 
@@ -131,7 +131,7 @@ public class Jorts.NoteManager : Object {
     public void immediately_save () {
         var array = new Json.Array ();
 
-        foreach (Jorts.StickyNoteWindow note in open_notes) {
+        foreach (Jots.StickyNoteWindow note in open_notes) {
             var data = note.packaged ();
             var object = data.to_json ();
             array.add_object_element (object);

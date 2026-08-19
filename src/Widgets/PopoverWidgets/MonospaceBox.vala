@@ -10,7 +10,7 @@
 * Allows user to switch between normal and monospace font
 * Exposes bool monospace, also sends it via signal
 */
-public class Jorts.MonospaceBox : Gtk.Box {
+public class Jots.MonospaceBox : Gtk.Box {
 
     private Gtk.ToggleButton mono_monospace_toggle;
 

@@ -12,7 +12,7 @@
 	!define PUBLISHER "@PUBLISHER@"
 
 ;------------------------------
-Name Jorts
+Name Jots
 
 VIAddVersionKey /LANG=0 "ProductName" "${APP_NAME}"
 VIAddVersionKey /LANG=0 "FileVersion" "${APP_VERSION}"
@@ -21,7 +21,7 @@ VIAddVersionKey /LANG=0 "FileDescription" "https://github.com/${PUBLISHER}/${APP
 VIAddVersionKey /LANG=0 "LegalCopyright" "GNU GPL v3 ${PUBLISHER}"
 VIProductVersion "${APP_VERSION}.0"
 
-Outfile "Jorts-Installer.exe"
+Outfile "Jots-Installer.exe"
 InstallDir "$LOCALAPPDATA\Programs\${APP_ID}"
 
 # We do not need admin here

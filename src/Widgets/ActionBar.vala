@@ -9,7 +9,7 @@
 * We use Granite.Bin to subclass ActionBar.
 * Everything is kept there but most widgets are public
 */
- public class Jorts.ActionBar : Granite.Bin {
+ public class Jots.ActionBar : Granite.Bin {
 
     public Gtk.ActionBar actionbar;
     public Gtk.Button list_button;
@@ -17,7 +17,7 @@
     public Gtk.EmojiChooser emojichooser_popover;
     public Gtk.MenuButton menu_button;
     public Gtk.WindowHandle handle;
-    public Jorts.Popover popover;
+    public Jots.Popover popover;
 
     const int ICON_SIZE = 32;
 
@@ -68,7 +68,7 @@
         emojichooser_popover = new Gtk.EmojiChooser ();
         emoji_button = new Gtk.MenuButton () {
             popover = emojichooser_popover,
-            icon_name = Jorts.Utils.random_emote (),
+            icon_name = Jots.Utils.random_emote (),
             width_request = ICON_SIZE,
             height_request = ICON_SIZE,
             tooltip_markup = Granite.markup_accel_tooltip (
@@ -79,7 +79,7 @@
         };
         emoji_button.add_css_class (STYLE_THEMEDBUTTON);
 
-        popover = new Jorts.Popover ();
+        popover = new Jots.Popover ();
         menu_button = new Gtk.MenuButton () {
             popover = popover,
             icon_name = "open-menu-symbolic",
@@ -134,7 +134,7 @@
         debug ("Emote requested!");
 
         emoji_button.set_icon_name (
-            Jorts.Utils.random_emote (
+            Jots.Utils.random_emote (
                 emoji_button.icon_name
             )
         );

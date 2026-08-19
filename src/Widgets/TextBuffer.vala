@@ -8,7 +8,7 @@
 /**
 * A buffer with some list abilities and utils
 */
-public class Jorts.TextBuffer : Gtk.TextBuffer {
+public class Jots.TextBuffer : Gtk.TextBuffer {
 
     public const string LIST_TAG_NAME = "list_item";
     private const int INDENT_SPACING = 0;

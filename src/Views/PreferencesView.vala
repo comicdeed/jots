@@ -5,14 +5,14 @@
  *                          2025-2026 Stella & Charlie (teamcons.carrd.co)
  */
 
- public class Jorts.PreferencesView : Granite.Bin {
+ public class Jots.PreferencesView : Granite.Bin {
 
     private Granite.Toast toast;
     public Gtk.Button close_button;
 
 #if LIBPORTAL
     Gtk.Switch autostart_toggle;
-    Jorts.Autostart autostart;
+    Jots.Autostart autostart;
 #endif
 
     construct {
@@ -73,7 +73,7 @@
                 scribbly_toggle, "active",
                 GLib.SettingsBindFlags.DEFAULT);
 
-            var scribbly_box = new Jorts.SettingsBox (
+            var scribbly_box = new Jots.SettingsBox (
                 _("Scribble unfocused notes (Ctrl+H)"),
                 null, //_("You can also use the Ctrl+H shortcut"),
                 scribbly_toggle);
@@ -90,7 +90,7 @@
                 hidebar_toggle, "active",
                 GLib.SettingsBindFlags.DEFAULT);
 
-            var hidebar_box = new Jorts.SettingsBox (
+            var hidebar_box = new Jots.SettingsBox (
                 //TRANSLATORS: Instead of bottom bar you can also use "Action bar" or "button bar"
                 _("Hide bottom bar (Ctrl+T)"),
                 null, //_("You can also use the Ctrl+T shortcut"),
@@ -135,11 +135,11 @@
                 autostart_toggle, "active",
                 GLib.SettingsBindFlags.DEFAULT);
 
-            autostart = new Jorts.Autostart ();
+            autostart = new Jots.Autostart ();
             autostart_toggle.notify["state"].connect (handle_toggle_autostart);
             //autostart.fail.connect (toast.)
 
-            var autostart_box = new Jorts.SettingsBox (
+            var autostart_box = new Jots.SettingsBox (
                 _("Show notes on log in"),
                 _("May be out of sync with system settings in some cases"),
                 autostart_toggle);
@@ -162,7 +162,7 @@
             _("Support us!")
         );
 
-        var right_box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, Jorts.SPACING_DOUBLE);
+        var right_box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, Jots.SPACING_DOUBLE);
         actionbar.end_widget = right_box;
 
         var close = new Gtk.Button () {

@@ -10,10 +10,10 @@
 * Responsible to apply RedactedScript font
 * Give it a window and it will simply follow settings
 */
-public class Jorts.ScribblyController : Object {
+public class Jots.ScribblyController : Object {
 
     private const string STYLE_SCRIBBLED = "scribbled";
-    private weak Jorts.StickyNoteWindow window;
+    private weak Jots.StickyNoteWindow window;
 
     private bool _scribble;
     public bool scribble {
@@ -21,7 +21,7 @@ public class Jorts.ScribblyController : Object {
         set { scribbly_set (value);}
     }
 
-    public ScribblyController (Jorts.StickyNoteWindow window) {
+    public ScribblyController (Jots.StickyNoteWindow window) {
         this.window = window;
 
         // Gtk bug: Backdrop is not set when a window is first created and shown. Only after it gets focused at least once

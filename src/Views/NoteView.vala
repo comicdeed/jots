@@ -5,12 +5,12 @@
  *                          2025-2026 Stella & Charlie (teamcons.carrd.co)
  */
 
- public class Jorts.NoteView : Gtk.Box {
+ public class Jots.NoteView : Gtk.Box {
     public Gtk.HeaderBar headerbar;
-    public Jorts.EditableLabel editablelabel;
-    public Jorts.TextView textview;
-    public Jorts.ActionBar actionbar;
-    public Jorts.Popover popover;
+    public Jots.EditableLabel editablelabel;
+    public Jots.TextView textview;
+    public Jots.ActionBar actionbar;
+    public Jots.Popover popover;
 
     public Gtk.MenuButton emoji_button;
     public Gtk.EmojiChooser emojichooser_popover;
@@ -80,22 +80,22 @@
         headerbar.add_css_class ("headertitle");
 
         // Defime the label you can edit. Which is editable.
-        editablelabel = new Jorts.EditableLabel ();
+        editablelabel = new Jots.EditableLabel ();
         headerbar.set_title_widget (editablelabel);
 
-        textview = new Jorts.TextView ();
+        textview = new Jots.TextView ();
         scrolled = new Gtk.ScrolledWindow () {
             child = textview,
             hscrollbar_policy = Gtk.PolicyType.NEVER
         };
 
-        actionbar = new Jorts.ActionBar ();
+        actionbar = new Jots.ActionBar ();
 
         emoji_button = actionbar.emoji_button;
         emojichooser_popover = actionbar.emojichooser_popover;
 
         menu_button = actionbar.menu_button;
-        popover = (Jorts.Popover)menu_button.popover;
+        popover = (Jots.Popover)menu_button.popover;
 
         append (headerbar);
         append (scrolled);
@@ -120,7 +120,7 @@
     // Randomize the button emoji when clicked
     private void randomize_emote_button () {
         debug ("Emote requested!");
-        emoji_button.icon_name = Jorts.Utils.random_emote (emoji_button.icon_name);
+        emoji_button.icon_name = Jots.Utils.random_emote (emoji_button.icon_name);
     }
 
     private void on_emoji_picked (string emoji) {

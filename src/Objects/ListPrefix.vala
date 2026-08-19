@@ -11,7 +11,7 @@
 /**
  * Used in a signal to tell windows in which way to change zoom
  */
-public enum Jorts.ListPrefix {
+public enum Jots.ListPrefix {
     DISABLED,
     BULLET,
     DASH,

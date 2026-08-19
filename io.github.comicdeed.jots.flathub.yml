@@ -1,17 +1,11 @@
-#
-# This is danger
-#
-id: io.github.elly_code.jorts.devel
+id: io.github.comicdeed.jots
 # elementary SDK is not available on Flathub, so use the elementary BaseApp instead
 base: io.elementary.BaseApp
 base-version: 'circe-25.08'
 runtime: org.gnome.Platform
 runtime-version: '49'
 sdk: org.gnome.Sdk
-command: io.github.elly_code.jorts.devel
-
-tags: ['devel']
-desktop-file-name-suffix: ' (Development)'
+command: io.github.comicdeed.jots
 
 finish-args:
   - '--socket=wayland'
@@ -19,12 +13,23 @@ finish-args:
   - '--share=ipc'
   - '--device=dri'
 
+cleanup:
+  - /include
+  - /lib/girepository-1.0
+  - /lib/pkgconfig
+  - /share/gir-1.0
+  - /share/vala
+
+# Cleanup development-related files inherited from the BaseApp to reduce package size of your app.
+cleanup-commands:
+  - /app/cleanup-BaseApp.sh
+
 modules:
-  - name: jorts
+  - name: jots
     buildsystem: meson
     config-opts:
-      - --buildtype=debug
-      - -Ddevelopment=true
+      - --buildtype=release
+      - -Dlegacy_rdnn=true
       - -Dicon_variant=default
     sources:
       - type: dir

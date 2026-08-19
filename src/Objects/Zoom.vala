@@ -11,7 +11,7 @@
 /**
 * A register of all possible zoom values we have
 */
-public enum Jorts.Zoom {
+public enum Jots.Zoom {
     ANTSIZED,
     MUCHSMALLER,
     SMALLER,

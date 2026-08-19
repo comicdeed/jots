@@ -61,7 +61,7 @@ Everything should be exactly like the screenshot
 
 ### Why can autostart be desynchronized with the system
 
-Jorts relies on Libportal for autostart. Libportal cannot tell it if it was set or not
+Jots relies on Libportal for autostart. Libportal cannot tell it if it was set or not
 
 So if any other tools is used to change autostart apps and add or remove this one, it is not aware
 

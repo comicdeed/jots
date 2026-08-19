@@ -1,5 +1,5 @@
 project(
-    'jorts',
+    'jots',
     ['c', 'vala'],        # The floor is vala
     license: 'GPL-3.0-or-later',
     version: '4.3.0',               # Versioning: first should follow Gtk version, second and third depending how proud you are of the update
@@ -8,15 +8,15 @@ project(
 
 app_name = meson.project_name()
 app_version = meson.project_version()
-nicename = 'Jorts'
-publisher = 'elly-code'
+nicename = 'Jots'
+publisher = 'comicdeed'
 
 # Ugh i wish i could bin this
-correct_app_id = 'io.github.elly_code.' + app_name
-correct_app_path = '/io/github/elly_code/' + app_name
+correct_app_id = 'io.github.comicdeed.' + app_name
+correct_app_path = '/io/github/comicdeed/' + app_name
 
-legacy_app_id = 'io.github.ellie_commons.' +  app_name
-legacy_app_path = '/io/github/ellie_commons/' + app_name
+legacy_app_id = 'io.github.comicdeed.' +  app_name
+legacy_app_path = '/io/github/comicdeed/' + app_name
 
 legacy_rdnn = get_option('legacy_rdnn')
 if legacy_rdnn

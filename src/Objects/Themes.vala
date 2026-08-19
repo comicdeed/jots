@@ -11,7 +11,7 @@
 /**
 * A register of all themes we have
 */
-public enum Jorts.Themes {
+public enum Jots.Themes {
     BLUEBERRY,
     MINT,
     LIME,
@@ -42,7 +42,7 @@ public enum Jorts.Themes {
             case COCOA:         return "COCOA";
             case SLATE:         return "SLATE";
             case LATTE:         return "LATTE";
-            case IDK:           return (Jorts.Themes.random_theme (NoteData.latest_theme)).to_string ();
+            case IDK:           return (Jots.Themes.random_theme (NoteData.latest_theme)).to_string ();
             default: return "BLUEBERRY";
         }
     }
@@ -108,9 +108,9 @@ public enum Jorts.Themes {
     * Used for new notes without data. Optionally allows to skip one
     * This avoids generating notes "randomly" with the same themes, which would be boring
     */
-    public static Jorts.Themes random_theme (Jorts.Themes? skip_theme = null) {
-        Gee.ArrayList<Jorts.Themes> themes = new Gee.ArrayList<Jorts.Themes> ();
-        themes.add_all_array (Jorts.Themes.all ());
+    public static Jots.Themes random_theme (Jots.Themes? skip_theme = null) {
+        Gee.ArrayList<Jots.Themes> themes = new Gee.ArrayList<Jots.Themes> ();
+        themes.add_all_array (Jots.Themes.all ());
 
         if (skip_theme != null) {
             themes.remove (skip_theme);

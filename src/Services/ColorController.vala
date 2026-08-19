@@ -10,17 +10,17 @@
 * Responsible to apply RedactedScript font
 * Give it a window and it will simply follow settings
 */
-public class Jorts.ColorController : Object {
+public class Jots.ColorController : Object {
 
-    private weak Jorts.StickyNoteWindow window;
+    private weak Jots.StickyNoteWindow window;
 
-    private Jorts.Themes _theme;
-    public Jorts.Themes theme {
+    private Jots.Themes _theme;
+    public Jots.Themes theme {
         get { return _theme;}
         set { on_color_changed (value);}
     }
 
-    public ColorController (Jorts.StickyNoteWindow window) {
+    public ColorController (Jots.StickyNoteWindow window) {
         this.window = window;
         window.add_css_class (STYLE_THEMED);
     }
@@ -29,7 +29,7 @@ public class Jorts.ColorController : Object {
     * Switches stylesheet
     * First use appropriate stylesheet, Then switch the theme classes
     */
-    public void on_color_changed (Jorts.Themes new_theme) {
+    public void on_color_changed (Jots.Themes new_theme) {
         debug ("Updating theme to %s".printf (new_theme.to_string ()));
 
         // Add remove class

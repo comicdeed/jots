@@ -13,15 +13,15 @@
 * Can be packaged into a noteData file for convenient storage
 * Reports to the NoteManager for saving
 */
-public class Jorts.StickyNoteWindow : Gtk.ApplicationWindow {
+public class Jots.StickyNoteWindow : Gtk.ApplicationWindow {
 
-    public Jorts.NoteView view;
+    public Jots.NoteView view;
     public Popover popover;
     public TextView textview;
 
-    private Jorts.ColorController color_controller;
-    public Jorts.ZoomController zoom_controller;
-    private Jorts.ScribblyController scribbly_controller;
+    private Jots.ColorController color_controller;
+    public Jots.ZoomController zoom_controller;
+    private Jots.ScribblyController scribbly_controller;
     private Gtk.EventControllerKey keypress_controller;
     private Gtk.EventControllerScroll scroll_controller;
     private Gtk.GestureZoom gesturezoom_controller;
@@ -39,7 +39,7 @@ public class Jorts.StickyNoteWindow : Gtk.ApplicationWindow {
         { ACTION_DELETE, action_delete}
     };
 
-    public StickyNoteWindow (Jorts.Application app, NoteData data) {
+    public StickyNoteWindow (Jots.Application app, NoteData data) {
         Intl.setlocale ();
         debug ("New StickyNoteWindow instance!");
         application = app;
@@ -49,9 +49,9 @@ public class Jorts.StickyNoteWindow : Gtk.ApplicationWindow {
         insert_action_group ("win", actions);
         app.set_accels_for_action (ACTION_PREFIX + ACTION_DELETE, {"<Control>W"});
 
-        color_controller = new Jorts.ColorController (this);
-        zoom_controller = new Jorts.ZoomController (this);
-        scribbly_controller = new Jorts.ScribblyController (this);
+        color_controller = new Jots.ColorController (this);
+        zoom_controller = new Jots.ZoomController (this);
+        scribbly_controller = new Jots.ScribblyController (this);
 
         keypress_controller = new Gtk.EventControllerKey ();
         scroll_controller = new Gtk.EventControllerScroll (VERTICAL) {
@@ -146,12 +146,12 @@ public class Jorts.StickyNoteWindow : Gtk.ApplicationWindow {
     */
     private void on_editable_changed () {
         //TRANSLATORS: "%s" is replaced by a specific sticky note title
-        //Ex: "To remember - Jorts"
+        //Ex: "To remember - Jots"
         //The text is shown in overviews of all open windows, accompanying the window
 #if DEVEL
-        title = _("%s - Jorts (Development)").printf (view.title);
+        title = _("%s - Jots (Development)").printf (view.title);
 #else
-        title = _("%s - Jorts").printf (view.title);
+        title = _("%s - Jots").printf (view.title);
 #endif
         has_changed ();
     }
@@ -189,9 +189,9 @@ public class Jorts.StickyNoteWindow : Gtk.ApplicationWindow {
         view.title = data.title;
 
 #if DEVEL
-        title = _("%s - Jorts (Development)").printf (view.title);
+        title = _("%s - Jots (Development)").printf (view.title);
 #else
-        title = _("%s - Jorts").printf (view.title);
+        title = _("%s - Jots").printf (view.title);
 #endif
 
         view.content = data.content;

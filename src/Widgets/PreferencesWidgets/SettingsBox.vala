@@ -8,7 +8,7 @@
 /**
 * Switch and its explanatory text
 */
-public class Jorts.SettingsBox : Gtk.Box {
+public class Jots.SettingsBox : Gtk.Box {
 
     public string text {get; construct;}
     public string? description {get; construct;}

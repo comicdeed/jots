@@ -15,8 +15,8 @@ publisher = 'comicdeed'
 correct_app_id = 'io.github.comicdeed.' + app_name
 correct_app_path = '/io/github/comicdeed/' + app_name
 
-legacy_app_id = 'io.github.comicdeed.' +  app_name
-legacy_app_path = '/io/github/comicdeed/' + app_name
+legacy_app_id = 'io.github.elly_code.jorts'
+legacy_app_path = '/io/github/elly_code/jorts'
 
 legacy_rdnn = get_option('legacy_rdnn')
 if legacy_rdnn

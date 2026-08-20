@@ -3,6 +3,7 @@
 !.gitignore
 !.valalintignore
 !.editorconfig
+!.github/
 ~*
 *~
 builddir

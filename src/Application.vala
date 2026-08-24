@@ -46,6 +46,8 @@ public class Jots.Application : Gtk.Application {
 
     public static Jots.NoteManager note_manager;
     public static Jots.PreferenceWindow? preferences;
+    public static Jots.NoteService? note_service;
+    private uint dbus_registration_id = 0;
 
     // Used for commandline option handling
     public static bool new_note = false;
@@ -96,6 +98,36 @@ public class Jots.Application : Gtk.Application {
         GLib.Environment.set_variable ("GTK_DEBUG", "interactive", true);
         //print (LOCALEDIR);
 #endif
+    }
+
+    /*************************************************/
+    protected override bool dbus_register (DBusConnection connection, string object_path) throws GLib.Error {
+        if (!base.dbus_register (connection, object_path)) {
+            return false;
+        }
+
+        if (note_manager == null) {
+            note_manager = new Jots.NoteManager (this);
+        }
+
+        note_service = new Jots.NoteService (note_manager);
+
+        try {
+            dbus_registration_id = connection.register_object (object_path + "/Notes", note_service);
+            connection.register_object (object_path, note_service);
+        } catch (IOError e) {
+            warning ("Could not register NoteService on D-Bus: %s", e.message);
+        }
+
+        return true;
+    }
+
+    protected override void dbus_unregister (DBusConnection connection, string object_path) {
+        if (dbus_registration_id > 0) {
+            connection.unregister_object (dbus_registration_id);
+            dbus_registration_id = 0;
+        }
+        base.dbus_unregister (connection, object_path);
     }
 
     /*************************************************/

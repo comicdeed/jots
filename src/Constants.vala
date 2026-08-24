@@ -42,6 +42,12 @@ namespace Jots {
     const int DEFAULT_WIDTH              = 290;
     const int DEFAULT_HEIGHT             = 320;
 
+    // Guardrail limits for external automation and LLM agents
+    public const int MAX_NOTE_CONTENT_LENGTH = 10000;
+    public const int MAX_NOTE_TITLE_LENGTH   = 120;
+    public const int MAX_ACTIVE_NOTES        = 50;
+    public const int MAX_SEARCH_RESULTS      = 20;
+
 
     const int SPACING_STANDARD           = 5;
     const int SPACING_DOUBLE           = 10;

@@ -17,6 +17,9 @@ finish-args:
   - '--socket=wayland'
   - '--socket=fallback-x11'
   - '--share=ipc'
+  - '--socket=session-bus'
+  - '--own-name=io.github.comicdeed.jots.devel'
+  - '--own-name=io.github.comicdeed.jots'
   - '--device=dri'
 
 modules:

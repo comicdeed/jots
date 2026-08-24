@@ -67,5 +67,48 @@ namespace Jots.Tests {
                 GLib.Test.fail ();
             }
         });
+
+        /**
+         * UC-20.10.40: UUID assignment and round-trip persistence
+         */
+        GLib.Test.add_func ("/NoteData/UC_20_10_40/UuidAssignmentAndPersistence", () => {
+            var note = new Jots.NoteData ();
+            assert_true (note.id != null && note.id.length > 0);
+            assert_true (GLib.Uuid.string_is_valid (note.id));
+
+            var original_id = note.id;
+            var json = note.to_json ();
+            var restored = new Jots.NoteData.from_json (json);
+
+            assert_cmpstr (restored.id, GLib.CompareOperator.EQ, original_id);
+        });
+
+        /**
+         * UC-20.10.50: Legacy JSON without UUID auto-migrates to valid UUID
+         */
+        GLib.Test.add_func ("/NoteData/UC_20_10_50/LegacyJsonUuidMigration", () => {
+            var parser = new Json.Parser ();
+            try {
+                parser.load_from_data ("{\"title\": \"Legacy Note\", \"content\": \"No UUID here\", \"color\": 0}");
+                var legacy_obj = parser.get_root ().get_object ();
+                var note = new Jots.NoteData.from_json (legacy_obj);
+
+                assert_true (note.id != null && note.id.length > 0);
+                assert_true (GLib.Uuid.string_is_valid (note.id));
+                assert_cmpstr (note.title, GLib.CompareOperator.EQ, "Legacy Note");
+            } catch (GLib.Error e) {
+                GLib.Test.fail ();
+            }
+        });
+
+        /**
+         * UC-70.10.50: MCP Guardrail constants and limits
+         */
+        GLib.Test.add_func ("/NoteData/UC_70_10_50/GuardrailsAndLimits", () => {
+            assert_cmpint (Jots.MAX_NOTE_CONTENT_LENGTH, GLib.CompareOperator.EQ, 10000);
+            assert_cmpint (Jots.MAX_NOTE_TITLE_LENGTH, GLib.CompareOperator.EQ, 120);
+            assert_cmpint (Jots.MAX_ACTIVE_NOTES, GLib.CompareOperator.EQ, 50);
+            assert_cmpint (Jots.MAX_SEARCH_RESULTS, GLib.CompareOperator.EQ, 20);
+        });
     }
 }

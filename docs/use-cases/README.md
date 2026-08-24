@@ -26,3 +26,4 @@ All use cases follow a hierarchical decimal structure to allow additions without
 | **`UC-40`** | [40-hyperlink-content.md](40-hyperlink-content.md) | `HyperTextView` URL and email detection, Unicode-safe offset calculations, debounce buffer scans, and `Ctrl+Click` interactions. |
 | **`UC-50`** | [50-theming-appearance.md](50-theming-appearance.md) | The 10 pastel color themes, random theme generation, dark mode styling overrides, and environment variable flags. |
 | **`UC-60`** | [60-global-settings.md](60-global-settings.md) | GSettings bindings, action bar hiding (`Ctrl+T`), scribbly blur effect (`Ctrl+H`), and XDG autostart portal integration. |
+| **`UC-70`** | [70-mcp-agent-integration.md](70-mcp-agent-integration.md) | Model Context Protocol (MCP) JSON-RPC tooling, live D-Bus session IPC, resources, prompts, and performance guardrails. |

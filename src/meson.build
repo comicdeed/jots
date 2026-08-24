@@ -32,6 +32,7 @@ sources = files (
 
     'Services' / 'Storage.vala',
     'Services' / 'NoteManager.vala',
+    'Services' / 'NoteService.vala',
     'Services' / 'ZoomController.vala',
     'Services' / 'ScribblyController.vala',
     'Services' / 'ColorController.vala',

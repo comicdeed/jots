@@ -35,7 +35,19 @@ public class Jots.NoteManager : Object {
     * We do not do this at construct time so we stay flexible whenever we want to init
     * NoteManager is also created too early by the app for new windows
     */
+    private bool is_initialized = false;
+
+    public void ensure_initialized () {
+        if (is_initialized) {
+            return;
+        }
+        init ();
+    }
+
     public void init () {
+        if (is_initialized) {
+            return;
+        }
         debug ("Opening all sticky notes now!");
         Json.Array loaded_data = storage.load ();
 
@@ -57,6 +69,7 @@ public class Jots.NoteManager : Object {
         }
 
         saving_lock = false;
+        is_initialized = true;
     }
 
     /*************************************************/
@@ -158,5 +171,152 @@ public class Jots.NoteManager : Object {
         ((SimpleAction)action_restore).set_enabled (false);
 
         last_deleted = null;
+    }
+
+    /*************************************************/
+    /*         MCP & IPC MANAGEMENT METHODS          */
+    /*************************************************/
+
+    /**
+    * Find an active StickyNoteWindow by note UUID
+    */
+    public StickyNoteWindow? get_window_by_id (string id) {
+        ensure_initialized ();
+        foreach (var note in open_notes) {
+            if (note.note_id == id) {
+                return note;
+            }
+        }
+        return null;
+    }
+
+    /**
+    * Get NoteData by UUID
+    */
+    public NoteData? get_note_by_id (string id) {
+        var win = get_window_by_id (id);
+        if (win != null) {
+            return win.packaged ();
+        }
+        return null;
+    }
+
+    /**
+    * Return all active notes serialized as a JSON array string
+    */
+    public string get_all_notes_json_string () {
+        ensure_initialized ();
+        var array = new Json.Array ();
+        foreach (var note in open_notes) {
+            array.add_object_element (note.packaged ().to_json ());
+        }
+        var node = new Json.Node (Json.NodeType.ARRAY);
+        node.set_array (array);
+        var gen = new Json.Generator ();
+        gen.set_root (node);
+        return gen.to_data (null);
+    }
+
+    /**
+    * Create a new note with properties, enforcing content and window guardrails
+    */
+    public NoteData create_note_with_properties (string? title, string? content, string? theme_name) throws GLib.Error {
+        ensure_initialized ();
+        if (open_notes.size >= MAX_ACTIVE_NOTES) {
+            throw new GLib.IOError.FAILED ("Maximum active notes limit reached (%d). Please delete or clean up unused notes.", MAX_ACTIVE_NOTES);
+        }
+
+        if (content != null && content.length > MAX_NOTE_CONTENT_LENGTH) {
+            throw new GLib.IOError.INVALID_ARGUMENT ("Content exceeds maximum length of %d characters.", MAX_NOTE_CONTENT_LENGTH);
+        }
+
+        if (title != null && title.length > MAX_NOTE_TITLE_LENGTH) {
+            throw new GLib.IOError.INVALID_ARGUMENT ("Title exceeds maximum length of %d characters.", MAX_NOTE_TITLE_LENGTH);
+        }
+
+        var data = new NoteData ();
+        if (title != null && title.strip () != "") {
+            data.title = title;
+        }
+        if (content != null) {
+            data.content = content;
+        }
+        if (theme_name != null && theme_name.strip () != "") {
+            data.theme = Themes.from_string (theme_name, DEFAULT_THEME);
+        }
+
+        create_note (data);
+        immediately_save ();
+        return data;
+    }
+
+    /**
+    * Update an existing note's properties, enforcing length guardrails and triggering UI update
+    */
+    public NoteData update_note_by_id (string id, string? title, string? content, string? theme_name) throws GLib.Error {
+        var win = get_window_by_id (id);
+        if (win == null) {
+            throw new GLib.IOError.NOT_FOUND ("Note with ID '%s' was not found.", id);
+        }
+
+        if (content != null && content.length > MAX_NOTE_CONTENT_LENGTH) {
+            throw new GLib.IOError.INVALID_ARGUMENT ("Content exceeds maximum length of %d characters.", MAX_NOTE_CONTENT_LENGTH);
+        }
+
+        if (title != null && title.length > MAX_NOTE_TITLE_LENGTH) {
+            throw new GLib.IOError.INVALID_ARGUMENT ("Title exceeds maximum length of %d characters.", MAX_NOTE_TITLE_LENGTH);
+        }
+
+        if (title != null) {
+            win.update_title (title);
+        }
+        if (content != null) {
+            win.update_content (content);
+        }
+        if (theme_name != null && theme_name.strip () != "") {
+            win.update_theme (Themes.from_string (theme_name, win.popover.color));
+        }
+
+        immediately_save ();
+        return win.packaged ();
+    }
+
+    /**
+    * Delete an active note by UUID
+    */
+    public bool delete_note_by_id (string id) {
+        var win = get_window_by_id (id);
+        if (win == null) {
+            return false;
+        }
+        delete_note (win);
+        return true;
+    }
+
+    /**
+    * Search all open notes by query string (case-insensitive in title and content)
+    */
+    public string search_notes_json_string (string query) {
+        ensure_initialized ();
+        var array = new Json.Array ();
+        var normalized_query = query.strip ().down ();
+        int count = 0;
+
+        foreach (var note in open_notes) {
+            var data = note.packaged ();
+            if (data.title.down ().contains (normalized_query) || data.content.down ().contains (normalized_query)) {
+                array.add_object_element (data.to_json ());
+                count++;
+                if (count >= MAX_SEARCH_RESULTS) {
+                    break;
+                }
+            }
+        }
+
+        var node = new Json.Node (Json.NodeType.ARRAY);
+        node.set_array (array);
+        var gen = new Json.Generator ();
+        gen.set_root (node);
+        return gen.to_data (null);
     }
 }

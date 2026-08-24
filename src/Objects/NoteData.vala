@@ -18,6 +18,7 @@ public class Jots.NoteData {
     public static int latest_zoom = DEFAULT_ZOOM;
     public static bool latest_mono = DEFAULT_MONO;
 
+    public string id;
     public string title;
     public Jots.Themes theme;
     public string content;
@@ -28,6 +29,7 @@ public class Jots.NoteData {
 
     // The standard constructor only does random
     public NoteData () {
+        id = GLib.Uuid.string_random ();
         title = Jots.Utils.random_title ();
         theme = Jots.Themes.random_theme (latest_theme);
         content = "";
@@ -42,6 +44,7 @@ public class Jots.NoteData {
     * Parse a node to create an associated NoteData object
     */
     public NoteData.from_json (Json.Object node) {
+        id          = node.get_string_member_with_default ("id", GLib.Uuid.string_random ());
         // Translators: "Forgot title!" is optional. It never happened for me when testing, and may appear only if users tampered with the savefile
         title       = node.get_string_member_with_default ("title", (_("Forgot title!")));
         theme       = (Jots.Themes)node.get_int_member_with_default ("color", Jots.Themes.random_theme ());
@@ -66,6 +69,8 @@ public class Jots.NoteData {
 
         // Lets fkin gooo
         builder.begin_object ();
+        builder.set_member_name ("id");
+        builder.add_string_value (id);
         builder.set_member_name ("title");
         builder.add_string_value (title);
         builder.set_member_name ("color");
@@ -83,5 +88,17 @@ public class Jots.NoteData {
         builder.end_object ();
 
         return builder.get_root ().get_object ();
+    }
+
+    /*************************************************/
+    /**
+    * Returns the JSON string representation of the note
+    */
+    public string to_json_string () {
+        var node = new Json.Node (Json.NodeType.OBJECT);
+        node.set_object (to_json ());
+        var gen = new Json.Generator ();
+        gen.set_root (node);
+        return gen.to_data (null);
     }
 }

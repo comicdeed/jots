@@ -26,6 +26,8 @@ public class Jots.StickyNoteWindow : Gtk.ApplicationWindow {
     private Gtk.EventControllerScroll scroll_controller;
     private Gtk.GestureZoom gesturezoom_controller;
 
+    public string note_id;
+
     public NoteData data {
         owned get {return packaged ();}
         set {load_data (value);}
@@ -186,6 +188,7 @@ public class Jots.StickyNoteWindow : Gtk.ApplicationWindow {
         this.get_default_size (out this_width, out this_height);
 
         var data = new NoteData () {
+            id = (note_id != null && note_id != "") ? note_id : GLib.Uuid.string_random (),
             title = view.title,
             theme = popover.color,
             content = view.content,
@@ -204,6 +207,7 @@ public class Jots.StickyNoteWindow : Gtk.ApplicationWindow {
     private void load_data (NoteData data) {
         debug ("Loading noteData…");
 
+        note_id = data.id;
         set_default_size (data.width, data.height);
         view.title = data.title;
 
@@ -218,6 +222,27 @@ public class Jots.StickyNoteWindow : Gtk.ApplicationWindow {
         color_controller.theme = data.theme;
         zoom_controller.zoom = data.zoom;
         view.monospace = data.monospace;
+    }
+
+    public void update_title (string new_title) {
+        view.title = new_title;
+#if DEVEL
+        title = _("%s - Jots (Development)").printf (new_title);
+#else
+        title = _("%s - Jots").printf (new_title);
+#endif
+        has_changed ();
+    }
+
+    public void update_content (string new_content) {
+        view.content = new_content;
+        has_changed ();
+    }
+
+    public void update_theme (Jots.Themes new_theme) {
+        popover.color = new_theme;
+        color_controller.theme = new_theme;
+        has_changed ();
     }
 
     public void has_changed () {

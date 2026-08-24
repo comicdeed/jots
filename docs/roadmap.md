@@ -33,11 +33,12 @@ A curated backlog of architectural enhancements, capabilities, and feature candi
 ## 2. High-Priority Initiatives (Tier 1)
 
 ### 2.1 Local MCP Server for AI Agent Integration
-* **Score**: `4.45` (Tier 1: Active Priority)
-* **Goal**: Provide a native local **Model Context Protocol (MCP)** server enabling AI tools (Claude Desktop, Cursor, Gemini CLI, local agents) to query, create, edit, search, and delete sticky notes via standard JSON-RPC.
+* **Score**: `4.45` (Tier 1: Active Priority - Implemented on `feat/mcp-server`)
+* **Goal**: Provide a native local **Model Context Protocol (MCP)** server enabling AI tools (Claude Desktop, Cursor, Gemini CLI, local agents) to query, create, edit, search, and delete sticky notes via standard JSON-RPC over `stdio`.
 * **Key Capabilities**:
-  * Tools: `list_notes`, `read_note`, `create_note`, `update_note`, `delete_note`.
-  * Real-time sync: Direct DBus / local state mutations ensuring notes appear instantly on the desktop.
+  * Tools: `list_notes`, `read_note`, `create_note`, `update_note`, `delete_note`, `search_notes`.
+  * Real-time sync: Direct D-Bus session IPC (`io.github.comicdeed.jots.McpService`) ensuring notes appear and update instantly on the desktop.
+  * Defensive guardrails: 10 KB content limit, 120 char title limit, 50 active note ceiling.
 * **Architectural Advantage**: Zero UI clutter for manual note-takers; transformative utility for developers and AI pair-programmers.
 
 ### 2.2 Markdown Storage with YAML Front Matter

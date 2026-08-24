@@ -119,4 +119,29 @@ public enum Jots.Themes {
         var random_in_range = Random.int_range (0, themes.size);
         return themes[random_in_range];
     }
+
+    /*************************************************/
+    /**
+    * Parse theme from string case-insensitively
+    */
+    public static Themes from_string (string? name, Themes fallback = Themes.BLUEBERRY) {
+        if (name == null) {
+            return fallback;
+        }
+        var lower = name.strip ().ascii_down ();
+        switch (lower) {
+            case "blueberry":  return Themes.BLUEBERRY;
+            case "mint":       return Themes.MINT;
+            case "lime":       return Themes.LIME;
+            case "banana":     return Themes.BANANA;
+            case "orange":     return Themes.ORANGE;
+            case "strawberry": return Themes.STRAWBERRY;
+            case "bubblegum":  return Themes.BUBBLEGUM;
+            case "grape":      return Themes.GRAPE;
+            case "cocoa":      return Themes.COCOA;
+            case "slate":      return Themes.SLATE;
+            case "latte":      return Themes.LATTE;
+            default:           return fallback;
+        }
+    }
 }

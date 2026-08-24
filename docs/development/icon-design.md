@@ -14,19 +14,11 @@ Rather than complex structured databases or multi-pane productivity tools, Jots 
 
 ## 2. Visual Anatomy and Symbolism
 
-```
-      ╭─────────────────────╮ ╱\
-      │                     │╱  \  <-- Dog-ear fold (Physical, temporary note)
-      │      .───.          │\  /
-      │     /     \         │ ╲/
-      │           │         │
-      │           │         │      <-- Classic blue "J" with hand-drawn pen hatching
-      │           │         │          (Immediacy, active thought)
-      │     \     /         │
-      │      `───'          │
-      │    ═════════        │      <-- Double underline strokes (Emphasis & key reminder)
-      ╰─────────────────────╯
-```
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="../anatomy-diagram-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="../anatomy-diagram-light.svg">
+  <img alt="Icon Anatomy and Symbolism Diagram" src="../anatomy-diagram-light.svg" width="100%">
+</picture>
 
 ### A. The 5×5 cm Sticky Note Pad
 * **Proportions and Geometry**: Symmetrical 1:1 squircle format aligned with desktop icon guidelines.
@@ -44,6 +36,28 @@ Rather than complex structured databases or multi-pane productivity tools, Jots 
 
 ---
 
-## 3. Asset Reference
+## 3. Thematic Variations & Build Variants
 
-* **Vector Master**: [`data/icons/concept/jots-icon.svg`](../../data/icons/concept/jots-icon.svg) (512×512 master SVG vector asset).
+All icon variants preserve the minimal two-tone paper + pen aesthetic:
+
+* **Default (`default`)**: Warm yellow sticky note (`#FFDD53`), classic ballpoint blue `J`, and double underline strokes.
+* **Development (`devel`)**: Pale yellow paper (`#FFF5C0`) with an integrated yellow and black diagonal hazard stripe footer along the bottom edge, and hand-drawn developer code brackets (`</ >`) positioned cleanly in the note body.
+* **Halloween (`halloween`)**: Spooky pumpkin orange paper (`#FF841A`) with midnight ink (`#1C1626`), classic hand-drawn spooky ghost, and a playful `BOO!` callout.
+* **Pride (`pride`)**: Cream paper (`#FFFBF0`) with classic ballpoint blue ink and three tilted, deeply curved concentric upward rainbow arches across all resolutions.
+* **Classic (`classic`)**: Warm vintage kraft paper (`#EEDB9F`) with deep charcoal/sepia ink (`#29221C`).
+
+---
+
+## 4. Multi-Size Scalability & Pixel-Fitting
+
+* **`128px` & `scalable.svg`**: High-density multi-angle ballpoint hatching + soft paper drop shadows.
+* **`48px` & `64px`**: Medium-density clean parallel hatching (`12` lines) + crisp outlines.
+* **`16px` & `24px`**: Solid bold hand-drawn silhouette with pixel-fitted strokes for maximum legibility on small desktop bars.
+
+---
+
+## 5. Asset References
+
+* **Master Vector Concept**: [`data/icons/concept/jots-icon.svg`](../../data/icons/concept/jots-icon.svg) (512×512 master SVG).
+* **Generation Engine**: [`scripts/generate_icons.py`](../../scripts/generate_icons.py) & [`scripts/render_pngs.py`](../../scripts/render_pngs.py).
+* **Visual Catalogue**: [`docs/gallery.md`](../gallery.md).

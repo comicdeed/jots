@@ -1,39 +1,32 @@
+# Project Credits and Acknowledgements
 
+Acknowledgements for the authors, designers, upstream projects, contributors, and translators who have shaped Jots and its predecessor projects.
 
-# Currently WIP
+---
 
-*The OG Girl: Original author (when it was Notejot), app design*
-Lains <lainsce@airmail.cc>
+## 1. Upstream lineage and design heritage
 
-*App icon and its variants*
-William Kelso @wpkelso <wpkelso+github@posteo.net>
+* **elly-code/jorts** — The upstream fork base and custodial repository maintained by the elementary community that kept Jots modernized and maintained.
+* **Lains** (`@lainsce`) — Original author and designer of Notejot, establishing the core user experience, color palette, and minimal sticky note aesthetic.
+* **Danielle Foré** (`@daniellefore`) — Early theming architecture and elementary OS design guidance.
+* **William Kelso** (`@wpkelso`) — Original Notejot icon concepts.
+* **UncleTallest** (`@UncleTallest`) — Historical preservation and recovery of the standalone sticky note variant.
 
-*Help with catching bugs, mistakes, oopsies, and malpractices. Japanese translation*
-Ryo Nakano <ryonakaknock3@gmail.com>
+---
 
-*Early theming system*
-Danielle Foré <danielle@elementary.io>
+## 2. Code and platform contributions
 
-*Greek translation*
-Orionas Kakomoiroglou <209243298+OrionasKakomoiroglou@users.noreply.github.com>
+* **Ryo Nakano** (`@ryonakaknock3`) — Bug fixes, code quality improvements, and Japanese translation.
+* **Supercamel** (`@supercamel`) — Windows portability research and baseline patches.
+* **Christian Naths** (`@christiannaths`) — Redacted font creation for privacy mode effects.
 
-*Italian translation*
-Albano Battistella <albanobattistella@gmail.com>
+---
 
-*Swedish translation*
-Daniel Nylander <github@danielnylander.se>
+## 3. Localization and translations
 
-*Vietnamese translation*
-Loc Huynh <https://github.com/hthienloc>
-
-*Russian translation*
-Kultyapov Andrey <camellan@yandex.ru>
-
-*For pulling the latest sticky-note version of notejot out of the void*
-@UncleTallest <tallest@ohmytallest.productions>
-
-*Base to work on for a windows port*
-Supercamel <https://github.com/supercamel/>
-
-*Redacted-font (https://github.com/christiannaths/redacted-font/issues/42)*
-Christian Naths <christiannaths@gmail.com>
+* **Greek**: Orionas Kakomoiroglou (`@OrionasKakomoiroglou`)
+* **Italian**: Albano Battistella (`@albanobattistella`)
+* **Japanese**: Ryo Nakano (`@ryonakaknock3`)
+* **Russian**: Kultyapov Andrey (`@camellan`)
+* **Swedish**: Daniel Nylander (`@yeager`)
+* **Vietnamese**: Loc Huynh (`@hthienloc`)

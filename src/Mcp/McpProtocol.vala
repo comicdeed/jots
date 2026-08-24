@@ -159,7 +159,7 @@ namespace Jots {
             builder.set_member_name ("name");
             builder.add_string_value ("list_notes");
             builder.set_member_name ("description");
-            builder.add_string_value ("List all open sticky notes on the desktop with metadata and summary.");
+            builder.add_string_value ("List all open desktop sticky notes with metadata (id, title, theme, content_length, monospace).");
             builder.set_member_name ("inputSchema");
             builder.begin_object ();
             builder.set_member_name ("type");
@@ -175,7 +175,7 @@ namespace Jots {
             builder.set_member_name ("name");
             builder.add_string_value ("read_note");
             builder.set_member_name ("description");
-            builder.add_string_value ("Read the full text content, theme, and properties of a specific note by ID.");
+            builder.add_string_value ("Read the full text content, title, theme, and window properties of a specific sticky note by its UUID.");
             builder.set_member_name ("inputSchema");
             builder.begin_object ();
             builder.set_member_name ("type");
@@ -202,7 +202,7 @@ namespace Jots {
             builder.set_member_name ("name");
             builder.add_string_value ("create_note");
             builder.set_member_name ("description");
-            builder.add_string_value ("Create a new sticky note window on the desktop with given title, body, and theme color.");
+            builder.add_string_value ("Create and spawn a new sticky note window live on the desktop with given title, body content, and pastel theme color.");
             builder.set_member_name ("inputSchema");
             builder.begin_object ();
             builder.set_member_name ("type");
@@ -231,7 +231,7 @@ namespace Jots {
             builder.set_member_name ("type");
             builder.add_string_value ("string");
             builder.set_member_name ("description");
-            builder.add_string_value ("Theme color: blueberry, mint, lime, banana, orange, strawberry, bubblegum, grape, cocoa, slate, latte");
+            builder.add_string_value ("Pastel theme color: blueberry, mint, lime, banana, orange, strawberry, bubblegum, grape, cocoa, slate, latte");
             builder.end_object ();
 
             builder.end_object (); // properties
@@ -243,7 +243,7 @@ namespace Jots {
             builder.set_member_name ("name");
             builder.add_string_value ("update_note");
             builder.set_member_name ("description");
-            builder.add_string_value ("Update the content, title, or theme color of an existing sticky note in real time.");
+            builder.add_string_value ("Update the content, title, or theme color of an existing sticky note in real time. To append text to an existing note, call read_note first to fetch current content, then call update_note with the updated full body text.");
             builder.set_member_name ("inputSchema");
             builder.begin_object ();
             builder.set_member_name ("type");
@@ -272,7 +272,7 @@ namespace Jots {
             builder.set_member_name ("type");
             builder.add_string_value ("string");
             builder.set_member_name ("description");
-            builder.add_string_value ("New body text (max 10,000 chars)");
+            builder.add_string_value ("New full body text (max 10,000 chars)");
             builder.end_object ();
 
             builder.set_member_name ("theme");
@@ -280,7 +280,7 @@ namespace Jots {
             builder.set_member_name ("type");
             builder.add_string_value ("string");
             builder.set_member_name ("description");
-            builder.add_string_value ("New theme color name");
+            builder.add_string_value ("New pastel theme color name");
             builder.end_object ();
 
             builder.end_object (); // properties
@@ -296,7 +296,7 @@ namespace Jots {
             builder.set_member_name ("name");
             builder.add_string_value ("delete_note");
             builder.set_member_name ("description");
-            builder.add_string_value ("Delete and close a sticky note window from the desktop.");
+            builder.add_string_value ("Delete and close a sticky note window from the desktop by UUID.");
             builder.set_member_name ("inputSchema");
             builder.begin_object ();
             builder.set_member_name ("type");
@@ -323,7 +323,7 @@ namespace Jots {
             builder.set_member_name ("name");
             builder.add_string_value ("search_notes");
             builder.set_member_name ("description");
-            builder.add_string_value ("Search through all sticky notes matching text in the title or content.");
+            builder.add_string_value ("Search through active desktop sticky notes case-insensitively by keyword in title or body content. Useful before creating a note to prevent duplicates or when finding a note to update.");
             builder.set_member_name ("inputSchema");
             builder.begin_object ();
             builder.set_member_name ("type");

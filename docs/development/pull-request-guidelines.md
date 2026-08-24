@@ -44,9 +44,10 @@ The human contributor is ultimately and solely responsible for all submitted cha
 
 ---
 
-## 5. Automated Verification & CI
+## 5. Automated Verification & Documentation Freshness
 
 Before opening or merging a Pull Request:
-* All automated tests in `tests/` must pass (`jots-unit-tests`).
-* Code must build cleanly against Flatpak manifests without regressions.
+* All automated canary tests in `tests/` must pass (`jots-unit-tests`).
+* Code must build cleanly against Flatpak manifests without compiler warnings or regressions.
 * Desktop metadata and AppStream XML must pass validation (`desktop-file-validate`, `appstreamcli validate`).
+* **User Guide & Use-Case Freshness**: If the PR alters user-facing behavior, UI shortcuts, or settings, verify that [`docs/user-guide.md`](../user-guide.md) and [`docs/use-cases/`](../use-cases/) are updated to match.

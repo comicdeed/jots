@@ -8,6 +8,7 @@ Welcome! This document provides core development guidelines, build commands, and
 
 To maintain focus and avoid context bloat, refer to specialized documentation on demand:
 
+* **User Guide**: [`docs/user-guide.md`](docs/user-guide.md) — Comprehensive, single-page end-user guide covering note operations, keyboard shortcuts, formatting, and AI features.
 * **System Architecture**: [`docs/architecture.md`](docs/architecture.md) — Comprehensive component hierarchy, subsystem boundaries, D-Bus service specs, sequence diagrams, and lifecycles.
 * **Behavioral Use Cases**: [`docs/use-cases/README.md`](docs/use-cases/README.md) — Domain behavioral specifications (`UC-10` to `UC-70`) cross-referenced in unit tests.
 * **MCP Integration Guide**: [`docs/development/mcp-server.md`](docs/development/mcp-server.md) — Setup instructions for Claude Desktop, Cursor, Gemini CLI, and Antigravity.
@@ -60,4 +61,5 @@ flatpak run --command=jots-unit-tests io.github.comicdeed.jots.devel
 * **Encapsulation & Boundaries**: Keep storage mechanics encapsulated in `Storage.vala`. External tools interact strictly via `NoteService` D-Bus IPC.
 * **Compilation Warnings**: The build uses `-w` in `meson.build` to suppress Vala-generated C compiler noise.
 * **Test & Use-Case Cross-Referencing**: When writing unit tests in `tests/`, embed the permanent use-case identifier (`/<Component>/UC_XX_YY_ZZ/<ScenarioName>`) and link to `docs/use-cases/`.
+* **User Guide Synchronization**: Whenever modifying user-facing features, keyboard shortcuts, or settings, update [`docs/user-guide.md`](docs/user-guide.md).
 * **Honest Attribution**: When opening a PR, include the attribution block in `docs/development/pull-request-guidelines.md`.

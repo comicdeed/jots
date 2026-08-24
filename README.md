@@ -14,6 +14,10 @@
 
 <br/>
 
+> 📖 **New to Jots?** Read the **[Jots User Guide](docs/user-guide.md)** for a complete overview of features, keyboard shortcuts, smart lists, and AI agent automation.
+
+<br/>
+
 ## 🦺 Installation & Compilation
 
 Jots is distributed as a sandboxed Flatpak application:
@@ -22,6 +26,14 @@ Jots is distributed as a sandboxed Flatpak application:
 * **AppCenter**: [Get it on AppCenter](https://appcenter.elementary.io/io.github.comicdeed.jots)
 * **Local Build / Compilation**: Refer to the [Building Guide](docs/development/building.md) for native and sandbox compilation instructions.
 * **Windows**: Basic experimental installers are available in the Releases section. Detailed MSYS2 build steps are available in the [Windows Build Guide](docs/development/windows.md).
+
+<br/>
+
+## 🤖 AI Assistant & MCP Automation
+
+Jots includes a native [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server (`jots-mcp`) allowing AI assistants (Claude Desktop, Cursor, Gemini CLI, and Antigravity) to query, create, edit, search, and delete sticky notes live on your desktop.
+
+See the **[MCP Integration Guide](docs/development/mcp-server.md)** or the **[User Guide AI Section](docs/user-guide.md#6-ai-assistant--mcp-integration)** for setup details.
 
 <br/>
 

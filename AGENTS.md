@@ -119,6 +119,7 @@ flatpak run io.github.comicdeed.jots.devel
 *   **Settings Schema:** If modifying preferences or settings, update the GSettings XML schema at [`data/io.github.comicdeed.jots.gschema.xml`](data/io.github.comicdeed.jots.gschema.xml).
 *   **Documentation Style:** When writing or updating technical documentation, use-case specifications, or docstrings, follow the [GNOME Developer Documentation Style Guidelines](https://developer.gnome.org/documentation/guidelines/devel-docs.html) (summarized in [`docs/development/documentation-style.md`](docs/development/documentation-style.md)). Keep writing direct, scannable, and free of conversational filler or trivializing language.
 *   **Test & Use-Case Cross-Referencing:** When adding or updating automated tests in `tests/`, embed the permanent use-case identifier directly into the test path (`/<Component>/UC_XX_YY_ZZ/<ScenarioName>`) and include a docstring referencing the corresponding use-case in `docs/use-cases/`.
+*   **Idea Capture & Grading Framework:** When capturing or evaluating proposed feature concepts, architectural changes, or roadmap candidates, grade them against the assessment matrix defined in [`docs/development/ideas-grading.md`](docs/development/ideas-grading.md) (evaluating *Impact*, *Architectural Alignment*, and *Implementation Complexity*). Record all active and planned proposals in [`docs/roadmap.md`](docs/roadmap.md).
 
 ---
 

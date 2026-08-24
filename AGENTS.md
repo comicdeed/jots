@@ -35,32 +35,31 @@ graph TD
 Here is a map of the primary files in the repository:
 
 ### 1. Root & Build Infrastructure
-*   [`meson.build`](file:///home/dkorah/development/github.com/comicdeed/comicdeed-jots/meson.build): Main Meson project declaration containing versioning, flags, dependencies, and OS-specific setup.
-*   [`io.github.comicdeed.jots.devel.yml`](file:///home/dkorah/development/github.com/comicdeed/comicdeed-jots/io.github.comicdeed.jots.devel.yml): Development Flatpak manifest.
-*   [`Dockerfile`](file:///home/dkorah/development/github.com/comicdeed/comicdeed-jots/Dockerfile): Containerized development environment using Debian Sid.
-*   [`devel.sh`](file:///home/dkorah/development/github.com/comicdeed/comicdeed-jots/devel.sh): Wrapper script to build the image, configure/compile, test, and run Jots within Docker.
+*   [`meson.build`](meson.build): Main Meson project declaration containing versioning, flags, dependencies, and OS-specific setup.
+*   [`io.github.comicdeed.jots.devel.yml`](io.github.comicdeed.jots.devel.yml): Development Flatpak manifest.
+*   [`Dockerfile`](Dockerfile): Containerized development environment using Debian Sid.
 
 ### 2. Core Application Logic (`src/`)
-*   [`Application.vala`](file:///home/dkorah/development/github.com/comicdeed/comicdeed-jots/src/Application.vala): Entry point. Configures DBus, theme changes (dark mode preferences), localization, and global keyboard shortcut accelerators.
-*   [`Constants.vala`](file:///home/dkorah/development/github.com/comicdeed/comicdeed-jots/src/Constants.vala): Global settings keys, style class names, and defaults.
+*   [`Application.vala`](src/Application.vala): Entry point. Configures DBus, theme changes (dark mode preferences), localization, and global keyboard shortcut accelerators.
+*   [`Constants.vala`](src/Constants.vala): Global settings keys, style class names, and defaults.
 
 ### 3. Objects & Models (`src/Objects/`)
-*   [`NoteData.vala`](file:///home/dkorah/development/github.com/comicdeed/comicdeed-jots/src/Objects/NoteData.vala): Model representing the attributes of a single note. Implements serialization/deserialization to/from `Json.Object`.
-*   [`Themes.vala`](file:///home/dkorah/development/github.com/comicdeed/comicdeed-jots/src/Objects/Themes.vala): Enum for colors (e.g. `BLUEBERRY`, `MINT`, `LIME`, etc.). Handles user-facing names and CSS class mappings.
-*   [`Zoom.vala`](file:///home/dkorah/development/github.com/comicdeed/comicdeed-jots/src/Objects/Zoom.vala) & [`ZoomType.vala`](file:///home/dkorah/development/github.com/comicdeed/comicdeed-jots/src/Objects/ZoomType.vala): Zoom scale representations and level constants.
+*   [`NoteData.vala`](src/Objects/NoteData.vala): Model representing the attributes of a single note. Implements serialization/deserialization to/from `Json.Object`.
+*   [`Themes.vala`](src/Objects/Themes.vala): Enum for colors (e.g. `BLUEBERRY`, `MINT`, `LIME`, etc.). Handles user-facing names and CSS class mappings.
+*   [`Zoom.vala`](src/Objects/Zoom.vala) & [`ZoomType.vala`](src/Objects/ZoomType.vala): Zoom scale representations and level constants.
 
 ### 4. Services (`src/Services/`)
-*   [`NoteManager.vala`](file:///home/dkorah/development/github.com/comicdeed/comicdeed-jots/src/Services/NoteManager.vala): Manages active window registry (`open_notes`). Handles saving trigger debouncing to prevent excessive disk writes during typing.
-*   [`Storage.vala`](file:///home/dkorah/development/github.com/comicdeed/comicdeed-jots/src/Services/Storage.vala): Encapsulates JSON data loading and saving. Uses path `Environment.get_user_data_dir() + "/" + APP_ID + "/saved_state.json"`.
-*   [`ColorController.vala`](file:///home/dkorah/development/github.com/comicdeed/comicdeed-jots/src/Services/ColorController.vala): Modifies GTK CSS classes on windows when the background color changes.
-*   [`ZoomController.vala`](file:///home/dkorah/development/github.com/comicdeed/comicdeed-jots/src/Services/ZoomController.vala): Listens to keyboard shortcuts (`Ctrl` + scroll wheel/gestures) to alter note text size.
-*   [`ScribblyController.vala`](file:///home/dkorah/development/github.com/comicdeed/comicdeed-jots/src/Services/ScribblyController.vala): Controls background text scribble visual effect when note windows lose focus.
+*   [`NoteManager.vala`](src/Services/NoteManager.vala): Manages active window registry (`open_notes`). Handles saving trigger debouncing to prevent excessive disk writes during typing.
+*   [`Storage.vala`](src/Services/Storage.vala): Encapsulates JSON data loading and saving. Uses path `Environment.get_user_data_dir() + "/" + APP_ID + "/saved_state.json"`.
+*   [`ColorController.vala`](src/Services/ColorController.vala): Modifies GTK CSS classes on windows when the background color changes.
+*   [`ZoomController.vala`](src/Services/ZoomController.vala): Listens to keyboard shortcuts (`Ctrl` + scroll wheel/gestures) to alter note text size.
+*   [`ScribblyController.vala`](src/Services/ScribblyController.vala): Controls background text scribble visual effect when note windows lose focus.
 
 ### 5. Views & Windows (`src/Views/` & `src/Windows/`)
-*   [`StickyNoteWindow.vala`](file:///home/dkorah/development/github.com/comicdeed/comicdeed-jots/src/Windows/StickyNoteWindow.vala): The main note window widget. Handles layout bindings, keyboard input hooks, and size state packing.
-*   [`PreferenceWindow.vala`](file:///home/dkorah/development/github.com/comicdeed/comicdeed-jots/src/Windows/PreferenceWindow.vala): Application settings window.
-*   [`NoteView.vala`](file:///home/dkorah/development/github.com/comicdeed/comicdeed-jots/src/Views/NoteView.vala): Layout box inside the Sticky Note containing the headerbar, body editor, and bottom action bar.
-*   [`PreferencesView.vala`](file:///home/dkorah/development/github.com/comicdeed/comicdeed-jots/src/Views/PreferencesView.vala): Content inside the preference window containing toggle switches.
+*   [`StickyNoteWindow.vala`](src/Windows/StickyNoteWindow.vala): The main note window widget. Handles layout bindings, keyboard input hooks, and size state packing.
+*   [`PreferenceWindow.vala`](src/Windows/PreferenceWindow.vala): Application settings window.
+*   [`NoteView.vala`](src/Views/NoteView.vala): Layout box inside the Sticky Note containing the headerbar, body editor, and bottom action bar.
+*   [`PreferencesView.vala`](src/Views/PreferencesView.vala): Content inside the preference window containing toggle switches.
 
 ---
 
@@ -100,7 +99,7 @@ flatpak install flathub org.flatpak.Builder
 ```
 
 ### 2. Compile and Install Jots
-Build the application against the [`io.github.comicdeed.jots.devel.yml`](file:///home/dkorah/development/github.com/comicdeed/comicdeed-jots/io.github.comicdeed.jots.devel.yml) manifest. This compiles Jots and installs the development variant into your local user sandbox:
+Build the application against the [`io.github.comicdeed.jots.devel.yml`](io.github.comicdeed.jots.devel.yml) manifest. This compiles Jots and installs the development variant into your local user sandbox:
 ```bash
 flatpak run org.flatpak.Builder --force-clean --sandbox --user --install --install-deps-from=flathub --ccache builddir io.github.comicdeed.jots.devel.yml
 ```
@@ -117,7 +116,9 @@ flatpak run io.github.comicdeed.jots.devel
 
 *   **UI/UX Aesthetic Constraints:** Jots has a strict policy to stay minimal and simple. Avoid adding heavy components.
 *   **Compilation Warnings:** The Vala compiler generates C code which can throw warnings during GCC compilation. The build uses the `-w` compiler argument in `executable(...)` to ignore Vala-generated C warning noise.
-*   **Settings Schema:** If modifying preferences or settings, update the GSettings XML schema at [`data/io.github.comicdeed.jots.gschema.xml`](file:///home/dkorah/development/github.com/comicdeed/comicdeed-jots/data/io.github.comicdeed.jots.gschema.xml).
+*   **Settings Schema:** If modifying preferences or settings, update the GSettings XML schema at [`data/io.github.comicdeed.jots.gschema.xml`](data/io.github.comicdeed.jots.gschema.xml).
+*   **Documentation Style:** When writing or updating technical documentation, use-case specifications, or docstrings, follow the [GNOME Developer Documentation Style Guidelines](https://developer.gnome.org/documentation/guidelines/devel-docs.html) (summarized in [`docs/development/documentation-style.md`](docs/development/documentation-style.md)). Keep writing direct, scannable, and free of conversational filler or trivializing language.
+*   **Test & Use-Case Cross-Referencing:** When adding or updating automated tests in `tests/`, embed the permanent use-case identifier directly into the test path (`/<Component>/UC_XX_YY_ZZ/<ScenarioName>`) and include a docstring referencing the corresponding use-case in `docs/use-cases/`.
 
 ---
 
@@ -134,14 +135,14 @@ To keep development frictionless, **these rules apply only when preparing a bran
 * **Ask About Testing**: Before pushing changes to an upstream PR branch, ask the user what manual testing has been performed (unless it is already evident from the context).
 * **Verify Manual Commits**: Check the git history to identify any commits manually authored by the user, and ensure they are clearly credited in the Pull Request's human contributions section.
 
-### 3. AI Commit Message Trailer
-* To make tracking changes transparent, any commit generated by an AI assistant or agent should include a Co-authored-by trailer in the commit message referencing the agent tool used:
+### 3. PR Description Attribution Requirement
+* Automatically prepare the PR description draft to include the **Honest Attribution** markdown block defined in [`docs/development/pull-request-guidelines.md`](docs/development/pull-request-guidelines.md#3-honest-attribution-human-ai-disclosure):
+  ```markdown
+  ## 🤖 Authorship & Attribution
+  * **Human Contributions**: [e.g. Architecture design, manual QA, logic review]
+  * **AI Tools**: [e.g. Gemini, Copilot, Claude]
+  * **AI Contributions**: [e.g. Boilerplate code, unit test cases, CSS styling]
   ```
-  Co-authored-by: <AgentName>-Agent <agent@<domain>>
-  ```
-  *(e.g., `Co-authored-by: Gemini-Agent <agent@gemini>` or `Co-authored-by: Copilot-Agent <agent@copilot>`)*
-* **PR Description Requirement**: Automatically prepare the PR description draft to include the **Honest Attribution** markdown block (disclosing human contributions, AI tools, and AI contributions).
 
 ### 4. Human Oversight Reminder
 * **Responsibility Callout**: Remind the human contributor that they are ultimately responsible for all submitted changes. Advise them to fully read the code, check for hallucinations, and run manual verification tests before approving the PR. Remind them to be in control of their tools!
-

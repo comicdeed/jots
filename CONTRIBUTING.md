@@ -15,30 +15,12 @@ All interactions within this project must remain professional, objective, and re
 
 ## 🎯 Pull Request Guidelines
 
-### 1. Focus on Single Changes (Functional Scope Rule)
-Every Pull Request must be focused on a single logical change (one bugfix or one feature).
-> [!IMPORTANT]
-> If you cannot explain the entire scope of the changes in a single, short paragraph, the PR is too broad. Please break it up into smaller, sequential pull requests.
+To keep development clean and predictable, all contributors must follow our [Pull Request Guidelines](docs/development/pull-request-guidelines.md):
 
-### 2. Issue Alignment (Recommended)
-Before starting work on a major change or new feature, please open an Issue to discuss the design and scope. While small or trivial bugfixes do not require a pre-existing issue, aligning on issues first helps prevent wasted development effort.
-
-### 3. Honest Attribution (Human-AI Disclosure)
-To calibrate the review process, we require absolute transparency regarding the tools used. Every Pull Request description must include this attribution block:
-
-```markdown
-### 🤖 Authorship & Attribution
-* **Human Contributions**: [e.g., Code architecture, manual QA, logic review]
-* **AI/LLM Contributions**: [e.g., Boilerplate code, CSS styles, localization]
-* **Tools & Models Used**: [e.g., Copilot, Gemini 2.0 Pro]
-```
-
-Review efforts are calibrated based on this attribution (AI-heavy or automated contributions undergo more thorough verification).
-
-### 4. Ultimate Human Responsibility
-While AI assistants and agents are welcome companions, **the human contributor is ultimately responsible for all submitted changes**.
-> [!IMPORTANT]
-> **Be in control of your tools.** You must fully review all AI-generated content (code, comments, issue/PR descriptions, translations) before submission. Check for hallucinations, run manual verification tests, read the code fully, and ensure you understand every aspect of the change. You own the final submission.
+1. **Single Logical Change**: Focus each PR on one bugfix or feature, explainable in a single short paragraph.
+2. **Issue Alignment**: Open an issue first to discuss substantial changes before building.
+3. **Honest Attribution**: Include the [Authorship & Attribution](docs/development/pull-request-guidelines.md#3-honest-attribution-human-ai-disclosure) block in every PR description.
+4. **Human Responsibility**: You are solely responsible for reviewing and verifying all submitted code.
 
 ---
 

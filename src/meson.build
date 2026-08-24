@@ -30,6 +30,7 @@ sources = files (
 
     'Utils' / 'Random.vala',
 
+    'Services' / 'MarkdownSerializer.vala',
     'Services' / 'Storage.vala',
     'Services' / 'NoteManager.vala',
     'Services' / 'NoteService.vala',
@@ -41,6 +42,7 @@ sources = files (
     'Widgets' / 'TextView.vala',
     'Widgets' / 'ActionBar.vala',
     'Widgets' / 'TextBuffer.vala',
+    'Widgets' / 'MarkdownBuffer.vala',
 
     'Widgets' / 'PopoverWidgets' / 'ColorPill.vala',
     'Widgets' / 'PopoverWidgets' / 'ColorBox.vala',
@@ -111,6 +113,7 @@ mcp_sources = files(
     'Constants.vala',
     'Objects' / 'Themes.vala',
     'Objects' / 'NoteData.vala',
+    'Services' / 'MarkdownSerializer.vala',
     'Objects' / 'ZoomType.vala',
     'Objects' / 'Zoom.vala',
     'Utils' / 'Random.vala',

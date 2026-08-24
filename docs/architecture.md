@@ -45,7 +45,8 @@ graph TD
 ### 2.3 Services & Coordination (`src/Services/`)
 * **`NoteManager.vala`**: The central coordinator. Manages the active window registry (`open_notes`), creates and destroys windows, coordinates debounced auto-saving, and enforces active note ceilings (`MAX_ACTIVE_NOTES = 50`).
 * **`NoteService.vala`**: Native D-Bus service exposing the `io.github.comicdeed.jots.Notes` interface on the session bus. Allows external processes (CLI, desktop scripts, MCP adapters) to query, create, edit, search, and delete notes live on the desktop.
-* **`Storage.vala`**: Encapsulates disk persistence (`~/.local/share/io.github.comicdeed.jots/saved_state.json`). Completely insulated from external consumers by the D-Bus service boundary.
+* **`Storage.vala`**: Encapsulates disk persistence of individual Markdown files with YAML front matter (`~/.local/share/io.github.comicdeed.jots/notes/<id>.md`) and handles automatic legacy JSON migration. Completely insulated from external consumers by the D-Bus service boundary.
+* **`MarkdownSerializer.vala`**: Lightweight YAML front matter parser and Markdown serializer for `NoteData`.
 * **`ColorController.vala`**: Manages CSS theme class assignment on note windows.
 * **`ZoomController.vala`**: Handles pinch gestures, `Ctrl` + scroll wheel, and zoom step key bindings.
 * **`ScribblyController.vala`**: Controls the background text scribble aesthetic effect on unfocused notes.
@@ -53,7 +54,7 @@ graph TD
 ### 2.4 UI & Widgets (`src/Views/`, `src/Windows/`, `src/Widgets/`)
 * **`StickyNoteWindow.vala`**: Application window containing note controls and editor view. Provides programmatic update methods (`update_title`, `update_content`, `update_theme`) for real-time external synchronization.
 * **`NoteView.vala`**: Layout container housing the title bar, `EditableLabel`, `TextView`, and `ActionBar`.
-* **`TextView.vala` & `TextBuffer.vala`**: Subclassed `Granite.HyperTextView` with URL/email detection and custom hanging bullet list indentation.
+* **`TextView.vala` & `MarkdownBuffer.vala`**: Subclassed `Granite.HyperTextView` with native real-time Markdown syntax tagging (Headings H1-H3, Bold, Italic, Strikethrough, Monospace inline code, Code blocks, Blockquotes, Checklists, and smart list continuation).
 * **`PreferenceWindow.vala` & `PreferencesView.vala`**: Settings window for global user preferences.
 
 ### 2.5 Native MCP Server Binary (`src/Mcp/`)

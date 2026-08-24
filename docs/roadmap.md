@@ -8,40 +8,32 @@ A curated backlog of architectural enhancements, capabilities, and feature candi
 
 * [1. Evaluation Summary & Score Matrix](#1-evaluation-summary--score-matrix)
 * [2. High-Priority Initiatives (Tier 1)](#2-high-priority-initiatives-tier-1)
-  * [2.1 Local MCP Server for AI Agent Integration](#21-local-mcp-server-for-ai-agent-integration)
-  * [2.2 Markdown Storage with YAML Front Matter](#22-markdown-storage-with-yaml-front-matter)
+  * [2.1 Markdown Storage with YAML Front Matter](#21-markdown-storage-with-yaml-front-matter)
 * [3. Planned Backlog (Tier 2)](#3-planned-backlog-tier-2)
   * [3.1 Free-Form In-Text Tagging with Autocompletion](#31-free-form-in-text-tagging-with-autocompletion)
   * [3.2 Local Full-Text Search and Note Indexing](#32-local-full-text-search-and-note-indexing)
 * [4. Deferred / Incubating Concepts (Tier 4)](#4-deferred--incubating-concepts-tier-4)
   * [4.1 Google Keep Backend Synchronization](#41-google-keep-backend-synchronization)
+* [5. Completed Initiatives](#5-completed-initiatives)
+  * [5.1 Native Model Context Protocol (MCP) Server](#51-native-model-context-protocol-mcp-server)
 
 ---
 
 ## 1. Evaluation Summary & Score Matrix
 
-| Feature Concept | Impact (40%) | Alignment (35%) | Feasibility (25%) | Composite Score | Tier |
+| Feature Concept | Impact (40%) | Alignment (35%) | Feasibility (25%) | Composite Score | Tier / Status |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Local MCP Server for AI Agents** | 5.0 | 4.5 | 3.5 | **4.45** | 🟢 Tier 1 |
-| **Markdown + Front Matter Storage** | 4.2 | 5.0 | 4.0 | **4.43** | 🟢 Tier 1 |
-| **Free-Form In-Text Tagging (`#tag`)** | 4.0 | 4.0 | 3.5 | **3.88** | 🟡 Tier 2 |
-| **Local Note Indexing & Search** | 3.8 | 4.2 | 3.6 | **3.89** | 🟡 Tier 2 |
-| **Google Keep Backend Sync** | 3.0 | 1.8 | 1.2 | **2.13** | 🔴 Tier 4 |
+| **Markdown + Front Matter Storage** | 4.2 | 5.0 | 4.0 | **4.43** | ✅ **Completed** |
+| **Free-Form In-Text Tagging (`#tag`)** | 4.0 | 4.0 | 3.5 | **3.88** | 🟡 Tier 2 (Planned) |
+| **Local Note Indexing & Search** | 3.8 | 4.2 | 3.6 | **3.89** | 🟡 Tier 2 (Planned) |
+| **Google Keep Backend Sync** | 3.0 | 1.8 | 1.2 | **2.13** | 🔴 Tier 4 (Deferred) |
+| **Native MCP Server (`jots-mcp`)** | 5.0 | 4.5 | 4.5 | **4.70** | ✅ **Completed** |
 
 ---
 
 ## 2. High-Priority Initiatives (Tier 1)
 
-### 2.1 Local MCP Server for AI Agent Integration
-* **Score**: `4.45` (Tier 1: Active Priority - Implemented on `feat/mcp-server`)
-* **Goal**: Provide a native local **Model Context Protocol (MCP)** server enabling AI tools (Claude Desktop, Cursor, Gemini CLI, local agents) to query, create, edit, search, and delete sticky notes via standard JSON-RPC over `stdio`.
-* **Key Capabilities**:
-  * Tools: `list_notes`, `read_note`, `create_note`, `update_note`, `delete_note`, `search_notes`.
-  * Real-time sync: Direct D-Bus session IPC (`io.github.comicdeed.jots.McpService`) ensuring notes appear and update instantly on the desktop.
-  * Defensive guardrails: 10 KB content limit, 120 char title limit, 50 active note ceiling.
-* **Architectural Advantage**: Zero UI clutter for manual note-takers; transformative utility for developers and AI pair-programmers.
-
-### 2.2 Markdown Storage with YAML Front Matter
+### 2.1 Markdown Storage with YAML Front Matter
 * **Score**: `4.43` (Tier 1: Active Priority)
 * **Goal**: Transition from the monolithic `saved_state.json` to individual human-readable `.md` files stored under `~/.local/share/io.github.comicdeed.jots/notes/`.
 * **Format**:
@@ -89,3 +81,12 @@ A curated backlog of architectural enhancements, capabilities, and feature candi
 ### 4.1 Google Keep Backend Synchronization
 * **Score**: `2.13` (Tier 4: Deferred)
 * **Rationale**: While an official [Google Keep REST API](https://developers.google.com/workspace/keep/api/reference/rest) exists, Google restricts it strictly to **Google Workspace Enterprise domains** with domain-wide delegation for security auditing/CASB. It is unavailable for standard personal (consumer) `@gmail.com` Google accounts. Supporting personal accounts would require reverse-engineered web-scraping libraries (such as `gkeepapi`), which frequently break on authentication and 2FA changes. Introducing cloud synchronization dependencies also compromises Jots' core mission of robust, offline-first local simplicity.
+
+---
+
+## 5. Completed Initiatives
+
+### 5.1 Native Model Context Protocol (MCP) Server
+* **Status**: ✅ **Shipped** (v4.3.0)
+* **Summary**: Implemented standalone native Vala `jots-mcp` executable (`src/Mcp/`) and D-Bus IPC service (`io.github.comicdeed.jots.Notes`), providing line-delimited JSON-RPC 2.0 stdio communication for AI assistants (Claude Desktop, Cursor, Antigravity, Gemini CLI) with zero external Python dependencies.
+* **Documentation**: See [`docs/development/mcp-server.md`](development/mcp-server.md) and [`docs/user-guide.md`](user-guide.md#6-ai-assistant--mcp-integration).

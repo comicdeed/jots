@@ -5,116 +5,197 @@
  *                          2025-2026 Stella & Charlie (teamcons.carrd.co)
  */
 
-/**
-* Represents the file on-disk, and takes care of the annoying  
-* 
-* void          save (Json.Array)  --> Save to the storage file data
-* Json.Array   load ()           --> Load and return 
-*
-* save() takes a Json.Node instead of an NoteData[] so we avoid looping twice through all notes
-* It is agressively persistent in 
-*/
-public class Jots.Storage : Object {
-
-    private const string FILENAME = "saved_state.json";
-    private File datadir;
-    private string savefile_path;
+namespace Jots {
 
     /**
-    * Convenience property wrapping load() and save()
-    */
-    public Json.Array content {
-        owned get {return load ();}
-        set {save (value);}
-    }
+     * Storage service managing individual Markdown note files in ~/.local/share/<app_id>/notes/
+     */
+    public class Storage : Object {
 
-    /*************************************************/
-    construct {
-        var path_data = GLib.Path.build_path (Path.DIR_SEPARATOR_S, Environment.get_user_data_dir (), APP_ID);
-        datadir = File.new_for_path (path_data);
-        savefile_path = GLib.Path.build_path (Path.DIR_SEPARATOR_S, path_data, FILENAME);
-        print ("\nAll your notes are safe at: %s\n", savefile_path);
+        public const string NOTES_DIRNAME = "notes";
+        public const string LEGACY_FILENAME = "saved_state.json";
 
-        ensure_datadir ();
+        private File datadir;
+        private File notes_dir;
+        private string legacy_savefile_path;
 
-        // TODO: Remove the below cruft after a while
-        var old_storage_path = GLib.Path.build_path (Path.DIR_SEPARATOR_S, Environment.get_user_data_dir (), FILENAME);
-        var old_storage_file = File.new_for_path (old_storage_path);
-        var savefile = File.new_for_path (savefile_path);
+        construct {
+            var path_data = GLib.Path.build_path (Path.DIR_SEPARATOR_S, Environment.get_user_data_dir (), APP_ID);
+            datadir = File.new_for_path (path_data);
+            notes_dir = datadir.get_child (NOTES_DIRNAME);
+            legacy_savefile_path = GLib.Path.build_path (Path.DIR_SEPARATOR_S, path_data, LEGACY_FILENAME);
 
-        if (old_storage_file.query_exists ()) {
+            ensure_directories ();
+            migrate_legacy_json_if_needed ();
+        }
+
+        private void ensure_directories () {
             try {
-                old_storage_file.move (savefile, GLib.FileCopyFlags.OVERWRITE);
-                print ("Sucessfully moved old storage");
-
+                if (!datadir.query_exists ()) {
+                    datadir.make_directory_with_parents ();
+                }
+                if (!notes_dir.query_exists ()) {
+                    notes_dir.make_directory_with_parents ();
+                }
             } catch (Error e) {
-                warning ("Failed to move storage %s\n", e.message);
+                warning ("Failed to ensure storage directory: %s", e.message);
             }
         }
-    }
 
-    /*************************************************/
-    /**
-    * Persistently check for the data directory and create if there is none 
-    */
-    private void ensure_datadir () {
-        debug ("do we have a data directory?");
-        if (datadir.query_exists ()) {
-            debug ("Yes, nevermind");
-            return;
+        /**
+         * Migrates notes from legacy monolithic saved_state.json to individual Markdown files.
+         */
+        public void migrate_legacy_json_if_needed () {
+            var legacy_file = File.new_for_path (legacy_savefile_path);
+            if (!legacy_file.query_exists ()) {
+                return;
+            }
+
+            // Check if notes directory is already populated
+            try {
+                var enumerator = notes_dir.enumerate_children (
+                    FileAttribute.STANDARD_NAME,
+                    FileQueryInfoFlags.NONE
+                );
+                FileInfo? info = enumerator.next_file ();
+                if (info != null) {
+                    // Notes directory already has files, do not overwrite with legacy JSON
+                    return;
+                }
+            } catch (Error e) {
+                debug ("Checking notes directory: %s", e.message);
+            }
+
+            // Perform migration
+            debug ("Migrating legacy saved_state.json to markdown files...");
+            var parser = new Json.Parser ();
+            try {
+                parser.load_from_mapped_file (legacy_savefile_path);
+                var root = parser.get_root ();
+                if (root != null && root.get_node_type () == Json.NodeType.ARRAY) {
+                    var array = root.get_array ();
+                    foreach (var elem in array.get_elements ()) {
+                        var obj = elem.dup_object ();
+                        var note = new NoteData.from_json (obj);
+                        save_note (note);
+                    }
+                    print ("\nSuccessfully migrated %u notes from saved_state.json to Markdown files.\n", array.get_length ());
+                }
+
+                // Rename legacy file to .migrated to preserve safe backup
+                var backup_path = legacy_savefile_path + ".migrated";
+                var backup_file = File.new_for_path (backup_path);
+                legacy_file.move (backup_file, GLib.FileCopyFlags.OVERWRITE);
+            } catch (Error e) {
+                warning ("Failed to migrate legacy notes: %s", e.message);
+            }
         }
 
-        try {
-            datadir.make_directory_with_parents ();
-            debug ("yes we do now");
+        /**
+         * Saves an individual note to disk as a Markdown file with YAML front matter.
+         */
+        public void save_note (NoteData note) {
+            ensure_directories ();
+            var filename = "%s.md".printf (note.id);
+            var file = notes_dir.get_child (filename);
+            var md_content = note.to_markdown ();
 
-        } catch (Error e) {
-            warning ("Failed to prepare target data directory %s", e.message);
-        }
-    }
-
-    /*************************************************/
-    /**
-    * Converts a Json.Node into a string and take care of saving it
-    */
-    public void save (Json.Array json_data) {
-        ensure_datadir ();
-        debug ("Writing %u elements (Should be same number as sticky notes)", json_data.get_length ());
-
-        try {
-            var generator = new Json.Generator ();
-            var node = new Json.Node (Json.NodeType.ARRAY);
-            node.set_array (json_data);
-            generator.set_root (node);
-            generator.to_file (savefile_path);
-
-        } catch (Error e) {
-            warning ("Failed to save notes %s", e.message);
+            try {
+                file.replace_contents (
+                    md_content.data,
+                    null,
+                    false,
+                    FileCreateFlags.REPLACE_DESTINATION,
+                    null
+                );
+                debug ("Saved note %s to %s", note.id, file.get_path ());
+            } catch (Error e) {
+                warning ("Failed to save note %s: %s", note.id, e.message);
+            }
         }
 
-        print ("\n (%u notes saved)", json_data.get_length ());
-    }
-
-    /*************************************************/
-    /**
-    * Grab from storage, into a Json.Node we can parse. Insist if necessary
-    */
-    public Json.Array load () {
-        debug ("Loading from storage letsgo");
-        var parser = new Json.Parser ();
-        var array = new Json.Array ();
-
-        try {
-            parser.load_from_mapped_file (savefile_path);
-            var node = parser.get_root ();
-            array = node.get_array ();
-
-        } catch (Error e) {
-            warning ("Failed to load from storage %s", e.message);
-
+        /**
+         * Deletes an individual note file from disk.
+         */
+        public void delete_note (string note_id) {
+            var filename = "%s.md".printf (note_id);
+            var file = notes_dir.get_child (filename);
+            if (file.query_exists ()) {
+                try {
+                    file.delete ();
+                    debug ("Deleted note file: %s", file.get_path ());
+                } catch (Error e) {
+                    warning ("Failed to delete note file %s: %s", note_id, e.message);
+                }
+            }
         }
 
-        debug ("Retrieved %ui elements", array.get_length ());
-        return array;
+        /**
+         * Loads all Markdown note files from the notes directory.
+         */
+        public Gee.ArrayList<NoteData> load_all () {
+            ensure_directories ();
+            migrate_legacy_json_if_needed ();
+
+            var list = new Gee.ArrayList<NoteData> ();
+
+            try {
+                var enumerator = notes_dir.enumerate_children (
+                    FileAttribute.STANDARD_NAME + "," + FileAttribute.STANDARD_TYPE,
+                    FileQueryInfoFlags.NONE
+                );
+
+                FileInfo? info = null;
+                while ((info = enumerator.next_file ()) != null) {
+                    var name = info.get_name ();
+                    if (!name.has_suffix (".md")) {
+                        continue;
+                    }
+
+                    var file = notes_dir.get_child (name);
+                    try {
+                        uint8[] contents;
+                        string etag;
+                        file.load_contents (null, out contents, out etag);
+                        var raw_str = (string) contents;
+
+                        // Use filename base as fallback id
+                        var base_id = name.substring (0, name.length - 3);
+                        var note = MarkdownSerializer.deserialize (raw_str, base_id);
+                        list.add (note);
+                    } catch (Error err) {
+                        warning ("Failed to load note file %s: %s", name, err.message);
+                    }
+                }
+            } catch (Error e) {
+                warning ("Failed to enumerate notes directory: %s", e.message);
+            }
+
+            debug ("Loaded %d notes from markdown storage.", list.size);
+            return list;
+        }
+
+        /**
+         * Convenience legacy wrapper returning Json.Array for backward compatibility.
+         */
+        public Json.Array load () {
+            var notes = load_all ();
+            var array = new Json.Array ();
+            foreach (var note in notes) {
+                array.add_object_element (note.to_json ());
+            }
+            return array;
+        }
+
+        /**
+         * Convenience legacy wrapper saving a Json.Array to markdown files.
+         */
+        public void save (Json.Array json_data) {
+            foreach (var elem in json_data.get_elements ()) {
+                var obj = elem.dup_object ();
+                var note = new NoteData.from_json (obj);
+                save_note (note);
+            }
+        }
     }
 }

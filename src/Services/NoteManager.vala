@@ -49,9 +49,9 @@ public class Jots.NoteManager : Object {
             return;
         }
         debug ("Opening all sticky notes now!");
-        Json.Array loaded_data = storage.load ();
+        var loaded_notes = storage.load_all ();
 
-        if (loaded_data.get_length () == 0) {
+        if (loaded_notes.size == 0) {
             var note_data = new NoteData ();
             note_data.theme = DEFAULT_THEME;
 
@@ -59,10 +59,7 @@ public class Jots.NoteManager : Object {
             create_note (note_data);
 
         } else {
-            foreach (var json_data in loaded_data.get_elements ()) {
-                var json_obj = json_data.dup_object ();
-                var note_data = new NoteData.from_json (json_obj);
-
+            foreach (var note_data in loaded_notes) {
                 print ("\nLoaded: " + note_data.title);
                 create_note (note_data);
             }
@@ -115,9 +112,8 @@ public class Jots.NoteManager : Object {
         open_notes.remove (note);
         application.remove_window ((Gtk.Window)note);
 
+        storage.delete_note (note.note_id);
         note.close ();
-
-        immediately_save ();
     }
 
     /*************************************************/
@@ -142,15 +138,10 @@ public class Jots.NoteManager : Object {
     }
 
     public void immediately_save () {
-        var array = new Json.Array ();
-
         foreach (Jots.StickyNoteWindow note in open_notes) {
             var data = note.packaged ();
-            var object = data.to_json ();
-            array.add_object_element (object);
-        };
-
-        storage.save (array);
+            storage.save_note (data);
+        }
     }
 
     public void new_note () {

@@ -202,7 +202,7 @@ namespace Jots {
             builder.set_member_name ("name");
             builder.add_string_value ("create_note");
             builder.set_member_name ("description");
-            builder.add_string_value ("Create and spawn a new sticky note window live on the desktop with given title, body content, and pastel theme color.");
+            builder.add_string_value ("Create and spawn a new sticky note window live on the desktop with given title, body content in Markdown, and pastel theme color.");
             builder.set_member_name ("inputSchema");
             builder.begin_object ();
             builder.set_member_name ("type");
@@ -223,7 +223,7 @@ namespace Jots {
             builder.set_member_name ("type");
             builder.add_string_value ("string");
             builder.set_member_name ("description");
-            builder.add_string_value ("Body text of the note (max 10,000 chars)");
+            builder.add_string_value ("Body text of the note in Markdown (max 10,000 chars). Supports headings (#, ##, ###), checklists (- [ ], - [x]), bullet lists (- or *), bold (**text**), italic (*text*), strikethrough (~~text~~), inline code (`code`), code blocks (```), blockquotes (>), and hyperlinks [label](url).");
             builder.end_object ();
 
             builder.set_member_name ("theme");
@@ -243,7 +243,7 @@ namespace Jots {
             builder.set_member_name ("name");
             builder.add_string_value ("update_note");
             builder.set_member_name ("description");
-            builder.add_string_value ("Update the content, title, or theme color of an existing sticky note in real time. To append text to an existing note, call read_note first to fetch current content, then call update_note with the updated full body text.");
+            builder.add_string_value ("Update the Markdown content, title, or theme color of an existing sticky note in real time. To append text to an existing note, call read_note first to fetch current content, then call update_note with the updated full body text.");
             builder.set_member_name ("inputSchema");
             builder.begin_object ();
             builder.set_member_name ("type");
@@ -272,7 +272,7 @@ namespace Jots {
             builder.set_member_name ("type");
             builder.add_string_value ("string");
             builder.set_member_name ("description");
-            builder.add_string_value ("New full body text (max 10,000 chars)");
+            builder.add_string_value ("New full body text in Markdown (max 10,000 chars). Supports headings (#, ##, ###), checklists (- [ ], - [x]), bullet lists (- or *), bold (**text**), italic (*text*), strikethrough (~~text~~), inline code (`code`), code blocks (```), blockquotes (>), and hyperlinks [label](url).");
             builder.end_object ();
 
             builder.set_member_name ("theme");
@@ -464,6 +464,15 @@ namespace Jots {
             builder.add_string_value ("text/markdown");
             builder.end_object ();
 
+            builder.begin_object ();
+            builder.set_member_name ("uri");
+            builder.add_string_value ("jots://formatting-guide");
+            builder.set_member_name ("name");
+            builder.add_string_value ("Jots Markdown Formatting Guide");
+            builder.set_member_name ("mimeType");
+            builder.add_string_value ("text/markdown");
+            builder.end_object ();
+
             builder.end_array ();
             builder.end_object ();
             builder.end_object ();
@@ -478,6 +487,60 @@ namespace Jots {
             var uri = params_obj.get_string_member_with_default ("uri", "");
             if (uri == "") {
                 return format_error (id_node, -32602, "Invalid params: 'uri' is required");
+            }
+
+            if (uri == "jots://formatting-guide") {
+                string guide_content = "# Jots Markdown Formatting Guide\n\n"
+                    + "Jots supports native real-time inline Markdown styling on desktop sticky notes.\n\n"
+                    + "## Supported Elements\n\n"
+                    + "### 1. Headings\n"
+                    + "- `# Heading 1` (large scaled title, bold)\n"
+                    + "- `## Heading 2` (medium scaled section, bold)\n"
+                    + "- `### Heading 3` (subsection, bold)\n\n"
+                    + "### 2. Checklists & Lists\n"
+                    + "- `- [ ] Pending action item`\n"
+                    + "- `- [x] Completed action item` (rendered with strikethrough)\n"
+                    + "- `- Bullet item` or `* Bullet item`\n\n"
+                    + "### 3. Text Emphasis\n"
+                    + "- `**Bold text**` or `__Bold text__`\n"
+                    + "- `*Italic text*` or `_Italic text_`\n"
+                    + "- `~~Strikethrough text~~`\n\n"
+                    + "### 4. Code & Blocks\n"
+                    + "- `` `inline_code()` `` (monospace font)\n"
+                    + "- Code blocks with triple backticks\n"
+                    + "- `> Blockquote quote text`\n\n"
+                    + "### 5. Links\n"
+                    + "- `[Link Label](https://example.com)` (rendered as clickable Granite hyperlink)\n\n"
+                    + "## Best Practices for AI Assistants\n"
+                    + "- Keep note titles concise (max 120 chars).\n"
+                    + "- Use checklists (`- [ ]`) for todo items so users can interactively mark them complete.\n"
+                    + "- Select appropriate pastel themes: `mint`/`lime` for tasks, `banana` for reminders, `strawberry`/`bubblegum` for urgent items, `blueberry`/`slate` for general notes.\n";
+
+                var builder = new Json.Builder ();
+                builder.begin_object ();
+                builder.set_member_name ("jsonrpc");
+                builder.add_string_value ("2.0");
+                add_id_to_builder (builder, id_node);
+
+                builder.set_member_name ("result");
+                builder.begin_object ();
+                builder.set_member_name ("contents");
+                builder.begin_array ();
+
+                builder.begin_object ();
+                builder.set_member_name ("uri");
+                builder.add_string_value (uri);
+                builder.set_member_name ("mimeType");
+                builder.add_string_value ("text/markdown");
+                builder.set_member_name ("text");
+                builder.add_string_value (guide_content);
+                builder.end_object ();
+
+                builder.end_array ();
+                builder.end_object ();
+                builder.end_object ();
+
+                return generator_to_string (builder);
             }
 
             if (proxy == null) {

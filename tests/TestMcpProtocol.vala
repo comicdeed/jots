@@ -286,11 +286,17 @@ namespace Jots.Tests {
             // resources/list
             var resp_res_list = protocol.process_message ("{\"jsonrpc\":\"2.0\",\"id\":\"1\",\"method\":\"resources/list\"}");
             assert_true (resp_res_list.contains ("jots://notes"));
+            assert_true (resp_res_list.contains ("jots://formatting-guide"));
 
             // resources/read for jots://notes
             var resp_res_read = protocol.process_message ("{\"jsonrpc\":\"2.0\",\"id\":\"2\",\"method\":\"resources/read\",\"params\":{\"uri\":\"jots://notes\"}}");
             assert_true (resp_res_read.contains ("# Jots Sticky Notes Overview"));
             assert_true (resp_res_read.contains ("test-uuid-1"));
+
+            // resources/read for jots://formatting-guide
+            var resp_guide_read = protocol.process_message ("{\"jsonrpc\":\"2.0\",\"id\":\"guide-1\",\"method\":\"resources/read\",\"params\":{\"uri\":\"jots://formatting-guide\"}}");
+            assert_true (resp_guide_read.contains ("# Jots Markdown Formatting Guide"));
+            assert_true (resp_guide_read.contains ("Checklists & Lists"));
 
             // prompts/list
             var resp_prompts_list = protocol.process_message ("{\"jsonrpc\":\"2.0\",\"id\":\"3\",\"method\":\"prompts/list\"}");

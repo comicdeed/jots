@@ -9,6 +9,8 @@ public static int main (string[] args) {
 
     // Register all Canary test suites
     Jots.Tests.register_note_data_tests ();
+    Jots.Tests.register_markdown_storage_tests ();
+    Jots.Tests.register_markdown_buffer_tests ();
     Jots.Tests.register_themes_tests ();
     Jots.Tests.register_text_buffer_tests ();
     Jots.Tests.register_zoom_tests ();

@@ -92,6 +92,30 @@ public class Jots.NoteData {
 
     /*************************************************/
     /**
+    * Parse Markdown text with YAML front matter into a NoteData object
+    */
+    public NoteData.from_markdown (string md_content, string? fallback_id = null, string? fallback_title = null) {
+        var parsed = Jots.MarkdownSerializer.deserialize (md_content, fallback_id, fallback_title);
+        this.id = parsed.id;
+        this.title = parsed.title;
+        this.theme = parsed.theme;
+        this.content = parsed.content;
+        this.monospace = parsed.monospace;
+        this.zoom = parsed.zoom;
+        this.width = parsed.width;
+        this.height = parsed.height;
+    }
+
+    /*************************************************/
+    /**
+    * Returns the Markdown string representation with YAML front matter
+    */
+    public string to_markdown () {
+        return Jots.MarkdownSerializer.serialize (this);
+    }
+
+    /*************************************************/
+    /**
     * Returns the JSON string representation of the note
     */
     public string to_json_string () {

@@ -31,7 +31,7 @@ public class Jots.MonospaceBox : Gtk.Box {
     }
 
     construct {
-        add_css_class (Granite.STYLE_CLASS_LINKED);
+        add_css_class ("linked");
 
         //TRANSLATORS: Both Default and Monospace are togglable buttons, synchronized with each other
         var mono_default_toggle = new Gtk.ToggleButton () {

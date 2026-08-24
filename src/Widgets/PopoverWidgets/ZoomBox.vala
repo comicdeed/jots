@@ -38,7 +38,7 @@ public class Jots.ZoomBox : Gtk.Box {
     }
 
     construct {
-        add_css_class (Granite.STYLE_CLASS_LINKED);
+        add_css_class ("linked");
 
         //TRANSLATORS: These are displayed on small linked buttons in a menu. User can click them to change zoom
         var zoom_out_button = new Gtk.Button.from_icon_name ("zoom-out-symbolic") {

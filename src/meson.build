@@ -58,7 +58,6 @@ sources = files (
     'Application.vala',
 )
 
-
 #================================
 # Windows should have libportal set to false, as it doesnt have it
 # Other OSes might have it set to true

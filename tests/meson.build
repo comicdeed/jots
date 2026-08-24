@@ -3,7 +3,7 @@
 #
 
 #========================
-# Linter and Appstream stuff
+# Linter and Appstream validation
 
 vala_linter = find_program('io.elementary.vala-lint', required: false)
 if vala_linter.found()
@@ -40,27 +40,32 @@ if appstream
     endif
 endif
 
-
 #========================
-# Services
+# Canary Unit Test Runner
 
+test_sources = files(
+    'Main.vala',
+    'TestNoteData.vala',
+    'TestThemes.vala',
+    'TestTextBuffer.vala',
+    'TestZoom.vala',
+    meson.project_source_root() / 'src' / 'Objects' / 'NoteData.vala',
+    meson.project_source_root() / 'src' / 'Objects' / 'Themes.vala',
+    meson.project_source_root() / 'src' / 'Objects' / 'Zoom.vala',
+    meson.project_source_root() / 'src' / 'Objects' / 'ZoomType.vala',
+    meson.project_source_root() / 'src' / 'Objects' / 'ListPrefix.vala',
+    meson.project_source_root() / 'src' / 'Widgets' / 'TextBuffer.vala',
+    meson.project_source_root() / 'src' / 'Utils' / 'Random.vala',
+    meson.project_source_root() / 'src' / 'Constants.vala',
+)
 
-# Storage: Load and save
+test_executable = executable(
+    'jots-unit-tests',
+    test_sources,
+    config_file,
+    dependencies: dependencies,
+    c_args: ['-w'],
+    install: true
+)
 
-### Services
-
-# Build some services and enums. Do random manipulations and compare
-
-
-#========================
-#  Widgets
-# build specific widgets:
-
-# Textview
-# Add initial text. Activate lists on a sentence. Compare with reference. Change lists. Compare with reference
-
-# preferences dialog
-# show the window. No binds.
-
-# notes
-# show window. No storage.
+test('canary-unit-tests', test_executable, is_parallel: true)

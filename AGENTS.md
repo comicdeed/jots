@@ -19,12 +19,12 @@ To maintain focus and avoid context bloat, refer to specialized documentation on
 
 ## 🏗️ Architecture Summary
 
-Jots is a lightweight GTK4/Granite 7 sticky notes app written in **Vala**:
+Jots is a lightweight GTK4/Granite 7 sticky notes app and MCP server written entirely in **Vala**:
 1. **`Jots.Application`**: Main entry point, GSettings/theme management, and D-Bus registration.
 2. **`Jots.NoteManager`**: Central coordinator managing active windows (`open_notes`) and debounced saving.
 3. **`Jots.NoteService`**: Native D-Bus service (`io.github.comicdeed.jots.Notes`) for real-time desktop IPC.
-4. **`Jots.Storage`**: Private JSON persistence layer.
-5. **`jots-mcp` (`mcp-server/`)**: FastMCP Python adapter wrapping `NoteService` over D-Bus for AI agents.
+4. **`Jots.McpMain` (`jots-mcp`)**: Native standalone Model Context Protocol server over `stdio`.
+5. **`Jots.Storage`**: Private JSON persistence layer.
 
 *(See [`docs/architecture.md`](docs/architecture.md) for full component maps, sequence flows, and guardrail limits.)*
 
@@ -42,14 +42,14 @@ flatpak run org.flatpak.Builder --force-clean --sandbox --user --install --insta
 flatpak run io.github.comicdeed.jots.devel
 ```
 
-### 3. Run Canary Unit Tests
+### 3. Run Native MCP Server in Flatpak
 ```bash
-flatpak run --command=jots-unit-tests io.github.comicdeed.jots.devel
+flatpak run --command=jots-mcp io.github.comicdeed.jots.devel
 ```
 
-### 4. Run Python MCP Server Tests
+### 4. Run Canary Unit Tests
 ```bash
-uv run --directory mcp-server --with pytest --with pytest-asyncio pytest
+flatpak run --command=jots-unit-tests io.github.comicdeed.jots.devel
 ```
 
 ---

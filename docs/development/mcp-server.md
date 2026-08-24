@@ -8,68 +8,60 @@ This guide explains how to connect Model Context Protocol (MCP) clients (such as
 
 ```mermaid
 graph LR
-    subgraph Jots Native Core ["Jots Core (Vala)"]
+    subgraph Jots System ["Jots Core (Vala)"]
         Storage["Storage.vala"] --> NoteMgr["NoteManager.vala"]
         NoteMgr --> NoteService["NoteService.vala (io.github.comicdeed.jots.Notes)"]
+        McpServer["jots-mcp (Native Binary)"] -->|D-Bus IPC| NoteService
     end
 
-    subgraph Adapters & Consumers
-        MCP["MCP Wrapper (jots-mcp)"] -->|D-Bus| NoteService
-        CLI["CLI / Scripts"] -->|D-Bus| NoteService
-    end
-
-    Agent[AI Agent / Cursor / Claude] -->|stdio MCP| MCP
+    Agent[AI Agent / Cursor / Claude / Antigravity] -->|stdio JSON-RPC| McpServer
 ```
 
 - **Transport**: Standard input/output (`stdio`) JSON-RPC 2.0.
 - **Native IPC**: Native D-Bus session bus communication with the running Jots application (`io.github.comicdeed.jots.Notes` / `io.github.comicdeed.jots.devel`).
 - **Encapsulation**: Strict D-Bus boundary; storage internals remain completely private to Jots.
+- **Binary Footprint**: ~50 KB native executable, `< 2ms` startup, zero Python runtime dependencies.
 
 ---
 
 ## 2. Client Configuration Examples
 
-### Claude Desktop
-Add the following to your `claude_desktop_config.json` (located at `~/.config/Claude/claude_desktop_config.json` on Linux):
+### Flatpak Installation (Recommended)
+Add the following to your AI client configuration (e.g. `~/.config/Claude/claude_desktop_config.json`, `.cursor/mcp.json`, or Antigravity settings):
 
 ```json
 {
   "mcpServers": {
     "jots": {
-      "command": "uvx",
+      "command": "flatpak",
       "args": [
-        "--from",
-        "/path/to/elly-code-jorts/mcp-server",
-        "jots-mcp"
+        "run",
+        "--command=jots-mcp",
+        "io.github.comicdeed.jots.devel"
       ]
     }
   }
 }
 ```
 
-### Cursor / VSCode MCP Settings
-Add to your `.cursor/mcp.json` or VSCode MCP configuration:
+### Native Host Binary Installation
+If Jots is installed natively from source or `.deb`/RPM package:
 
 ```json
 {
   "mcpServers": {
     "jots": {
-      "command": "uvx",
-      "args": [
-        "--from",
-        "/path/to/elly-code-jorts/mcp-server",
-        "jots-mcp"
-      ]
+      "command": "jots-mcp"
     }
   }
 }
 ```
 
-### Gemini CLI / Antigravity
-Configure via `antigravity-cli` MCP server settings or run directly:
+### Antigravity / Gemini CLI
+Run directly via Flatpak command or native binary:
 
 ```bash
-uv run --directory /path/to/elly-code-jorts/mcp-server jots-mcp
+flatpak run --command=jots-mcp io.github.comicdeed.jots.devel
 ```
 
 ---

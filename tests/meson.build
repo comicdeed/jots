@@ -49,6 +49,7 @@ test_sources = files(
     'TestThemes.vala',
     'TestTextBuffer.vala',
     'TestZoom.vala',
+    'TestMcpProtocol.vala',
     meson.project_source_root() / 'src' / 'Objects' / 'NoteData.vala',
     meson.project_source_root() / 'src' / 'Objects' / 'Themes.vala',
     meson.project_source_root() / 'src' / 'Objects' / 'Zoom.vala',
@@ -57,6 +58,8 @@ test_sources = files(
     meson.project_source_root() / 'src' / 'Widgets' / 'TextBuffer.vala',
     meson.project_source_root() / 'src' / 'Utils' / 'Random.vala',
     meson.project_source_root() / 'src' / 'Constants.vala',
+    meson.project_source_root() / 'src' / 'Mcp' / 'NotesDbusProxy.vala',
+    meson.project_source_root() / 'src' / 'Mcp' / 'McpProtocol.vala',
 )
 
 test_executable = executable(

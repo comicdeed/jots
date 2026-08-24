@@ -100,3 +100,42 @@ executable(
     win_subsystem: development ? 'console' : 'windows',         # Show a console in windows dev builds. Seem to not bother standard builds
     install : true
 )
+
+#================================
+# Native MCP Server Executable (jots-mcp)
+
+mcp_sources = files(
+    'Mcp/NotesDbusProxy.vala',
+    'Mcp/McpProtocol.vala',
+    'Mcp/Main.vala',
+    'Constants.vala',
+    'Objects' / 'Themes.vala',
+    'Objects' / 'NoteData.vala',
+    'Objects' / 'ZoomType.vala',
+    'Objects' / 'Zoom.vala',
+    'Utils' / 'Random.vala',
+)
+
+mcp_dependencies = [
+    dependency('glib-2.0'),
+    dependency('gobject-2.0'),
+    dependency('gio-2.0'),
+    dependency('json-glib-1.0'),
+    dependency('gee-0.8'),
+]
+
+if windows
+    mcp_dependencies += dependency('gio-windows-2.0')
+else
+    mcp_dependencies += dependency('gio-unix-2.0')
+endif
+
+executable(
+    'jots-mcp',
+    config_file,
+    mcp_sources,
+    dependencies: mcp_dependencies,
+    c_args: '-w',
+    win_subsystem: 'console',
+    install: true
+)

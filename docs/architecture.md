@@ -56,8 +56,8 @@ graph TD
 * **`TextView.vala` & `TextBuffer.vala`**: Subclassed `Granite.HyperTextView` with URL/email detection and custom hanging bullet list indentation.
 * **`PreferenceWindow.vala` & `PreferencesView.vala`**: Settings window for global user preferences.
 
-### 2.5 Protocol Adapters (`mcp-server/`)
-* **`jots-mcp`**: Standalone Python package leveraging the official `mcp` SDK (`MCPServer`) and `dbus-fast`. Exposes standard MCP tools, resources (`jots://notes/{id}`), and prompts by translating JSON-RPC requests into calls against the native `io.github.comicdeed.jots.Notes` D-Bus service.
+### 2.5 Native MCP Server Binary (`src/Mcp/`)
+* **`jots-mcp`**: Standalone CLI executable compiled alongside Jots in `meson.build`. Links only against `glib-2.0`, `gio-2.0`, and `json-glib-1.0` (zero GTK/display overhead, ~50 KB footprint, `< 2ms` startup). Implements line-delimited JSON-RPC 2.0 over `stdio` according to MCP specification `2024-11-05` and connects directly to `io.github.comicdeed.jots.Notes` on D-Bus. Bundled inside Flatpak at `/app/bin/jots-mcp`.
 
 ---
 

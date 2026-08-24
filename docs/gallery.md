@@ -1,56 +1,53 @@
+# Icon Gallery
 
-# Gallery
+A visual reference catalogue of all supported build-time icon variants across all target resolutions (`16px` to `128px`).
 
+---
 
-## Default
+## 1. Default (Sticky Note & Ballpoint Pen)
 
-![16](../data/icons/default/16.svg)
-![24](../data/icons/default/24.svg)
-![32](../data/icons/default/32.svg)
-![48](../data/icons/default/48.svg)
-![64](../data/icons/default/64.svg)
-![128](../data/icons/default/128.svg)
+The primary production icon featuring a warm yellow sticky note with a dog-ear fold, hand-drawn ballpoint blue `J`, and double underline strokes.
 
+| 16px | 24px | 32px | 48px | 64px | 128px |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| ![16](../data/icons/default/hicolor/16.png) | ![24](../data/icons/default/hicolor/24.png) | ![32](../data/icons/default/hicolor/32.png) | ![48](../data/icons/default/hicolor/48.png) | ![64](../data/icons/default/hicolor/64.png) | ![128](../data/icons/default/hicolor/128.png) |
 
+---
 
-## Classic
+## 2. Devel (Development & Nightly Builds)
 
-![16](../data/icons/classic/16.svg)
-![24](../data/icons/classic/24.svg)
-![32](../data/icons/classic/32.svg)
-![48](../data/icons/classic/48.svg)
-![64](../data/icons/classic/64.svg)
-![128](../data/icons/classic/128.svg)
+The development variant with a pale yellow paper canvas and an integrated yellow/black diagonal hazard stripe footer along the bottom edge of the sticky note.
 
+| 16px | 24px | 32px | 48px | 64px | 128px |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| ![16](../data/icons/devel/hicolor/16.png) | ![24](../data/icons/devel/hicolor/24.png) | ![32](../data/icons/devel/hicolor/32.png) | ![48](../data/icons/devel/hicolor/48.png) | ![64](../data/icons/devel/hicolor/64.png) | ![128](../data/icons/devel/hicolor/128.png) |
 
+---
 
-## Pride
+## 3. Halloween (Pumpkin Note & Ghost Outline)
 
-![16](../data/icons/pride/16.svg)
-![24](../data/icons/pride/24.svg)
-![32](../data/icons/pride/32.svg)
-![48](../data/icons/pride/48.svg)
-![64](../data/icons/pride/64.svg)
-![128](../data/icons/pride/128.svg)
+A seasonal spooky two-tone adaptation with a pumpkin orange paper base, midnight ink, and a hand-drawn ghost outline accent.
 
+| 16px | 24px | 32px | 48px | 64px | 128px |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| ![16](../data/icons/halloween/hicolor/16.png) | ![24](../data/icons/halloween/hicolor/24.png) | ![32](../data/icons/halloween/hicolor/32.png) | ![48](../data/icons/halloween/hicolor/48.png) | ![64](../data/icons/halloween/hicolor/64.png) | ![128](../data/icons/halloween/hicolor/128.png) |
 
+---
 
-## Halloween
+## 4. Pride (3-Line Rainbow Arch)
 
-![16](../data/icons/halloween/16.svg)
-![24](../data/icons/halloween/24.svg)
-![32](../data/icons/halloween/32.svg)
-![48](../data/icons/halloween/48.svg)
-![64](../data/icons/halloween/64.svg)
-![128](../data/icons/halloween/128.svg)
+A minimalist two-tone adaptation featuring cream paper and ballpoint blue ink with three concentric upward rainbow arches across all resolutions.
 
+| 16px | 24px | 32px | 48px | 64px | 128px |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| ![16](../data/icons/pride/hicolor/16.png) | ![24](../data/icons/pride/hicolor/24.png) | ![32](../data/icons/pride/hicolor/32.png) | ![48](../data/icons/pride/hicolor/48.png) | ![64](../data/icons/pride/hicolor/64.png) | ![128](../data/icons/pride/hicolor/128.png) |
 
+---
 
-## Devel
+## 5. Classic (Vintage Stationery)
 
-![16](../data/icons/devel/16.svg)
-![24](../data/icons/devel/24.svg)
-![32](../data/icons/devel/32.svg)
-![48](../data/icons/devel/48.svg)
-![64](../data/icons/devel/64.svg)
-![128](../data/icons/devel/128.svg)
+A vintage warm kraft paper variant with deep charcoal/sepia ink.
+
+| 16px | 24px | 32px | 48px | 64px | 128px |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| ![16](../data/icons/classic/hicolor/16.png) | ![24](../data/icons/classic/hicolor/24.png) | ![32](../data/icons/classic/hicolor/32.png) | ![48](../data/icons/classic/hicolor/48.png) | ![64](../data/icons/classic/hicolor/64.png) | ![128](../data/icons/classic/hicolor/128.png) |

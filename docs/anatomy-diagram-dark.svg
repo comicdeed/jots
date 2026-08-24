@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 480" width="100%" height="480">
+  <defs>
+    <!-- Note Shadow -->
+    <filter id="diagram-note-shadow-dark" x="-10%" y="-10%" width="125%" height="130%">
+      <feDropShadow dx="0" dy="14" stdDeviation="12" flood-color="#000000" flood-opacity="0.35" />
+    </filter>
+    <filter id="diagram-dogear-shadow-dark" x="-25%" y="-25%" width="150%" height="150%">
+      <feDropShadow dx="-4" dy="8" stdDeviation="6" flood-color="#000000" flood-opacity="0.40" />
+    </filter>
+
+    <!-- Gradients -->
+    <linearGradient id="diagram-note-grad-dark" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFDD53" />
+      <stop offset="40%" stop-color="#FCD232" />
+      <stop offset="100%" stop-color="#F5BD19" />
+    </linearGradient>
+    <linearGradient id="diagram-fold-grad-dark" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFF5B8" />
+      <stop offset="45%" stop-color="#FEEA85" />
+      <stop offset="100%" stop-color="#E5BE30" />
+    </linearGradient>
+
+    <!-- Marker Arrowheads -->
+    <marker id="arrow-dark" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#62A0EA" />
+    </marker>
+    <marker id="dot-dark" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6">
+      <circle cx="5" cy="5" r="4" fill="#62A0EA" />
+    </marker>
+
+    <!-- J Clip Path -->
+    <clipPath id="diagram-j-clip-dark">
+      <path d="
+        M 175 142 C 210 134 260 126 325 120 C 334 119 340 126 336 135
+        C 330 148 314 156 295 158 C 292 195 285 260 270 318
+        C 255 372 225 398 178 398 C 134 398 112 362 114 322
+        C 116 288 140 270 162 272 C 180 274 188 290 184 308
+        C 178 334 162 346 154 348 C 160 360 172 368 192 366
+        C 220 362 242 334 250 285 C 260 225 264 170 265 146
+        C 230 152 194 162 174 170 C 165 174 158 164 164 154
+        C 167 148 171 144 175 142 Z" />
+    </clipPath>
+  </defs>
+
+  <!-- ======================================================== -->
+  <!-- Main Icon Graphic (Positioned at X:30, Y:20) -->
+  <!-- ======================================================== -->
+  <g transform="translate(30, 20) scale(0.85)">
+    <!-- Sticky Note Pad Body -->
+    <g filter="url(#diagram-note-shadow-dark)">
+      <path d="M 112 40 L 352 40 Q 360 40 366 46 L 466 146 Q 472 152 472 160 L 472 400 C 472 440 440 472 400 472 L 112 472 C 72 472 40 440 40 400 L 40 112 C 40 72 72 40 112 40 Z"
+            fill="url(#diagram-note-grad-dark)" />
+    </g>
+
+    <!-- Dog-Ear Corner -->
+    <path d="M 352 40 C 352 95 365 160 472 160 L 366 46 Z"
+          fill="url(#diagram-fold-grad-dark)" filter="url(#diagram-dogear-shadow-dark)" />
+
+    <!-- Medium Density Hatching -->
+    <g clip-path="url(#diagram-j-clip-dark)" stroke="#0E3D9E" stroke-width="7" stroke-linecap="round">
+      <line x1="160" y1="120" x2="240" y2="200" />
+      <line x1="200" y1="110" x2="280" y2="190" />
+      <line x1="240" y1="100" x2="320" y2="180" />
+      <line x1="280" y1="90"  x2="360" y2="170" />
+      <line x1="210" y1="160" x2="310" y2="260" />
+      <line x1="190" y1="200" x2="290" y2="300" />
+      <line x1="170" y1="240" x2="270" y2="340" />
+      <line x1="150" y1="280" x2="250" y2="380" />
+      <line x1="130" y1="310" x2="230" y2="410" />
+      <line x1="100" y1="310" x2="200" y2="410" />
+      <line x1="90"  y1="270" x2="190" y2="370" />
+      <line x1="110" y1="240" x2="210" y2="340" />
+    </g>
+
+    <!-- Outlines -->
+    <path d="
+      M 175 142 C 210 134 260 126 325 120 C 334 119 340 126 336 135
+      C 330 148 314 156 295 158 C 292 195 285 260 270 318
+      C 255 372 225 398 178 398 C 134 398 112 362 114 322
+      C 116 288 140 270 162 272 C 180 274 188 290 184 308
+      C 178 334 162 346 154 348 C 160 360 172 368 192 366
+      C 220 362 242 334 250 285 C 260 225 264 170 265 146
+      C 230 152 194 162 174 170 C 165 174 158 164 164 154
+      C 167 148 171 144 175 142 Z"
+      fill="none" stroke="#0B3082" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round" />
+
+    <!-- Double Underlines -->
+    <path d="M 230 418 C 268 409 314 402 362 398 M 238 440 C 276 433 322 426 372 422"
+          fill="none" stroke="#0B3082" stroke-width="6.5" stroke-linecap="round" />
+  </g>
+
+  <!-- ======================================================== -->
+  <!-- Callout Annotations & Leader Lines (Dark Theme) -->
+  <!-- ======================================================== -->
+
+  <!-- Callout 1: Dog-Ear Fold -->
+  <path d="M 480 85 L 420 85 L 390 95" stroke="#62A0EA" stroke-width="2" stroke-dasharray="4,3" fill="none" marker-start="url(#dot-dark)" marker-end="url(#arrow-dark)" />
+  <text x="495" y="80" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="15" font-weight="bold" fill="#FFFFFF">Dog-Ear Corner Fold</text>
+  <text x="495" y="100" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="13" font-weight="500" fill="#D0D0D0">Physical, ephemeral &amp; peelable desktop note</text>
+
+  <!-- Callout 2: Classic Ballpoint Blue "J" -->
+  <path d="M 480 190 L 330 190 L 270 210" stroke="#62A0EA" stroke-width="2" stroke-dasharray="4,3" fill="none" marker-start="url(#dot-dark)" marker-end="url(#arrow-dark)" />
+  <text x="495" y="185" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="15" font-weight="bold" fill="#FFFFFF">Hand-Drawn Ballpoint "J"</text>
+  <text x="495" y="205" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="13" font-weight="500" fill="#D0D0D0">Classic blue ink shading capturing energetic thought</text>
+
+  <!-- Callout 3: 5x5 cm Sticky Note Pad -->
+  <path d="M 480 295 L 440 295 L 405 320" stroke="#62A0EA" stroke-width="2" stroke-dasharray="4,3" fill="none" marker-start="url(#dot-dark)" marker-end="url(#arrow-dark)" />
+  <text x="495" y="290" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="15" font-weight="bold" fill="#FFFFFF">5×5 cm Sticky Note Canvas</text>
+  <text x="495" y="310" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="13" font-weight="500" fill="#D0D0D0">1:1 squircle format with warm yellow paper gradient</text>
+
+  <!-- Callout 4: Underline Strokes / Thematic Accents -->
+  <path d="M 480 400 L 380 400 L 305 385" stroke="#62A0EA" stroke-width="2" stroke-dasharray="4,3" fill="none" marker-start="url(#dot-dark)" marker-end="url(#arrow-dark)" />
+  <text x="495" y="395" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="15" font-weight="bold" fill="#FFFFFF">Underline Strokes / Accents</text>
+  <text x="495" y="415" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="13" font-weight="500" fill="#D0D0D0">Emphasis &amp; key reminder, adaptable across themes</text>
+</svg>

@@ -8,7 +8,7 @@
   </a>
   
   <span align="center">
-    <img class="center" src="https://github.com/comicdeed/jots/blob/main/data/screenshots/spread.png" alt="Jots screenshot">
+    <img class="center" src="data/screenshots/spread.png" alt="Jots screenshot">
   </span>
 </div>
 

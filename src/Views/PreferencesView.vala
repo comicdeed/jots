@@ -280,7 +280,6 @@ namespace Jots {
                     _("Close preferences")
                 )
             };
-            right_box.append (restore_button);
             right_box.append (close);
 
             prefview.append (settingsbox);

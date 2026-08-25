@@ -141,12 +141,21 @@ public class Jots.NoteManager : Object, Jots.ActiveNotesProvider {
             existing_ids.add (note.id);
         }
 
-        var imported_count = storage.import_notes (legacy_notes);
-
+        var notes_to_import = new Gee.ArrayList<NoteData> ();
         foreach (var note in legacy_notes) {
             if (!existing_ids.contains (note.id)) {
-                create_note (note);
+                notes_to_import.add (note);
             }
+        }
+
+        if (notes_to_import.size == 0) {
+            return 0;
+        }
+
+        var imported_count = storage.import_notes (notes_to_import);
+
+        foreach (var note in notes_to_import) {
+            create_note (note);
         }
 
         return imported_count;

@@ -23,47 +23,51 @@ namespace Jots {
         }
 
         public async void start () {
-            // Attempt D-Bus connection to Jots session service
+            yield try_connect_dbus ();
+            protocol.set_proxy (proxy);
+
+            // Stdio loop
+            yield read_next_line ();
+        }
+
+        private async void try_connect_dbus () {
             try {
                 var conn = yield Bus.get (BusType.SESSION);
-                string[] candidates = {
-                    "io.github.comicdeed.jots",
+                string[] bus_names = {
                     "io.github.comicdeed.jots.devel",
+                    "io.github.comicdeed.jots",
                     "io.github.elly_code.jorts"
                 };
 
-                foreach (var bus_name in candidates) {
-                    try {
-                        proxy = yield conn.get_proxy<NotesProxy> (
-                            bus_name,
-                            "/io/github/comicdeed/jots/Notes"
-                        );
-                        // test ping
-                        proxy.ping ();
-                        printerr ("jots-mcp: Connected to D-Bus service at %s\n", bus_name);
-                        break;
-                    } catch (GLib.Error e) {
+                string[] object_paths = {
+                    "/io/github/comicdeed/jots/devel/Notes",
+                    "/io/github/comicdeed/jots/Notes",
+                    "/io/github/comicdeed/jots/devel",
+                    "/io/github/comicdeed/jots",
+                    "/io/github/elly_code/jorts/Notes",
+                    "/io/github/elly_code/jorts"
+                };
+
+                foreach (var bus_name in bus_names) {
+                    foreach (var obj_path in object_paths) {
                         try {
-                            proxy = yield conn.get_proxy<NotesProxy> (
+                            var p = yield conn.get_proxy<NotesProxy> (
                                 bus_name,
-                                "/io/github/comicdeed/jots"
+                                obj_path
                             );
-                            proxy.ping ();
-                            printerr ("jots-mcp: Connected to D-Bus service at %s (base path)\n", bus_name);
-                            break;
-                        } catch (GLib.Error e2) {
-                            proxy = null;
+                            // Verify responsiveness with ping
+                            p.ping ();
+                            proxy = p;
+                            printerr ("jots-mcp: Connected to D-Bus service at %s (%s)\n", bus_name, obj_path);
+                            return;
+                        } catch (GLib.Error e) {
+                            // continue trying candidates
                         }
                     }
                 }
             } catch (GLib.Error e) {
                 printerr ("jots-mcp: Warning - D-Bus session bus unavailable: %s\n", e.message);
             }
-
-            protocol.set_proxy (proxy);
-
-            // Stdio loop
-            yield read_next_line ();
         }
 
         private async void read_next_line () {
@@ -78,16 +82,8 @@ namespace Jots {
 
                 // If proxy was not connected initially, attempt reconnect on demand
                 if (proxy == null) {
-                    try {
-                        var conn = yield Bus.get (BusType.SESSION);
-                        proxy = yield conn.get_proxy<NotesProxy> (
-                            "io.github.comicdeed.jots.devel",
-                            "/io/github/comicdeed/jots/Notes"
-                        );
-                        protocol.set_proxy (proxy);
-                    } catch (GLib.Error e) {
-                        // ignore
-                    }
+                    yield try_connect_dbus ();
+                    protocol.set_proxy (proxy);
                 }
 
                 var response = protocol.process_message (line);

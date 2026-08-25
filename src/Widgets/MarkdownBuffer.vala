@@ -172,22 +172,27 @@ namespace Jots {
 
         private void init_regexes () {
             try {
-                regex_h1 = new GLib.Regex ("^# (.+)$", GLib.RegexCompileFlags.MULTILINE);
-                regex_h2 = new GLib.Regex ("^## (.+)$", GLib.RegexCompileFlags.MULTILINE);
-                regex_h3 = new GLib.Regex ("^### (.+)$", GLib.RegexCompileFlags.MULTILINE);
-                regex_bold = new GLib.Regex ("(\\*\\*|__)(.+?)\\1");
-                regex_italic = new GLib.Regex ("(?<!\\*|_)(\\*|_)(.+?)(?<!\\*|_)\\1");
-                regex_strike = new GLib.Regex ("(~~)(.+?)\\1");
-                regex_code = new GLib.Regex ("(`)([^`\n]+?)\\1");
+                regex_h1 = new GLib.Regex ("^(#)\\s+(.+)$", GLib.RegexCompileFlags.MULTILINE);
+                regex_h2 = new GLib.Regex ("^(##)\\s+(.+)$", GLib.RegexCompileFlags.MULTILINE);
+                regex_h3 = new GLib.Regex ("^(###)\\s+(.+)$", GLib.RegexCompileFlags.MULTILINE);
+                regex_bold = new GLib.Regex ("(\\*\\*|__)(?=\\S)(.+?)(?<=\\S)\\1");
+                regex_italic = new GLib.Regex ("(?<![\\*_\\w])([\\*_])(?![\\*_\\s])(.*?)(?<![\\*_\\s])\\1(?![\\*_\\w])");
+                regex_strike = new GLib.Regex ("(~~)(?=\\S)(.+?)(?<=\\S)\\1");
+                regex_code = new GLib.Regex ("(`)([^`\n]+?)(`)");
                 regex_code_block = new GLib.Regex ("(```[a-zA-Z0-9_-]*\\n?)([\\s\\S]*?)(```)", GLib.RegexCompileFlags.DOTALL);
-                regex_quote = new GLib.Regex ("^> (.+)$", GLib.RegexCompileFlags.MULTILINE);
+                regex_quote = new GLib.Regex ("^(>)\\s+(.+)$", GLib.RegexCompileFlags.MULTILINE);
                 regex_task_done = new GLib.Regex ("^([\\*\\+-]\\s+\\[[xX]\\]\\s+)(.+)$", GLib.RegexCompileFlags.MULTILINE);
                 regex_task_todo = new GLib.Regex ("^([\\*\\+-]\\s+\\[ \\]\\s+)(.+)$", GLib.RegexCompileFlags.MULTILINE);
-                regex_list = new GLib.Regex ("^([\\*\\+-]|\\d+\\.)\\s+(.+)$", GLib.RegexCompileFlags.MULTILINE);
+                regex_list = new GLib.Regex ("^([\\*\\+-](?!\\s+\\[[ xX]\\])|\\d+\\.)\\s+(.+)$", GLib.RegexCompileFlags.MULTILINE);
                 regex_link = new GLib.Regex ("\\[([^\\]]+)\\]\\(([^\\)]+)\\)");
             } catch (GLib.Error e) {
                 warning ("Failed to compile Markdown regex: %s", e.message);
             }
+        }
+
+        private inline void get_iter_at_byte_offset (string text, out Gtk.TextIter iter, int byte_pos) {
+            var char_offset = (int) text.char_count ((long) byte_pos);
+            get_iter_at_offset (out iter, char_offset);
         }
 
         private void on_buffer_changed () {
@@ -247,12 +252,12 @@ namespace Jots {
             }
 
             // Headings H1, H2, H3
-            apply_regex_line_match (regex_h1, text, TAG_H1, 2);
-            apply_regex_line_match (regex_h2, text, TAG_H2, 3);
-            apply_regex_line_match (regex_h3, text, TAG_H3, 4);
+            apply_regex_line_match (regex_h1, text, TAG_H1);
+            apply_regex_line_match (regex_h2, text, TAG_H2);
+            apply_regex_line_match (regex_h3, text, TAG_H3);
 
             // Blockquotes
-            apply_regex_line_match (regex_quote, text, TAG_QUOTE, 2);
+            apply_regex_line_match (regex_quote, text, TAG_QUOTE);
 
             // Checklists
             apply_regex_task_match (regex_task_done, text, true);
@@ -274,22 +279,24 @@ namespace Jots {
             is_highlighting = false;
         }
 
-        private void apply_regex_line_match (GLib.Regex? regex, string text, string tag_name, int prefix_len) {
+        private void apply_regex_line_match (GLib.Regex? regex, string text, string tag_name) {
             if (regex == null) return;
             try {
                 GLib.MatchInfo info;
                 if (regex.match (text, 0, out info)) {
                     while (info.matches ()) {
-                        int start_pos = 0;
-                        int end_pos = 0;
-                        if (info.fetch_pos (0, out start_pos, out end_pos)) {
-                            Gtk.TextIter s, e, marker_e;
-                            get_iter_at_offset (out s, start_pos);
-                            get_iter_at_offset (out e, end_pos);
-                            get_iter_at_offset (out marker_e, start_pos + prefix_len);
+                        int prefix_s = 0, prefix_e = 0;
+                        int full_s = 0, full_e = 0;
+                        if (info.fetch_pos (1, out prefix_s, out prefix_e) &&
+                            info.fetch_pos (0, out full_s, out full_e)) {
+                            Gtk.TextIter ps, pe, fs, fe;
+                            get_iter_at_byte_offset (text, out ps, prefix_s);
+                            get_iter_at_byte_offset (text, out pe, prefix_e);
+                            get_iter_at_byte_offset (text, out fs, full_s);
+                            get_iter_at_byte_offset (text, out fe, full_e);
 
-                            apply_tag_by_name (tag_name, s, e);
-                            apply_tag_by_name (TAG_SYNTAX, s, marker_e);
+                            apply_tag_by_name (tag_name, fs, fe);
+                            apply_tag_by_name (TAG_SYNTAX, ps, pe);
                         }
                         info.next ();
                     }
@@ -312,10 +319,10 @@ namespace Jots {
                         if (info.fetch_pos (1, out marker_start, out marker_end) &&
                             info.fetch_pos (2, out content_start, out content_end)) {
                             Gtk.TextIter ms, me, cs, ce;
-                            get_iter_at_offset (out ms, marker_start);
-                            get_iter_at_offset (out me, marker_end);
-                            get_iter_at_offset (out cs, content_start);
-                            get_iter_at_offset (out ce, content_end);
+                            get_iter_at_byte_offset (text, out ms, marker_start);
+                            get_iter_at_byte_offset (text, out me, marker_end);
+                            get_iter_at_byte_offset (text, out cs, content_start);
+                            get_iter_at_byte_offset (text, out ce, content_end);
 
                             apply_tag_by_name (TAG_LIST, ms, ce);
                             apply_tag_by_name (TAG_SYNTAX, ms, me);
@@ -341,8 +348,8 @@ namespace Jots {
                         int end_pos = 0;
                         if (info.fetch_pos (0, out start_pos, out end_pos)) {
                             Gtk.TextIter s, e;
-                            get_iter_at_offset (out s, start_pos);
-                            get_iter_at_offset (out e, end_pos);
+                            get_iter_at_byte_offset (text, out s, start_pos);
+                            get_iter_at_byte_offset (text, out e, end_pos);
                             apply_tag_by_name (TAG_LIST, s, e);
                         }
                         info.next ();
@@ -365,23 +372,21 @@ namespace Jots {
                         int content_e = 0;
                         if (info.fetch_pos (0, out full_s, out full_e) &&
                             info.fetch_pos (2, out content_s, out content_e)) {
-                            Gtk.TextIter cs, ce;
-                            get_iter_at_offset (out cs, content_s);
-                            get_iter_at_offset (out ce, content_e);
-
-                            Gtk.TextIter ds1, de1, ds2, de2;
-                            get_iter_at_offset (out ds1, full_s);
-                            get_iter_at_offset (out de1, content_s);
-                            get_iter_at_offset (out ds2, content_e);
-                            get_iter_at_offset (out de2, full_e);
+                            Gtk.TextIter cs, ce, ds1, de1, ds2, de2;
+                            get_iter_at_byte_offset (text, out cs, content_s);
+                            get_iter_at_byte_offset (text, out ce, content_end_pos (info));
+                            get_iter_at_byte_offset (text, out ds1, full_s);
+                            get_iter_at_byte_offset (text, out de1, content_s);
+                            get_iter_at_byte_offset (text, out ds2, content_end_pos (info));
+                            get_iter_at_byte_offset (text, out de2, full_e);
 
                             apply_tag_by_name (TAG_SYNTAX, ds1, de1);
                             apply_tag_by_name (TAG_SYNTAX, ds2, de2);
 
                             if (content_tag == TAG_CODE) {
                                 Gtk.TextIter fs, fe;
-                                get_iter_at_offset (out fs, full_s);
-                                get_iter_at_offset (out fe, full_e);
+                                get_iter_at_byte_offset (text, out fs, full_s);
+                                get_iter_at_byte_offset (text, out fe, full_e);
                                 apply_tag_by_name (TAG_CODE, fs, fe);
                             } else {
                                 apply_tag_by_name (content_tag, cs, ce);
@@ -393,6 +398,12 @@ namespace Jots {
             } catch (GLib.Error e) {
                 debug ("Inline match error: %s", e.message);
             }
+        }
+
+        private inline int content_end_pos (GLib.MatchInfo info) {
+            int s = 0, e = 0;
+            info.fetch_pos (2, out s, out e);
+            return e;
         }
 
         private void apply_regex_code_block_match (GLib.Regex? regex, string text) {
@@ -410,12 +421,12 @@ namespace Jots {
                             info.fetch_pos (2, out content_s, out content_e) &&
                             info.fetch_pos (3, out close_s, out close_e)) {
                             Gtk.TextIter fs, fe, os, oe, cls, cle;
-                            get_iter_at_offset (out fs, full_s);
-                            get_iter_at_offset (out fe, full_e);
-                            get_iter_at_offset (out os, open_s);
-                            get_iter_at_offset (out oe, open_e);
-                            get_iter_at_offset (out cls, close_s);
-                            get_iter_at_offset (out cle, close_e);
+                            get_iter_at_byte_offset (text, out fs, full_s);
+                            get_iter_at_byte_offset (text, out fe, full_e);
+                            get_iter_at_byte_offset (text, out os, open_s);
+                            get_iter_at_byte_offset (text, out oe, open_e);
+                            get_iter_at_byte_offset (text, out cls, close_s);
+                            get_iter_at_byte_offset (text, out cle, close_e);
 
                             apply_tag_by_name (TAG_CODE_BLOCK, fs, fe);
                             apply_tag_by_name (TAG_SYNTAX, os, oe);
@@ -439,8 +450,8 @@ namespace Jots {
                         int text_e = 0;
                         if (info.fetch_pos (1, out text_s, out text_e)) {
                             Gtk.TextIter s, e;
-                            get_iter_at_offset (out s, text_s);
-                            get_iter_at_offset (out e, text_e);
+                            get_iter_at_byte_offset (text, out s, text_s);
+                            get_iter_at_byte_offset (text, out e, text_e);
                             apply_tag_by_name (TAG_LINK, s, e);
                         }
                         info.next ();

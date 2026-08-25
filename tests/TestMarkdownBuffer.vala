@@ -203,5 +203,34 @@ namespace Jots.Tests {
             assert_true (code_tag.family_set);
             assert_true (block_tag.family_set);
         });
+
+        /**
+         * UC-30.20.100: Multibyte UTF-8 Emoji and Multiline Offset Alignment
+         */
+        GLib.Test.add_func ("/MarkdownBuffer/UC_30_20_100/MultibyteEmojiOffsetAlignment", () => {
+            var buffer = new Jots.MarkdownBuffer ();
+            buffer.text = "### ✅ Completed Initiatives\n- [x] **Native MCP Server (`jots-mcp`)** — Stdio\n### 🟡 Planned Backlog\n- [ ] **Local Search** (`code`)";
+            buffer.highlight_markdown ();
+
+            // Check that bold tag on "Native MCP Server (`jots-mcp`)" is applied to the exact text
+            // "### ✅ Completed Initiatives\n- [x] **Native MCP Server (`jots-mcp`)**"
+            // Find "Native"
+            Gtk.TextIter native_start, native_end;
+            buffer.get_iter_at_line_offset (out native_start, 1, 8); // start of "Native"
+            native_end = native_start.copy ();
+            native_end.forward_chars (6);
+            assert_true (native_start.has_tag (buffer.tag_table.lookup (Jots.MarkdownBuffer.TAG_BOLD)));
+            assert_true (native_end.has_tag (buffer.tag_table.lookup (Jots.MarkdownBuffer.TAG_BOLD)));
+
+            // Check that inline code `jots-mcp` is tagged
+            Gtk.TextIter code_iter;
+            buffer.get_iter_at_line_offset (out code_iter, 1, 28); // inside "jots-mcp"
+            assert_true (code_iter.has_tag (buffer.tag_table.lookup (Jots.MarkdownBuffer.TAG_CODE)));
+
+            // Check after second emoji (🟡) that "Local Search" is bold and NOT skewed
+            Gtk.TextIter local_iter;
+            buffer.get_iter_at_line_offset (out local_iter, 3, 8); // start of "Local"
+            assert_true (local_iter.has_tag (buffer.tag_table.lookup (Jots.MarkdownBuffer.TAG_BOLD)));
+        });
     }
 }

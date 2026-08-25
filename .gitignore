@@ -5,6 +5,7 @@
 !.editorconfig
 !.github/
 !.agents/
+!.githooks/
 ~*
 builddir
 repo

@@ -1,0 +1,11 @@
+#!/bin/bash
+while read local_ref local_sha remote_ref remote_sha
+do
+    if [[ "$remote_ref" == "refs/heads/main" && "$ALLOW_MAIN_PUSH" != "1" ]]; then
+        echo "⛔ [Git Guardrail] Direct push to 'main' is blocked!"
+        echo "💡 All development and feature work must be pushed to 'develop'."
+        echo "💡 To land changes on 'main', open a Pull Request from 'develop'."
+        exit 1
+    fi
+done
+exit 0

@@ -1,57 +1,57 @@
 <div align="center">
   <img alt="Jots Icon" src="data/icons/default/hicolor/128.png" />
   <h1>Jots</h1>
-  <h3>A simple, lightweight sticky notes application for the Linux desktop</h3>
+  <p>Lightweight sticky notes application for the Linux desktop.</p>
 
   <a href="https://elementary.io">
     <img src="https://ellie-commons.github.io/community-badge.svg" alt="Made for elementary OS">
   </a>
   
-  <span align="center">
+  <p align="center">
     <img class="center" src="data/screenshots/spread.png" alt="Jots screenshot">
-  </span>
+  </p>
 </div>
 
-<br/>
+---
 
-> 📖 **New to Jots?** Read the **[Jots User Guide](docs/user-guide.md)** for a complete overview of features, keyboard shortcuts, smart lists, and AI agent automation.
+> 📖 **User Guide**: Refer to the **[Jots User Guide](docs/user-guide.md)** for a complete overview of note operations, keyboard shortcuts, formatting, and AI automation.
 
-<br/>
+---
 
-## ✨ Key Features
+## Key features
 
-* 📝 **Live Markdown Rendering**: Real-time syntax highlighting for headings (H1–H3), bold/italic/strikethrough, blockquotes, code spans, code fences, checklists (`- [ ]`), and clickable links without modal preview toggles.
-* 🎨 **10 Pastel Color Themes**: Beautiful, distraction-free color palettes that adapt seamlessly to Light and Dark system styles.
-* 🔤 **Typography Customization**: Select custom proportional and code monospace fonts with automatic monospace catalog filtering.
-* 🔒 **Scribbly Privacy Mode**: Automatic focus-driven text obfuscation with handwritten squiggles (`Redacted Script`) to protect sensitive notes from shoulder surfing.
-* 📂 **Markdown Storage & Interoperability**: Notes are stored as plain `.md` files with YAML front matter—directly compatible with **Obsidian**, **Logseq**, `git`, and backup tools.
-* 🤖 **Native MCP Server (`jots-mcp`)**: Built-in Model Context Protocol server enabling AI assistants (Claude Desktop, Cursor, Gemini CLI, Antigravity) to manage your desktop notes in real time.
-* ⚡ **Lightning Fast & Lightweight**: Written in native Vala/GTK4 with sub-millisecond startup, zero heavy runtimes, and low memory usage.
+* 📝 **Live Markdown rendering**: Real-time syntax highlighting for headings (H1–H3), bold/italic/strikethrough emphasis, blockquotes, code spans, code fences, task lists (`- [ ]`, `- [x]`), and clickable links without modal preview toggles.
+* 🎨 **10 pastel color themes**: Thoughtfully designed color palettes that adapt to light and dark system styles.
+* 🔤 **Typography customization**: Custom proportional and code monospace font selection with automatic monospace catalog filtering.
+* 🔒 **Scribbly privacy mode**: Focus-driven text obfuscation with handwritten squiggles (`Redacted Script`) to protect sensitive notes from shoulder surfing.
+* 📂 **Markdown storage & interoperability**: Notes are stored as plain `.md` files with YAML front matter—directly compatible with **Obsidian**, **Logseq**, `git`, and backup tools.
+* 🤖 **Native MCP server (`jots-mcp`)**: Built-in Model Context Protocol server enabling AI assistants (Claude Desktop, Cursor, Gemini CLI, Antigravity) to manage desktop notes in real time.
+* ⚡ **Fast and lightweight**: Written in native Vala/GTK4 with sub-millisecond startup, zero heavy runtimes, and low memory usage.
 
-<br/>
+---
 
-## 🦺 Installation & Compilation
+## Installation and build instructions
 
 Jots is distributed as a sandboxed Flatpak application:
 
 * **Flathub**: [Download on Flathub](https://flathub.org/apps/io.github.comicdeed.jots)
 * **AppCenter**: [Get it on AppCenter](https://appcenter.elementary.io/io.github.comicdeed.jots)
-* **Local Build / Compilation**: Refer to the [Building Guide](docs/development/building.md) for native and sandbox compilation instructions.
-* **Windows**: Basic experimental installers are available in the Releases section. Detailed MSYS2 build steps are available in the [Windows Build Guide](docs/development/windows.md).
+* **Local compilation**: Refer to the [Building Guide](docs/development/building.md) for native and sandbox compilation instructions.
+* **Windows**: Experimental installers are available in the Releases section. Detailed MSYS2 build steps are available in the [Windows Build Guide](docs/development/windows.md).
 
-<br/>
+---
 
-## 🤖 AI Assistant & MCP Automation
+## AI assistant and MCP automation
 
-Jots includes a native [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server (`jots-mcp`) allowing AI assistants (Claude Desktop, Cursor, Gemini CLI, and Antigravity) to query, create, edit, search, and delete sticky notes live on your desktop.
+Jots includes a native [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server (`jots-mcp`) allowing AI assistants (Claude Desktop, Cursor, Gemini CLI, and Antigravity) to query, create, edit, search, and delete sticky notes live on the desktop.
 
 See the **[MCP Integration Guide](docs/development/mcp-server.md)** or the **[User Guide AI Section](docs/user-guide.md#7-ai-assistant--mcp-integration)** for setup details.
 
-<br/>
+---
 
-## 💾 Notes Storage & Obsidian Interoperability
+## Markdown storage and Obsidian/Logseq interoperability
 
-All notes are stored as individual, human-readable `.md` Markdown files with standardized YAML front-matter headers containing note metadata (UUID, title, theme, zoom, and window dimensions):
+All notes are stored as individual `.md` Markdown files with standardized YAML front-matter headers containing note metadata (UUID, title, theme, zoom, and window dimensions):
 
 ```markdown
 ---
@@ -68,14 +68,25 @@ height: 320
 - [ ] Implement full-text search popover
 ```
 
-### Storage Paths
-* **Flatpak Sandbox**:
+### Storage paths
+* **Flatpak sandbox**:
   `~/.var/app/io.github.comicdeed.jots/data/io.github.comicdeed.jots/notes/`
-* **Native / System Package**:
+* **Native / system package**:
   `~/.local/share/io.github.comicdeed.jots/notes/`
 
-<br/>
+---
 
-## ❓ Support & Discussions
+## Documentation index
+
+* **[User Guide](docs/user-guide.md)**: End-user documentation for note operations and shortcuts.
+* **[System Architecture](docs/architecture.md)**: Component hierarchy, subsystem boundaries, and D-Bus IPC specifications.
+* **[Product Roadmap](docs/roadmap.md)**: Graded backlog and development initiatives.
+* **[MCP Integration Guide](docs/development/mcp-server.md)**: Setup instructions for AI assistant clients.
+* **[Contributing and PR Guidelines](docs/development/pull-request-guidelines.md)**: Contribution checklist and pull request standards.
+
+---
+
+## Community and support
+
 * **Discussions**: Ask questions or discuss new features in the [GitHub Discussions tab](https://github.com/comicdeed/jots/discussions).
-* **Issue Tracker**: Report bugs or suggest enhancements via the [Issues tab](https://github.com/comicdeed/jots/issues).
+* **Issue tracker**: Report bugs or suggest enhancements via the [Issues tab](https://github.com/comicdeed/jots/issues).

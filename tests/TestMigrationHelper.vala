@@ -19,6 +19,10 @@ namespace Jots.Tests {
             GLib.Test.add_func ("/MigrationHelper/UC_20_50_30/DuplicateProtection", test_duplicate_protection);
             GLib.Test.add_func ("/MigrationHelper/UC_20_50_40/MalformedLegacyJson", test_malformed_legacy_json);
             GLib.Test.add_func ("/MigrationHelper/UC_20_50_50/EmptyCandidateList", test_empty_candidate_list);
+            GLib.Test.add_func ("/MigrationHelper/UC_20_50_60/ComplexContentAndEmojis", test_complex_content_and_emojis);
+            GLib.Test.add_func ("/MigrationHelper/UC_20_50_70/GeometryAndZoomPreservation", test_geometry_and_zoom_preservation);
+            GLib.Test.add_func ("/MigrationHelper/UC_20_50_80/BatchImportScaling", test_batch_import_scaling);
+            GLib.Test.add_func ("/MigrationHelper/UC_20_50_90/MissingTitleFallback", test_missing_title_fallback);
         }
 
         private static void test_candidate_discovery () {
@@ -183,6 +187,141 @@ namespace Jots.Tests {
 
             assert_true (notes.size == 0);
             assert_true (found_path == null);
+        }
+
+        private static void test_complex_content_and_emojis () {
+            var storage = new Storage ();
+            var temp_notes_dir = create_temp_dir ("jots-notes-complex");
+            storage.override_notes_dir (temp_notes_dir);
+
+            var temp_dir = create_temp_dir ("jorts-complex");
+            var source_file = GLib.Path.build_path (Path.DIR_SEPARATOR_S, temp_dir, "saved_state.json");
+
+            var complex_json = "[{\"id\":\"complex-1\",\"title\":\"🚀 Plan (日本語 & Español)\",\"content\":\"# Title\\n- [ ] Task 1 ☕\\n- [x] Done ✨\\n\\n```python\\nprint(\\\"hello\\\")\\n```\",\"color\":4}]";
+            try {
+                FileUtils.set_contents (source_file, complex_json);
+            } catch (Error e) {
+                assert_not_reached ();
+            }
+
+            storage.override_legacy_paths ({ source_file });
+            var notes = storage.find_legacy_jorts_notes ();
+            assert_true (notes.size == 1);
+
+            storage.import_notes (notes);
+
+            var reloaded = storage.load_note_by_id ("complex-1");
+            assert_true (reloaded != null);
+            assert_cmpstr (reloaded.title, GLib.CompareOperator.EQ, "🚀 Plan (日本語 & Español)");
+            assert_true (reloaded.content.contains ("Task 1 ☕"));
+            assert_true (reloaded.content.contains ("print(\"hello\")"));
+            assert_true (reloaded.theme == Themes.ORANGE);
+        }
+
+        private static void test_geometry_and_zoom_preservation () {
+            var storage = new Storage ();
+            var temp_notes_dir = create_temp_dir ("jots-notes-geom");
+            storage.override_notes_dir (temp_notes_dir);
+
+            var temp_dir = create_temp_dir ("jorts-geom");
+            var source_file = GLib.Path.build_path (Path.DIR_SEPARATOR_S, temp_dir, "saved_state.json");
+
+            // Note with custom dimensions, monospace true, and clamped zoom bounds
+            var geom_json = "[{\"id\":\"geom-1\",\"title\":\"Geom Note\",\"content\":\"Code\",\"color\":0,\"monospace\":true,\"zoom\":150,\"width\":420,\"height\":550},{\"id\":\"geom-2\",\"title\":\"Clamped Note\",\"content\":\"Min zoom\",\"color\":0,\"monospace\":false,\"zoom\":5,\"width\":300,\"height\":300}]";
+            try {
+                FileUtils.set_contents (source_file, geom_json);
+            } catch (Error e) {
+                assert_not_reached ();
+            }
+
+            storage.override_legacy_paths ({ source_file });
+            var notes = storage.find_legacy_jorts_notes ();
+            assert_true (notes.size == 2);
+
+            storage.import_notes (notes);
+
+            var note1 = storage.load_note_by_id ("geom-1");
+            assert_true (note1 != null);
+            assert_true (note1.monospace == true);
+            assert_true (note1.zoom == 150);
+            assert_true (note1.width == 420);
+            assert_true (note1.height == 550);
+
+            // Verify zoom=5 clamped to ZOOM_MIN (20)
+            var note2 = storage.load_note_by_id ("geom-2");
+            assert_true (note2 != null);
+            assert_true (note2.zoom == ZOOM_MIN);
+        }
+
+        private static void test_batch_import_scaling () {
+            var storage = new Storage ();
+            var temp_notes_dir = create_temp_dir ("jots-notes-batch");
+            storage.override_notes_dir (temp_notes_dir);
+
+            var temp_dir = create_temp_dir ("jorts-batch");
+            var source_file = GLib.Path.build_path (Path.DIR_SEPARATOR_S, temp_dir, "saved_state.json");
+
+            var builder = new Json.Builder ();
+            builder.begin_array ();
+            for (int i = 0; i < 20; i++) {
+                builder.begin_object ();
+                builder.set_member_name ("id");
+                builder.add_string_value ("batch-note-%02d".printf (i));
+                builder.set_member_name ("title");
+                builder.add_string_value ("Batch Note %d".printf (i));
+                builder.set_member_name ("content");
+                builder.add_string_value ("Batch content for item %d".printf (i));
+                builder.set_member_name ("color");
+                builder.add_int_value (i % 5);
+                builder.end_object ();
+            }
+            builder.end_array ();
+
+            var node = builder.get_root ();
+            var gen = new Json.Generator ();
+            gen.set_root (node);
+            try {
+                gen.to_file (source_file);
+            } catch (Error e) {
+                assert_not_reached ();
+            }
+
+            storage.override_legacy_paths ({ source_file });
+            var notes = storage.find_legacy_jorts_notes ();
+            assert_true (notes.size == 20);
+
+            int imported = storage.import_notes (notes);
+            assert_true (imported == 20);
+
+            var all_loaded = storage.load_all ();
+            assert_true (all_loaded.size == 20);
+        }
+
+        private static void test_missing_title_fallback () {
+            var storage = new Storage ();
+            var temp_notes_dir = create_temp_dir ("jots-notes-fallback");
+            storage.override_notes_dir (temp_notes_dir);
+
+            var temp_dir = create_temp_dir ("jorts-fallback");
+            var source_file = GLib.Path.build_path (Path.DIR_SEPARATOR_S, temp_dir, "saved_state.json");
+
+            // Note with missing title property
+            var json_no_title = "[{\"id\":\"no-title-1\",\"content\":\"Body without title\",\"color\":0}]";
+            try {
+                FileUtils.set_contents (source_file, json_no_title);
+            } catch (Error e) {
+                assert_not_reached ();
+            }
+
+            storage.override_legacy_paths ({ source_file });
+            var notes = storage.find_legacy_jorts_notes ();
+            assert_true (notes.size == 1);
+            assert_true (notes.get (0).title.length > 0);
+
+            storage.import_notes (notes);
+            var reloaded = storage.load_note_by_id ("no-title-1");
+            assert_true (reloaded != null);
+            assert_cmpstr (reloaded.content, GLib.CompareOperator.EQ, "Body without title");
         }
     }
 

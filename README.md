@@ -18,6 +18,18 @@
 
 <br/>
 
+## ✨ Key Features
+
+* 📝 **Live Markdown Rendering**: Real-time syntax highlighting for headings (H1–H3), bold/italic/strikethrough, blockquotes, code spans, code fences, checklists (`- [ ]`), and clickable links without modal preview toggles.
+* 🎨 **10 Pastel Color Themes**: Beautiful, distraction-free color palettes that adapt seamlessly to Light and Dark system styles.
+* 🔤 **Typography Customization**: Select custom proportional and code monospace fonts with automatic monospace catalog filtering.
+* 🔒 **Scribbly Privacy Mode**: Automatic focus-driven text obfuscation with handwritten squiggles (`Redacted Script`) to protect sensitive notes from shoulder surfing.
+* 📂 **Markdown Storage & Interoperability**: Notes are stored as plain `.md` files with YAML front matter—directly compatible with **Obsidian**, **Logseq**, `git`, and backup tools.
+* 🤖 **Native MCP Server (`jots-mcp`)**: Built-in Model Context Protocol server enabling AI assistants (Claude Desktop, Cursor, Gemini CLI, Antigravity) to manage your desktop notes in real time.
+* ⚡ **Lightning Fast & Lightweight**: Written in native Vala/GTK4 with sub-millisecond startup, zero heavy runtimes, and low memory usage.
+
+<br/>
+
 ## 🦺 Installation & Compilation
 
 Jots is distributed as a sandboxed Flatpak application:
@@ -33,22 +45,37 @@ Jots is distributed as a sandboxed Flatpak application:
 
 Jots includes a native [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server (`jots-mcp`) allowing AI assistants (Claude Desktop, Cursor, Gemini CLI, and Antigravity) to query, create, edit, search, and delete sticky notes live on your desktop.
 
-See the **[MCP Integration Guide](docs/development/mcp-server.md)** or the **[User Guide AI Section](docs/user-guide.md#6-ai-assistant--mcp-integration)** for setup details.
+See the **[MCP Integration Guide](docs/development/mcp-server.md)** or the **[User Guide AI Section](docs/user-guide.md#7-ai-assistant--mcp-integration)** for setup details.
+
+<br/>
+
+## 💾 Notes Storage & Obsidian Interoperability
+
+All notes are stored as individual, human-readable `.md` Markdown files with standardized YAML front-matter headers containing note metadata (UUID, title, theme, zoom, and window dimensions):
+
+```markdown
+---
+id: "3ba7ca8a-d40c-45b9-a9f8-94c15b853e2d"
+title: "Project Ideas"
+theme: "MINT"
+monospace: false
+zoom: 100
+width: 380
+height: 320
+---
+# Architecture Overview
+- [x] Switch to Markdown storage
+- [ ] Implement full-text search popover
+```
+
+### Storage Paths
+* **Flatpak Sandbox**:
+  `~/.var/app/io.github.comicdeed.jots/data/io.github.comicdeed.jots/notes/`
+* **Native / System Package**:
+  `~/.local/share/io.github.comicdeed.jots/notes/`
 
 <br/>
 
 ## ❓ Support & Discussions
 * **Discussions**: Ask questions or discuss new features in the [GitHub Discussions tab](https://github.com/comicdeed/jots/discussions).
 * **Issue Tracker**: Report bugs or suggest enhancements via the [Issues tab](https://github.com/comicdeed/jots/issues).
-
-<br/>
-
-## 💾 Notes Storage
-All notes are serialized into a simple JSON array in `saved_state.json`. 
-
-> [!NOTE]
-> The JSON structure is an internal format and may change without notice as the application evolves. However, the application will always include automatic migrations to ensure your existing notes are safely upgraded during updates.
-
-### Flatpak / Sandbox Storage Paths
-If installed via Flathub or AppCenter, notes are saved inside the application sandbox:
-`~/.var/app/io.github.comicdeed.jots/data/io.github.comicdeed.jots/saved_state.json`

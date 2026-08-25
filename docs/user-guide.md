@@ -8,11 +8,12 @@ Welcome to Jots! Jots is a lightweight, distraction-free sticky notes applicatio
 
 * [1. Getting Started & Basic Note Taking](#1-getting-started--basic-note-taking)
 * [2. Keyboard Shortcuts Cheat Sheet](#2-keyboard-shortcuts-cheat-sheet)
-* [3. Rich Text Editing & Smart Lists](#3-rich-text-editing--smart-lists)
-* [4. Themes, Fonts & Appearance](#4-themes-fonts--appearance)
-* [5. Preferences & Visual Effects](#5-preferences--visual-effects)
-* [6. AI Assistant & MCP Integration](#6-ai-assistant--mcp-integration)
-* [7. Data Storage, Backups & Migration](#7-data-storage-backups--migration)
+* [3. Typography & Font Customization](#3-typography--font-customization)
+* [4. Markdown Formatting & Live Rendering](#4-markdown-formatting--live-rendering)
+* [5. Themes & Appearance](#5-themes--appearance)
+* [6. Preferences & Privacy Effects](#6-preferences--privacy-effects)
+* [7. AI Assistant & MCP Integration](#7-ai-assistant--mcp-integration)
+* [8. Markdown Storage, Backups & Obsidian/Logseq Interoperability](#8-markdown-storage-backups--obsidianlogseq-interoperability)
 
 ---
 
@@ -45,7 +46,7 @@ Welcome to Jots! Jots is a lightweight, distraction-free sticky notes applicatio
 | **`Shift + F12`** | **Toggle List** | Toggles list item prefix on the current line or selection. |
 | **`Ctrl + M`** | **Toggle Monospace** | Switches between proportional and fixed-width monospace font. |
 | **`Ctrl + T`** | **Toggle Action Bar** | Hides or reveals the bottom formatting and color toolbar. |
-| **`Ctrl + H`** | **Toggle Scribbly Effect** | Toggles the blur/scribble privacy effect on unfocused notes. |
+| **`Ctrl + H`** | **Toggle Scribbly Effect** | Toggles the handwritten blur/scribble privacy effect on unfocused notes. |
 | **`Ctrl + .`** | **Insert Emoji** | Opens the native emoji picker popup. |
 | **`Ctrl + G`** / **`Ctrl + O`** | **Note Preferences** | Opens the theme color palette and monospace font popover. |
 | **`Ctrl + +`** / **`Ctrl + =`** | **Zoom In** | Increases the text size of the note. |
@@ -56,32 +57,37 @@ Welcome to Jots! Jots is a lightweight, distraction-free sticky notes applicatio
 
 ---
 
-## 3. Text Editing, Lists & Links
+## 3. Typography & Font Customization
 
-### Toggling Lists (`Shift + F12`)
-* Click the **List icon** in the bottom action bar or press **`Shift + F12`** to turn the current line (or selected lines) into a list item.
-* Jots automatically applies hanging indentation so multi-line list items align cleanly under the text.
+Jots gives you full control over typography with dedicated settings for general text and code elements:
 
-### Continuing & Exiting Lists
-* **Continue list**: Pressing **`Enter`** on any list item automatically starts the next line with a list prefix.
-* **Exit list**: Pressing **`Backspace`** when a line contains only an empty list prefix removes the prefix and returns to normal text.
-
-### List Prefix Styles (Preferences)
-In global preferences, you can configure your default list prefix character:
-* `• Bullet` *(Default)*
-* `- Dash`
-* `~ Wave`
-* `. Dot`
-
-When you change the prefix in preferences, existing list items in open notes update automatically to match your preferred style.
-
-### Clickable Hyperlinks & Emails
-* Any web URL (`https://...` or `http://...`) or email address (`user@example.com`) typed into a note is automatically detected and styled as a clickable link.
-* Hold **`Ctrl` and click** the link to open it in your default system browser or mail client.
+* **General Note Font**: Choose your preferred font family and size (e.g. *Inter*, *Cantarell*, *Ubuntu*, *Roboto*) used across proportional sticky notes.
+* **Code & Monospace Font**: Choose your preferred fixed-width font family and size (e.g. *JetBrains Mono*, *Fira Code*, *Hack*, *Monospace*) used for inline code spans, code fences, and full-monospace notes.
+* **Strict Monospace Filtering**: When selecting a code font in Preferences, the font chooser dialog automatically filters the system font catalog to strictly show only fixed-width monospace typefaces.
+* **Instant Live Updates**: Changing font preferences updates all open sticky note windows instantly across the desktop without restarting the app.
 
 ---
 
-## 4. Themes, Fonts & Appearance
+## 4. Markdown Formatting & Live Rendering
+
+Jots features a native, real-time Markdown rendering buffer (`MarkdownBuffer`) that highlights and styles Markdown syntax live as you type without distracting modal preview modes:
+
+| Markdown Syntax | Example | Rendered Behavior |
+| :--- | :--- | :--- |
+| **Headings** | `# Heading 1`<br>`## Heading 2`<br>`### Heading 3` | Scaled typography (H1 140% bold, H2 120% bold, H3 110% bold) with subtle header delimiters. |
+| **Bold & Strong** | `**bold text**` | Styled with heavy font weight. |
+| **Italic & Emphasis** | `*italic text*` | Styled with slanted font style. |
+| **Strikethrough** | `~~deleted text~~` | Rendered with a horizontal strikethrough line. |
+| **Interactive Checklists** | `- [ ] Todo item`<br>`- [x] Completed task` | Rendered with distinct task tags and bold visual state. |
+| **Smart Lists** | `• Item`<br>`- Item` | Automatic hanging indentation, Enter continuation, and Backspace list exiting. |
+| **Blockquotes** | `> Important quote` | Italicized with a muted blockquote tone. |
+| **Inline Code** | `` `const x = 42;` `` | Styled with a rounded highlight pill and dedicated monospace font. |
+| **Code Fences** | ```` ```sh ````<br>`echo "Hello"`<br>```` ``` ```` | Multi-line code container rendered with monospace font and subtle background tint. |
+| **Clickable Links** | `https://example.com`<br>`[Title](https://...)` | Detected and styled as links. **`Ctrl + Click`** opens the URL in your default browser. |
+
+---
+
+## 5. Themes & Appearance
 
 ### 10 Pastel Color Themes
 Jots comes with 10 carefully designed pastel color palettes that adapt seamlessly to both Light and Dark system modes:
@@ -103,23 +109,21 @@ Jots comes with 10 carefully designed pastel color palettes that adapt seamlessl
 * New notes automatically pick a non-repeating random pastel theme to keep your desktop colorful.
 
 ### Monospace Code Mode (`Ctrl + M`)
-* Press **`Ctrl + M`** to instantly toggle the note between proportional and fixed-width **Monospace font**.
-* Alternatively, click the **Menu button** in the bottom-right action bar and toggle the **Monospace** button inside the popover.
-* Ideal for code snippets, JSON payloads, Markdown tables, and terminal outputs.
+* Press **`Ctrl + M`** to instantly toggle the entire note between proportional and fixed-width **Monospace font**.
 
 ---
 
-## 5. Preferences & Visual Effects
+## 6. Preferences & Privacy Effects
 
 Access global preferences by right-clicking a note or selecting **Preferences** from the app menu:
 
-* **Scribbly Effect (`Ctrl + H`)**: Obscures and blurs note contents whenever a note loses window focus, keeping private notes hidden from shoulder surfers.
+* **Scribbly Privacy Mode (`Ctrl + H`)**: When enabled, any note window that loses desktop focus immediately obfuscates its text and code elements with playful handwritten squiggles using the embedded `Redacted Script` typeface. Focusing the note instantly restores crystal-clear readable text.
 * **Hide Action Bar (`Ctrl + T`)**: Hides the bottom toolbar on note windows to maximize writing space.
 * **Autostart on Login**: Integrates with your desktop portal to automatically relaunch all your open sticky notes when you log into your computer.
 
 ---
 
-## 6. AI Assistant & MCP Integration
+## 7. AI Assistant & MCP Integration
 
 Jots includes a native [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server (`jots-mcp`) allowing AI assistants (Claude Desktop, Cursor, Gemini CLI, and Antigravity) to read, create, search, and update your sticky notes in real time.
 
@@ -164,44 +168,45 @@ graph LR
 * **`delete_note(id)`**: Closes and deletes a sticky note.
 * **`search_notes(query)`**: Searches note titles and body content case-insensitively.
 
-### Example AI Prompts & Workflows
-
-You can speak naturally to your AI assistant—it will automatically choose and chain the right tools:
-
-* **Capture Action Items**:
-  > *"Take the top 4 action items from this meeting discussion and create a Mint sticky note titled 'Sprint Priorities'."*
-* **Add to Existing Notes**:
-  > *"Add 'Book bullet train passes' to my vacation sticky note."*
-  *(The agent automatically searches for your vacation note, reads its current contents, and appends the new item.)*
-* **Search & Summarize**:
-  > *"What do I currently have on my desktop notes regarding server deployments?"*
-* **Save Code Snippets**:
-  > *"Save these Docker compose commands into a Slate sticky note with monospace font."*
-
-*(For detailed MCP configuration options and guardrail limits, see the [MCP Integration Guide](development/mcp-server.md).)*
-
 ---
 
-## 7. Data Storage, Backups & Migration
+## 8. Markdown Storage, Backups & Obsidian/Logseq Interoperability
 
-### Automatic Debounced Saving
-* You never need to manually save notes. Jots automatically saves all open notes to disk 900ms after you stop typing.
-* Window positions, sizes, and zoom levels are preserved across reboots.
+### Native Markdown File Storage
+Jots persists every sticky note as a separate, human-readable `.md` Markdown file containing standardized YAML front-matter headers:
 
-### Where Notes Are Saved
+```markdown
+---
+id: "3ba7ca8a-d40c-45b9-a9f8-94c15b853e2d"
+title: "Project Ideas"
+theme: "MINT"
+monospace: false
+zoom: 100
+width: 380
+height: 320
+---
+# Architecture Overview
+- [x] Switch to Markdown storage
+- [ ] Implement full-text search popover
+```
 
-* **Flatpak Sandbox (Flathub / AppCenter)**:
-  ```bash
-  ~/.var/app/io.github.comicdeed.jots/data/io.github.comicdeed.jots/saved_state.json
+### Storage Locations
+
+* **Flatpak Sandbox (Development Build)**:
+  ```text
+  ~/.var/app/io.github.comicdeed.jots.devel/data/io.github.comicdeed.jots.devel/notes/
+  ```
+* **Flatpak Sandbox (Release Build)**:
+  ```text
+  ~/.var/app/io.github.comicdeed.jots/data/io.github.comicdeed.jots/notes/
   ```
 * **Native / System Package**:
-  ```bash
-  ~/.local/share/io.github.comicdeed.jots/saved_state.json
+  ```text
+  ~/.local/share/io.github.comicdeed.jots/notes/
   ```
 
-### Backing Up Your Notes
-To backup your sticky notes, copy the `saved_state.json` file to a safe location:
-```bash
-cp ~/.var/app/io.github.comicdeed.jots/data/io.github.comicdeed.jots/saved_state.json ~/jots-backup.json
-```
-To restore a backup, place your backup file back into the data directory while Jots is closed.
+### Obsidian & Logseq Interoperability
+Because notes are saved directly as `.md` files with standard YAML headers:
+* You can point your **Obsidian Vault** or **Logseq Directory** directly to your Jots notes directory to access and edit sticky notes seamlessly from both apps.
+* You can easily version control your notes with `git` or synchronize them with Syncthing / Nextcloud.
+* Automatic migration ensures any legacy `saved_state.json` file from older Jots releases is automatically converted into separate `.md` files upon startup without losing data.

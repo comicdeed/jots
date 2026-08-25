@@ -130,6 +130,30 @@ namespace Jots {
             );
         }
 
+        public void set_scribbled (bool is_scribbled) {
+            var code_tag = tag_table.lookup (TAG_CODE);
+            var block_tag = tag_table.lookup (TAG_CODE_BLOCK);
+
+            if (is_scribbled) {
+                if (code_tag != null) {
+                    code_tag.family_set = false;
+                }
+                if (block_tag != null) {
+                    block_tag.family_set = false;
+                }
+            } else {
+                var mono_family = FontController.get_active_monospace_family ();
+                if (code_tag != null) {
+                    code_tag.family = mono_family;
+                    code_tag.family_set = true;
+                }
+                if (block_tag != null) {
+                    block_tag.family = mono_family;
+                    block_tag.family_set = true;
+                }
+            }
+        }
+
         private void refresh_code_tag_fonts () {
             var mono_family = FontController.get_active_monospace_family ();
             var code_tag = tag_table.lookup (TAG_CODE);

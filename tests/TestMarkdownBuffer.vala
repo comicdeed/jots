@@ -181,5 +181,27 @@ namespace Jots.Tests {
             buffer.highlight_markdown ();
             assert_true (start.has_tag (buffer.tag_table.lookup (Jots.MarkdownBuffer.TAG_H1)));
         });
+
+        /**
+         * UC-30.20.90: Code tag family release and restoration for scribbly obfuscation
+         */
+        GLib.Test.add_func ("/MarkdownBuffer/UC_30_20_90/ScribblyCodeObfuscationToggle", () => {
+            var buffer = new Jots.MarkdownBuffer ();
+            var code_tag = buffer.tag_table.lookup (Jots.MarkdownBuffer.TAG_CODE);
+            var block_tag = buffer.tag_table.lookup (Jots.MarkdownBuffer.TAG_CODE_BLOCK);
+
+            assert_true (code_tag.family_set);
+            assert_true (block_tag.family_set);
+
+            // Obfuscate (scribbled)
+            buffer.set_scribbled (true);
+            assert_false (code_tag.family_set);
+            assert_false (block_tag.family_set);
+
+            // Restore
+            buffer.set_scribbled (false);
+            assert_true (code_tag.family_set);
+            assert_true (block_tag.family_set);
+        });
     }
 }

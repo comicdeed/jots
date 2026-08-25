@@ -14,6 +14,7 @@ public static int main (string[] args) {
     Jots.Tests.register_themes_tests ();
     Jots.Tests.register_text_buffer_tests ();
     Jots.Tests.register_zoom_tests ();
+    Jots.Tests.register_scribbly_controller_tests ();
     Jots.Tests.register_mcp_protocol_tests ();
 
     return GLib.Test.run ();

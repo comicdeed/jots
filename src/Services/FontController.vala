@@ -70,7 +70,7 @@ namespace Jots {
                 var desc = Pango.FontDescription.from_string (default_desc_str);
                 var family = desc.get_family ();
                 if (family != null && family.strip () != "") {
-                    sb.append_printf ("textview.view, editablelabel { font-family: \"%s\", sans-serif; }\n", family);
+                    sb.append_printf ("window:not(.is-unfocused) textview.view, window:not(.is-unfocused) editablelabel { font-family: \"%s\", sans-serif; }\n", family);
                 }
             }
 
@@ -78,7 +78,7 @@ namespace Jots {
                 var mono_desc = Pango.FontDescription.from_string (mono_desc_str);
                 var mono_family = mono_desc.get_family ();
                 if (mono_family != null && mono_family.strip () != "") {
-                    sb.append_printf ("textview.view.monospace, editablelabel.monospace, .monospace, .monospace textview.view { font-family: \"%s\", monospace; }\n", mono_family);
+                    sb.append_printf ("window:not(.is-unfocused) textview.view.monospace, window:not(.is-unfocused) editablelabel.monospace, window:not(.is-unfocused) .monospace, window:not(.is-unfocused) .monospace textview.view { font-family: \"%s\", monospace; }\n", mono_family);
                 }
             }
 

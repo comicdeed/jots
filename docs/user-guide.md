@@ -127,6 +127,7 @@ Access global preferences by right-clicking a note or selecting **Preferences** 
 * **Scribbly Privacy Mode (`Ctrl + H`)**: When enabled, any note window that loses desktop focus immediately obfuscates its text and code elements with playful handwritten squiggles using the embedded `Redacted Script` typeface. Focusing the note instantly restores crystal-clear readable text.
 * **Hide Action Bar (`Ctrl + T`)**: Hides the bottom toolbar on note windows to maximize writing space.
 * **Autostart on Login**: Integrates with your desktop portal to automatically relaunch all your open sticky notes when you log into your computer.
+* **Import from Jorts Migration Helper**: Seamlessly import your existing sticky notes from Jorts (`io.github.elly_code.jorts`). The import is **100% non-destructive**—your original Jorts `saved_state.json` file is never deleted or altered. You can trigger migration from the first-run prompt or anytime via the **Import from Jorts** button in Preferences.
 
 ---
 
@@ -149,7 +150,7 @@ graph LR
   "mcpServers": {
     "jots": {
       "command": "flatpak",
-      "args": ["run", "--command=jots-mcp", "io.github.comicdeed.jots.devel"]
+      "args": ["run", "--command=jots-mcp", "io.github.comicdeed.jots"]
     }
   }
 }
@@ -161,11 +162,12 @@ graph LR
   "mcpServers": {
     "jots": {
       "command": "flatpak",
-      "args": ["run", "--command=jots-mcp", "io.github.comicdeed.jots.devel"]
+      "args": ["run", "--command=jots-mcp", "io.github.comicdeed.jots"]
     }
   }
 }
 ```
+*(Note: If using the development Flatpak build, replace `io.github.comicdeed.jots` with `io.github.comicdeed.jots.devel`)*
 
 ### Available AI Tools
 * **`list_notes`**: Returns an overview of all open desktop sticky notes with titles, themes, and word counts.

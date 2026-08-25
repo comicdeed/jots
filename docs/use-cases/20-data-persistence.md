@@ -77,3 +77,52 @@ JSON serialization of `NoteData`, disk I/O handling in `Storage`, legacy state m
 * **Pre-conditions**: Open note is active.
 * **Post-conditions**:
   * Cancels any active debounce timer and immediately commits all notes to disk.
+
+---
+
+## 20.40 Markdown file persistence & YAML headers
+
+### `UC-20.40.10` Markdown round-trip serialization
+* **Trigger**: Note is saved to disk as an individual `.md` file.
+* **Pre-conditions**: Valid `NoteData` instance.
+* **Post-conditions**:
+  * Formats YAML front-matter header with `id`, `title`, `theme`, `monospace`, `zoom`, `width`, `height`.
+  * Appends note body text directly below the YAML front-matter block.
+  * Correctly deserializes all metadata and body text when re-opened.
+
+### `UC-20.40.20` Fallback on missing or invalid YAML front-matter
+* **Trigger**: Loading a raw `.md` file without YAML headers (e.g. created by external editor).
+* **Pre-conditions**: Markdown file exists without `---` delimiters.
+* **Post-conditions**:
+  * Treats the entire file as note body content.
+  * Generates a stable UUID and falls back to default window dimensions and pastel theme without errors.
+
+---
+
+## 20.50 Non-destructive Jorts Migration Helper
+
+### `UC-20.50.10` Legacy candidate discovery
+* **Trigger**: Application starts up or user clicks "Import from Jorts" in Preferences.
+* **Pre-conditions**: System contains existing Jorts installations (`~/.local/share/io.github.elly_code.jorts/` or Flatpak `~/.var/app/io.github.elly_code.jorts/`).
+* **Post-conditions**:
+  * Scans candidate locations in priority order and returns existing `saved_state.json` paths.
+
+### `UC-20.50.20` Non-destructive import
+* **Trigger**: User accepts the first-run migration dialog or triggers import.
+* **Pre-conditions**: Valid legacy Jorts `saved_state.json` file.
+* **Post-conditions**:
+  * Reads and converts legacy notes into individual `.md` files in Jots storage.
+  * Never deletes, moves, or mutates the original Jorts `saved_state.json` file.
+
+### `UC-20.50.30` Duplicate note protection
+* **Trigger**: Migration is triggered when notes with identical IDs already exist in Jots.
+* **Pre-conditions**: Some legacy note IDs match existing Jots note IDs.
+* **Post-conditions**:
+  * Skips duplicate IDs and preserves the user's current Jots notes without overwriting.
+
+### `UC-20.50.40` Malformed JSON safety
+* **Trigger**: Legacy `saved_state.json` is corrupted or truncated.
+* **Pre-conditions**: Invalid JSON syntax on disk.
+* **Post-conditions**:
+  * Logs a non-fatal warning and safely returns an empty candidate list without crashing.
+

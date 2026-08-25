@@ -483,5 +483,12 @@ namespace Jots {
 
             return null;
         }
+
+        ~MarkdownBuffer () {
+            if (highlight_timeout_id != 0) {
+                GLib.Source.remove (highlight_timeout_id);
+                highlight_timeout_id = 0;
+            }
+        }
     }
 }

@@ -173,8 +173,6 @@ namespace Jots {
         }
 
         ~TextView () {
-            markdown_buffer.dispose ();
-            buffer.dispose ();
             debug ("Destroyed");
         }
     }

@@ -9,7 +9,9 @@ namespace Jots {
      * Search popover for interactive, full-text note discovery and navigation.
      */
     public class SearchPopover : Gtk.Popover {
-        private NoteManager note_manager;
+        private const int SPACING_STANDARD = 8;
+
+        private weak NoteManager note_manager;
         private Gtk.SearchEntry search_entry;
         private Gtk.ListBox results_list;
         private Gtk.ScrolledWindow scrolled_window;

@@ -31,6 +31,12 @@ Welcome to Jots! Jots is a lightweight, distraction-free sticky notes applicatio
 * Click the **Trash** icon in the bottom-left action bar, or press **`Ctrl + W`**.
 * The note is closed and removed from your active collection.
 
+### Searching Notes
+* Press **`Ctrl + F`** or **`Ctrl + Shift + F`** to open the interactive **Search Popover**.
+* Start typing to search instantly across all active desktop windows and closed `.md` files on disk.
+* Results display matching note titles, theme color pills, and extracted snippets with highlighted keyword matches.
+* Use `Up`/`Down` arrow keys to navigate and press `Enter` to open or focus the matching note.
+
 ### Undoing Deletion (Restore)
 * If you accidentally delete a note, press **`Ctrl + R`** immediately to restore the last deleted note with all its contents, theme, and window dimensions intact.
 
@@ -41,6 +47,7 @@ Welcome to Jots! Jots is a lightweight, distraction-free sticky notes applicatio
 | Shortcut | Action | Description |
 | :--- | :--- | :--- |
 | **`Ctrl + N`** | **New Note** | Opens a new sticky note window with a fresh random color theme. |
+| **`Ctrl + F`** / **`Ctrl + Shift + F`** | **Search Notes** | Opens the live full-text search popover across active and stored notes. |
 | **`Ctrl + W`** | **Delete Note** | Deletes and closes the currently focused note window. |
 | **`Ctrl + R`** | **Restore Note** | Undoes the last deletion and reopens the deleted note. |
 | **`Shift + F12`** | **Toggle List** | Toggles list item prefix on the current line or selection. |

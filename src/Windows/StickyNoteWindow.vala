@@ -35,10 +35,14 @@ public class Jots.StickyNoteWindow : Gtk.ApplicationWindow {
 
     public const string ACTION_PREFIX = "win.";
     public const string ACTION_DELETE = "action_delete";
+    public const string ACTION_SEARCH = "action_search";
+
+    public Jots.SearchPopover search_popover;
 
     public static Gee.MultiMap<string, string> action_accelerators;
     private const GLib.ActionEntry[] ACTION_ENTRIES = {
-        { ACTION_DELETE, action_delete}
+        { ACTION_DELETE, action_delete },
+        { ACTION_SEARCH, action_show_search }
     };
 
     public StickyNoteWindow (Jots.Application app, NoteData data) {
@@ -56,6 +60,7 @@ public class Jots.StickyNoteWindow : Gtk.ApplicationWindow {
         actions.add_action_entries (ACTION_ENTRIES, this);
         insert_action_group ("win", actions);
         app.set_accels_for_action (ACTION_PREFIX + ACTION_DELETE, {"<Control>W"});
+        app.set_accels_for_action (ACTION_PREFIX + ACTION_SEARCH, {"<Control>f", "<Control><Shift>f"});
 
         color_controller = new Jots.ColorController (this);
         zoom_controller = new Jots.ZoomController (this);
@@ -93,6 +98,9 @@ public class Jots.StickyNoteWindow : Gtk.ApplicationWindow {
         set_child (view);
         set_focus (view);
         load_data (data);
+
+        search_popover = new Jots.SearchPopover (Application.note_manager);
+        search_popover.set_parent (view.headerbar);
 
 #if DEVEL
         add_css_class (STYLE_DEVEL);
@@ -280,8 +288,15 @@ public class Jots.StickyNoteWindow : Gtk.ApplicationWindow {
         Application.note_manager.delete_note (this);
     }
 
+    private void action_show_search () {
+        search_popover.popup ();
+        search_popover.focus_and_select ();
+    }
+
     ~StickyNoteWindow () {
         debug ("Destroying %s", view.title);
+
+        search_popover.unparent ();
 
         keypress_controller.key_pressed.disconnect (zoom_controller.on_key_press_event);
         keypress_controller.key_released.disconnect (zoom_controller.on_key_release_event);

@@ -53,8 +53,12 @@ test_sources = files(
     'TestZoom.vala',
     'TestScribblyController.vala',
     'TestMcpProtocol.vala',
+    'TestSearchService.vala',
     meson.project_source_root() / 'src' / 'Objects' / 'NoteData.vala',
+    meson.project_source_root() / 'src' / 'Objects' / 'SearchResult.vala',
     meson.project_source_root() / 'src' / 'Services' / 'MarkdownSerializer.vala',
+    meson.project_source_root() / 'src' / 'Services' / 'Storage.vala',
+    meson.project_source_root() / 'src' / 'Services' / 'SearchService.vala',
     meson.project_source_root() / 'src' / 'Services' / 'FontController.vala',
     meson.project_source_root() / 'src' / 'Services' / 'ScribblyController.vala',
     meson.project_source_root() / 'src' / 'Objects' / 'Themes.vala',
@@ -71,6 +75,7 @@ test_sources = files(
 
 test_executable = executable(
     'jots-unit-tests',
+    gresource,
     test_sources,
     config_file,
     dependencies: dependencies,

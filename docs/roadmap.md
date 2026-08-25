@@ -29,7 +29,7 @@ A curated backlog of architectural enhancements, capabilities, and feature candi
 | **Native MCP Server (`jots-mcp`)** | 5.0 | 4.5 | 4.5 | **4.70** | ✅ **Completed** (v4.3.0) |
 | **Markdown Storage & Live Rendering** | 4.6 | 5.0 | 4.4 | **4.69** | ✅ **Completed** (v4.3.0) |
 | **Typography & Scribbly Obfuscation** | 4.2 | 4.5 | 4.5 | **4.38** | ✅ **Completed** (v4.3.0) |
-| **Local Note Indexing & Search** | 4.2 | 4.4 | 4.0 | **4.22** | 🟢 Tier 1 (Active Priority) |
+| **Local Note Indexing & Search** | 4.2 | 4.4 | 4.0 | **4.22** | ✅ **Completed** (v4.4.0) |
 | **Free-Form In-Text Tagging (`#tag`)** | 4.0 | 4.0 | 3.8 | **3.95** | 🟢 Tier 1 (Active Priority) |
 | **Bidirectional Note Linking (`[[Note]]`)** | 3.8 | 3.6 | 3.4 | **3.63** | 🟡 Tier 2 (Planned Backlog) |
 | **Note Archiving & Trash Lifecycle** | 3.4 | 3.8 | 4.2 | **3.74** | 🟡 Tier 2 (Planned Backlog) |

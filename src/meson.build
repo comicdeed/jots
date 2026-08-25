@@ -26,12 +26,14 @@ sources = files (
     'Objects' / 'Zoom.vala',
     'Objects' / 'Themes.vala',
     'Objects' / 'NoteData.vala',
+    'Objects' / 'SearchResult.vala',
     'Objects' / 'ListPrefix.vala',
 
     'Utils' / 'Random.vala',
 
     'Services' / 'MarkdownSerializer.vala',
     'Services' / 'Storage.vala',
+    'Services' / 'SearchService.vala',
     'Services' / 'NoteManager.vala',
     'Services' / 'NoteService.vala',
     'Services' / 'ZoomController.vala',
@@ -50,6 +52,7 @@ sources = files (
     'Widgets' / 'PopoverWidgets' / 'MonospaceBox.vala',
     'Widgets' / 'PopoverWidgets' / 'ZoomBox.vala',
     'Widgets' / 'PreferencesWidgets' / 'SettingsBox.vala',
+    'Widgets' / 'SearchPopover.vala',
     'Widgets' / 'Popover.vala',
 
     'Views' / 'PreferencesView.vala',
@@ -114,6 +117,7 @@ mcp_sources = files(
     'Constants.vala',
     'Objects' / 'Themes.vala',
     'Objects' / 'NoteData.vala',
+    'Objects' / 'SearchResult.vala',
     'Services' / 'MarkdownSerializer.vala',
     'Objects' / 'ZoomType.vala',
     'Objects' / 'Zoom.vala',

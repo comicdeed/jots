@@ -9,7 +9,7 @@
 * Responsible for keeping track of various Sticky Notes windows
 * It does its thing on its own. Make sure to call init() to summon all notes from storage
 */
-public class Jots.NoteManager : Object {
+public class Jots.NoteManager : Object, Jots.ActiveNotesProvider {
 
     private static uint debounce_timer_id;
     private static bool saving_lock = true;
@@ -18,6 +18,7 @@ public class Jots.NoteManager : Object {
     private Jots.Application application;
     public Gee.ArrayList<StickyNoteWindow> open_notes;
     public Jots.Storage storage;
+    public Jots.SearchService search_service { get; private set; }
 
     public NoteManager (Jots.Application app) {
         this.application = app;
@@ -26,6 +27,15 @@ public class Jots.NoteManager : Object {
     construct {
         open_notes = new Gee.ArrayList<StickyNoteWindow> ();
         storage = new Jots.Storage ();
+        search_service = new Jots.SearchService (storage, this);
+    }
+
+    public Gee.List<NoteData> get_active_notes () {
+        var list = new Gee.ArrayList<NoteData> ();
+        foreach (var win in open_notes) {
+            list.add (win.packaged ());
+        }
+        return list;
     }
 
     /*************************************************/
@@ -285,29 +295,38 @@ public class Jots.NoteManager : Object {
     }
 
     /**
-    * Search all open notes by query string (case-insensitive in title and content)
+    * Open and focus a note by UUID (presenting active window or instantiating from storage).
     */
-    public string search_notes_json_string (string query) {
+    public StickyNoteWindow? open_note_by_id (string id) {
         ensure_initialized ();
-        var array = new Json.Array ();
-        var normalized_query = query.strip ().down ();
-        int count = 0;
+        var existing = get_window_by_id (id);
+        if (existing != null) {
+            existing.present ();
+            existing.view.textview.grab_focus ();
+            return existing;
+        }
 
-        foreach (var note in open_notes) {
-            var data = note.packaged ();
-            if (data.title.down ().contains (normalized_query) || data.content.down ().contains (normalized_query)) {
-                array.add_object_element (data.to_json ());
-                count++;
-                if (count >= MAX_SEARCH_RESULTS) {
-                    break;
-                }
+        // If not currently open, check disk storage
+        var stored_notes = storage.load_all ();
+        foreach (var data in stored_notes) {
+            if (data.id == id) {
+                var note = new StickyNoteWindow (application, data);
+                open_notes.add (note);
+                note.show ();
+                note.present ();
+                note.view.textview.grab_focus ();
+                return note;
             }
         }
 
-        var node = new Json.Node (Json.NodeType.ARRAY);
-        node.set_array (array);
-        var gen = new Json.Generator ();
-        gen.set_root (node);
-        return gen.to_data (null);
+        return null;
+    }
+
+    /**
+    * Search all notes (active and stored) by query string with relevance scoring and snippets.
+    */
+    public string search_notes_json_string (string query) {
+        ensure_initialized ();
+        return search_service.search_json (query);
     }
 }

@@ -43,6 +43,20 @@ namespace Jots {
         }
 
         /**
+         * Overrides the notes directory for testing environments.
+         */
+        public void override_notes_dir (string custom_path) {
+            notes_dir = File.new_for_path (custom_path);
+            try {
+                if (!notes_dir.query_exists ()) {
+                    notes_dir.make_directory_with_parents ();
+                }
+            } catch (Error e) {
+                warning ("Failed to create override notes directory: %s", e.message);
+            }
+        }
+
+        /**
          * Migrates notes from legacy monolithic saved_state.json to individual Markdown files.
          */
         public void migrate_legacy_json_if_needed () {

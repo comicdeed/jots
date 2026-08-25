@@ -206,61 +206,61 @@ window.themed:backdrop actionbar image {
 }
 
 /* ======================================================== */
-/* Dark Mode Theme Overrides                                 */
+/* Dark Mode Theme Overrides (Automatic Desaturated Tint)     */
 /* ======================================================== */
 
 window.themed.dark {
-    background-color: var(--accent_color_900);
-    color: var(--accent_color_100);
+    background-color: color-mix(in srgb, var(--accent_color_700) 22%, #18181c);
+    color: color-mix(in srgb, var(--accent_color_100) 75%, #ffffff);
 }
 
 window.themed.dark titlebar,
 window.themed.dark titlebar image,
 window.themed.dark .themedbutton > button > box > image,
 window.themed.dark .themedbutton > image {
-    color: var(--accent_color_100);
+    color: color-mix(in srgb, var(--accent_color_100) 75%, #ffffff);
 }
 
 window.themed.dark titlebar,
 window.themed.dark textview,
 window.themed.dark editablelabel.editing {
     background-color: transparent;
-    color: hsl(from var(--accent_color_100) h calc(s * 0.77) calc(l * 0.77));
+    color: color-mix(in srgb, var(--accent_color_100) 80%, #ffffff);
 }
 
 window.themed.dark titlebar,
 window.themed.dark textview {
-    border-bottom-color: var(--accent_color_900);
+    border-bottom-color: color-mix(in srgb, var(--accent_color_700) 22%, #18181c);
 }
 
 window.themed.dark undershoot.top {
     background:
         linear-gradient(
-            var(--accent_color_900) 0%,
-            rgb(from var(--accent_color_900) r g b / calc(alpha * 0)) 50%
+            color-mix(in srgb, var(--accent_color_700) 22%, #18181c) 0%,
+            rgb(from color-mix(in srgb, var(--accent_color_700) 22%, #18181c) r g b / 0) 50%
         );
 }
 
 window.themed.dark undershoot.bottom {
     background:
         linear-gradient(
-            rgb(from var(--accent_color_900) r g b / calc(alpha * 0)) 50%,
-            var(--accent_color_900) 100%
+            rgb(from color-mix(in srgb, var(--accent_color_700) 22%, #18181c) r g b / 0) 50%,
+            color-mix(in srgb, var(--accent_color_700) 22%, #18181c) 100%
         );
 }
 
 window.themed.dark text selection {
-    color: black;
-    background-color: var(--accent_color_100);
+    color: #ffffff;
+    background-color: color-mix(in srgb, var(--accent_color_500) 55%, #2a2a2e);
 }
 
 window.themed.dark entry {
-    background-color: #303030;
-    color: white;
+    background-color: #26262b;
+    color: #ffffff;
 }
 
 window.themed.dark editablelabel {
-    color: var(--accent_color_100);
+    color: color-mix(in srgb, var(--accent_color_100) 75%, #ffffff);
     border: 1px solid transparent;
 }
 
@@ -270,14 +270,14 @@ window.themed.dark editablelabel:focus {
 }
 
 window.themed.dark editablelabel.editing {
-    border-color: var(--accent_color_300);
+    border-color: var(--accent_color_500);
 }
 
 window.themed.dark:backdrop editablelabel {
-    color: rgb(from var(--accent_color_100) r g b / calc(alpha * 0.75));
+    color: rgb(from color-mix(in srgb, var(--accent_color_100) 75%, #ffffff) r g b / calc(alpha * 0.75));
 }
 
 window.themed.dark:backdrop actionbar,
 window.themed.dark:backdrop actionbar image {
-    color: rgb(from var(--accent_color_100) r g b / calc(alpha * 0.65));
+    color: rgb(from color-mix(in srgb, var(--accent_color_100) 75%, #ffffff) r g b / calc(alpha * 0.65));
 }

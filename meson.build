@@ -2,7 +2,7 @@ project(
     'jots',
     ['c', 'vala'],        # The floor is vala
     license: 'GPL-3.0-or-later',
-    version: '1.0.0-beta.1',
+    version: '1.0.0',
     meson_version: '>= 1.1'         # Use meson.option instead of meson_options.txt
 )
 

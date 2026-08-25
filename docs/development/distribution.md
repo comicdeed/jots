@@ -60,3 +60,30 @@ When creating native distribution packages (`.deb`, `.rpm`, `.pkg.tar.zst`):
 ### C. Snap and AppImage
 * **Status**: Unofficial (community contributions welcome).
 * When packaging for Snap or AppImage, ensure the GSettings schemas and desktop file actions (`New Note`) map correctly to the runtime confinement.
+
+---
+
+## 5. Flathub Distribution & Channel Release Lifecycle
+
+Flathub distributes Jots across two official channels:
+
+| Channel | Remote / Repository | Flathub Repository Branch | Allowed Release Types | User Installation Command |
+| :--- | :--- | :--- | :--- | :--- |
+| **Stable** | `flathub` | `master` on `flathub/io.github.comicdeed.jots` | Standard releases (`1.0.0`, `1.1.0`) | `flatpak install flathub io.github.comicdeed.jots` |
+| **Beta** | `flathub-beta` | `beta` on `flathub/io.github.comicdeed.jots` | Development pre-releases (`1.1.0-beta.1`) | `flatpak install flathub-beta io.github.comicdeed.jots` |
+
+### A. Initial Flathub Onboarding PR
+* New application submissions to `flathub/flathub` initialize the application's primary **Stable channel** (`master` branch).
+* Flathub's automated submission linter (`flatpak-builder-lint`) requires the initial release in AppStream metadata (`data/jots.metainfo.xml.in.in`) to be a standard stable tag (`1.0.0`), preventing unversioned or prerelease-only store listings.
+
+### B. Distributing Future Beta Releases
+1. In `jots` upstream, bump version to `X.Y.Z-beta.N` in `meson.build` and add `<release version="X.Y.Z-beta.N" type="development" date="YYYY-MM-DD">` to `data/jots.metainfo.xml.in.in`.
+2. Tag `X.Y.Z-beta.N` and push to GitHub.
+3. Update `io.github.comicdeed.jots.yml` with the archive URL and computed SHA256 checksum, and push to the **`beta` branch** of `flathub/io.github.comicdeed.jots`.
+4. Flathub builds and publishes to the `flathub-beta` remote.
+
+### C. Distributing Future Stable Releases
+1. In `jots` upstream, finalize version `X.Y.Z` in `meson.build` and `<release version="X.Y.Z" date="YYYY-MM-DD">` in `data/jots.metainfo.xml.in.in`.
+2. Tag `X.Y.Z` on `main` and push.
+3. Update `io.github.comicdeed.jots.yml` on the **`master` branch** of `flathub/io.github.comicdeed.jots` to publish to the global Flathub stable repository.
+

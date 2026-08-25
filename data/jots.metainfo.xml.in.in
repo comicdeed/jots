@@ -88,9 +88,9 @@
     </screenshots>
 
     <releases>
-        <release version="1.0.0-beta.1" type="development" date="2026-08-25">
+        <release version="1.0.0" date="2026-08-25">
             <description>
-                <p>Inaugural Beta release of Jots — the next-generation lightweight sticky notes application, forked and evolved from Jorts 4.3.0.</p>
+                <p>Inaugural release of Jots — the next-generation lightweight sticky notes application, forked and evolved from Jorts 4.3.0.</p>
                 <p>Major Highlights:</p>
                 <ul>
                     <li>Full-Text Search: Real-time search popover querying live text buffers and saved notes with relevance scoring (Ctrl+F)</li>

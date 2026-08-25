@@ -1,13 +1,17 @@
 id: io.github.comicdeed.jots
-runtime: io.elementary.Platform
-runtime-version: '8.2'
-sdk: io.elementary.Sdk
+base: io.elementary.BaseApp
+base-version: 'circe-25.08'
+runtime: org.gnome.Platform
+runtime-version: '49'
+sdk: org.gnome.Sdk
 command: io.github.comicdeed.jots
 
 finish-args:
   - '--socket=wayland'
   - '--socket=fallback-x11'
   - '--share=ipc'
+  - '--socket=session-bus'
+  - '--own-name=io.github.comicdeed.jots'
   - '--device=dri'
 
 cleanup:

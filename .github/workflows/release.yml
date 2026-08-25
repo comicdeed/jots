@@ -1,24 +1,19 @@
 # On new app releases
-# Generate a windows installer, and a flatpak bundle
+# Generate a windows installer and publish a GitHub Release
 name: Release
 
 on:
   push:
     tags:
-      - '[0-9]+.[0-9]+.[0-9]+'
-  pull_request:
-    types:
-      - ready_for_review
+      - '[0-9]+.[0-9]+.[0-9]+*'
+      - 'v[0-9]+.[0-9]+.[0-9]+*'
   workflow_dispatch:
-    inputs:
-      release:
-        type: boolean
 
 permissions:
   contents: write
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event.inputs.release }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -31,16 +26,15 @@ jobs:
             runner: windows-latest
             sys: mingw64
             package: x86_64
-      fail-fast: true
+      fail-fast: false
     runs-on: ${{ matrix.variant.runner }}
-    # if: ${{ false }}
     defaults:
       run:
         shell: msys2 {0}
 
     steps:
       - name: 'Checkout latest sources'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           lfs: 'true'
 
@@ -63,19 +57,67 @@ jobs:
       - name: 'Setup for deployment'
         run: builddir/windows/deploy.sh builddir
 
-      - name: 'Upload portable windows install'
-        uses: actions/upload-artifact@v4
-        with:
-          name: windows_portable
-          path: deploy/
-
       - name: 'Create windows installer'
+        id: build_installer
         run: |
           cp builddir/windows/installer.nsi .
           makensis installer.nsi
 
-      - name: 'Upload artifacts'
+      - name: 'Upload Installer Artifact'
         uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: Jots-Installer.exe
           path: Jots-Installer.exe
+          if-no-files-found: ignore
+
+  github-release:
+    name: "Publish GitHub Release"
+    needs: [msys2]
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout sources'
+        uses: actions/checkout@v4
+
+      - name: 'Download Windows Installer Artifact'
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: Jots-Installer.exe
+          path: ./dist/
+
+      - name: 'Extract Release Notes from Metainfo'
+        id: extract_notes
+        run: |
+          python3 -c "
+          import xml.etree.ElementTree as ET
+          tree = ET.parse('data/jots.metainfo.xml.in.in')
+          root = tree.getroot()
+          latest = root.find('.//releases/release')
+          notes = []
+          if latest is not None:
+              desc = latest.find('description')
+              if desc is not None:
+                  for elem in desc:
+                      if elem.tag == 'p' and elem.text:
+                          notes.append(elem.text.strip() + '\n')
+                      elif elem.tag == 'ul':
+                          for li in elem.findall('li'):
+                              if li.text:
+                                  notes.append(f'* {li.text.strip()}')
+          content = '\n'.join(notes).strip()
+          with open('release_notes.md', 'w') as f:
+              f.write(content + '\n' if content else '')
+          "
+
+      - name: 'Create GitHub Release'
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: release_notes.md
+          generate_release_notes: true
+          prerelease: ${{ contains(github.ref, 'beta') || contains(github.ref, 'alpha') || contains(github.ref, 'rc') }}
+          files: |
+            ./dist/Jots-Installer.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

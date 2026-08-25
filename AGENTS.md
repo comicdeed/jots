@@ -70,3 +70,21 @@ flatpak run --command=jots-unit-tests io.github.comicdeed.jots.devel
 
 * **Senior Review Subagent**: After implementing any significant feature or architectural refactor, conduct a thorough Senior Vala code review using the project skill [`.agents/skills/vala-code-review/SKILL.md`](.agents/skills/vala-code-review/SKILL.md).
 * **Smart Confirmation Protocol**: **Always ask the user for confirmation before launching the automated code review subagent**, as the user may prefer to manually inspect changes, test UI behavior interactively, or provide immediate feedback first.
+
+---
+
+## 🚀 Git Release Workflow & Release Notes
+
+* **Branching Strategy**:
+  - `main`: Protected production branch containing verified **Stable releases**.
+  - `develop`: Primary integration branch where `feat/*` and `fix/*` PRs land.
+  - `release/X.Y.Z[-beta.N]`: Short-lived preparation branch cut from `develop`.
+* **Release Notes Generation Skill**:
+  - Use [`.agents/skills/release-notes/SKILL.md`](.agents/skills/release-notes/SKILL.md) to generate concise AppStream XML for `data/jots.metainfo.xml.in.in`.
+  - **Beta Releases (`X.Y.Z-beta.N`)**: Range `git log <last-tag>..HEAD` (incremental delta).
+  - **Stable Releases (`X.Y.Z`)**: Range `git log <last-stable-tag>..HEAD` (cumulative milestone changelog).
+* **Tagging & Publishing**:
+  - Beta tags (`X.Y.Z-beta.N`) are tagged on `develop` or `main` and publish to Flathub's `beta` branch (`flathub-beta`).
+  - Stable tags (`X.Y.Z`) are tagged on `main` and publish to Flathub's `master` branch.
+  - GitHub Actions automatically extracts release notes from `data/jots.metainfo.xml.in.in` and publishes the GitHub Release.
+

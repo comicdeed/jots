@@ -2,6 +2,8 @@
 
 This document describes how to compile, install, and run Jots on Linux systems. 
 
+> 💡 **Developer Setup**: For complete repository cloning, Git guardrails configuration, and IDE tooling setup, see the **[Developer Setup Guide](setup.md)**.
+
 ---
 
 ## 1. Building via Flatpak (Recommended)

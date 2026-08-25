@@ -13,6 +13,7 @@ To maintain focus and avoid context bloat, refer to specialized documentation on
 * **Behavioral Use Cases**: [`docs/use-cases/README.md`](docs/use-cases/README.md) — Domain behavioral specifications (`UC-10` to `UC-70`) cross-referenced in unit tests.
 * **MCP Integration Guide**: [`docs/development/mcp-server.md`](docs/development/mcp-server.md) — Setup instructions for Claude Desktop, Cursor, Gemini CLI, and Antigravity.
 * **Roadmap & Idea Matrix**: [`docs/roadmap.md`](docs/roadmap.md) — Graded initiatives and feature backlog.
+* **Developer Setup & Tooling**: [`docs/development/setup.md`](docs/development/setup.md) — Workstation setup, Git branch guardrails, tooling prerequisites, and editor extensions.
 * **Documentation Style**: [`docs/development/documentation-style.md`](docs/development/documentation-style.md) — GNOME developer style rules.
 * **Pull Request Guidelines**: [`docs/development/pull-request-guidelines.md`](docs/development/pull-request-guidelines.md) — Contribution checklists and attribution standards.
 
@@ -31,9 +32,15 @@ Jots is a lightweight GTK4/Granite 7 sticky notes app and MCP server written ent
 
 ---
 
-## 📦 Build & Test Workflows
+## 📦 Post-Clone Setup & Build Workflows
 
-### 1. Build and Install Jots (Flatpak Sandbox)
+### 1. Enable Repository Git Hooks (Post-Clone)
+After cloning the repository, configure Git to use the tracked hooks in `.githooks/` to activate the local branch guardrail:
+```bash
+git config core.hooksPath .githooks
+```
+
+### 2. Build and Install Jots (Flatpak Sandbox)
 ```bash
 flatpak run org.flatpak.Builder --force-clean --sandbox --user --install --install-deps-from=flathub --ccache builddir io.github.comicdeed.jots.devel.yml
 ```

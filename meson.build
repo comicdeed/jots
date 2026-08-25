@@ -2,7 +2,7 @@ project(
     'jots',
     ['c', 'vala'],        # The floor is vala
     license: 'GPL-3.0-or-later',
-    version: '4.3.0',               # Versioning: first should follow Gtk version, second and third depending how proud you are of the update
+    version: '1.0.0-beta.1',
     meson_version: '>= 1.1'         # Use meson.option instead of meson_options.txt
 )
 
@@ -11,27 +11,10 @@ app_version = meson.project_version()
 nicename = 'Jots'
 publisher = 'comicdeed'
 
-# Ugh i wish i could bin this
-correct_app_id = 'io.github.comicdeed.' + app_name
-correct_app_path = '/io/github/comicdeed/' + app_name
+app_id = 'io.github.' + publisher + '.' + app_name
+app_path = '/io/github/' + publisher + '/' + app_name
 
-legacy_app_id = 'io.github.elly_code.jorts'
-legacy_app_path = '/io/github/elly_code/jorts'
-
-legacy_rdnn = get_option('legacy_rdnn')
-if legacy_rdnn
-    app_id = legacy_app_id
-    alternate_app_id = correct_app_id
-    app_path = legacy_app_path
-
-    #TODO: Remove once appcenter has latte (platform 8.3 lands)
-    add_project_arguments('--define=LATTE', language: 'vala')
-
-else
-    app_id = correct_app_id
-    alternate_app_id = legacy_app_id
-    app_path = correct_app_path
-endif
+add_project_arguments('--define=LATTE', language: 'vala')
 
 #================================
 # Preparation
@@ -114,7 +97,6 @@ config_data = configuration_data(
         'APP_VERSION': app_version,
         'NICENAME': nicename,
         'PUBLISHER': publisher,
-        'ALTERNATE_APP_ID': alternate_app_id,
         'LOCALEDIR': prefix / get_option('localedir')
     }
 )

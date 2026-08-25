@@ -7,30 +7,23 @@
     <translation type="gettext">@APP_ID@</translation>
 
     <name>Jots</name>
-    <summary>Write on colourful little squares</summary>
+    <summary>Lightweight, colourful desktop sticky notes with Markdown and AI integration</summary>
     <description>
-        <p>Neither jeans nor shorts, just like jots! A thoughtful little sticky notes application, to display any sort of short term information on your screen.</p>
+        <p>A lightweight, elegant sticky notes application for the modern Linux desktop with Markdown support, full-text search, and AI assistant integration.</p>
         <p>Features include:</p>
         <ul>
-            <li>Colourful: Eleven pretty pastel themes</li>
-            <li>Cute: Each new note has a funny or cute random (editable) title</li>
-            <li>Thoughtful: Jots does its best to be comfortable to use, always!</li>
-            <li>Private: Try the scribbles mode!</li>
+            <li>Markdown Storage &amp; Live Rendering: Plaintext Markdown files with real-time formatting for headings, lists, interactive checklists (- [ ]), and code blocks</li>
+            <li>Full-Text Search: Instant search across open and saved notes with relevance ranking and highlighted snippet previews (Ctrl+F)</li>
+            <li>AI Assistant Integration: Native Model Context Protocol (MCP) server over stdio for Claude, Cursor, and developer tools</li>
+            <li>Colourful &amp; Accessible: Eleven pastel themes with automatically derived desaturated dark mode surfaces</li>
+            <li>Private: Scribbly privacy mode (Ctrl+H) obfuscates text when notes are unfocused or during screen sharing</li>
+            <li>Customizable Typography: Configure custom fonts and zoom scaling for standard and monospace notes</li>
+            <li>Jorts Migration Helper: Non-destructive import wizard to safely copy existing notes from Jorts</li>
         </ul>
-        <p>Windows installers are also available, and require no admin rights. So you can even use this at work!</p>
-        <p>This app is made lovingly and without any LLM intervention. </p>
     </description>
 
-    <provides>
-        <id>@ALTERNATE_APP_ID@</id>
-        <binary>@ALTERNATE_APP_ID@</binary>
-    </provides>
-    <replaces>
-        <id>@ALTERNATE_APP_ID@</id>
-    </replaces>
-
     <developer id="io.github.@PUBLISHER@">
-        <name>Lainsce + Stella and Charlie</name>
+        <name>Jots Contributors</name>
     </developer>
     <project_group>@PUBLISHER@</project_group>
     <url type="homepage">https://github.com/@PUBLISHER@/@APP_NAME@</url>
@@ -51,7 +44,9 @@
         <keyword>Stickies</keyword>
         <keyword>Colourful</keyword>
         <keyword>Notes</keyword>
-        <keyword>Cute</keyword>
+        <keyword>Markdown</keyword>
+        <keyword>Search</keyword>
+        <keyword>MCP</keyword>
         <keyword>Desktop</keyword>
         <keyword>Reminder</keyword>
         <keyword>Utility</keyword>
@@ -93,89 +88,25 @@
     </screenshots>
 
     <releases>
-        <release version="4.3.0" date="2026-07-07">
+        <release version="1.0.0-beta.1" type="development" date="2026-08-25">
             <description>
-                <p>A lot of tiny goodies</p>
+                <p>Inaugural Beta release of Jots — the next-generation lightweight sticky notes application, forked and evolved from Jorts 4.3.0.</p>
+                <p>Major Highlights:</p>
                 <ul>
-                    <li>Alas, back to default icon, but pride is forever</li>
-                    <li>Added experimental automated windows installers</li>
-                    <li>Small style fixes by @Geopjr!</li>
-                    <li>Updated Spanish translation thanks to Eli!</li>
-                    <li>Updated Italian translation thanks to Seth!</li>
-                    <li>Updated French and German translations</li>
+                    <li>Full-Text Search: Real-time search popover querying live text buffers and saved notes with relevance scoring (Ctrl+F)</li>
+                    <li>Markdown Storage &amp; Live Rendering: Individual Markdown file persistence with inline syntax rendering for headers, lists, checklists (- [ ]), and code blocks</li>
+                    <li>Model Context Protocol (MCP) Server: Standalone native binary (jots-mcp) enabling AI assistants to securely read and create desktop sticky notes</li>
+                    <li>Desaturated Dark Mode: High-contrast pastel color derivation optimized for dark themes and accessibility</li>
+                    <li>Custom Typography: Configurable default and monospace note fonts in Preferences</li>
+                    <li>Jorts Migration Helper: Non-destructive first-run prompt and Preferences tool to copy notes from existing Jorts installations</li>
+                    <li>Scribbly Privacy Mode: Fixed dynamic font obfuscation when notes lose focus (Ctrl+H)</li>
                 </ul>
             </description>
         </release>
-        <release version="4.2.0" date="2026-05-31">
+        <release version="0.9.0" date="2026-07-07">
             <description>
-                <p>The Unyielding Jots</p>
-                <ul>
-                    <li>Lovely Pride variant thanks to @wpkelso!</li>
-                    <li>Added indent for lists with help from @MysterieCatDev!</li>
-                    <li>Added feature to restore last deleted note</li>
-                    <li>Refreshed preference dialog appearance</li>
-                    <li>Issue with appcenter and flathub build differences fixed thanks to @ryonakano!</li>
-                    <li>Added Danish translation thanks to @pracedru!</li>
-                    <li>Added Croatian translation thanks to @milotype!</li>
-                    <li>Updated Spanish translation thanks to Eli!</li>
-                </ul>
+                <p>Historical fork checkpoint based on Jorts 4.3.0 by Lains, Stella &amp; Charlie, and community contributors.</p>
             </description>
-        </release>
-        <release version="4.1.1" date="2026-05-01">
-            <description>
-                <p>Minor touchups</p>
-            </description>
-        </release>
-        <release version="4.1.0" date="2026-04-25">
-            <description>
-                <p>Jots of Spring</p>
-                <ul>
-                    <li>New color: Latte!</li>
-                    <li>Added Preferences and Quit to the note right-click</li>
-                    <li>A lot of under-the-hood spring cleaning</li>
-                </ul>
-            </description>
-        </release>
-        <release version="4.0.1" date="2026-01-13">
-            <description>
-                <p>Organization change</p>
-                <ul>
-                    <li>From ellie-commons to comicdeed</li>
-                </ul>
-                <p>Guests stars: 😎</p>
-                <ul>
-                    <li>Updated sv-SE translation thanks to @yeager!</li>
-                    <li>Added vietnamese translation thanks to @hthienloc!</li>
-                </ul>
-            </description>
-            <issues>
-                <issue url="https://github.com/@PUBLISHER@/@APP_NAME@/issues/63">Added list feature</issue>
-            </issues>
-        </release>
-        <release version="4.0.0" date="2025-11-22">
-            <description>
-                <p>4.0.0 Jots of Hyperspace! 🚀</p>
-                <ul>
-                    <li>Version 4 to align with Gtk version</li>
-                    <li>Added button to toggle lists, and ability to customize them</li>
-                    <li>Ctrl+Scroll to zoom-in, zoom-out</li>
-                    <li>More zoom options</li>
-                    <li>Keyboard shortcuts work from popover now</li>
-                    <li>A couple visual bugfixes as well!</li>
-                    <li>Various under the hood performance improvements</li>
-                </ul>
-                <p>Guests stars: 😎</p>
-                <ul>
-                    <li>Updated JA translation thanks to @ryonakano!</li>
-                    <li>You, the user, for liking this lil app!</li>
-                </ul>
-            </description>
-            <issues>
-                <issue url="https://github.com/@PUBLISHER@/@APP_NAME@/issues/79">Fixed zoom impacting emojichooser and context menu</issue>
-                <issue url="https://github.com/@PUBLISHER@/@APP_NAME@/issues/95">Fixed coloring bleeding into icons in emojichooser and context menu</issue>
-                <issue url="https://github.com/@PUBLISHER@/@APP_NAME@/issues/78">Added Ctrl+scroll</issue>
-                <issue url="https://github.com/@PUBLISHER@/@APP_NAME@/issues/63">Added list feature</issue>
-            </issues>
         </release>
     </releases>   
 </component>

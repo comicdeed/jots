@@ -11,4 +11,3 @@ option('profile',
     description : 'What we build for. Switched on automatically on windows machines'
 )
 option('development', type: 'boolean', value: false, description: 'If this is a dev build')
-option('legacy_rdnn', type: 'boolean', value: false, description: 'If this uses the io.github.ellie-commons domain (Flathub)')

@@ -33,7 +33,6 @@ modules:
     buildsystem: meson
     config-opts:
       - --buildtype=release
-      - -Dlegacy_rdnn=false
       - -Dicon_variant=default
     sources:
       - type: dir

@@ -20,12 +20,16 @@ namespace Jots.Tests {
     public class TestSearchService {
 
         public static void register () {
-            GLib.Test.add_func ("/SearchService/UC_40_10_10/LiveBufferSearch", test_live_buffer_search);
-            GLib.Test.add_func ("/SearchService/UC_40_10_20/ClosedNoteDiskSearch", test_closed_note_disk_search);
-            GLib.Test.add_func ("/SearchService/UC_40_10_30/RelevanceScoringAndOrdering", test_relevance_scoring_and_ordering);
-            GLib.Test.add_func ("/SearchService/UC_40_10_40/SnippetExtractionAndEscaping", test_snippet_extraction_and_escaping);
-            GLib.Test.add_func ("/SearchService/UC_40_10_50/MultibyteUnicodeAndCasing", test_multibyte_unicode_and_casing);
-            GLib.Test.add_func ("/SearchService/UC_40_10_60/GuardrailLimits", test_guardrail_limits);
+            GLib.Test.add_func ("/SearchService/UC_80_10_10/LiveBufferSearch", test_live_buffer_search);
+            GLib.Test.add_func ("/SearchService/UC_80_10_20/ClosedNoteDiskSearch", test_closed_note_disk_search);
+            GLib.Test.add_func ("/SearchService/UC_80_10_30/RelevanceScoringAndOrdering", test_relevance_scoring_and_ordering);
+            GLib.Test.add_func ("/SearchService/UC_80_10_40/SnippetExtractionAndEscaping", test_snippet_extraction_and_escaping);
+            GLib.Test.add_func ("/SearchService/UC_80_10_45/EntitySubstringQueryNoCorruption", test_entity_substring_query_no_corruption);
+            GLib.Test.add_func ("/SearchService/UC_80_10_48/RegexSpecialCharactersQuery", test_regex_special_characters_query);
+            GLib.Test.add_func ("/SearchService/UC_80_10_50/MultibyteUnicodeAndCasing", test_multibyte_unicode_and_casing);
+            GLib.Test.add_func ("/SearchService/UC_80_10_55/EmptyAndWhitespaceQueries", test_empty_and_whitespace_queries);
+            GLib.Test.add_func ("/SearchService/UC_80_10_58/DeduplicationOpenAndDisk", test_deduplication_open_and_disk);
+            GLib.Test.add_func ("/SearchService/UC_80_10_60/GuardrailLimits", test_guardrail_limits);
         }
 
         private static string create_temp_notes_dir () {
@@ -135,6 +139,44 @@ namespace Jots.Tests {
             assert_true (snippet.contains ("<b>symbols</b>"));
         }
 
+        private static void test_entity_substring_query_no_corruption () {
+            var storage = new Storage ();
+            var search_service = new SearchService (storage);
+
+            // Text containing XML entities
+            var text = "Connecting to AT&T cellular network with <tag> custom markup.";
+            // Searching for "amp" or "tag" must not break markup entities
+            var snippet_tag = search_service.extract_snippet (text, "tag", "Fallback Title");
+            assert_true (snippet_tag.contains ("&lt;<b>tag</b>&gt;"));
+            assert_true (snippet_tag.contains ("&amp;"));
+            assert_false (snippet_tag.contains ("&<b>amp</b>;"));
+        }
+
+        private static void test_regex_special_characters_query () {
+            var temp_dir = create_temp_notes_dir ();
+            var storage = new Storage ();
+            storage.override_notes_dir (temp_dir);
+
+            var search_service = new SearchService (storage);
+
+            var note = new NoteData () {
+                id = "regex-note",
+                title = "C++ & Regex Tasks",
+                content = "- [ ] Fix (parser) bug in C++ code*\n- [x] Complete task"
+            };
+            storage.save_note (note);
+
+            // Search query with regex special chars: "[ ]"
+            var results1 = search_service.search ("- [ ]");
+            assert_true (results1.size == 1);
+            assert_true (results1.get (0).snippet.contains ("<b>- [ ]</b>"));
+
+            // Search query with parentheses and plus: "C++"
+            var results2 = search_service.search ("C++");
+            assert_true (results2.size == 1);
+            assert_true (results2.get (0).snippet.contains ("<b>C++</b>"));
+        }
+
         private static void test_multibyte_unicode_and_casing () {
             var temp_dir = create_temp_notes_dir ();
             var storage = new Storage ();
@@ -158,6 +200,50 @@ namespace Jots.Tests {
             var results2 = search_service.search ("münchen");
             assert_true (results2.size == 1);
             assert_true (results2.get (0).snippet.contains ("<b>München</b>") || results2.get (0).snippet.contains ("<b>münchen</b>"));
+        }
+
+        private static void test_empty_and_whitespace_queries () {
+            var storage = new Storage ();
+            var search_service = new SearchService (storage);
+
+            var res1 = search_service.search ("");
+            assert_true (res1.size == 0);
+
+            var res2 = search_service.search ("   ");
+            assert_true (res2.size == 0);
+        }
+
+        private static void test_deduplication_open_and_disk () {
+            var temp_dir = create_temp_notes_dir ();
+            var storage = new Storage ();
+            storage.override_notes_dir (temp_dir);
+
+            // Save note to disk
+            var note_disk = new NoteData () {
+                id = "shared-uuid",
+                title = "Disk Title",
+                content = "Saved disk content keyword match"
+            };
+            storage.save_note (note_disk);
+
+            // Active open note in memory with same ID (live edit)
+            var active_list = new Gee.ArrayList<NoteData> ();
+            var note_live = new NoteData () {
+                id = "shared-uuid",
+                title = "Live Title",
+                content = "Live memory content keyword match"
+            };
+            active_list.add (note_live);
+
+            var provider = new MockActiveNotesProvider (active_list);
+            var search_service = new SearchService (storage, provider);
+
+            var results = search_service.search ("keyword");
+            // Must return exactly 1 result (the live active version)
+            assert_true (results.size == 1);
+            assert_true (results.get (0).id == "shared-uuid");
+            assert_true (results.get (0).is_active == true);
+            assert_true (results.get (0).title == "Live Title");
         }
 
         private static void test_guardrail_limits () {

@@ -149,8 +149,11 @@ namespace Jots {
             var color_pill = new Jots.ColorPill (res.theme, null) {
                 width_request = 10,
                 height_request = 10,
-                valign = Gtk.Align.CENTER
+                valign = Gtk.Align.CENTER,
+                can_target = false,
+                focusable = false
             };
+            color_pill.set_action_name (null);
 
             var title_label = new Gtk.Label (res.title) {
                 hexpand = true,
@@ -199,6 +202,12 @@ namespace Jots {
         }
 
         private void on_entry_activate () {
+            if (search_timeout_id != 0) {
+                Source.remove (search_timeout_id);
+                search_timeout_id = 0;
+                execute_search (search_entry.text);
+            }
+
             var selected_row = results_list.get_selected_row ();
             if (selected_row != null) {
                 on_row_activated (selected_row);
@@ -245,6 +254,13 @@ namespace Jots {
                 var next = child.get_next_sibling ();
                 results_list.remove (child);
                 child = next;
+            }
+        }
+
+        ~SearchPopover () {
+            if (search_timeout_id != 0) {
+                Source.remove (search_timeout_id);
+                search_timeout_id = 0;
             }
         }
     }

@@ -13,7 +13,7 @@ namespace Jots {
      * Search service providing full-text search across active and stored notes.
      */
     public class SearchService : GLib.Object {
-        private ActiveNotesProvider? active_notes_provider;
+        private weak ActiveNotesProvider? active_notes_provider;
         private Storage storage;
 
         public SearchService (Storage storage, ActiveNotesProvider? active_provider = null) {
@@ -142,7 +142,21 @@ namespace Jots {
         }
 
         /**
+         * Aligns an arbitrary byte index backwards to a valid UTF-8 character boundary.
+         */
+        private static int align_to_utf8_char_boundary (string str, int index) {
+            if (index <= 0) return 0;
+            if (index >= str.length) return (int) str.length;
+            int pos = index;
+            while (pos > 0 && (((uint8) str[pos]) & 0xC0) == 0x80) {
+                pos--;
+            }
+            return pos;
+        }
+
+        /**
          * Extract a concise snippet around the match with bold highlight markup.
+         * Guarantees UTF-8 boundary safety and prevents markup entity corruption.
          */
         public string extract_snippet (string content, string query_folded, string fallback_title) {
             var content_clean = content.strip ();
@@ -154,16 +168,16 @@ namespace Jots {
             int match_index = content_folded.index_of (query_folded);
 
             if (match_index < 0) {
-                // If content did not match (e.g. title match only), return the first 90 chars of content
-                int preview_len = int.min (90, content_clean.length);
+                // If content did not match (e.g. title match only), return the first ~90 chars of content
+                int preview_len = align_to_utf8_char_boundary (content_clean, int.min (90, (int) content_clean.length));
                 var preview = content_clean.substring (0, preview_len);
-                if (content_clean.length > 90) preview += "…";
+                if (content_clean.length > preview_len) preview += "…";
                 return Markup.escape_text (preview);
             }
 
-            // Calculate context boundary window (~35 chars before, ~55 chars after)
-            int start = int.max (0, match_index - 35);
-            int end = int.min (content_clean.length, match_index + query_folded.length + 55);
+            // Calculate context boundary window (~35 bytes before, ~55 bytes after)
+            int start = align_to_utf8_char_boundary (content_clean, int.max (0, match_index - 35));
+            int end = align_to_utf8_char_boundary (content_clean, int.min ((int) content_clean.length, match_index + (int) query_folded.length + 55));
 
             // Expand to nearest whitespace word boundaries
             if (start > 0) {
@@ -173,7 +187,7 @@ namespace Jots {
                 }
             }
 
-            if (end < content_clean.length) {
+            if (end < (int) content_clean.length) {
                 int space = content_clean.index_of (" ", end);
                 if (space >= 0 && space < end + 15) {
                     end = space;
@@ -181,20 +195,33 @@ namespace Jots {
             }
 
             var raw_snippet = content_clean.substring (start, end - start);
-            var escaped_snippet = Markup.escape_text (raw_snippet);
+            var raw_folded = raw_snippet.casefold ();
 
-            // Highlight matched term using regex
-            try {
-                var escaped_query = Regex.escape_string (Markup.escape_text (query_folded));
-                var highlight_regex = new Regex ("(" + escaped_query + ")", RegexCompileFlags.CASELESS);
-                escaped_snippet = highlight_regex.replace (escaped_snippet, -1, 0, "<b>\\1</b>");
-            } catch (Error e) {
-                debug ("Highlight regex error: %s", e.message);
+            // Highlight matched terms directly without entity corruption
+            var builder = new StringBuilder ();
+            int cursor = 0;
+            while (cursor < raw_snippet.length) {
+                int idx = raw_folded.index_of (query_folded, cursor);
+                if (idx < 0) {
+                    builder.append (Markup.escape_text (raw_snippet.substring (cursor)));
+                    break;
+                }
+                if (idx > cursor) {
+                    builder.append (Markup.escape_text (raw_snippet.substring (cursor, idx - cursor)));
+                }
+                int match_len = (int) query_folded.length;
+                if (idx + match_len > raw_snippet.length) {
+                    match_len = (int) raw_snippet.length - idx;
+                }
+                builder.append ("<b>");
+                builder.append (Markup.escape_text (raw_snippet.substring (idx, match_len)));
+                builder.append ("</b>");
+                cursor = idx + match_len;
             }
 
-            string result = escaped_snippet;
+            string result = builder.str;
             if (start > 0) result = "…" + result;
-            if (end < content_clean.length) result = result + "…";
+            if (end < (int) content_clean.length) result = result + "…";
 
             return result;
         }

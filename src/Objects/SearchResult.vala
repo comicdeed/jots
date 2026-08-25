@@ -50,9 +50,13 @@ namespace Jots {
          * Compare two search results for descending relevance order.
          */
         public static int compare_score_desc (SearchResult a, SearchResult b) {
-            if (a.score > b.score) return -1;
-            if (a.score < b.score) return 1;
-            return a.title.collate (b.title);
+            if (a.score > b.score) {
+                return -1;
+            }
+            if (a.score < b.score) {
+                return 1;
+            }
+            return (a.title ?? "").collate (b.title ?? "");
         }
     }
 }

@@ -428,8 +428,8 @@ namespace Jots {
 
                     case "search_notes": {
                         var query = args_obj.get_string_member_with_default ("query", "");
-                        if (query.length > MAX_SEARCH_RESULTS) {
-                            // length check
+                        if (query.length > MAX_NOTE_TITLE_LENGTH) {
+                            return format_tool_error (id_node, "Search query exceeds maximum length of %d characters.".printf (MAX_NOTE_TITLE_LENGTH));
                         }
                         var raw_json = proxy.search_notes (query);
                         return format_tool_success (id_node, raw_json);

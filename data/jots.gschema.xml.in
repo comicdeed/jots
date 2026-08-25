@@ -44,5 +44,10 @@
 			<summary>Monospace note font</summary>
 			<description>Custom font description for monospace sticky notes</description>
 		</key>
+		<key name="jorts-migration-prompted" type="b">
+			<default>false</default>
+			<summary>Whether the first-run Jorts migration prompt was shown</summary>
+			<description>Tracks if user has been offered to import notes from Jorts on initial startup</description>
+		</key>
 	</schema>
 </schemalist>

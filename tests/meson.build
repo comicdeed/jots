@@ -54,6 +54,7 @@ test_sources = files(
     'TestScribblyController.vala',
     'TestMcpProtocol.vala',
     'TestSearchService.vala',
+    'TestMigrationHelper.vala',
     meson.project_source_root() / 'src' / 'Objects' / 'NoteData.vala',
     meson.project_source_root() / 'src' / 'Objects' / 'SearchResult.vala',
     meson.project_source_root() / 'src' / 'Services' / 'MarkdownSerializer.vala',

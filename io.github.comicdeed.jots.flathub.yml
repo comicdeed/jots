@@ -11,6 +11,10 @@ finish-args:
   - '--socket=wayland'
   - '--socket=fallback-x11'
   - '--share=ipc'
+  - '--socket=session-bus'
+  - '--own-name=io.github.comicdeed.jots'
+  - '--filesystem=xdg-data/io.github.elly_code.jorts:ro'
+  - '--filesystem=~/.var/app/io.github.elly_code.jorts:ro'
   - '--device=dri'
 
 cleanup:
@@ -29,7 +33,7 @@ modules:
     buildsystem: meson
     config-opts:
       - --buildtype=release
-      - -Dlegacy_rdnn=true
+      - -Dlegacy_rdnn=false
       - -Dicon_variant=default
     sources:
       - type: dir

@@ -17,6 +17,7 @@ public static int main (string[] args) {
     Jots.Tests.register_scribbly_controller_tests ();
     Jots.Tests.register_mcp_protocol_tests ();
     Jots.Tests.register_search_service_tests ();
+    Jots.Tests.register_migration_helper_tests ();
 
     return GLib.Test.run ();
 }

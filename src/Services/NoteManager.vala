@@ -62,6 +62,18 @@ public class Jots.NoteManager : Object, Jots.ActiveNotesProvider {
         var loaded_notes = storage.load_all ();
 
         if (loaded_notes.size == 0) {
+            var migration_prompted = Application.settings.get_boolean (KEY_JORTS_MIGRATION_PROMPTED);
+            if (!migration_prompted) {
+                string? source_path = null;
+                var legacy_notes = storage.find_legacy_jorts_notes (out source_path);
+                if (legacy_notes.size > 0) {
+                    prompt_jorts_migration (legacy_notes);
+                    return;
+                } else {
+                    Application.settings.set_boolean (KEY_JORTS_MIGRATION_PROMPTED, true);
+                }
+            }
+
             var note_data = new NoteData ();
             note_data.theme = DEFAULT_THEME;
 
@@ -77,6 +89,67 @@ public class Jots.NoteManager : Object, Jots.ActiveNotesProvider {
 
         saving_lock = false;
         is_initialized = true;
+    }
+
+    private void prompt_jorts_migration (Gee.List<NoteData> legacy_notes) {
+        var dialog = new Granite.MessageDialog.with_image_from_icon_name (
+            _("Import notes from Jorts?"),
+            _("Jots discovered %d notes from your existing Jorts installation. Would you like to copy them into Jots?\n\n(Your original Jorts notes will remain untouched.)").printf (legacy_notes.size),
+            "dialog-question",
+            Gtk.ButtonsType.NONE
+        );
+
+        dialog.add_button (_("Start Fresh"), Gtk.ResponseType.CANCEL);
+        var import_btn = dialog.add_button (_("Import %d Notes").printf (legacy_notes.size), Gtk.ResponseType.ACCEPT);
+        import_btn.add_css_class ("suggested-action");
+
+        dialog.response.connect ((response_id) => {
+            Application.settings.set_boolean (KEY_JORTS_MIGRATION_PROMPTED, true);
+
+            if (response_id == Gtk.ResponseType.ACCEPT) {
+                storage.import_notes (legacy_notes);
+                foreach (var note in legacy_notes) {
+                    create_note (note);
+                }
+            } else {
+                var note_data = new NoteData ();
+                note_data.theme = DEFAULT_THEME;
+                create_note (note_data);
+            }
+
+            saving_lock = false;
+            is_initialized = true;
+            dialog.destroy ();
+        });
+
+        dialog.present ();
+    }
+
+    /**
+     * Scans for legacy Jorts notes, imports them non-destructively, and creates open windows for newly imported notes.
+     * Returns the count of imported notes.
+     */
+    public int import_from_jorts () {
+        string? source_path = null;
+        var legacy_notes = storage.find_legacy_jorts_notes (out source_path);
+        if (legacy_notes.size == 0) {
+            return 0;
+        }
+
+        var existing_ids = new Gee.HashSet<string> ();
+        foreach (var note in storage.load_all ()) {
+            existing_ids.add (note.id);
+        }
+
+        var imported_count = storage.import_notes (legacy_notes);
+
+        foreach (var note in legacy_notes) {
+            if (!existing_ids.contains (note.id)) {
+                create_note (note);
+            }
+        }
+
+        return imported_count;
     }
 
     /*************************************************/

@@ -56,8 +56,101 @@ namespace Jots {
             }
         }
 
+        public const string JORTS_APP_ID = "io.github.elly_code.jorts";
+
+        private string[]? override_candidate_paths = null;
+
         /**
-         * Migrates notes from legacy monolithic saved_state.json to individual Markdown files.
+         * Overrides candidate legacy search paths for unit testing.
+         */
+        public void override_legacy_paths (string[] paths) {
+            this.override_candidate_paths = paths;
+        }
+
+        /**
+         * Returns the list of candidate legacy files to search for existing Jorts notes.
+         */
+        public string[] get_legacy_candidate_paths () {
+            if (override_candidate_paths != null) {
+                return override_candidate_paths;
+            }
+
+            var home = Environment.get_home_dir ();
+            var user_data = Environment.get_user_data_dir ();
+
+            return new string[] {
+                // 1. Direct Jots legacy backup inside current app data dir (if any)
+                legacy_savefile_path,
+                // 2. Native / Host Jorts data dir
+                GLib.Path.build_path (Path.DIR_SEPARATOR_S, user_data, JORTS_APP_ID, LEGACY_FILENAME),
+                // 3. Flatpak Jorts data dir
+                GLib.Path.build_path (Path.DIR_SEPARATOR_S, home, ".var", "app", JORTS_APP_ID, "data", JORTS_APP_ID, LEGACY_FILENAME)
+            };
+        }
+
+        /**
+         * Finds and parses notes from legacy Jorts files non-destructively without modifying source files.
+         */
+        public Gee.List<NoteData> find_legacy_jorts_notes (out string? found_source_path = null) {
+            found_source_path = null;
+            var list = new Gee.ArrayList<NoteData> ();
+
+            foreach (var path in get_legacy_candidate_paths ()) {
+                var file = File.new_for_path (path);
+                if (!file.query_exists ()) {
+                    continue;
+                }
+
+                var parsed = parse_legacy_json_file (path);
+                if (parsed.size > 0) {
+                    found_source_path = path;
+                    return parsed;
+                }
+            }
+
+            return list;
+        }
+
+        /**
+         * Helper to parse a JSON array of notes from a file path safely.
+         */
+        public Gee.List<NoteData> parse_legacy_json_file (string file_path) {
+            var list = new Gee.ArrayList<NoteData> ();
+            var parser = new Json.Parser ();
+            try {
+                parser.load_from_mapped_file (file_path);
+                var root = parser.get_root ();
+                if (root != null && root.get_node_type () == Json.NodeType.ARRAY) {
+                    var array = root.get_array ();
+                    foreach (var elem in array.get_elements ()) {
+                        if (elem.get_node_type () == Json.NodeType.OBJECT) {
+                            var obj = elem.dup_object ();
+                            var note = new NoteData.from_json (obj);
+                            list.add (note);
+                        }
+                    }
+                }
+            } catch (Error e) {
+                debug ("Could not parse legacy JSON from %s: %s", file_path, e.message);
+            }
+            return list;
+        }
+
+        /**
+         * Non-destructively imports a list of notes, saving them as individual Markdown files.
+         * Returns the number of imported notes.
+         */
+        public int import_notes (Gee.List<NoteData> notes) {
+            int count = 0;
+            foreach (var note in notes) {
+                save_note (note);
+                count++;
+            }
+            return count;
+        }
+
+        /**
+         * Migrates notes from direct legacy saved_state.json within current app data dir if present.
          */
         public void migrate_legacy_json_if_needed () {
             var legacy_file = File.new_for_path (legacy_savefile_path);
@@ -82,26 +175,19 @@ namespace Jots {
 
             // Perform migration
             debug ("Migrating legacy saved_state.json to markdown files...");
-            var parser = new Json.Parser ();
-            try {
-                parser.load_from_mapped_file (legacy_savefile_path);
-                var root = parser.get_root ();
-                if (root != null && root.get_node_type () == Json.NodeType.ARRAY) {
-                    var array = root.get_array ();
-                    foreach (var elem in array.get_elements ()) {
-                        var obj = elem.dup_object ();
-                        var note = new NoteData.from_json (obj);
-                        save_note (note);
-                    }
-                    print ("\nSuccessfully migrated %u notes from saved_state.json to Markdown files.\n", array.get_length ());
-                }
+            var parsed = parse_legacy_json_file (legacy_savefile_path);
+            if (parsed.size > 0) {
+                import_notes (parsed);
+                print ("\nSuccessfully migrated %d notes from saved_state.json to Markdown files.\n", parsed.size);
+            }
 
-                // Rename legacy file to .migrated to preserve safe backup
+            // Rename direct legacy file to .migrated to preserve safe backup
+            try {
                 var backup_path = legacy_savefile_path + ".migrated";
                 var backup_file = File.new_for_path (backup_path);
                 legacy_file.move (backup_file, GLib.FileCopyFlags.OVERWRITE);
             } catch (Error e) {
-                warning ("Failed to migrate legacy notes: %s", e.message);
+                warning ("Failed to rename direct legacy backup file: %s", e.message);
             }
         }
 
@@ -141,6 +227,28 @@ namespace Jots {
                 } catch (Error e) {
                     warning ("Failed to delete note file %s: %s", note_id, e.message);
                 }
+            }
+        }
+
+        /**
+         * Loads a single note by its ID from the notes directory.
+         */
+        public NoteData? load_note_by_id (string note_id) {
+            ensure_directories ();
+            var filename = "%s.md".printf (note_id);
+            var file = notes_dir.get_child (filename);
+            if (!file.query_exists ()) {
+                return null;
+            }
+            try {
+                uint8[] contents;
+                string etag;
+                file.load_contents (null, out contents, out etag);
+                var raw_str = (string) contents;
+                return MarkdownSerializer.deserialize (raw_str, note_id);
+            } catch (Error e) {
+                warning ("Failed to load note file %s: %s", filename, e.message);
+                return null;
             }
         }
 

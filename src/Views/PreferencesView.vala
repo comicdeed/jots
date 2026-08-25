@@ -196,6 +196,41 @@ namespace Jots {
                 width_request = 96,
             };
 
+            var restore_box = new Jots.SettingsBox (
+                _("Restore note"),
+                _("Restore the last deleted sticky note"),
+                restore_button
+            );
+            settingsbox.append (restore_box);
+
+            /***********************************************/
+            /*            Import Notes from Jorts          */
+            /***********************************************/
+            var import_jorts_button = new Gtk.Button () {
+                label = _("Import Notes"),
+                tooltip_text = _("Scan and import notes from an existing Jorts installation"),
+                valign = Gtk.Align.CENTER,
+                width_request = 96
+            };
+
+            import_jorts_button.clicked.connect (() => {
+                var count = Application.note_manager.import_from_jorts ();
+                if (count > 0) {
+                    toast.title = _("Successfully imported %d notes from Jorts").printf (count);
+                    toast.send_notification ();
+                } else {
+                    toast.title = _("No Jorts notes found on system");
+                    toast.send_notification ();
+                }
+            });
+
+            var import_jorts_box = new Jots.SettingsBox (
+                _("Import from Jorts"),
+                _("Copy notes from an existing Jorts installation without modifying originals"),
+                import_jorts_button
+            );
+            settingsbox.append (import_jorts_box);
+
             /****************************************************/
             /*               Autostart Request                  */
             /****************************************************/

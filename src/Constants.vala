@@ -61,6 +61,7 @@ namespace Jots {
     const string KEY_CUSTOM_FONTS       = "use-custom-fonts";
     const string KEY_DEFAULT_FONT       = "default-font";
     const string KEY_MONOSPACE_FONT     = "monospace-font";
+    const string KEY_JORTS_MIGRATION_PROMPTED = "jorts-migration-prompted";
 
     // Used by random_emote () for the emote selection menu
     const string[] EMOTES = {

@@ -58,6 +58,9 @@ namespace Jots {
     const string KEY_HIDEBAR            = "hide-bar";
     const string KEY_LIST               = "list-prefix";
     const string KEY_AUTOSTART          = "autostart";
+    const string KEY_CUSTOM_FONTS       = "use-custom-fonts";
+    const string KEY_DEFAULT_FONT       = "default-font";
+    const string KEY_MONOSPACE_FONT     = "monospace-font";
 
     // Used by random_emote () for the emote selection menu
     const string[] EMOTES = {

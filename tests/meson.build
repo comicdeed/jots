@@ -54,6 +54,7 @@ test_sources = files(
     'TestMcpProtocol.vala',
     meson.project_source_root() / 'src' / 'Objects' / 'NoteData.vala',
     meson.project_source_root() / 'src' / 'Services' / 'MarkdownSerializer.vala',
+    meson.project_source_root() / 'src' / 'Services' / 'FontController.vala',
     meson.project_source_root() / 'src' / 'Objects' / 'Themes.vala',
     meson.project_source_root() / 'src' / 'Objects' / 'Zoom.vala',
     meson.project_source_root() / 'src' / 'Objects' / 'ZoomType.vala',

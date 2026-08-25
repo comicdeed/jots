@@ -29,5 +29,20 @@
 			<summary>Autostart the app</summary>
 			<description>Cannot read systems flag, so may desync if user does shit</description>
 		</key>
+		<key name="use-custom-fonts" type="b">
+			<default>false</default>
+			<summary>Use custom fonts</summary>
+			<description>Whether to override system default fonts with user selected fonts</description>
+		</key>
+		<key name="default-font" type="s">
+			<default>''</default>
+			<summary>Default note font</summary>
+			<description>Custom font description for standard sticky notes</description>
+		</key>
+		<key name="monospace-font" type="s">
+			<default>''</default>
+			<summary>Monospace note font</summary>
+			<description>Custom font description for monospace sticky notes</description>
+		</key>
 	</schema>
 </schemalist>

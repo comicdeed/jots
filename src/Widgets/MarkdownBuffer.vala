@@ -37,6 +37,7 @@ namespace Jots {
         private GLib.Regex? regex_italic;
         private GLib.Regex? regex_strike;
         private GLib.Regex? regex_code;
+        private GLib.Regex? regex_code_block;
         private GLib.Regex? regex_quote;
         private GLib.Regex? regex_task_done;
         private GLib.Regex? regex_task_todo;
@@ -48,6 +49,17 @@ namespace Jots {
             init_regexes ();
 
             changed.connect (on_buffer_changed);
+
+            if (GLib.SettingsSchemaSource.get_default () != null) {
+                try {
+                    var schema_source = GLib.SettingsSchemaSource.get_default ();
+                    if (schema_source != null && schema_source.lookup ("io.github.comicdeed.jots.devel", true) != null) {
+                        var settings = new GLib.Settings ("io.github.comicdeed.jots.devel");
+                        settings.changed[KEY_CUSTOM_FONTS].connect (refresh_code_tag_fonts);
+                        settings.changed[KEY_MONOSPACE_FONT].connect (refresh_code_tag_fonts);
+                    }
+                } catch (GLib.Error e) {}
+            }
         }
 
         private void setup_tags () {
@@ -78,14 +90,20 @@ namespace Jots {
                 "strikethrough", true
             );
 
+            var mono_family = FontController.get_active_monospace_family ();
+
             create_tag (TAG_CODE,
-                "family", "monospace"
+                "family", mono_family,
+                "family-set", true,
+                "background-rgba", Gdk.RGBA () { red = 0.5f, green = 0.5f, blue = 0.5f, alpha = 0.15f }
             );
 
             create_tag (TAG_CODE_BLOCK,
-                "family", "monospace",
+                "family", mono_family,
+                "family-set", true,
                 "left-margin", 12,
-                "right-margin", 12
+                "right-margin", 12,
+                "background-rgba", Gdk.RGBA () { red = 0.5f, green = 0.5f, blue = 0.5f, alpha = 0.12f }
             );
 
             create_tag (TAG_QUOTE,
@@ -112,6 +130,21 @@ namespace Jots {
             );
         }
 
+        private void refresh_code_tag_fonts () {
+            var mono_family = FontController.get_active_monospace_family ();
+            var code_tag = tag_table.lookup (TAG_CODE);
+            if (code_tag != null) {
+                code_tag.family = mono_family;
+                code_tag.family_set = true;
+            }
+            var block_tag = tag_table.lookup (TAG_CODE_BLOCK);
+            if (block_tag != null) {
+                block_tag.family = mono_family;
+                block_tag.family_set = true;
+            }
+            highlight_markdown ();
+        }
+
         private void init_regexes () {
             try {
                 regex_h1 = new GLib.Regex ("^# (.+)$", GLib.RegexCompileFlags.MULTILINE);
@@ -121,6 +154,7 @@ namespace Jots {
                 regex_italic = new GLib.Regex ("(?<!\\*|_)(\\*|_)(.+?)(?<!\\*|_)\\1");
                 regex_strike = new GLib.Regex ("(~~)(.+?)\\1");
                 regex_code = new GLib.Regex ("(`)([^`\n]+?)\\1");
+                regex_code_block = new GLib.Regex ("(```[a-zA-Z0-9_-]*\\n?)([\\s\\S]*?)(```)", GLib.RegexCompileFlags.DOTALL);
                 regex_quote = new GLib.Regex ("^> (.+)$", GLib.RegexCompileFlags.MULTILINE);
                 regex_task_done = new GLib.Regex ("^([\\*\\+-]\\s+\\[[xX]\\]\\s+)(.+)$", GLib.RegexCompileFlags.MULTILINE);
                 regex_task_todo = new GLib.Regex ("^([\\*\\+-]\\s+\\[ \\]\\s+)(.+)$", GLib.RegexCompileFlags.MULTILINE);
@@ -201,6 +235,9 @@ namespace Jots {
 
             // Standard Bullet Lists
             apply_regex_list_match (regex_list, text);
+
+            // Multiline Code Blocks (triple backticks)
+            apply_regex_code_block_match (regex_code_block, text);
 
             // Inline Formatting: Bold, Italic, Strikethrough, Code, Links
             apply_regex_inline_match (regex_bold, text, TAG_BOLD);
@@ -303,21 +340,67 @@ namespace Jots {
                         int content_e = 0;
                         if (info.fetch_pos (0, out full_s, out full_e) &&
                             info.fetch_pos (2, out content_s, out content_e)) {
-                            Gtk.TextIter s, e, cs, ce;
-                            get_iter_at_offset (out s, full_s);
-                            get_iter_at_offset (out e, full_e);
+                            Gtk.TextIter cs, ce;
                             get_iter_at_offset (out cs, content_s);
                             get_iter_at_offset (out ce, content_e);
 
-                            // Apply syntax tag to entire span, and content tag to inner text
-                            apply_tag_by_name (TAG_SYNTAX, s, e);
-                            apply_tag_by_name (content_tag, cs, ce);
+                            Gtk.TextIter ds1, de1, ds2, de2;
+                            get_iter_at_offset (out ds1, full_s);
+                            get_iter_at_offset (out de1, content_s);
+                            get_iter_at_offset (out ds2, content_e);
+                            get_iter_at_offset (out de2, full_e);
+
+                            apply_tag_by_name (TAG_SYNTAX, ds1, de1);
+                            apply_tag_by_name (TAG_SYNTAX, ds2, de2);
+
+                            if (content_tag == TAG_CODE) {
+                                Gtk.TextIter fs, fe;
+                                get_iter_at_offset (out fs, full_s);
+                                get_iter_at_offset (out fe, full_e);
+                                apply_tag_by_name (TAG_CODE, fs, fe);
+                            } else {
+                                apply_tag_by_name (content_tag, cs, ce);
+                            }
                         }
                         info.next ();
                     }
                 }
             } catch (GLib.Error e) {
                 debug ("Inline match error: %s", e.message);
+            }
+        }
+
+        private void apply_regex_code_block_match (GLib.Regex? regex, string text) {
+            if (regex == null) return;
+            try {
+                GLib.MatchInfo info;
+                if (regex.match (text, 0, out info)) {
+                    while (info.matches ()) {
+                        int full_s = 0, full_e = 0;
+                        int open_s = 0, open_e = 0;
+                        int content_s = 0, content_e = 0;
+                        int close_s = 0, close_e = 0;
+                        if (info.fetch_pos (0, out full_s, out full_e) &&
+                            info.fetch_pos (1, out open_s, out open_e) &&
+                            info.fetch_pos (2, out content_s, out content_e) &&
+                            info.fetch_pos (3, out close_s, out close_e)) {
+                            Gtk.TextIter fs, fe, os, oe, cls, cle;
+                            get_iter_at_offset (out fs, full_s);
+                            get_iter_at_offset (out fe, full_e);
+                            get_iter_at_offset (out os, open_s);
+                            get_iter_at_offset (out oe, open_e);
+                            get_iter_at_offset (out cls, close_s);
+                            get_iter_at_offset (out cle, close_e);
+
+                            apply_tag_by_name (TAG_CODE_BLOCK, fs, fe);
+                            apply_tag_by_name (TAG_SYNTAX, os, oe);
+                            apply_tag_by_name (TAG_SYNTAX, cls, cle);
+                        }
+                        info.next ();
+                    }
+                }
+            } catch (GLib.Error e) {
+                debug ("Code block match error: %s", e.message);
             }
         }
 

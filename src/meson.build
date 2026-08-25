@@ -37,6 +37,7 @@ sources = files (
     'Services' / 'ZoomController.vala',
     'Services' / 'ScribblyController.vala',
     'Services' / 'ColorController.vala',
+    'Services' / 'FontController.vala',
 
     'Widgets' / 'EditableLabel.vala',
     'Widgets' / 'TextView.vala',

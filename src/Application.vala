@@ -45,6 +45,7 @@ public class Jots.Application : Gtk.Application {
     public static Gtk.Settings gtk_settings;
 
     public static Jots.NoteManager note_manager;
+    public static Jots.FontController font_controller;
     public static Jots.PreferenceWindow? preferences;
     public static Jots.NoteService? note_service;
     private uint dbus_registration_id = 0;
@@ -148,6 +149,7 @@ public class Jots.Application : Gtk.Application {
         set_accels_for_action (ACTION_PREFIX + ACTION_RESTORE_LAST, {"<Control>R"});
 
         note_manager = new Jots.NoteManager (this);
+        font_controller = new Jots.FontController ();
         var action_restore = lookup_action (Application.ACTION_RESTORE_LAST);
         ((SimpleAction)action_restore).set_enabled (false);
 

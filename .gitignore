@@ -4,6 +4,7 @@
 !.valalintignore
 !.editorconfig
 !.github/
+!.agents/
 ~*
 builddir
 repo

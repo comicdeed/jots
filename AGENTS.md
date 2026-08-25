@@ -63,3 +63,10 @@ flatpak run --command=jots-unit-tests io.github.comicdeed.jots.devel
 * **Test & Use-Case Cross-Referencing**: When writing unit tests in `tests/`, embed the permanent use-case identifier (`/<Component>/UC_XX_YY_ZZ/<ScenarioName>`) and link to `docs/use-cases/`.
 * **User Guide Synchronization**: Whenever modifying user-facing features, keyboard shortcuts, or settings, update [`docs/user-guide.md`](docs/user-guide.md).
 * **Honest Attribution**: When opening a PR, include the attribution block in `docs/development/pull-request-guidelines.md`.
+
+---
+
+## 🔍 Code Review & Verification Convention
+
+* **Senior Review Subagent**: After implementing any significant feature or architectural refactor, conduct a thorough Senior Vala code review using the project skill [`.agents/skills/vala-code-review/SKILL.md`](.agents/skills/vala-code-review/SKILL.md).
+* **Smart Confirmation Protocol**: **Always ask the user for confirmation before launching the automated code review subagent**, as the user may prefer to manually inspect changes, test UI behavior interactively, or provide immediate feedback first.

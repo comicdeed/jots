@@ -7,9 +7,11 @@
     <img src="https://ellie-commons.github.io/community-badge.svg" alt="Made for elementary OS">
   </a>
   
-  <p align="center">
-    <img class="center" src="data/screenshots/spread.png" alt="Jots screenshot">
-  </p>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="data/screenshots/jots-dark.png">
+    <source media="(prefers-color-scheme: light)" srcset="data/screenshots/jots-light.png">
+    <img class="center" src="data/screenshots/jots-light.png" alt="Jots screenshot">
+  </picture>
 </div>
 
 ---

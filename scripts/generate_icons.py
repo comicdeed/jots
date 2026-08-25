@@ -76,7 +76,7 @@ VARIANTS = {
     },
 }
 
-SIZES = [16, 24, 32, 48, 64, 128]
+SIZES = [16, 24, 32, 48, 64, 128, 256, 512]
 
 
 def get_accent_svg(accent_type, ink_dark, ink_accent, paper_color, size_tier):

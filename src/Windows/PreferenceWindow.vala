@@ -26,6 +26,7 @@ public class Jots.PreferenceWindow : Gtk.Window {
         Intl.setlocale ();
 
         application = app;
+        icon_name = APP_ID;
 
 #if DEVEL
         add_css_class (STYLE_DEVEL);
@@ -35,7 +36,11 @@ public class Jots.PreferenceWindow : Gtk.Window {
         /*              HEADERBAR BS                */
         /********************************************/
 
+#if DEVEL
+        title = _("Preferences - Jots (Development)");
+#else
         title = _("Preferences - Jots");
+#endif
 
         var title_label = new Gtk.Label (_("<b>Preferences for your Jots</b>")) {
             use_markup = true

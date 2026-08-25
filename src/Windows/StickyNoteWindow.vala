@@ -45,6 +45,12 @@ public class Jots.StickyNoteWindow : Gtk.ApplicationWindow {
         Intl.setlocale ();
         debug ("New StickyNoteWindow instance!");
         application = app;
+        icon_name = APP_ID;
+#if DEVEL
+        title = _("Jots (Development)");
+#else
+        title = _("Jots");
+#endif
 
         var actions = new SimpleActionGroup ();
         actions.add_action_entries (ACTION_ENTRIES, this);
@@ -166,14 +172,19 @@ public class Jots.StickyNoteWindow : Gtk.ApplicationWindow {
     * Simple handler for the EditableLabel
     */
     private void on_editable_changed () {
-        //TRANSLATORS: "%s" is replaced by a specific sticky note title
-        //Ex: "To remember - Jots"
-        //The text is shown in overviews of all open windows, accompanying the window
+        if (view.title != null && view.title.strip () != "") {
 #if DEVEL
-        title = _("%s - Jots (Development)").printf (view.title);
+            title = _("%s - Jots (Development)").printf (view.title);
 #else
-        title = _("%s - Jots").printf (view.title);
+            title = _("%s - Jots").printf (view.title);
 #endif
+        } else {
+#if DEVEL
+            title = _("Jots (Development)");
+#else
+            title = _("Jots");
+#endif
+        }
         has_changed ();
     }
 
@@ -211,11 +222,19 @@ public class Jots.StickyNoteWindow : Gtk.ApplicationWindow {
         set_default_size (data.width, data.height);
         view.title = data.title;
 
+        if (view.title != null && view.title.strip () != "") {
 #if DEVEL
-        title = _("%s - Jots (Development)").printf (view.title);
+            title = _("%s - Jots (Development)").printf (view.title);
 #else
-        title = _("%s - Jots").printf (view.title);
+            title = _("%s - Jots").printf (view.title);
 #endif
+        } else {
+#if DEVEL
+            title = _("Jots (Development)");
+#else
+            title = _("Jots");
+#endif
+        }
 
         view.content = data.content;
 
@@ -226,11 +245,19 @@ public class Jots.StickyNoteWindow : Gtk.ApplicationWindow {
 
     public void update_title (string new_title) {
         view.title = new_title;
+        if (new_title.strip () != "") {
 #if DEVEL
-        title = _("%s - Jots (Development)").printf (new_title);
+            title = _("%s - Jots (Development)").printf (new_title);
 #else
-        title = _("%s - Jots").printf (new_title);
+            title = _("%s - Jots").printf (new_title);
 #endif
+        } else {
+#if DEVEL
+            title = _("Jots (Development)");
+#else
+            title = _("Jots");
+#endif
+        }
         has_changed ();
     }
 

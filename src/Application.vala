@@ -138,6 +138,8 @@ public class Jots.Application : Gtk.Application {
         Gtk.init ();
         Granite.init ();
 
+        Gtk.Window.set_default_icon_name (APP_ID);
+
         add_action_entries (ACTION_ENTRIES, this);
         set_accels_for_action (ACTION_PREFIX + ACTION_QUIT, {"<Control>Q"});
         set_accels_for_action (ACTION_PREFIX + ACTION_SHOW_PREFERENCES, {"<Control>P"});
@@ -235,6 +237,8 @@ Please wait while the app remembers all the things…
     }
 
     public static int main (string[] args) {
+        GLib.Environment.set_prgname (APP_ID);
+        GLib.Environment.set_application_name ("Jots");
         return new Application ().run (args);
     }
 

@@ -78,7 +78,7 @@ Jots features a native, real-time Markdown rendering buffer (`MarkdownBuffer`) t
 | **Bold & Strong** | `**bold text**` | Styled with heavy font weight. |
 | **Italic & Emphasis** | `*italic text*` | Styled with slanted font style. |
 | **Strikethrough** | `~~deleted text~~` | Rendered with a horizontal strikethrough line. |
-| **Interactive Checklists** | `- [ ] Todo item`<br>`- [x] Completed task` | Rendered with distinct task tags and bold visual state. |
+| **Task Lists** | `- [ ] Pending item`<br>`- [x] Completed task` | Formatted with hanging list indent; typing `[x]` automatically applies strikethrough and muted tones to completed tasks. |
 | **Smart Lists** | `• Item`<br>`- Item` | Automatic hanging indentation, Enter continuation, and Backspace list exiting. |
 | **Blockquotes** | `> Important quote` | Italicized with a muted blockquote tone. |
 | **Inline Code** | `` `const x = 42;` `` | Styled with a rounded highlight pill and dedicated monospace font. |

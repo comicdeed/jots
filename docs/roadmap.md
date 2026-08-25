@@ -8,7 +8,7 @@ A curated backlog of architectural enhancements, capabilities, and feature candi
 
 * [1. Evaluation Summary & Score Matrix](#1-evaluation-summary--score-matrix)
 * [2. High-Priority Initiatives (Tier 1)](#2-high-priority-initiatives-tier-1)
-  * [2.1 Local Full-Text Search and Note Indexing](#21-local-full-text-search-and-note-indexing)
+  * [2.1 Note Organizer and Management Interface](#21-note-organizer-and-management-interface)
   * [2.2 Free-Form In-Text Tagging with Autocompletion](#22-free-form-in-text-tagging-with-autocompletion)
 * [3. Planned Backlog (Tier 2)](#3-planned-backlog-tier-2)
   * [3.1 Bidirectional Note Linking (`[[Note Title]]`)](#31-bidirectional-note-linking-note-title)
@@ -19,6 +19,7 @@ A curated backlog of architectural enhancements, capabilities, and feature candi
   * [5.1 Native Model Context Protocol (MCP) Server](#51-native-model-context-protocol-mcp-server)
   * [5.2 Markdown Storage with YAML Front Matter & Live Rendering](#52-markdown-storage-with-yaml-front-matter--live-rendering)
   * [5.3 Typography Customization & Obfuscated Scribbly Mode](#53-typography-customization--obfuscated-scribbly-mode)
+  * [5.4 Local Full-Text Search & Interactive Popover](#54-local-full-text-search--interactive-popover)
 
 ---
 
@@ -28,6 +29,7 @@ A curated backlog of architectural enhancements, capabilities, and feature candi
 | :--- | :---: | :---: | :---: | :---: | :---: |
 | **Native MCP Server (`jots-mcp`)** | 5.0 | 4.5 | 4.5 | **4.70** | ✅ **Completed** (v4.3.0) |
 | **Markdown Storage & Live Rendering** | 4.6 | 5.0 | 4.4 | **4.69** | ✅ **Completed** (v4.3.0) |
+| **Note Organizer & Management Interface** | 4.4 | 4.6 | 4.2 | **4.42** | 🟢 Tier 1 (Active Priority) |
 | **Typography & Scribbly Obfuscation** | 4.2 | 4.5 | 4.5 | **4.38** | ✅ **Completed** (v4.3.0) |
 | **Local Note Indexing & Search** | 4.2 | 4.4 | 4.0 | **4.22** | ✅ **Completed** (v4.4.0) |
 | **Free-Form In-Text Tagging (`#tag`)** | 4.0 | 4.0 | 3.8 | **3.95** | 🟢 Tier 1 (Active Priority) |
@@ -39,19 +41,21 @@ A curated backlog of architectural enhancements, capabilities, and feature candi
 
 ## 2. High-Priority Initiatives (Tier 1)
 
-### 2.1 Local Full-Text Search and Note Indexing
-* **Score**: `4.22` (Tier 1: Active Priority)
-* **Goal**: Fast, lightweight global search across all stored markdown notes via keyboard shortcut (`Ctrl + Shift + F` or desktop quick search).
+### 2.1 Note Organizer and Management Interface
+* **Score**: `4.42` (Tier 1: Active Priority)
+* **Goal**: Provide an optional central manager interface (`Jots.LibraryWindow`) to organize, filter, hide/close, and restore notes without cluttering the desktop canvas.
 * **Implementation Strategy**:
-  * Leverages discrete `.md` files for instant ripgrep / SQLite FTS5 querying.
-  * Presents an unobtrusive Granite popover search list jumping directly to matching notes or opening inactive notes.
+  * **Active vs. Stored / Hidden Lifecycle**: Distinguish between "Pinned to Desktop" (active floating windows) and "Stored in Library" (persisted `.md` files hidden from desktop view).
+  * **Tag Filtering & Categories**: Display aggregated `#tag` pills and category filters directly in the library view.
+  * **Card Grid & List View**: Visual note cards with theme color accents, titles, modification dates, and search snippets.
+  * **Trash & Recovery**: Integrate soft-deletion and safe restoration.
 
 ### 2.2 Free-Form In-Text Tagging with Autocompletion
 * **Score**: `3.95` (Tier 1: Active Priority)
-* **Goal**: Allow free-form `#tag` definitions anywhere in note bodies with dynamic tag indexing and autocompletion popups.
+* **Goal**: Allow free-form `#tag` definitions anywhere in note bodies with dynamic tag indexing, autocompletion popups, and sidebar filter synergy.
 * **Implementation Strategy**:
-  * Leverage `GtkTextTag` in `MarkdownBuffer` for subtle highlight styling without breaking plain text flow.
-  * Index active tags in memory to power tag filtering across open windows and search popovers.
+  * Leverage `GtkTextTag` in `MarkdownBuffer` (`TAG_TAG`) for subtle pastel highlight badge styling.
+  * Index active tags in memory via `NoteManager` to power autocompletion and category filters in the Note Organizer.
 
 ---
 
@@ -94,3 +98,8 @@ A curated backlog of architectural enhancements, capabilities, and feature candi
 * **Status**: ✅ **Shipped** (v4.3.0)
 * **Summary**: Added global font family and font size preferences via `Gtk.FontDialog` with strict monospace filtering for code fonts, coupled with unfocused privacy obfuscation using `Redacted Script` scribbles.
 * **Documentation**: See [`docs/user-guide.md`](user-guide.md#3-typography-customization).
+
+### 5.4 Local Full-Text Search & Interactive Popover
+* **Status**: ✅ **Shipped** (v4.4.0)
+* **Summary**: Implemented hybrid in-memory and disk full-text search engine (`Jots.SearchService`) and interactive desktop popover (`Jots.SearchPopover`) with relevance scoring, snippet extraction, and keyboard navigation (`Ctrl + F` / `Ctrl + Shift + F`).
+* **Documentation**: See [`docs/user-guide.md`](user-guide.md#searching-notes).

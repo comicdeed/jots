@@ -23,13 +23,16 @@ namespace Jots.Tests {
             GLib.Test.add_func ("/SearchService/UC_80_10_10/LiveBufferSearch", test_live_buffer_search);
             GLib.Test.add_func ("/SearchService/UC_80_10_20/ClosedNoteDiskSearch", test_closed_note_disk_search);
             GLib.Test.add_func ("/SearchService/UC_80_10_30/RelevanceScoringAndOrdering", test_relevance_scoring_and_ordering);
+            GLib.Test.add_func ("/SearchService/UC_80_10_35/FrequencyScoreBoosting", test_frequency_score_boosting);
             GLib.Test.add_func ("/SearchService/UC_80_10_40/SnippetExtractionAndEscaping", test_snippet_extraction_and_escaping);
+            GLib.Test.add_func ("/SearchService/UC_80_10_42/TitleMatchFallbackSnippet", test_title_match_fallback_snippet);
             GLib.Test.add_func ("/SearchService/UC_80_10_45/EntitySubstringQueryNoCorruption", test_entity_substring_query_no_corruption);
             GLib.Test.add_func ("/SearchService/UC_80_10_48/RegexSpecialCharactersQuery", test_regex_special_characters_query);
             GLib.Test.add_func ("/SearchService/UC_80_10_50/MultibyteUnicodeAndCasing", test_multibyte_unicode_and_casing);
             GLib.Test.add_func ("/SearchService/UC_80_10_55/EmptyAndWhitespaceQueries", test_empty_and_whitespace_queries);
             GLib.Test.add_func ("/SearchService/UC_80_10_58/DeduplicationOpenAndDisk", test_deduplication_open_and_disk);
             GLib.Test.add_func ("/SearchService/UC_80_10_60/GuardrailLimits", test_guardrail_limits);
+            GLib.Test.add_func ("/SearchService/UC_80_10_70/JsonSerializationOutput", test_json_serialization_output);
         }
 
         private static string create_temp_notes_dir () {
@@ -126,6 +129,36 @@ namespace Jots.Tests {
             assert_true (results.get (0).score > results.get (1).score);
         }
 
+        private static void test_frequency_score_boosting () {
+            var temp_dir = create_temp_notes_dir ();
+            var storage = new Storage ();
+            storage.override_notes_dir (temp_dir);
+
+            var search_service = new SearchService (storage);
+
+            // Note 1 has 1 occurrence (10 pts)
+            var note1 = new NoteData () {
+                id = "freq-1",
+                title = "Note 1",
+                content = "This note mentions keyword once."
+            };
+            // Note 2 has 4 occurrences (40 pts)
+            var note2 = new NoteData () {
+                id = "freq-4",
+                title = "Note 2",
+                content = "keyword keyword keyword keyword in note 2."
+            };
+
+            storage.save_note (note1);
+            storage.save_note (note2);
+
+            var results = search_service.search ("keyword");
+            assert_true (results.size == 2);
+            assert_true (results.get (0).id == "freq-4");
+            assert_true (results.get (1).id == "freq-1");
+            assert_true (results.get (0).score > results.get (1).score);
+        }
+
         private static void test_snippet_extraction_and_escaping () {
             var storage = new Storage ();
             var search_service = new SearchService (storage);
@@ -137,6 +170,21 @@ namespace Jots.Tests {
             assert_true (snippet.contains ("&amp;"));
             assert_true (snippet.contains ("&lt;tag&gt;"));
             assert_true (snippet.contains ("<b>symbols</b>"));
+        }
+
+        private static void test_title_match_fallback_snippet () {
+            var storage = new Storage ();
+            var search_service = new SearchService (storage);
+
+            // Match in title only: snippet should fall back to first ~90 chars of content
+            var content = "This is a body without the search term that gives general context.";
+            var snippet = search_service.extract_snippet (content, "nonexistent-in-body", "Fallback Title");
+
+            assert_true (snippet.contains ("This is a body without"));
+
+            // Empty body: snippet should fall back to title
+            var snippet_empty = search_service.extract_snippet ("", "nonexistent-in-body", "Fallback Note Title");
+            assert_cmpstr (snippet_empty, GLib.CompareOperator.EQ, "Fallback Note Title");
         }
 
         private static void test_entity_substring_query_no_corruption () {
@@ -266,6 +314,30 @@ namespace Jots.Tests {
             var results = search_service.search ("project");
             // Must be clamped to MAX_SEARCH_RESULTS (20)
             assert_true (results.size == MAX_SEARCH_RESULTS);
+        }
+
+        private static void test_json_serialization_output () {
+            var temp_dir = create_temp_notes_dir ();
+            var storage = new Storage ();
+            storage.override_notes_dir (temp_dir);
+
+            var search_service = new SearchService (storage);
+
+            var note = new NoteData () {
+                id = "json-note-1",
+                title = "Release Checklist",
+                content = "Prepare final binary for flathub deployment.",
+                theme = Themes.BLUEBERRY
+            };
+            storage.save_note (note);
+
+            var json_str = search_service.search_json ("flathub");
+            assert_true (json_str.length > 0);
+            assert_true (json_str.contains ("json-note-1"));
+            assert_true (json_str.contains ("Release Checklist"));
+            assert_true (json_str.contains ("blueberry"));
+            assert_true (json_str.contains ("score"));
+            assert_true (json_str.contains ("<b>flathub</b>"));
         }
     }
 

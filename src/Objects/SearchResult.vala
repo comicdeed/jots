@@ -31,7 +31,7 @@ namespace Jots {
             var obj = new Json.Object ();
             obj.set_string_member ("id", id);
             obj.set_string_member ("title", title);
-            obj.set_string_member ("theme", theme.to_string ());
+            obj.set_string_member ("theme", theme.to_css_class ());
             obj.set_boolean_member ("is_active", is_active);
             obj.set_int_member ("score", score);
             obj.set_string_member ("snippet", snippet);

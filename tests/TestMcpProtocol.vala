@@ -274,6 +274,13 @@ namespace Jots.Tests {
             assert_true (resp_over_title != null);
             assert_true (resp_over_title.contains ("\"isError\":true"));
             assert_true (resp_over_title.contains ("Title exceeds maximum length"));
+
+            // 4. Search query over boundary: 121 characters -> Must return isError: true
+            var over_query = string.nfill (121, 'Q');
+            var resp_over_query = protocol.process_message ("{\"jsonrpc\":\"2.0\",\"id\":\"4\",\"method\":\"tools/call\",\"params\":{\"name\":\"search_notes\",\"arguments\":{\"query\":\"" + over_query + "\"}}}");
+            assert_true (resp_over_query != null);
+            assert_true (resp_over_query.contains ("\"isError\":true"));
+            assert_true (resp_over_query.contains ("Search query exceeds maximum length"));
         });
 
         /**

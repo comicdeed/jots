@@ -46,11 +46,6 @@ namespace Jots {
                             this, "scribble",
                             SettingsBindFlags.DEFAULT
                         );
-                        _scribble = settings.get_boolean (KEY_SCRIBBLY);
-                        settings.changed[KEY_SCRIBBLY].connect (() => {
-                            _scribble = settings.get_boolean (KEY_SCRIBBLY);
-                            update_scribble_state ();
-                        });
                     } catch (GLib.Error e) {
                         debug ("Could not load settings in ScribblyController: %s", e.message);
                     }
@@ -110,6 +105,7 @@ namespace Jots {
                 window.notify["is-active"].disconnect (update_scribble_state);
                 window = null;
             }
+            settings = null;
         }
     }
 }

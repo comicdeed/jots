@@ -43,6 +43,7 @@ namespace Jots {
         private GLib.Regex? regex_task_todo;
         private GLib.Regex? regex_list;
         private GLib.Regex? regex_link;
+        private GLib.Settings? settings;
 
         construct {
             setup_tags ();
@@ -53,8 +54,8 @@ namespace Jots {
             if (GLib.SettingsSchemaSource.get_default () != null) {
                 try {
                     var schema_source = GLib.SettingsSchemaSource.get_default ();
-                    if (schema_source != null && schema_source.lookup ("io.github.comicdeed.jots.devel", true) != null) {
-                        var settings = new GLib.Settings ("io.github.comicdeed.jots.devel");
+                    if (schema_source != null && schema_source.lookup (APP_ID, true) != null) {
+                        settings = new GLib.Settings (APP_ID);
                         settings.changed[KEY_CUSTOM_FONTS].connect (refresh_code_tag_fonts);
                         settings.changed[KEY_MONOSPACE_FONT].connect (refresh_code_tag_fonts);
                     }

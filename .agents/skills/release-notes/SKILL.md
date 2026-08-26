@@ -17,6 +17,22 @@ This skill defines the standard procedure for analyzing git commits, filtering d
 
 ---
 
+## 🚀 Release Lifecycle & Workflow Reference
+
+This skill operates as **Step 3** of the official Jots release process. Always consult the full guides:
+* **Release Workflow Guide**: [`docs/development/release-workflow.md`](../../../docs/development/release-workflow.md)
+* **Agent Development Guidelines**: [`AGENTS.md`](../../../AGENTS.md)
+
+### Release Branch Execution Flow
+1. **Cut Branch**: `git checkout -b release/X.Y.Z[-beta.N] develop`
+2. **Bump Version**: Update `version: 'X.Y.Z[-beta.N]'` in `meson.build`.
+3. **Generate Notes (This Skill)**: Add curated `<release>` entry to `data/jots.metainfo.xml.in.in`.
+4. **Sync Docs**: Update [`docs/user-guide.md`](../../../docs/user-guide.md) if user-facing shortcuts or UI features changed.
+5. **Commit & PR**: Commit `chore(release): prepare X.Y.Z[-beta.N] release` and open PR to `main`.
+6. **Automated Release**: Merging into `main` automatically triggers GitHub Actions to create the tag, build multi-arch AppImages/Flatpaks, publish the GitHub Release, and back-merge `main` into `develop`.
+
+---
+
 ## 🔍 Diff Scope Rules
 
 ### 1. For Beta Releases (`X.Y.Z-beta.N`)

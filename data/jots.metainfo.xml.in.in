@@ -89,6 +89,16 @@
     </screenshots>
 
     <releases>
+        <release version="1.1.2" date="2026-08-26">
+            <description>
+                <p>Jots 1.1.2 streamlines project documentation and metadata to reflect universal Linux desktop support.</p>
+                <p>Highlights &amp; Changes:</p>
+                <ul>
+                    <li>Universal Linux Documentation: Updated project README, build guides, and bug reporting templates to reflect pure GTK4 cross-desktop support</li>
+                    <li>AppStream Metadata Cleanups: Modernized discovery keywords to align with general Linux and GNOME app ecosystems</li>
+                </ul>
+            </description>
+        </release>
         <release version="1.1.1" date="2026-08-26">
             <description>
                 <p>Jots 1.1.1 fixes standalone SVG icon rendering in AppImage packages and hardens packaging workflows.</p>

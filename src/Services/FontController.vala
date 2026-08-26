@@ -39,11 +39,7 @@ namespace Jots {
         private void init_settings () {
             var schema_source = GLib.SettingsSchemaSource.get_default ();
             if (schema_source != null && schema_source.lookup (APP_ID, true) != null) {
-                try {
-                    settings = new GLib.Settings (APP_ID);
-                } catch (GLib.Error e) {
-                    debug ("Could not load GSettings in FontController: %s", e.message);
-                }
+                settings = new GLib.Settings (APP_ID);
             }
         }
 
@@ -110,19 +106,17 @@ namespace Jots {
         public static string get_active_monospace_family () {
             var schema_source = GLib.SettingsSchemaSource.get_default ();
             if (schema_source != null && schema_source.lookup (APP_ID, true) != null) {
-                try {
-                    var s = new GLib.Settings (APP_ID);
-                    if (s.get_boolean (KEY_CUSTOM_FONTS)) {
-                        var mono_str = s.get_string (KEY_MONOSPACE_FONT);
-                        if (mono_str.strip () != "") {
-                            var desc = Pango.FontDescription.from_string (mono_str);
-                            var fam = desc.get_family ();
-                            if (fam != null && fam.strip () != "") {
-                                return fam;
-                            }
+                var s = new GLib.Settings (APP_ID);
+                if (s.get_boolean (KEY_CUSTOM_FONTS)) {
+                    var mono_str = s.get_string (KEY_MONOSPACE_FONT);
+                    if (mono_str.strip () != "") {
+                        var desc = Pango.FontDescription.from_string (mono_str);
+                        var fam = desc.get_family ();
+                        if (fam != null && fam.strip () != "") {
+                            return fam;
                         }
                     }
-                } catch (GLib.Error e) {}
+                }
             }
             var sys_mono = get_system_monospace_font ();
             var sys_desc = Pango.FontDescription.from_string (sys_mono);
@@ -139,12 +133,10 @@ namespace Jots {
         public static void reset_to_defaults () {
             var schema_source = GLib.SettingsSchemaSource.get_default ();
             if (schema_source != null && schema_source.lookup (APP_ID, true) != null) {
-                try {
-                    var s = new GLib.Settings (APP_ID);
-                    s.set_boolean (KEY_CUSTOM_FONTS, false);
-                    s.set_string (KEY_DEFAULT_FONT, "");
-                    s.set_string (KEY_MONOSPACE_FONT, "");
-                } catch (GLib.Error e) {}
+                var s = new GLib.Settings (APP_ID);
+                s.set_boolean (KEY_CUSTOM_FONTS, false);
+                s.set_string (KEY_DEFAULT_FONT, "");
+                s.set_string (KEY_MONOSPACE_FONT, "");
             }
         }
     }

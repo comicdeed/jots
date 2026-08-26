@@ -39,16 +39,12 @@ namespace Jots {
             if (GLib.SettingsSchemaSource.get_default () != null) {
                 var schema_source = GLib.SettingsSchemaSource.get_default ();
                 if (schema_source != null && schema_source.lookup (APP_ID, true) != null) {
-                    try {
-                        settings = new GLib.Settings (APP_ID);
-                        settings.bind (
-                            KEY_SCRIBBLY,
-                            this, "scribble",
-                            SettingsBindFlags.DEFAULT
-                        );
-                    } catch (GLib.Error e) {
-                        debug ("Could not load settings in ScribblyController: %s", e.message);
-                    }
+                    settings = new GLib.Settings (APP_ID);
+                    settings.bind (
+                        KEY_SCRIBBLY,
+                        this, "scribble",
+                        SettingsBindFlags.DEFAULT
+                    );
                 }
             }
         }

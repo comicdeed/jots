@@ -15,7 +15,6 @@ namespace Jots {
         public Jots.MarkdownBuffer markdown_buffer;
 
         private Gtk.EventControllerKey keyboard;
-        private Gdk.FrameClock? frame_clock;
 
         public signal void link_activated (string uri);
 
@@ -102,11 +101,14 @@ namespace Jots {
                 if (tag.name != null && tag.name.has_prefix ("url:")) {
                     var uri = tag.name.substring ("url:".length);
                     link_activated (uri);
-                    try {
-                        Gtk.show_uri (get_root () as Gtk.Window, uri, Gdk.CURRENT_TIME);
-                    } catch (Error e) {
-                        warning ("Failed to open URI %s: %s", uri, e.message);
-                    }
+                    var uri_launcher = new Gtk.UriLauncher (uri);
+                    uri_launcher.launch.begin (get_root () as Gtk.Window, null, (obj, res) => {
+                        try {
+                            uri_launcher.launch.end (res);
+                        } catch (GLib.Error e) {
+                            warning ("Failed to open URI %s: %s", uri, e.message);
+                        }
+                    });
                     break;
                 }
             }

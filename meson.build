@@ -89,12 +89,15 @@ endif
 #================================
 # Add subfolders for Meson to look
 
+app_numeric_version = app_version.split('-')[0] + '.0'
+
 config_data = configuration_data(
     {
         'APP_NAME': app_name,
         'APP_ID': app_id,
         'APP_PATH': app_path,
         'APP_VERSION': app_version,
+        'APP_NUMERIC_VERSION': app_numeric_version,
         'NICENAME': nicename,
         'PUBLISHER': publisher,
         'LOCALEDIR': prefix / get_option('localedir')

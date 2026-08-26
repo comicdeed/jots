@@ -19,7 +19,7 @@ VIAddVersionKey /LANG=0 "FileVersion" "${APP_VERSION}"
 VIAddVersionKey /LANG=0 "ProductVersion" "${APP_VERSION}"
 VIAddVersionKey /LANG=0 "FileDescription" "https://github.com/${PUBLISHER}/${APP_NAME}"
 VIAddVersionKey /LANG=0 "LegalCopyright" "GNU GPL v3 ${PUBLISHER}"
-VIProductVersion "${APP_VERSION}.0"
+VIProductVersion "@APP_NUMERIC_VERSION@"
 
 Outfile "Jots-Installer.exe"
 InstallDir "$LOCALAPPDATA\Programs\${APP_ID}"

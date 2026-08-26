@@ -1,6 +1,6 @@
 option('icon_variant',
     type : 'combo',
-    choices : ['default', 'classic', 'pride', 'halloween', 'devel'],
+    choices : ['default', 'hatched', 'classic', 'pride', 'halloween', 'devel'],
     value : 'default',
     description : 'The name of the seasonal icon and style to use'
 )

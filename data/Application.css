@@ -54,13 +54,17 @@ popover * {
     line-height: initial;
 }
 
-/* Pretty actionbar blending into background */
-actionbar {
+/* Pretty headerbar and actionbar blending into note background */
+headerbar.headertitle,
+headerbar.flat,
+actionbar,
+actionbar > revealer > box {
     box-shadow: none;
+    border: none;
+    background: transparent;
     background-color: transparent;
     background-image: none;
     padding: 3px;
-    border: none;
 }
 
 /* White relief in actionbar icons */
@@ -70,7 +74,7 @@ actionbar image {
 
 actionbar .themedbutton:hover,
 actionbar .themedbutton:focus {
-    background-color: rgb(from @fg_color r g b / calc(alpha * 0.3));
+    background-color: alpha(currentColor, 0.2);
     border-radius: 6px;
 }
 

@@ -15,269 +15,405 @@
 * You should have received a copy of the GNU General Public
 * License along with this program; if not, write to the
 * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
-* Boston, MA 02110-1301 USA
 */
 
-.BLUEBERRY:root {
-    --accent_color_100: @BLUEBERRY_100;
-    --accent_color_300: @BLUEBERRY_300;
-    --accent_color_500: @BLUEBERRY_500;
-    --accent_color_700: @BLUEBERRY_700;
-    --accent_color_900: @BLUEBERRY_900;
-    --accent_color: color-mix(in srgb, @BLUEBERRY_300, @BLUEBERRY_500 25%);
+/*
+ * Elementary Brand Palette Definitions (Self-Contained for all Desktop Environments)
+ */
+@define-color BLUEBERRY_100 #cbe3fb;
+/* ======================================================== */
+/* Elementary Color Palette Definitions                     */
+/* Embedded directly for standalone AppImage & Flatpak      */
+/* ======================================================== */
+
+@define-color BLUEBERRY_100 #dce7f5;
+@define-color BLUEBERRY_300 #8ab4f8;
+@define-color BLUEBERRY_500 #4285f4;
+@define-color BLUEBERRY_700 #1a73e8;
+@define-color BLUEBERRY_900 #0d47a1;
+
+@define-color MINT_100 #daf3e6;
+@define-color MINT_300 #80e0a7;
+@define-color MINT_500 #2ecc71;
+@define-color MINT_700 #27ae60;
+@define-color MINT_900 #1b7a43;
+
+@define-color LIME_100 #ecf7d0;
+@define-color LIME_300 #b8e968;
+@define-color LIME_500 #87d322;
+@define-color LIME_700 #6bb315;
+@define-color LIME_900 #4b7f0e;
+
+@define-color BANANA_100 #fff8d6;
+@define-color BANANA_300 #ffea75;
+@define-color BANANA_500 #f6d32d;
+@define-color BANANA_700 #e5a50a;
+@define-color BANANA_900 #a27204;
+
+@define-color ORANGE_100 #ffe8d6;
+@define-color ORANGE_300 #ffb375;
+@define-color ORANGE_500 #ff7800;
+@define-color ORANGE_700 #e66100;
+@define-color ORANGE_900 #a04400;
+
+@define-color STRAWBERRY_100 #fde2e2;
+@define-color STRAWBERRY_300 #f89b9b;
+@define-color STRAWBERRY_500 #ed333b;
+@define-color STRAWBERRY_700 #c01c28;
+@define-color STRAWBERRY_900 #8a131c;
+
+@define-color BUBBLEGUM_100 #fbe4f0;
+@define-color BUBBLEGUM_300 #f29bc9;
+@define-color BUBBLEGUM_500 #e0569a;
+@define-color BUBBLEGUM_700 #b83675;
+@define-color BUBBLEGUM_900 #802251;
+
+@define-color GRAPE_100 #f0e6f8;
+@define-color GRAPE_300 #cba6e8;
+@define-color GRAPE_500 #9141ac;
+@define-color GRAPE_700 #712988;
+@define-color GRAPE_900 #4e195f;
+
+@define-color COCOA_100 #ede6e2;
+@define-color COCOA_300 #c2ab9e;
+@define-color COCOA_500 #865e3c;
+@define-color COCOA_700 #63452c;
+@define-color COCOA_900 #422e1d;
+
+@define-color SLATE_100 #e1e4e6;
+@define-color SLATE_300 #9da7ad;
+@define-color SLATE_500 #606f7b;
+@define-color SLATE_700 #434f59;
+@define-color SLATE_900 #2a3238;
+
+@define-color LATTE_100 #faf0e6;
+@define-color LATTE_300 #dfcca9;
+@define-color LATTE_500 #bfa07a;
+@define-color LATTE_700 #8d6b4f;
+@define-color LATTE_900 #583f2d;
+
+/* ======================================================== */
+/* Light Mode Window Themes (Direct Color Assignment)       */
+/* ======================================================== */
+
+window.themed.BLUEBERRY,
+window.background.themed.BLUEBERRY,
+.BLUEBERRY {
+    background-color: #cde2fc;
+    color: #0f3d7a;
 }
 
-.MINT:root {
-    --accent_color_100: @MINT_100;
-    --accent_color_300: @MINT_300;
-    --accent_color_500: @MINT_500;
-    --accent_color_700: @MINT_700;
-    --accent_color_900: @MINT_900;
-    --accent_color: color-mix(in srgb, @MINT_300, @MINT_500 25%);
+window.themed.MINT,
+window.background.themed.MINT,
+.MINT {
+    background-color: #c2f0d6;
+    color: #0d542c;
 }
 
-
-.LIME:root {
-    --accent_color_100: @LIME_100;
-    --accent_color_300: @LIME_300;
-    --accent_color_500: @LIME_500;
-    --accent_color_700: @LIME_700;
-    --accent_color_900: @LIME_900;
-    --accent_color: color-mix(in srgb, @LIME_300, @LIME_500 25%);
+window.themed.LIME,
+window.background.themed.LIME,
+.LIME {
+    background-color: #d9f2a7;
+    color: #365e0a;
 }
 
-.BANANA:root {
-    --accent_color_100: @BANANA_100;
-    --accent_color_300: @BANANA_300;
-    --accent_color_500: @BANANA_500;
-    --accent_color_700: @BANANA_700;
-    --accent_color_900: @BANANA_900;
-    --accent_color: color-mix(in srgb, @BANANA_300, @BANANA_500 25%);
+window.themed.BANANA,
+window.background.themed.BANANA,
+.BANANA {
+    background-color: #fef08a;
+    color: #713f12;
 }
 
-.ORANGE:root {
-    --accent_color_100: @ORANGE_100;
-    --accent_color_300: @ORANGE_300;
-    --accent_color_500: @ORANGE_500;
-    --accent_color_700: @ORANGE_700;
-    --accent_color_900: @ORANGE_900;
-    --accent_color: color-mix(in srgb, @ORANGE_300, @ORANGE_500 25%);
+window.themed.ORANGE,
+window.background.themed.ORANGE,
+.ORANGE {
+    background-color: #fed7aa;
+    color: #7c2d12;
 }
 
-.STRAWBERRY:root {
-    --accent_color_100: @STRAWBERRY_100;
-    --accent_color_300: @STRAWBERRY_300;
-    --accent_color_500: @STRAWBERRY_500;
-    --accent_color_700: @STRAWBERRY_700;
-    --accent_color_900: @STRAWBERRY_900;
-    --accent_color: color-mix(in srgb, @STRAWBERRY_300, @STRAWBERRY_500 25%);
+window.themed.STRAWBERRY,
+window.background.themed.STRAWBERRY,
+.STRAWBERRY {
+    background-color: #fecdd3;
+    color: #881337;
 }
 
-.BUBBLEGUM:root {
-    --accent_color_100: @BUBBLEGUM_100;
-    --accent_color_300: @BUBBLEGUM_300;
-    --accent_color_500: @BUBBLEGUM_500;
-    --accent_color_700: @BUBBLEGUM_700;
-    --accent_color_900: @BUBBLEGUM_900;
-    --accent_color: color-mix(in srgb, @BUBBLEGUM_300, @BUBBLEGUM_500 25%);
+window.themed.BUBBLEGUM,
+window.background.themed.BUBBLEGUM,
+.BUBBLEGUM {
+    background-color: #fbcfe8;
+    color: #831843;
 }
 
-.GRAPE:root {
-    --accent_color_100: @GRAPE_100;
-    --accent_color_300: @GRAPE_300;
-    --accent_color_500: @GRAPE_500;
-    --accent_color_700: @GRAPE_700;
-    --accent_color_900: @GRAPE_900;
-    --accent_color: color-mix(in srgb, @GRAPE_300, @GRAPE_500 25%);
+window.themed.GRAPE,
+window.background.themed.GRAPE,
+.GRAPE {
+    background-color: #e9d5ff;
+    color: #581c87;
 }
 
-.COCOA:root {
-    --accent_color_100: @COCOA_100;
-    --accent_color_300: @COCOA_300;
-    --accent_color_500: @COCOA_500;
-    --accent_color_700: @COCOA_700;
-    --accent_color_900: @COCOA_900;
-    --accent_color: color-mix(in srgb, @COCOA_300, @COCOA_500 25%);
+window.themed.COCOA,
+window.background.themed.COCOA,
+.COCOA {
+    background-color: #ede0d4;
+    color: #432818;
 }
 
-.SLATE:root {
-    --accent_color_100: @SLATE_100;
-    --accent_color_300: @SLATE_300;
-    --accent_color_500: @SLATE_500;
-    --accent_color_700: @SLATE_700;
-    --accent_color_900: @SLATE_900;
-    --accent_color: color-mix(in srgb, @SLATE_300, @SLATE_500 25%);
+window.themed.SLATE,
+window.background.themed.SLATE,
+.SLATE {
+    background-color: #e2e8f0;
+    color: #0f172a;
 }
 
-.LATTE:root {
-    --accent_color_100: @LATTE_100;
-    --accent_color_300: @LATTE_300;
-    --accent_color_500: @LATTE_500;
-    --accent_color_700: @LATTE_700;
-    --accent_color_900: @LATTE_900;
-    --accent_color: color-mix(in srgb, @LATTE_300, @LATTE_500 25%);
+window.themed.LATTE,
+window.background.themed.LATTE,
+.LATTE {
+    background-color: #faebd7;
+    color: #4a2810;
 }
 
-window.themed {
-    background-color: var(--accent_color_100);
+/* ======================================================== */
+/* Light Mode Window & Component Styling                    */
+/* ======================================================== */
+
+window.themed,
+window.background.themed {
+    background-color: @BLUEBERRY_100;
+    color: @BLUEBERRY_900;
 }
 
 window.themed undershoot.top {
-    background:
-        linear-gradient(
-            var(--accent_color_100) 0%,
-            rgb(from var(--accent_color_100) r g b / calc(alpha * 0)) 50%
-        );
+    background: linear-gradient(rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0) 50%);
 }
 
 window.themed undershoot.bottom {
-    background:
-        linear-gradient(
-            rgb(from var(--accent_color_100) r g b / calc(alpha * 0)) 50%,
-            var(--accent_color_100) 100%
-        );
+    background: linear-gradient(rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.05) 100%);
 }
 
-/* WEIRD: if we dont personally just redefine overshoot effect, the grey theme doesnt have any*/
 window.themed overshoot.top {
-    background: linear-gradient(to top, rgb(from var(--accent_color) r g b / calc(alpha * 0)) 80%, rgb(from var(--accent_color) r g b / calc(alpha * 0.25)) 100%);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0) 80%, rgba(0, 0, 0, 0.15) 100%);
 }
 
 window.themed overshoot.right {
-    background: linear-gradient(to right, rgb(from var(--accent_color) r g b / calc(alpha * 0)) 80%, rgb(from var(--accent_color) r g b / calc(alpha * 0.25)) 100%);
+    background: linear-gradient(to right, rgba(0, 0, 0, 0) 80%, rgba(0, 0, 0, 0.15) 100%);
 }
 
 window.themed overshoot.bottom {
-    background: linear-gradient(to bottom, rgb(from var(--accent_color) r g b / calc(alpha * 0)) 80%, rgb(from var(--accent_color) r g b / calc(alpha * 0.25)) 100%); 
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 80%, rgba(0, 0, 0, 0.15) 100%); 
 }
 
 window.themed overshoot.left {
-    background: linear-gradient(to left, rgb(from var(--accent_color) r g b / calc(alpha * 0)) 80%, rgb(from var(--accent_color) r g b / calc(alpha * 0.25)) 100%);
+    background: linear-gradient(to left, rgba(0, 0, 0, 0) 80%, rgba(0, 0, 0, 0.15) 100%);
 }
 
 window.themed text selection {
-    color: white;
-    background-color: var(--accent_color_900);
+    color: #ffffff;
+    background-color: #3689e6;
 }
 
 window.themed titlebar,
+window.themed headerbar,
+window.themed headerbar.flat,
+window.themed .headertitle,
+window.themed editablelabel,
+window.themed editablelabel label,
 window.themed titlebar image,
 window.themed .themedbutton > button > box > image,
 window.themed .themedbutton > image,
 window.themed {
-    color: var(--accent_color_900);
+    color: inherit;
 }
 
 window.themed titlebar,
+window.themed headerbar,
+window.themed headerbar.flat,
+window.themed .headertitle,
+window.themed scrolledwindow,
 window.themed textview,
+window.themed textview.view,
+window.themed textview text,
+window.themed textview > text,
+window.themed editablelabel,
 window.themed editablelabel.editing {
+    background: transparent;
     background-color: transparent;
-    border-bottom-color: var(--accent_color_100);
-    color: hsl(from var(--accent_color_900) h calc(s * 0.77) calc(l * 0.77));
+    border-bottom-color: transparent;
+    box-shadow: none;
+    color: inherit;
 }
 
-/* Fix the emoticon entry having note color background */
 window.themed entry {
-    background-color: white;
-    color: black;
+    background-color: #ffffff;
+    color: #000000;
 }
 
 window.themed editablelabel {
-    color: var(--accent_color_900);
+    color: inherit;
     border: 1px solid transparent;
 }
 
 window.themed editablelabel:hover,
 window.themed editablelabel:focus {
-    border-color: rgb(from var(--accent_color) r g b / calc(alpha * 0.88));
+    border-color: rgba(0, 0, 0, 0.25);
 }
 
 window.themed editablelabel.editing {
-    border-color: var(--accent_color_700);
+    border-color: rgba(0, 0, 0, 0.4);
 }
 
 window.themed:backdrop editablelabel {
-    color: rgb(from var(--accent_color_900) r g b / calc(alpha * 0.75));
+    color: rgba(0, 0, 0, 0.6);
 }
 
 window.themed:backdrop actionbar,
 window.themed:backdrop actionbar image {
-    color: rgb(from var(--accent_color_900) r g b / calc(alpha * 0.65));
+    color: rgba(0, 0, 0, 0.5);
 }
 
 /* ======================================================== */
-/* Dark Mode Theme Overrides (Automatic Desaturated Tint)     */
+/* Dark Mode Theme Overrides (Rich Tinted Surface)           */
 /* ======================================================== */
 
-window.themed.dark {
-    background-color: color-mix(in srgb, var(--accent_color_700) 22%, #18181c);
-    color: color-mix(in srgb, var(--accent_color_100) 75%, #ffffff);
+window.themed.dark,
+window.background.themed.dark {
+    background-color: #1e1e24;
+    color: #f0f0f4;
+}
+
+window.themed.dark.BLUEBERRY,
+window.background.themed.dark.BLUEBERRY {
+    background-color: #1b263b;
+    color: #e0e8f8;
+}
+
+window.themed.dark.MINT,
+window.background.themed.dark.MINT {
+    background-color: #162b20;
+    color: #daf5e5;
+}
+
+window.themed.dark.LIME,
+window.background.themed.dark.LIME {
+    background-color: #232d12;
+    color: #ecf8d2;
+}
+
+window.themed.dark.BANANA,
+window.background.themed.dark.BANANA {
+    background-color: #2e2812;
+    color: #fff9d6;
+}
+
+window.themed.dark.ORANGE,
+window.background.themed.dark.ORANGE {
+    background-color: #312112;
+    color: #ffe9d8;
+}
+
+window.themed.dark.STRAWBERRY,
+window.background.themed.dark.STRAWBERRY {
+    background-color: #30171a;
+    color: #fde4e4;
+}
+
+window.themed.dark.BUBBLEGUM,
+window.background.themed.dark.BUBBLEGUM {
+    background-color: #2e1726;
+    color: #fce5f2;
+}
+
+window.themed.dark.GRAPE,
+window.background.themed.dark.GRAPE {
+    background-color: #23172e;
+    color: #f2e7f8;
+}
+
+window.themed.dark.COCOA,
+window.background.themed.dark.COCOA {
+    background-color: #261f1a;
+    color: #efe8e4;
+}
+
+window.themed.dark.SLATE,
+window.background.themed.dark.SLATE {
+    background-color: #1d2126;
+    color: #e4e7ea;
+}
+
+window.themed.dark.LATTE,
+window.background.themed.dark.LATTE {
+    background-color: #26221c;
+    color: #fbf2e8;
 }
 
 window.themed.dark titlebar,
+window.themed.dark headerbar,
+window.themed.dark headerbar.flat,
+window.themed.dark .headertitle,
+window.themed.dark editablelabel,
+window.themed.dark editablelabel label,
 window.themed.dark titlebar image,
 window.themed.dark .themedbutton > button > box > image,
 window.themed.dark .themedbutton > image {
-    color: color-mix(in srgb, var(--accent_color_100) 75%, #ffffff);
+    color: #f0f0f4;
 }
 
 window.themed.dark titlebar,
+window.themed.dark headerbar,
+window.themed.dark headerbar.flat,
+window.themed.dark .headertitle,
+window.themed.dark scrolledwindow,
 window.themed.dark textview,
+window.themed.dark textview.view,
+window.themed.dark textview text,
+window.themed.dark textview > text,
+window.themed.dark editablelabel,
 window.themed.dark editablelabel.editing {
+    background: transparent;
     background-color: transparent;
-    color: color-mix(in srgb, var(--accent_color_100) 80%, #ffffff);
-}
-
-window.themed.dark titlebar,
-window.themed.dark textview {
-    border-bottom-color: color-mix(in srgb, var(--accent_color_700) 22%, #18181c);
+    border-bottom-color: transparent;
+    box-shadow: none;
+    color: #f0f0f4;
 }
 
 window.themed.dark undershoot.top {
-    background:
-        linear-gradient(
-            color-mix(in srgb, var(--accent_color_700) 22%, #18181c) 0%,
-            rgb(from color-mix(in srgb, var(--accent_color_700) 22%, #18181c) r g b / 0) 50%
-        );
+    background: linear-gradient(#1e1e24 0%, rgba(0, 0, 0, 0) 50%);
 }
 
 window.themed.dark undershoot.bottom {
-    background:
-        linear-gradient(
-            rgb(from color-mix(in srgb, var(--accent_color_700) 22%, #18181c) r g b / 0) 50%,
-            color-mix(in srgb, var(--accent_color_700) 22%, #18181c) 100%
-        );
+    background: linear-gradient(rgba(0, 0, 0, 0) 50%, #1e1e24 100%);
 }
 
 window.themed.dark text selection {
     color: #ffffff;
-    background-color: color-mix(in srgb, var(--accent_color_500) 55%, #2a2a2e);
+    background-color: #3689e6;
 }
 
 window.themed.dark entry {
-    background-color: #26262b;
+    background-color: #2a2a30;
     color: #ffffff;
 }
 
 window.themed.dark editablelabel {
-    color: color-mix(in srgb, var(--accent_color_100) 75%, #ffffff);
+    color: #f0f0f4;
     border: 1px solid transparent;
 }
 
 window.themed.dark editablelabel:hover,
 window.themed.dark editablelabel:focus {
-    border-color: rgb(from var(--accent_color) r g b / calc(alpha * 0.88));
+    border-color: rgba(255, 255, 255, 0.25);
 }
 
 window.themed.dark editablelabel.editing {
-    border-color: var(--accent_color_500);
+    border-color: rgba(255, 255, 255, 0.4);
 }
 
 window.themed.dark:backdrop editablelabel {
-    color: rgb(from color-mix(in srgb, var(--accent_color_100) 75%, #ffffff) r g b / calc(alpha * 0.75));
+    color: rgba(255, 255, 255, 0.6);
 }
 
 window.themed.dark:backdrop actionbar,
 window.themed.dark:backdrop actionbar image {
-    color: rgb(from color-mix(in srgb, var(--accent_color_100) 75%, #ffffff) r g b / calc(alpha * 0.65));
+    color: rgba(255, 255, 255, 0.5);
 }

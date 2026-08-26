@@ -76,7 +76,7 @@
         headerbar = new Gtk.HeaderBar () {
             show_title_buttons = false
         };
-        headerbar.add_css_class (Granite.STYLE_CLASS_FLAT);
+        headerbar.add_css_class ("flat");
         headerbar.add_css_class ("headertitle");
 
         // Defime the label you can edit. Which is editable.
@@ -106,14 +106,7 @@
         /*              CONNECTS AND BINDS                 */
         /***************************************************/
 
-        emojichooser_popover.show.connect (randomize_emote_button);
         emojichooser_popover.emoji_picked.connect (on_emoji_picked);
-    }
-
-    // Randomize the button emoji when clicked
-    private void randomize_emote_button () {
-        debug ("Emote requested!");
-        emoji_button.icon_name = Jots.Utils.random_emote (emoji_button.icon_name);
     }
 
     private void on_emoji_picked (string emoji) {

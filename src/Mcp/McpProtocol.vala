@@ -510,7 +510,7 @@ namespace Jots {
                     + "- Code blocks with triple backticks\n"
                     + "- `> Blockquote quote text`\n\n"
                     + "### 5. Links\n"
-                    + "- `[Link Label](https://example.com)` (rendered as clickable Granite hyperlink)\n\n"
+                    + "- `[Link Label](https://example.com)` (rendered as clickable hyperlink)\n\n"
                     + "## Best Practices for AI Assistants\n"
                     + "- Keep note titles concise (max 120 chars).\n"
                     + "- Use checklists (`- [ ]`) for todo items so users can interactively mark them complete.\n"

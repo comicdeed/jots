@@ -96,10 +96,8 @@ jobs:
         include:
           - arch: x86_64
             runner: ubuntu-24.04
-            use_qemu: false
           - arch: aarch64
-            runner: ubuntu-24.04
-            use_qemu: true
+            runner: ubuntu-24.04-arm
 
     steps:
       - name: 'Checkout sources'
@@ -107,63 +105,21 @@ jobs:
         with:
           lfs: 'true'
 
-      - name: 'Set up QEMU (for aarch64)'
-        if: matrix.use_qemu
-        uses: docker/setup-qemu-action@v3
-        with:
-          platforms: arm64
-
       - name: 'Install dependencies'
         run: |
-          sudo add-apt-repository -y ppa:elementary-os/daily
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
             meson ninja-build valac gcc pkg-config gettext \
-            libgtk-4-dev libgranite-7-dev libgee-0.8-dev \
+            libgtk-4-dev libgee-0.8-dev \
             libjson-glib-dev libportal-dev libportal-gtk4-dev \
             desktop-file-utils libglib2.0-bin appstream \
             file wget curl zsync
 
-      - name: 'Compile Once into DESTDIR staging'
+      - name: 'Build AppImage'
         run: |
-          meson setup builddir \
-            --prefix=/usr \
-            --buildtype=release \
-            --strip \
-            -Dprofile=linux \
-            -Ddevelopment=false \
-            -Dicon_variant=default
-          meson compile -C builddir
-          DESTDIR="$(pwd)/stage" meson install -C builddir
-          glib-compile-schemas stage/usr/share/glib-2.0/schemas
-
-      - name: 'Build AppImage via linuxdeploy'
-        run: |
-          ARCH="${{ matrix.arch }}"
-          mkdir -p dist
-          
-          # Prepare AppDir
-          cp -r stage AppDir
-          cp packaging/appimage/AppRun AppDir/AppRun
-          chmod +x AppDir/AppRun
-
-          # Fetch linuxdeploy and GTK plugin
-          export APPIMAGE_EXTRACT_AND_RUN=1
-          wget -q "https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-${ARCH}.AppImage"
-          wget -q "https://raw.githubusercontent.com/linuxdeploy/linuxdeploy-plugin-gtk/master/linuxdeploy-plugin-gtk.sh"
-          chmod +x "linuxdeploy-${ARCH}.AppImage" linuxdeploy-plugin-gtk.sh
-
-          # Package AppImage
+          export ARCH="${{ matrix.arch }}"
           export VERSION="${{ needs.init-release.outputs.tag_name }}"
-          export OUTPUT="dist/Jots-${VERSION}-${ARCH}.AppImage"
-          ./linuxdeploy-${ARCH}.AppImage \
-            --appdir AppDir \
-            --desktop-file AppDir/usr/share/applications/io.github.comicdeed.jots.desktop \
-            --icon-file AppDir/usr/share/icons/hicolor/scalable/apps/io.github.comicdeed.jots.svg \
-            --plugin gtk \
-            --output appimage
-
-          cd dist && sha256sum "Jots-${VERSION}-${ARCH}.AppImage" > "Jots-${VERSION}-${ARCH}.AppImage.sha256"
+          ./packaging/appimage/build-appimage.sh
 
       - name: 'Upload AppImage Artifact'
         uses: actions/upload-artifact@v4
@@ -185,12 +141,12 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y flatpak flatpak-builder
-          flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+          flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
       - name: 'Build and Export Flatpak Bundle'
         run: |
           VERSION="${{ needs.init-release.outputs.tag_name }}"
-          flatpak-builder --force-clean --repo=repo --install-deps-from=flathub builddir io.github.comicdeed.jots.yml
+          flatpak-builder --user --force-clean --repo=repo --install-deps-from=flathub builddir io.github.comicdeed.jots.yml
           mkdir -p dist
           flatpak build-bundle repo "dist/io.github.comicdeed.jots-${VERSION}.flatpak" io.github.comicdeed.jots
           cd dist && sha256sum "io.github.comicdeed.jots-${VERSION}.flatpak" > "io.github.comicdeed.jots-${VERSION}.flatpak.sha256"
@@ -231,8 +187,8 @@ jobs:
           install: |
             git make zip unzip
             mingw-w64-${{ matrix.variant.package }}-meson mingw-w64-${{ matrix.variant.package }}-gcc mingw-w64-${{ matrix.variant.package }}-vala mingw-w64-${{ matrix.variant.package }}-desktop-file-utils
-            mingw-w64-${{ matrix.variant.package }}-gsettings-desktop-schemas mingw-w64-${{ matrix.variant.package }}-granite7 mingw-w64-${{ matrix.variant.package }}-gtk-elementary-theme mingw-w64-${{ matrix.variant.package }}-elementary-icon-theme mingw-w64-${{ matrix.variant.package }}-libgee mingw-w64-${{ matrix.variant.package }}-json-glib
-            mingw-w64-${{ matrix.variant.package }}-nsis mingw-w64-${{ matrix.variant.package }}-adwaita-icon-theme
+            mingw-w64-${{ matrix.variant.package }}-gtk4 mingw-w64-${{ matrix.variant.package }}-gsettings-desktop-schemas mingw-w64-${{ matrix.variant.package }}-libgee mingw-w64-${{ matrix.variant.package }}-json-glib
+            mingw-w64-${{ matrix.variant.package }}-librsvg mingw-w64-${{ matrix.variant.package }}-nsis mingw-w64-${{ matrix.variant.package }}-adwaita-icon-theme
 
       - name: 'Setup build directory'
         run: |

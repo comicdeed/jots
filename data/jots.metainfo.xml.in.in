@@ -88,16 +88,17 @@
     </screenshots>
 
     <releases>
-        <release version="1.1.0-beta.1" type="development" date="2026-08-26">
+        <release version="1.1.0" date="2026-08-26">
             <description>
-                <p>Jots 1.1.0-beta.1 introduces portable AppImage distribution, standalone offline Flatpak bundles, and GNOME Platform 50 runtime upgrades.</p>
+                <p>Jots 1.1.0 is a major milestone delivering pure GTK4 architecture, standalone AppImage packages, discrete Cairo color styling, and cross-desktop theming.</p>
                 <p>Major Highlights:</p>
                 <ul>
-                    <li>AppImage Distribution: Self-contained click-and-run executables for x86_64 and aarch64 Linux distributions</li>
-                    <li>Dual-Entrypoint AppRun: Run GUI sticky notes normally or launch headlessly as an AI MCP server with --mcp</li>
-                    <li>Offline Flatpak Bundles: Standalone single-file .flatpak packages installable without remote repository setup</li>
-                    <li>GNOME Platform 50 &amp; Granite 7.6: Runtime modernizations and improved software-rendered fallback stability</li>
-                    <li>Automated Release Pipeline: Continuous matrix releases with cryptographic SHA256 verification</li>
+                    <li>Pure GTK4 Migration: Completely removed Granite dependency for native, lightning-fast GTK4 execution across all Linux distributions</li>
+                    <li>AppImage Distribution: Standalone click-and-run executables with bundled SVG engine and dual-entrypoint AI MCP server support (--mcp)</li>
+                    <li>Cross-Desktop Theming: Automatic dark and light appearance synchronization via XDG Desktop Portal (GNOME, KDE Plasma, elementary OS, XFCE)</li>
+                    <li>Custom Discrete Color Pills: Elementary-style circular color palette with matching accent selection rings and smooth hover feedback</li>
+                    <li>Bundled Symbolic Icons: Crisp monochrome action and magnifying glass zoom icons embedded into GResource</li>
+                    <li>Multi-Platform Packaging: Standalone offline Flatpak bundles and native Windows installer support</li>
                 </ul>
             </description>
         </release>

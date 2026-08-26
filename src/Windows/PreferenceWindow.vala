@@ -51,7 +51,7 @@ public class Jots.PreferenceWindow : Gtk.Window {
             title_widget = title_label,
             show_title_buttons = false
         };
-        headerbar.add_css_class (Granite.STYLE_CLASS_FLAT);
+        headerbar.add_css_class ("flat");
 
         set_titlebar (headerbar);
         set_size_request (DEFAULT_PREF_WIDTH, DEFAULT_PREF_HEIGHT);

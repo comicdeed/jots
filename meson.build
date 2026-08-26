@@ -2,8 +2,8 @@ project(
     'jots',
     ['c', 'vala'],        # The floor is vala
     license: 'GPL-3.0-or-later',
-    version: '1.1.0-beta.1',
-    meson_version: '>= 1.1'         # Use meson.option instead of meson_options.txt
+    version: '1.1.0',
+    meson_version: '>= 0.59.0'
 )
 
 app_name = meson.project_name()
@@ -89,12 +89,15 @@ endif
 #================================
 # Add subfolders for Meson to look
 
+app_numeric_version = app_version.split('-')[0] + '.0'
+
 config_data = configuration_data(
     {
         'APP_NAME': app_name,
         'APP_ID': app_id,
         'APP_PATH': app_path,
         'APP_VERSION': app_version,
+        'APP_NUMERIC_VERSION': app_numeric_version,
         'NICENAME': nicename,
         'PUBLISHER': publisher,
         'LOCALEDIR': prefix / get_option('localedir')

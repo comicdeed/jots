@@ -1,8 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
-  <gresource prefix="@APP_PATH@/">
+  <gresource prefix="@APP_PATH@">
     <file compressed="true" alias="Application.css">Application.css</file>
     <file compressed="true" alias="Themes.css">Themes.css</file>
     <file alias="fonts/RedactedScript-Regular.ttf">fonts/RedactedScript-Regular.ttf</file>
+    <file alias="icons/scalable/actions/face-smile-symbolic.svg">icons/actions/face-smile-symbolic.svg</file>
+    <file alias="icons/symbolic/actions/face-smile-symbolic.svg">icons/actions/face-smile-symbolic.svg</file>
+    <file alias="icons/scalable/actions/user-trash-symbolic.svg">icons/actions/user-trash-symbolic.svg</file>
+    <file alias="icons/symbolic/actions/user-trash-symbolic.svg">icons/actions/user-trash-symbolic.svg</file>
+    <file alias="icons/scalable/places/user-trash-symbolic.svg">icons/actions/user-trash-symbolic.svg</file>
+    <file alias="icons/symbolic/places/user-trash-symbolic.svg">icons/actions/user-trash-symbolic.svg</file>
+    <file alias="icons/scalable/status/user-trash-symbolic.svg">icons/actions/user-trash-symbolic.svg</file>
+    <file alias="icons/symbolic/status/user-trash-symbolic.svg">icons/actions/user-trash-symbolic.svg</file>
+    <file alias="icons/scalable/actions/edit-delete-symbolic.svg">icons/actions/edit-delete-symbolic.svg</file>
+    <file alias="icons/symbolic/actions/edit-delete-symbolic.svg">icons/actions/edit-delete-symbolic.svg</file>
+    <file alias="icons/scalable/actions/list-add-symbolic.svg">icons/actions/list-add-symbolic.svg</file>
+    <file alias="icons/symbolic/actions/list-add-symbolic.svg">icons/actions/list-add-symbolic.svg</file>
+    <file alias="icons/scalable/actions/view-list-symbolic.svg">icons/actions/view-list-symbolic.svg</file>
+    <file alias="icons/symbolic/actions/view-list-symbolic.svg">icons/actions/view-list-symbolic.svg</file>
+    <file alias="icons/scalable/actions/open-menu-symbolic.svg">icons/actions/open-menu-symbolic.svg</file>
+    <file alias="icons/symbolic/actions/open-menu-symbolic.svg">icons/actions/open-menu-symbolic.svg</file>
+    <file alias="icons/scalable/actions/zoom-in-symbolic.svg">icons/actions/zoom-in-symbolic.svg</file>
+    <file alias="icons/symbolic/actions/zoom-in-symbolic.svg">icons/actions/zoom-in-symbolic.svg</file>
+    <file alias="icons/scalable/actions/zoom-out-symbolic.svg">icons/actions/zoom-out-symbolic.svg</file>
+    <file alias="icons/symbolic/actions/zoom-out-symbolic.svg">icons/actions/zoom-out-symbolic.svg</file>
   </gresource>
 </gresources>

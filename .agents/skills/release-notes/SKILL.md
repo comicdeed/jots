@@ -17,6 +17,22 @@ This skill defines the standard procedure for analyzing git commits, filtering d
 
 ---
 
+## 🚀 Release Lifecycle & Workflow Reference
+
+This skill operates as **Step 3** of the official Jots release process. Always consult the full guides:
+* **Release Workflow Guide**: [`docs/development/release-workflow.md`](../../../docs/development/release-workflow.md)
+* **Agent Development Guidelines**: [`AGENTS.md`](../../../AGENTS.md)
+
+### Release Branch Execution Flow
+1. **Cut Branch**: `git checkout -b release/X.Y.Z[-beta.N] develop`
+2. **Bump Version**: Update `version: 'X.Y.Z[-beta.N]'` in `meson.build`.
+3. **Generate Notes (This Skill)**: Add curated `<release>` entry to `data/jots.metainfo.xml.in.in`.
+4. **Sync Docs**: Update [`docs/user-guide.md`](../../../docs/user-guide.md) if user-facing shortcuts or UI features changed.
+5. **Commit & PR**: Commit `chore(release): prepare X.Y.Z[-beta.N] release` and open PR to `main`.
+6. **Automated Release**: Merging into `main` automatically triggers GitHub Actions to create the tag, build multi-arch AppImages/Flatpaks, publish the GitHub Release, and back-merge `main` into `develop`.
+
+---
+
 ## 🔍 Diff Scope Rules
 
 ### 1. For Beta Releases (`X.Y.Z-beta.N`)
@@ -35,11 +51,11 @@ This skill defines the standard procedure for analyzing git commits, filtering d
 
 ### 1. Determine Base Tag and Target Version
 ```bash
-# For Beta: find the immediately preceding tag
+# For Beta: find the immediately preceding tag (e.g. 1.1.0-beta.1)
 PREV_TAG=$(git describe --tags --abbrev=0)
 
-# For Stable: find the latest stable tag (excluding -beta, -alpha, -rc)
-PREV_STABLE_TAG=$(git tag --list --sort=-v:refname | grep -v -E '(beta|alpha|rc)' | head -n 1)
+# For Stable: find the latest stable tag (sorted by tag commit date to prevent pre-fork legacy tag collision)
+PREV_STABLE_TAG=$(git tag --sort=-creatordate | grep -v -E '(beta|alpha|rc)' | head -n 1)
 ```
 
 ### 2. Inspect Commit History

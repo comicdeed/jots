@@ -1,0 +1,5 @@
+#!/bin/bash
+set -e
+
+echo "🔍 Running Vala linter via Docker Compose..."
+docker compose run --rm lint

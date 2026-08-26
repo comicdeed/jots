@@ -6,7 +6,7 @@ This document provides a comprehensive technical reference for the internal arch
 
 ## 1. System Overview & Component Hierarchy
 
-Jots is a lightweight sticky notes application built for elementary OS and GNOME-based Linux distributions. It is written in **Vala** and uses **GTK 4** and **Granite 7**.
+Jots is a lightweight sticky notes application built for Linux desktops (GNOME, elementary OS, KDE Plasma, XFCE). It is written in **Vala** and uses pure **GTK 4** with bundled GResource symbolic assets.
 
 ```mermaid
 graph TD
@@ -53,8 +53,8 @@ graph TD
 
 ### 2.4 UI & Widgets (`src/Views/`, `src/Windows/`, `src/Widgets/`)
 * **`StickyNoteWindow.vala`**: Application window containing note controls and editor view. Provides programmatic update methods (`update_title`, `update_content`, `update_theme`) for real-time external synchronization.
-* **`NoteView.vala`**: Layout container housing the title bar, `EditableLabel`, `TextView`, and `ActionBar`.
-* **`TextView.vala` & `MarkdownBuffer.vala`**: Subclassed `Granite.HyperTextView` with native real-time Markdown syntax tagging (Headings H1-H3, Bold, Italic, Strikethrough, Monospace inline code, Code blocks, Blockquotes, Checklists, and smart list continuation).
+* **`TextView.vala` & `MarkdownBuffer.vala`**: Native GTK4 `TextView` with clickable URI handling and real-time Markdown syntax tagging (Headings H1-H3, Bold, Italic, Strikethrough, Monospace inline code, Code blocks, Blockquotes, Checklists, and smart list continuation).
+* **`ColorBox.vala` & `ColorPill.vala`**: Custom Cairo-drawn palette widgets rendering discrete circular pills with matching accent selection rings.
 * **`PreferenceWindow.vala` & `PreferencesView.vala`**: Settings window for global user preferences.
 
 ### 2.5 Native MCP Server Binary (`src/Mcp/`)
@@ -65,7 +65,7 @@ graph TD
 ## 3. Core Lifecycles & Sequence Flows
 
 ### 3.1 Application Initialization
-1. `Application.vala` initiates `Granite` and `Gtk` settings.
+1. `Application.vala` initializes `Gtk` settings, XDG Desktop Portal theme detection, and registers bundled GResource symbolic icon paths.
 2. `NoteManager` and `NoteService` instances are initialized.
 3. During D-Bus registration, `NoteService` binds to `/io/github/comicdeed/jots/Notes` and `/io/github/comicdeed/jots`.
 4. On activation (or first D-Bus method call via `ensure_initialized()`), `NoteManager.init()` loads stored state from `Storage.vala`.

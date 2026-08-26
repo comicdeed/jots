@@ -51,7 +51,7 @@ namespace Jots {
                 selection_mode = Gtk.SelectionMode.SINGLE,
                 show_separators = true
             };
-            results_list.add_css_class (Granite.STYLE_CLASS_FRAME);
+            results_list.add_css_class ("frame");
             results_list.row_activated.connect (on_row_activated);
 
             scrolled_window = new Gtk.ScrolledWindow () {
@@ -68,7 +68,7 @@ namespace Jots {
                 margin_top = SPACING_DOUBLE,
                 margin_bottom = SPACING_DOUBLE
             };
-            status_label.add_css_class (Granite.STYLE_CLASS_DIM_LABEL);
+            status_label.add_css_class ("dim-label");
 
             root_box.append (search_entry);
             root_box.append (status_label);
@@ -163,7 +163,7 @@ namespace Jots {
                 ellipsize = Pango.EllipsizeMode.END,
                 css_classes = { "heading" }
             };
-            title_label.add_css_class (Granite.STYLE_CLASS_H3_LABEL);
+            title_label.add_css_class ("title-4");
 
             header_box.append (color_pill);
             header_box.append (title_label);
@@ -173,7 +173,7 @@ namespace Jots {
                     valign = Gtk.Align.CENTER,
                     css_classes = { "badge" }
                 };
-                active_badge.add_css_class (Granite.STYLE_CLASS_DIM_LABEL);
+                active_badge.add_css_class ("dim-label");
                 header_box.append (active_badge);
             }
 
@@ -186,7 +186,7 @@ namespace Jots {
                 lines = 1
             };
             snippet_label.set_markup (res.snippet);
-            snippet_label.add_css_class (Granite.STYLE_CLASS_DIM_LABEL);
+            snippet_label.add_css_class ("dim-label");
 
             row_box.append (header_box);
             row_box.append (snippet_label);

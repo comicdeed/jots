@@ -3,7 +3,6 @@
   <gresource prefix="@APP_PATH@/">
     <file compressed="true" alias="Application.css">Application.css</file>
     <file compressed="true" alias="Themes.css">Themes.css</file>
-    <file compressed="true" alias="FallbackPalette.css">FallbackPalette.css</file>
     <file alias="fonts/RedactedScript-Regular.ttf">fonts/RedactedScript-Regular.ttf</file>
   </gresource>
 </gresources>

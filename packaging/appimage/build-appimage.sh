@@ -79,4 +79,6 @@ export OUTPUT="${OUTPUT_DIR}/Jots-${VERSION}-${ARCH}.AppImage"
 rm -f "${OUTPUT}"
 ./appimagetool-${ARCH}.AppImage "${APPDIR}" "${OUTPUT}"
 
-echo "==> Successfully created ${OUTPUT}!"
+(cd "${OUTPUT_DIR}" && sha256sum "Jots-${VERSION}-${ARCH}.AppImage" > "Jots-${VERSION}-${ARCH}.AppImage.sha256")
+
+echo "==> Successfully created ${OUTPUT} and checksum!"

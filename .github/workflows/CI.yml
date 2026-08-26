@@ -33,37 +33,7 @@ jobs:
 
       - name: Verify AppImage Assembly
         run: |
-          DESTDIR="$(pwd)/stage" meson install -C builddir
-          glib-compile-schemas stage/usr/share/glib-2.0/schemas
-          
-          # Assemble AppDir
-          cp -r stage AppDir
-          cp packaging/appimage/AppRun AppDir/AppRun
-          chmod +x AppDir/AppRun
-
-          # Fetch linuxdeploy and plugin
-          export APPIMAGE_EXTRACT_AND_RUN=1
-          wget -q https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
-          wget -q https://raw.githubusercontent.com/linuxdeploy/linuxdeploy-plugin-gtk/master/linuxdeploy-plugin-gtk.sh
-          chmod +x linuxdeploy-x86_64.AppImage linuxdeploy-plugin-gtk.sh
-
-          ./linuxdeploy-x86_64.AppImage \
-            --appdir AppDir \
-            --desktop-file AppDir/usr/share/applications/io.github.comicdeed.jots.desktop \
-            --icon-file AppDir/usr/share/icons/hicolor/scalable/apps/io.github.comicdeed.jots.svg \
-            --plugin gtk
-
-          # Bundle full runtime and font rendering dependencies
-          for libname in libharfbuzz libfreetype libfontconfig libfribidi libgraphite2 libpixman libpng libbrotli libzstd libexpat libffi libc libm libpthread libresolv librt libdl ld-linux; do
-              find /lib/x86_64-linux-gnu /usr/lib/x86_64-linux-gnu -name "${libname}*.so*" -exec cp -d {} AppDir/usr/lib/ \; 2>/dev/null || true
-          done
-
-          cp packaging/appimage/AppRun AppDir/AppRun
-          chmod +x AppDir/AppRun
-
-          wget -q https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
-          chmod +x appimagetool-x86_64.AppImage
-          ./appimagetool-x86_64.AppImage AppDir Jots-CI-x86_64.AppImage
+          ./packaging/appimage/build-appimage.sh
 
   flatpak:
     name: Flatpak (${{ matrix.configuration.arch }})
@@ -78,20 +48,7 @@ jobs:
             runs-on: ubuntu-24.04-arm
       fail-fast: true
 
-    container:
-      image: ghcr.io/elementary/flatpak-platform/runtime:8.2-${{ matrix.configuration.arch }}
-      options: --privileged
-
     steps:
-      - name: Free runner disk space and configure OSTree
-        run: |
-          rm -rf /tmp/* /var/tmp/* || true
-          mkdir -p /root/.local/share/flatpak/repo
-          ostree config --repo=/root/.local/share/flatpak/repo set core.min-free-space-percent 0 2>/dev/null || true
-          mkdir -p .flatpak-builder/repo
-          ostree init --repo=.flatpak-builder/repo --mode=bare-user-only 2>/dev/null || true
-          ostree config --repo=.flatpak-builder/repo set core.min-free-space-percent 0 2>/dev/null || true
-
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -119,5 +76,5 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Lint
-        run: io.elementary.vala-lint -d .
+        run: io.elementary.vala-lint src tests
 

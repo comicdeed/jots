@@ -138,12 +138,14 @@ else
     mcp_dependencies += dependency('gio-unix-2.0')
 endif
 
-executable(
-    'jots-mcp',
-    config_file,
-    mcp_sources,
-    dependencies: mcp_dependencies,
-    c_args: '-w',
-    win_subsystem: 'console',
-    install: true
-)
+if not windows
+    executable(
+        'jots-mcp',
+        config_file,
+        mcp_sources,
+        dependencies: mcp_dependencies,
+        c_args: '-w',
+        win_subsystem: 'console',
+        install: true
+    )
+endif

@@ -1,24 +1,94 @@
-# On new app releases
-# Generate a windows installer and publish a GitHub Release
+# On new app releases or release/* PR merge to main
+# Build multi-arch AppImages, Flatpak bundles, Windows installers, and publish GitHub Release
 name: Release
 
 on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
   push:
     tags:
       - '[0-9]+.[0-9]+.[0-9]+*'
       - 'v[0-9]+.[0-9]+.[0-9]+*'
   workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Release Tag Name (e.g. 1.1.0 or 1.1.0-beta.1)'
+        required: false
+        type: string
 
 permissions:
   contents: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
+  init-release:
+    name: "Initialize Release & Resolve Tag"
+    # Run if: manual dispatch, pushed tag, or merged PR from a release/* branch
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      startsWith(github.ref, 'refs/tags/') ||
+      (github.event_name == 'pull_request' && github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/'))
+    runs-on: ubuntu-latest
+    outputs:
+      tag_name: ${{ steps.resolve_tag.outputs.tag_name }}
+      is_prerelease: ${{ steps.resolve_tag.outputs.is_prerelease }}
+    steps:
+      - name: 'Checkout repository'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 'Resolve Version and Create Git Tag if Merged'
+        id: resolve_tag
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ inputs.tag_name }}" ]; then
+            TAG="${{ inputs.tag_name }}"
+          elif [ "${{ github.event_name }}" = "push" ] && [[ "${{ github.ref }}" =~ ^refs/tags/ ]]; then
+            TAG="${GITHUB_REF#refs/tags/}"
+          else
+            # Extract version from latest release entry in AppStream metadata
+            TAG=$(python3 -c "
+          import xml.etree.ElementTree as ET
+          tree = ET.parse('data/jots.metainfo.xml.in.in')
+          root = tree.getroot()
+          latest = root.find('.//releases/release')
+          print(latest.get('version', '') if latest is not None else '')
+          ")
+          fi
+
+          if [ -z "$TAG" ]; then
+            echo "Error: Could not determine release tag name."
+            exit 1
+          fi
+
+          echo "tag_name=$TAG" >> "$GITHUB_OUTPUT"
+          
+          # Check if tag is prerelease
+          if [[ "$TAG" =~ (beta|alpha|rc) ]]; then
+            echo "is_prerelease=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "is_prerelease=false" >> "$GITHUB_OUTPUT"
+          fi
+
+          # If triggered by PR merge to main, tag the merge commit
+          if [ "${{ github.event_name }}" = "pull_request" ] && [ "${{ github.event.pull_request.merged }}" = "true" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            if ! git rev-parse "$TAG" >/dev/null 2>&1; then
+              echo "Tagging commit with $TAG..."
+              git tag -a "$TAG" -m "Release $TAG"
+              git push origin "$TAG"
+            fi
+          fi
+
   build-linux-appimage:
     name: "Build AppImage (${{ matrix.arch }})"
+    needs: [init-release]
     runs-on: ${{ matrix.runner }}
     strategy:
       fail-fast: false
@@ -102,6 +172,7 @@ jobs:
 
   build-flatpak-bundle:
     name: "Build Flatpak Bundle (x86_64)"
+    needs: [init-release]
     runs-on: ubuntu-24.04
     steps:
       - name: 'Checkout sources'
@@ -130,6 +201,7 @@ jobs:
 
   msys2:
     name: "Prepare Windows Installer"
+    needs: [init-release]
     strategy:
       matrix:
         variant:
@@ -184,8 +256,7 @@ jobs:
 
   github-release:
     name: "Publish Consolidated GitHub Release"
-    needs: [build-linux-appimage, build-flatpak-bundle, msys2]
-    if: startsWith(github.ref, 'refs/tags/')
+    needs: [init-release, build-linux-appimage, build-flatpak-bundle, msys2]
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout sources'
@@ -230,9 +301,31 @@ jobs:
       - name: 'Create GitHub Release'
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ needs.init-release.outputs.tag_name }}
+          name: "Jots ${{ needs.init-release.outputs.tag_name }}"
           body_path: release_notes.md
           generate_release_notes: true
-          prerelease: ${{ contains(github.ref, 'beta') || contains(github.ref, 'alpha') || contains(github.ref, 'rc') }}
+          prerelease: ${{ needs.init-release.outputs.is_prerelease == 'true' }}
           files: ./release-dist/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  sync-develop:
+    name: "Sync Release back to Develop"
+    needs: [github-release]
+    if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout develop'
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: 'Merge main into develop'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch origin main:main
+          git merge --no-edit main || true
+          git push origin develop

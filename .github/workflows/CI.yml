@@ -52,6 +52,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Install Flatpak & Builder
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y flatpak flatpak-builder
+          flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+
       - name: Build
         uses: flatpak/flatpak-github-actions/flatpak-builder@v6.7
         with:

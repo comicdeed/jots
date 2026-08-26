@@ -45,6 +45,7 @@ jobs:
 
       - name: 'Install dependencies'
         run: |
+          sudo add-apt-repository -y ppa:elementary-os/os-patches
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
             meson ninja-build valac gcc pkg-config gettext \

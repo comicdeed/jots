@@ -8,4 +8,12 @@
 !.githooks/
 ~*
 builddir
+builddir*
 repo
+local-repo
+AppDir
+stage
+dist
+*.flatpak
+*.AppImage
+*.sha256

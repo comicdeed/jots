@@ -59,14 +59,10 @@ fi
     --icon-file "${APPDIR}/usr/share/icons/hicolor/scalable/apps/io.github.comicdeed.jots.svg" \
     --plugin gtk
 
-# 6. Bundle glibc runtime for universal host backwards compatibility
-cp -d /lib/${ARCH}-linux-gnu/libc.so* "${APPDIR}/usr/lib/" || true
-cp -d /lib/${ARCH}-linux-gnu/libm.so* "${APPDIR}/usr/lib/" || true
-cp -d /lib/${ARCH}-linux-gnu/libpthread.so* "${APPDIR}/usr/lib/" || true
-cp -d /lib/${ARCH}-linux-gnu/libresolv.so* "${APPDIR}/usr/lib/" || true
-cp -d /lib/${ARCH}-linux-gnu/librt.so* "${APPDIR}/usr/lib/" || true
-cp -d /lib/${ARCH}-linux-gnu/libdl.so* "${APPDIR}/usr/lib/" || true
-cp -d /lib/${ARCH}-linux-gnu/ld-linux-*.so* "${APPDIR}/usr/lib/" || true
+# 6. Bundle full runtime and font rendering dependencies for universal host backwards compatibility
+for libname in libharfbuzz libfreetype libfontconfig libfribidi libgraphite2 libpixman libpng libbrotli libzstd libexpat libffi libc libm libpthread libresolv librt libdl ld-linux; do
+    find /lib/${ARCH}-linux-gnu /usr/lib/${ARCH}-linux-gnu -name "${libname}*.so*" -exec cp -d {} "${APPDIR}/usr/lib/" \; 2>/dev/null || true
+done
 
 # Re-apply custom AppRun launcher
 cp packaging/appimage/AppRun "${APPDIR}/AppRun"

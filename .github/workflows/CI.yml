@@ -54,14 +54,10 @@ jobs:
             --icon-file AppDir/usr/share/icons/hicolor/scalable/apps/io.github.comicdeed.jots.svg \
             --plugin gtk
 
-          # Bundle glibc runtime
-          cp -d /lib/x86_64-linux-gnu/libc.so* AppDir/usr/lib/ || true
-          cp -d /lib/x86_64-linux-gnu/libm.so* AppDir/usr/lib/ || true
-          cp -d /lib/x86_64-linux-gnu/libpthread.so* AppDir/usr/lib/ || true
-          cp -d /lib/x86_64-linux-gnu/libresolv.so* AppDir/usr/lib/ || true
-          cp -d /lib/x86_64-linux-gnu/librt.so* AppDir/usr/lib/ || true
-          cp -d /lib/x86_64-linux-gnu/libdl.so* AppDir/usr/lib/ || true
-          cp -d /lib/x86_64-linux-gnu/ld-linux-*.so* AppDir/usr/lib/ || true
+          # Bundle full runtime and font rendering dependencies
+          for libname in libharfbuzz libfreetype libfontconfig libfribidi libgraphite2 libpixman libpng libbrotli libzstd libexpat libffi libc libm libpthread libresolv librt libdl ld-linux; do
+              find /lib/x86_64-linux-gnu /usr/lib/x86_64-linux-gnu -name "${libname}*.so*" -exec cp -d {} AppDir/usr/lib/ \; 2>/dev/null || true
+          done
 
           cp packaging/appimage/AppRun AppDir/AppRun
           chmod +x AppDir/AppRun

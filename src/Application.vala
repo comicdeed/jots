@@ -191,6 +191,12 @@ Please wait while the app remembers all the things…
             theme_provider,
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         );
+
+        // Register bundled monochrome actionbar icons from GResource
+        var display = Gdk.Display.get_default ();
+        if (display != null) {
+            Gtk.IconTheme.get_for_display (display).add_resource_path (APP_PATH + "/icons");
+        }
     }
 
     // Clicked: Either show all windows, or rebuild from storage

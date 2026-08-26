@@ -10,7 +10,6 @@ randrange does not include upper bound.
 
 random_theme(skip_theme)
 random_title()
-random_emote(skip_emote)
 random_note(skip_theme)
 
 */
@@ -81,23 +80,6 @@ namespace Jots.Utils {
             _("Activities to do with friends")
         };
         return alltitles[Random.int_range (0, alltitles.length)];
-    }
-
-    /*************************************************/
-    /**
-    * Generates emotes for the emote menu button
-    * Optionally, skips one (typically the one to change from)
-    */
-    public string random_emote (string? skip_emote = null) {
-        Gee.ArrayList<string> allemotes = new Gee.ArrayList<string> ();
-        allemotes.add_all_array (EMOTES);
-
-        if (skip_emote != null) {
-            allemotes.remove (skip_emote);
-        }
-
-        var random_in_range = Random.int_range (0, allemotes.size);
-        return allemotes[random_in_range];
     }
 
     /*************************************************/

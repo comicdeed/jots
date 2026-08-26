@@ -62,29 +62,4 @@ namespace Jots {
     const string KEY_DEFAULT_FONT       = "default-font";
     const string KEY_MONOSPACE_FONT     = "monospace-font";
     const string KEY_JORTS_MIGRATION_PROMPTED = "jorts-migration-prompted";
-
-    // Used by random_emote () for the emote selection menu
-    const string[] EMOTES = {
-        "face-angel-symbolic",
-        "face-angry-symbolic",
-        "face-cool-symbolic",
-        "face-crying-symbolic",
-        "face-devilish-symbolic",
-        "face-embarrassed-symbolic",
-        "face-kiss-symbolic",
-        "face-laugh-symbolic",
-        "face-monkey-symbolic",
-        "face-plain-symbolic",
-        "face-raspberry-symbolic",
-        "face-sad-symbolic",
-        "face-sick-symbolic",
-        "face-smile-symbolic",
-        "face-smile-big-symbolic",
-        "face-smirk-symbolic",
-        "face-surprise-symbolic",
-        "face-tired-symbolic",
-        "face-uncertain-symbolic",
-        "face-wink-symbolic",
-        "face-worried-symbolic"
-    };
 }

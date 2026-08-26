@@ -39,7 +39,7 @@ public class Jots.ActionBar : Jots.Bin {
 
         var delete_item = new Gtk.Button () {
             action_name = StickyNoteWindow.ACTION_PREFIX + StickyNoteWindow.ACTION_DELETE,
-            icon_name = "edit-delete-symbolic",
+            icon_name = "user-trash-symbolic",
             width_request = ICON_SIZE,
             height_request = ICON_SIZE,
             tooltip_markup = Jots.Util.markup_accel_tooltip (
@@ -67,7 +67,7 @@ public class Jots.ActionBar : Jots.Bin {
         emojichooser_popover = new Gtk.EmojiChooser ();
         emoji_button = new Gtk.MenuButton () {
             popover = emojichooser_popover,
-            icon_name = Jots.Utils.random_emote (),
+            icon_name = "face-smile-symbolic",
             width_request = ICON_SIZE,
             height_request = ICON_SIZE,
             tooltip_markup = Jots.Util.markup_accel_tooltip (
@@ -110,9 +110,6 @@ public class Jots.ActionBar : Jots.Bin {
 
         child = handle;
 
-        // Randomize-skip emoji icon
-        emojichooser_popover.show.connect (on_emoji_popover);
-
         // Hide the list button if user has specified no list item symbol
         on_prefix_changed ();
         Application.settings.changed[KEY_LIST].connect (on_prefix_changed);
@@ -126,17 +123,6 @@ public class Jots.ActionBar : Jots.Bin {
         Application.settings.bind (KEY_HIDEBAR,
             actionbar, "revealed",
             SettingsBindFlags.INVERT_BOOLEAN);
-    }
-
-    // Skip the current icon to avoid picking it twice
-    private void on_emoji_popover () {
-        debug ("Emote requested!");
-
-        emoji_button.set_icon_name (
-            Jots.Utils.random_emote (
-                emoji_button.icon_name
-            )
-        );
     }
 
     /**

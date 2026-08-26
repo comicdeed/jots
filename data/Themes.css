@@ -17,7 +17,10 @@
 * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 */
 
-.BLUEBERRY:root {
+@import url("resource:///io/github/comicdeed/jots/FallbackPalette.css");
+
+window.themed.BLUEBERRY,
+.BLUEBERRY {
     --accent_color_100: @BLUEBERRY_100;
     --accent_color_300: @BLUEBERRY_300;
     --accent_color_500: @BLUEBERRY_500;
@@ -26,7 +29,8 @@
     --accent_color: color-mix(in srgb, @BLUEBERRY_300, @BLUEBERRY_500 25%);
 }
 
-.MINT:root {
+window.themed.MINT,
+.MINT {
     --accent_color_100: @MINT_100;
     --accent_color_300: @MINT_300;
     --accent_color_500: @MINT_500;
@@ -35,8 +39,8 @@
     --accent_color: color-mix(in srgb, @MINT_300, @MINT_500 25%);
 }
 
-
-.LIME:root {
+window.themed.LIME,
+.LIME {
     --accent_color_100: @LIME_100;
     --accent_color_300: @LIME_300;
     --accent_color_500: @LIME_500;
@@ -45,7 +49,8 @@
     --accent_color: color-mix(in srgb, @LIME_300, @LIME_500 25%);
 }
 
-.BANANA:root {
+window.themed.BANANA,
+.BANANA {
     --accent_color_100: @BANANA_100;
     --accent_color_300: @BANANA_300;
     --accent_color_500: @BANANA_500;
@@ -54,7 +59,8 @@
     --accent_color: color-mix(in srgb, @BANANA_300, @BANANA_500 25%);
 }
 
-.ORANGE:root {
+window.themed.ORANGE,
+.ORANGE {
     --accent_color_100: @ORANGE_100;
     --accent_color_300: @ORANGE_300;
     --accent_color_500: @ORANGE_500;
@@ -63,7 +69,8 @@
     --accent_color: color-mix(in srgb, @ORANGE_300, @ORANGE_500 25%);
 }
 
-.STRAWBERRY:root {
+window.themed.STRAWBERRY,
+.STRAWBERRY {
     --accent_color_100: @STRAWBERRY_100;
     --accent_color_300: @STRAWBERRY_300;
     --accent_color_500: @STRAWBERRY_500;
@@ -72,7 +79,8 @@
     --accent_color: color-mix(in srgb, @STRAWBERRY_300, @STRAWBERRY_500 25%);
 }
 
-.BUBBLEGUM:root {
+window.themed.BUBBLEGUM,
+.BUBBLEGUM {
     --accent_color_100: @BUBBLEGUM_100;
     --accent_color_300: @BUBBLEGUM_300;
     --accent_color_500: @BUBBLEGUM_500;
@@ -81,7 +89,8 @@
     --accent_color: color-mix(in srgb, @BUBBLEGUM_300, @BUBBLEGUM_500 25%);
 }
 
-.GRAPE:root {
+window.themed.GRAPE,
+.GRAPE {
     --accent_color_100: @GRAPE_100;
     --accent_color_300: @GRAPE_300;
     --accent_color_500: @GRAPE_500;
@@ -90,7 +99,8 @@
     --accent_color: color-mix(in srgb, @GRAPE_300, @GRAPE_500 25%);
 }
 
-.COCOA:root {
+window.themed.COCOA,
+.COCOA {
     --accent_color_100: @COCOA_100;
     --accent_color_300: @COCOA_300;
     --accent_color_500: @COCOA_500;
@@ -99,7 +109,8 @@
     --accent_color: color-mix(in srgb, @COCOA_300, @COCOA_500 25%);
 }
 
-.SLATE:root {
+window.themed.SLATE,
+.SLATE {
     --accent_color_100: @SLATE_100;
     --accent_color_300: @SLATE_300;
     --accent_color_500: @SLATE_500;
@@ -108,7 +119,8 @@
     --accent_color: color-mix(in srgb, @SLATE_300, @SLATE_500 25%);
 }
 
-.LATTE:root {
+window.themed.LATTE,
+.LATTE {
     --accent_color_100: @LATTE_100;
     --accent_color_300: @LATTE_300;
     --accent_color_500: @LATTE_500;

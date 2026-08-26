@@ -18,10 +18,11 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
-            meson ninja-build valac gcc pkg-config gettext xvfb \
+            ninja-build valac gcc pkg-config gettext xvfb \
             libgtk-4-dev libgee-0.8-dev libjson-glib-dev sassc \
-            desktop-file-utils libglib2.0-bin appstream git \
+            desktop-file-utils libglib2.0-bin appstream git python3-pip \
             file wget curl zsync
+          sudo pip3 install --upgrade meson
 
       - name: Build and Install Granite 7.6
         run: |

@@ -90,46 +90,53 @@
 /* Color Button (Granite Palette) Styling                   */
 /* ======================================================== */
 
+checkbutton.color-button,
 .color-button {
     min-width: 22px;
     min-height: 22px;
     padding: 0;
     margin: 1px;
     border-radius: 9999px;
+    background: transparent;
     border: none;
-    background: none;
     box-shadow: none;
 }
 
+checkbutton.color-button check,
+checkbutton.color-button > check,
 .color-button check {
     min-width: 18px;
     min-height: 18px;
     border-radius: 9999px;
-    background-image: none;
-    color: transparent;
-    border: 1px solid rgba(0, 0, 0, 0.25);
+    background-image: none !important;
+    color: transparent !important;
+    border: 1px solid rgba(0, 0, 0, 0.25) !important;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
     margin: 0;
 }
 
+checkbutton.color-button:checked check,
+checkbutton.color-button:checked > check,
 .color-button:checked check {
-    border-color: #ffffff;
-    box-shadow: 0 0 0 2px var(--accent_color, #3689e6), 0 1px 3px rgba(0, 0, 0, 0.3);
+    border-color: #ffffff !important;
+    box-shadow: 0 0 0 2px var(--accent_color, #3689e6), 0 1px 3px rgba(0, 0, 0, 0.3) !important;
 }
 
-.color-button.blueberry check { background-color: @BLUEBERRY_500; }
-.color-button.mint check      { background-color: @MINT_500; }
-.color-button.lime check      { background-color: @LIME_500; }
-.color-button.banana check    { background-color: @BANANA_500; }
-.color-button.orange check    { background-color: @ORANGE_500; }
-.color-button.strawberry check { background-color: @STRAWBERRY_500; }
-.color-button.bubblegum check { background-color: @BUBBLEGUM_500; }
-.color-button.grape check     { background-color: @GRAPE_500; }
-.color-button.cocoa check     { background-color: @COCOA_500; }
-.color-button.slate check     { background-color: @SLATE_500; }
-.color-button.latte check     { background-color: @LATTE_500; }
+.color-button.blueberry check, .color-button.blueberry > check { background-color: @BLUEBERRY_500 !important; }
+.color-button.mint check,      .color-button.mint > check      { background-color: @MINT_500 !important; }
+.color-button.lime check,      .color-button.lime > check      { background-color: @LIME_500 !important; }
+.color-button.banana check    { background-color: @BANANA_500 !important; }
+.color-button.banana > check  { background-color: @BANANA_500 !important; }
+.color-button.orange check,    .color-button.orange > check    { background-color: @ORANGE_500 !important; }
+.color-button.strawberry check, .color-button.strawberry > check { background-color: @STRAWBERRY_500 !important; }
+.color-button.bubblegum check, .color-button.bubblegum > check { background-color: @BUBBLEGUM_500 !important; }
+.color-button.grape check,     .color-button.grape > check     { background-color: @GRAPE_500 !important; }
+.color-button.cocoa check,     .color-button.cocoa > check     { background-color: @COCOA_500 !important; }
+.color-button.slate check,     .color-button.slate > check     { background-color: @SLATE_500 !important; }
+.color-button.latte check,     .color-button.latte > check     { background-color: @LATTE_500 !important; }
 
 window.themed.BLUEBERRY,
+window.background.themed.BLUEBERRY,
 .BLUEBERRY {
     --accent_color_100: @BLUEBERRY_100;
     --accent_color_300: @BLUEBERRY_300;
@@ -140,6 +147,7 @@ window.themed.BLUEBERRY,
 }
 
 window.themed.MINT,
+window.background.themed.MINT,
 .MINT {
     --accent_color_100: @MINT_100;
     --accent_color_300: @MINT_300;
@@ -150,6 +158,7 @@ window.themed.MINT,
 }
 
 window.themed.LIME,
+window.background.themed.LIME,
 .LIME {
     --accent_color_100: @LIME_100;
     --accent_color_300: @LIME_300;
@@ -160,6 +169,7 @@ window.themed.LIME,
 }
 
 window.themed.BANANA,
+window.background.themed.BANANA,
 .BANANA {
     --accent_color_100: @BANANA_100;
     --accent_color_300: @BANANA_300;
@@ -170,6 +180,7 @@ window.themed.BANANA,
 }
 
 window.themed.ORANGE,
+window.background.themed.ORANGE,
 .ORANGE {
     --accent_color_100: @ORANGE_100;
     --accent_color_300: @ORANGE_300;
@@ -180,6 +191,7 @@ window.themed.ORANGE,
 }
 
 window.themed.STRAWBERRY,
+window.background.themed.STRAWBERRY,
 .STRAWBERRY {
     --accent_color_100: @STRAWBERRY_100;
     --accent_color_300: @STRAWBERRY_300;
@@ -190,6 +202,7 @@ window.themed.STRAWBERRY,
 }
 
 window.themed.BUBBLEGUM,
+window.background.themed.BUBBLEGUM,
 .BUBBLEGUM {
     --accent_color_100: @BUBBLEGUM_100;
     --accent_color_300: @BUBBLEGUM_300;
@@ -200,6 +213,7 @@ window.themed.BUBBLEGUM,
 }
 
 window.themed.GRAPE,
+window.background.themed.GRAPE,
 .GRAPE {
     --accent_color_100: @GRAPE_100;
     --accent_color_300: @GRAPE_300;
@@ -210,6 +224,7 @@ window.themed.GRAPE,
 }
 
 window.themed.COCOA,
+window.background.themed.COCOA,
 .COCOA {
     --accent_color_100: @COCOA_100;
     --accent_color_300: @COCOA_300;
@@ -220,6 +235,7 @@ window.themed.COCOA,
 }
 
 window.themed.SLATE,
+window.background.themed.SLATE,
 .SLATE {
     --accent_color_100: @SLATE_100;
     --accent_color_300: @SLATE_300;
@@ -230,6 +246,7 @@ window.themed.SLATE,
 }
 
 window.themed.LATTE,
+window.background.themed.LATTE,
 .LATTE {
     --accent_color_100: @LATTE_100;
     --accent_color_300: @LATTE_300;
@@ -239,8 +256,9 @@ window.themed.LATTE,
     --accent_color: color-mix(in srgb, @LATTE_300, @LATTE_500 25%);
 }
 
-window.themed {
-    background-color: var(--accent_color_100);
+window.themed,
+window.background.themed {
+    background-color: var(--accent_color_100) !important;
 }
 
 window.themed undershoot.top {
@@ -330,9 +348,10 @@ window.themed:backdrop actionbar image {
 /* Dark Mode Theme Overrides (Automatic Desaturated Tint)     */
 /* ======================================================== */
 
-window.themed.dark {
-    background-color: color-mix(in srgb, var(--accent_color_700) 22%, #18181c);
-    color: color-mix(in srgb, var(--accent_color_100) 75%, #ffffff);
+window.themed.dark,
+window.background.themed.dark {
+    background-color: color-mix(in srgb, var(--accent_color_700) 30%, #18181c) !important;
+    color: color-mix(in srgb, var(--accent_color_100) 75%, #ffffff) !important;
 }
 
 window.themed.dark titlebar,

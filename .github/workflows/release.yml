@@ -112,6 +112,7 @@ jobs:
             meson ninja-build valac gcc pkg-config gettext \
             libgtk-4-dev libgee-0.8-dev \
             libjson-glib-dev libportal-dev libportal-gtk4-dev \
+            librsvg2-dev librsvg2-common \
             desktop-file-utils libglib2.0-bin appstream \
             file wget curl zsync
 

@@ -68,6 +68,9 @@ flatpak run --command=jots-unit-tests io.github.comicdeed.jots.devel
 * **UI/UX Aesthetic Constraints**: Jots is minimal by design. Avoid adding heavy components.
 * **Encapsulation & Boundaries**: Keep storage mechanics encapsulated in `Storage.vala`. External tools interact strictly via `NoteService` D-Bus IPC.
 * **Compilation Warnings**: The build uses `-w` in `meson.build` to suppress Vala-generated C compiler noise.
+* **Docker & CI Packaging Parity (Crucial Rule)**:
+  - **Zero Dependency Drift**: Whenever adding or updating build packages, libraries, or asset engines (e.g., `librsvg2-dev`, `librsvg2-common`, `libportal`, font rendering engines) in `packaging/appimage/Dockerfile` or `compose.yaml`, you **MUST simultaneously update the runner dependencies in `.github/workflows/CI.yml` and `.github/workflows/release.yml`**.
+  - **Hard Packaging Guardrails**: Packaging scripts like `packaging/appimage/build-appimage.sh` must include strict assertions (e.g., checking that `libpixbufloader-svg.so` and runtime libraries exist in `AppDir`) so that missing dependencies fail fast in CI instead of producing broken packages.
 * **Test & Use-Case Cross-Referencing**: When writing unit tests in `tests/`, embed the permanent use-case identifier (`/<Component>/UC_XX_YY_ZZ/<ScenarioName>`) and link to `docs/use-cases/`.
 * **User Guide Synchronization**: Whenever modifying user-facing features, keyboard shortcuts, or settings, update [`docs/user-guide.md`](docs/user-guide.md).
 * **Honest Attribution**: When opening a PR, include the attribution block in `docs/development/pull-request-guidelines.md`.

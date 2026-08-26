@@ -109,9 +109,9 @@ jobs:
 
       - name: 'Set up QEMU (for aarch64)'
         if: matrix.use_qemu
-        uses: docker/setup-qemu-action@v3
-        with:
-          platforms: arm64
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qemu-user-static binfmt-support
 
       - name: 'Install dependencies'
         run: |
@@ -185,12 +185,12 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y flatpak flatpak-builder
-          flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+          flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
       - name: 'Build and Export Flatpak Bundle'
         run: |
           VERSION="${{ needs.init-release.outputs.tag_name }}"
-          flatpak-builder --force-clean --repo=repo --install-deps-from=flathub builddir io.github.comicdeed.jots.yml
+          flatpak-builder --user --force-clean --repo=repo --install-deps-from=flathub builddir io.github.comicdeed.jots.yml
           mkdir -p dist
           flatpak build-bundle repo "dist/io.github.comicdeed.jots-${VERSION}.flatpak" io.github.comicdeed.jots
           cd dist && sha256sum "io.github.comicdeed.jots-${VERSION}.flatpak" > "io.github.comicdeed.jots-${VERSION}.flatpak.sha256"

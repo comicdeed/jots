@@ -19,7 +19,7 @@ jobs:
           sudo add-apt-repository -y ppa:elementary-os/daily
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
-            meson ninja-build valac gcc pkg-config gettext \
+            meson ninja-build valac gcc pkg-config gettext xvfb \
             libgtk-4-dev libgranite-7-dev libgee-0.8-dev \
             libjson-glib-dev libportal-dev libportal-gtk4-dev \
             desktop-file-utils libglib2.0-bin appstream \
@@ -27,9 +27,9 @@ jobs:
 
       - name: Compile and Run Unit Tests
         run: |
-          meson setup builddir --prefix=/usr --buildtype=debug
+          meson setup builddir --prefix=/usr --buildtype=debug -Dprofile=linux
           meson compile -C builddir
-          meson test -C builddir --verbose
+          xvfb-run -a meson test -C builddir --verbose
 
       - name: Verify AppImage Assembly
         run: |

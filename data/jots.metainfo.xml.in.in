@@ -50,8 +50,9 @@
         <keyword>Desktop</keyword>
         <keyword>Reminder</keyword>
         <keyword>Utility</keyword>
-        <keyword>Pantheon</keyword>
-        <keyword>elementary OS</keyword>
+        <keyword>GNOME</keyword>
+        <keyword>Linux</keyword>
+        <keyword>GTK</keyword>
     </keywords>
     <suggests>
         <id>io.github.comicdeed.reminduck</id>

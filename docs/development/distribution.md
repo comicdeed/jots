@@ -6,7 +6,7 @@ Technical guidelines, dependency requirements, and architectural considerations 
 
 ## 1. Primary target and packaging philosophy
 
-Jots is developed primarily as a sandboxed Flatpak application targeting modern Linux desktop environments (such as elementary OS and GNOME). Downstream maintainers packaging Jots for native distributions (e.g. Debian, Arch, Fedora, openSUSE) or alternative platforms should review the integration requirements below.
+Jots is developed as a pure GTK4 desktop application targeting modern Linux desktop environments (GNOME, KDE Plasma, elementary OS, XFCE). Downstream maintainers packaging Jots for native distributions (e.g. Debian, Arch, Fedora, openSUSE) or alternative platforms should review the integration requirements below.
 
 ---
 
@@ -17,8 +17,9 @@ Jots uses the Meson build system and Vala compiler.
 ### Core build dependencies
 * `glib-2.0`, `gobject-2.0`, `gio-2.0` (>= 2.74)
 * `gtk4` (>= 4.10)
-* `granite-7` (>= 7.0.0)
+* `gee-0.8` (>= 0.8)
 * `json-glib-1.0` (>= 1.6)
+* `librsvg-2.0` (>= 2.50)
 * `libportal`, `libportal-gtk4` (optional portal integrations for sandbox autostart)
 
 ### Build options (`meson_options.txt`)
@@ -31,8 +32,8 @@ Jots uses the Meson build system and Vala compiler.
 When creating native distribution packages (`.deb`, `.rpm`, `.pkg.tar.zst`):
 
 ### A. State storage and filesystem hierarchy
-* In sandbox environments (Flatpak), note state is persisted automatically under `XDG_DATA_HOME/io.github.comicdeed.jots/saved_state.json`.
-* In native packaging, ensure user data directories adhere to the XDG Base Directory specification. Note state is read and saved at `Environment.get_user_data_dir() + "/io.github.comicdeed.jots/saved_state.json"`.
+* Note state is persisted as individual Markdown files under `XDG_DATA_HOME/io.github.comicdeed.jots/notes/<uuid>.md`.
+* Legacy JSON state (`saved_state.json`) is automatically and non-destructively migrated to Markdown upon first launch.
 
 ### B. Bundled fonts and resources
 * Jots embeds custom stylesheet overrides and scribble fonts inside GResource bundles compiled directly into the binary.

@@ -45,12 +45,6 @@ Run the stable Flathub build:
 flatpak run io.github.comicdeed.jots
 ```
 
-#### C. AppCenter / elementary OS Stable
-Builds using the official elementary OS AppCenter platform SDK:
-```bash
-flatpak-builder --force-clean --user --install-deps-from=appcenter --install builddir io.github.comicdeed.jots.yml
-```
-
 ---
 
 ## 2. Native Compilation (Local Build)
@@ -58,11 +52,11 @@ flatpak-builder --force-clean --user --install-deps-from=appcenter --install bui
 If you prefer to compile Jots natively on your host system, install the development dependencies and build using Meson.
 
 ### Native Dependencies
-* `libgranite-7-dev`
-* `gtk+-4.0`
-* `libjson-glib-dev`
+* `libgtk-4-dev`
 * `libgee-0.8-dev`
+* `libjson-glib-dev`
 * `libportal-gtk4-dev`
+* `librsvg2-dev`
 * `meson`
 * `valac`
 

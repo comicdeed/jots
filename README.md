@@ -2,10 +2,6 @@
   <img alt="Jots Icon" src="data/icons/default/hicolor/128.png" />
   <h1>Jots</h1>
   <p>Lightweight sticky notes application for the Linux desktop.</p>
-
-  <a href="https://elementary.io">
-    <img src="https://ellie-commons.github.io/community-badge.svg" alt="Made for elementary OS">
-  </a>
   
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="data/screenshots/jots-dark.png">
@@ -34,11 +30,10 @@
 
 ## Installation and quick start
 
-* **AppImage (Click-and-Run)**: Download `Jots-x86_64.AppImage` from [GitHub Releases](https://github.com/comicdeed/jots/releases), make it executable (`chmod +x Jots-x86_64.AppImage`), and double-click to run anywhere without installation.
-* **Flatpak Bundle**: Download `io.github.comicdeed.jots.flatpak` and install with `flatpak install io.github.comicdeed.jots.flatpak`.
-* **AppCenter**: [Get it on elementary OS AppCenter](https://appcenter.elementary.io/io.github.comicdeed.jots)
+* **AppImage (Click-and-Run)**: Download `Jots-x86_64.AppImage` or `Jots-aarch64.AppImage` from [GitHub Releases](https://github.com/comicdeed/jots/releases), make it executable (`chmod +x Jots-*.AppImage`), and run directly on any Linux distribution without installation.
+* **Flatpak Bundle**: Download `io.github.comicdeed.jots-<version>-x86_64.flatpak` from [GitHub Releases](https://github.com/comicdeed/jots/releases) and install with `flatpak install io.github.comicdeed.jots-*.flatpak`.
 * **Local compilation**: Refer to the [Developer Setup Guide](docs/development/setup.md) or [Building Guide](docs/development/building.md) for compilation instructions.
-* **Windows**: Experimental installers are available in the Releases section (see the [Windows Build Guide](docs/development/windows.md)).
+* **Windows**: Native NSIS installers are available in the Releases section (see the [Windows Build Guide](docs/development/windows.md)).
 
 ---
 

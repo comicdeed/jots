@@ -46,7 +46,7 @@ jobs:
             runs-on: ubuntu-latest
           - arch: aarch64
             runs-on: ubuntu-24.04-arm
-      fail-fast: true
+      fail-fast: false
 
     steps:
       - name: Checkout
@@ -55,20 +55,12 @@ jobs:
       - name: Install Flatpak & Builder
         run: |
           sudo apt-get update
-          sudo apt-get install -y flatpak flatpak-builder
+          sudo apt-get install -y flatpak flatpak-builder xvfb
           flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
-      - name: Build
-        uses: flatpak/flatpak-github-actions/flatpak-builder@v6.7
-        with:
-          bundle: Jots.flatpak
-          manifest-path: io.github.comicdeed.jots.yml
-          run-tests: true
-          repository-name: flathub
-          repository-url: https://dl.flathub.org/repo/flathub.flatpakrepo
-          cache-key: "flatpak-builder-${{ github.sha }}"
-          branch: daily
-          arch: ${{ matrix.configuration.arch }}
+      - name: Build Flatpak & Run Tests
+        run: |
+          flatpak-builder --user --force-clean --repo=repo --install-deps-from=flathub builddir io.github.comicdeed.jots.yml
 
   lint:
     name: Lint

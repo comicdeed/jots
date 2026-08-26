@@ -96,22 +96,14 @@ jobs:
         include:
           - arch: x86_64
             runner: ubuntu-24.04
-            use_qemu: false
           - arch: aarch64
-            runner: ubuntu-24.04
-            use_qemu: true
+            runner: ubuntu-24.04-arm
 
     steps:
       - name: 'Checkout sources'
         uses: actions/checkout@v4
         with:
           lfs: 'true'
-
-      - name: 'Set up QEMU (for aarch64)'
-        if: matrix.use_qemu
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y qemu-user-static binfmt-support
 
       - name: 'Install dependencies'
         run: |

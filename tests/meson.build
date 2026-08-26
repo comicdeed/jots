@@ -68,10 +68,12 @@ test_sources = files(
     meson.project_source_root() / 'src' / 'Objects' / 'ListPrefix.vala',
     meson.project_source_root() / 'src' / 'Widgets' / 'TextBuffer.vala',
     meson.project_source_root() / 'src' / 'Widgets' / 'MarkdownBuffer.vala',
-    meson.project_source_root() / 'src' / 'Utils' / 'Random.vala',
-    meson.project_source_root() / 'src' / 'Constants.vala',
-    meson.project_source_root() / 'src' / 'Mcp' / 'NotesDbusProxy.vala',
-    meson.project_source_root() / 'src' / 'Mcp' / 'McpProtocol.vala',
+    meson.project_source_root () / 'src' / 'Utils' / 'Random.vala',
+    meson.project_source_root () / 'src' / 'Utils' / 'Markup.vala',
+    meson.project_source_root () / 'src' / 'Widgets' / 'Bin.vala',
+    meson.project_source_root () / 'src' / 'Constants.vala',
+    meson.project_source_root () / 'src' / 'Mcp' / 'NotesDbusProxy.vala',
+    meson.project_source_root () / 'src' / 'Mcp' / 'McpProtocol.vala',
 )
 
 test_executable = executable(

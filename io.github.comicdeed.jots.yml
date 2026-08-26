@@ -1,6 +1,4 @@
 id: io.github.comicdeed.jots
-base: io.elementary.BaseApp
-base-version: 'circe-25.08'
 runtime: org.gnome.Platform
 runtime-version: '50'
 sdk: org.gnome.Sdk
@@ -20,6 +18,21 @@ cleanup:
   - /share/vala
 
 modules:
+  - name: libportal
+    buildsystem: meson
+    config-opts:
+      - -Ddocs=false
+      - -Dtests=false
+      - -Dbackend-gtk4=enabled
+      - -Dbackend-gtk3=disabled
+      - -Dbackend-qt5=disabled
+      - -Dvapi=true
+      - -Dintrospection=true
+    sources:
+      - type: git
+        url: https://github.com/flatpak/libportal.git
+        tag: 0.7.1
+
   - name: jots
     buildsystem: meson
     config-opts:

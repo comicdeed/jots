@@ -92,26 +92,28 @@ public class Jots.NoteManager : Object, Jots.ActiveNotesProvider {
     }
 
     private void prompt_jorts_migration (Gee.List<NoteData> legacy_notes) {
-        var dialog = new Granite.MessageDialog.with_image_from_icon_name (
-            _("Import notes from Jorts?"),
-            _("Jots discovered %d notes from your existing Jorts installation. Would you like to copy them into Jots?\n\n(Your original Jorts notes will remain untouched.)").printf (legacy_notes.size),
-            "dialog-question",
-            Gtk.ButtonsType.NONE
-        );
+        var alert = new Gtk.AlertDialog (_("Import notes from Jorts?")) {
+            detail = _("Jots discovered %d notes from your existing Jorts installation. Would you like to copy them into Jots?\n\n(Your original Jorts notes will remain untouched.)").printf (legacy_notes.size),
+            buttons = { _("Start Fresh"), _("Import %d Notes").printf (legacy_notes.size) },
+            cancel_button = 0,
+            default_button = 1
+        };
 
-        dialog.add_button (_("Start Fresh"), Gtk.ResponseType.CANCEL);
-        var import_btn = dialog.add_button (_("Import %d Notes").printf (legacy_notes.size), Gtk.ResponseType.ACCEPT);
-        import_btn.add_css_class ("suggested-action");
-
-        dialog.response.connect ((response_id) => {
+        alert.choose.begin (null, null, (obj, res) => {
             Application.settings.set_boolean (KEY_JORTS_MIGRATION_PROMPTED, true);
-
-            if (response_id == Gtk.ResponseType.ACCEPT) {
-                storage.import_notes (legacy_notes);
-                foreach (var note in legacy_notes) {
-                    create_note (note);
+            try {
+                int button = alert.choose.end (res);
+                if (button == 1) {
+                    storage.import_notes (legacy_notes);
+                    foreach (var note in legacy_notes) {
+                        create_note (note);
+                    }
+                } else {
+                    var note_data = new NoteData ();
+                    note_data.theme = DEFAULT_THEME;
+                    create_note (note_data);
                 }
-            } else {
+            } catch (Error e) {
                 var note_data = new NoteData ();
                 note_data.theme = DEFAULT_THEME;
                 create_note (note_data);
@@ -119,10 +121,7 @@ public class Jots.NoteManager : Object, Jots.ActiveNotesProvider {
 
             saving_lock = false;
             is_initialized = true;
-            dialog.destroy ();
         });
-
-        dialog.present ();
     }
 
     /**

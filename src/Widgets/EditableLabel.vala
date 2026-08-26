@@ -6,9 +6,9 @@
  */
 
 /**
-* A subclass of Gtk.EditableLabel, incorporating some conveniences
-*/
-public class Jots.EditableLabel : Granite.Bin {
+ * A subclass incorporating convenience wrappers for Gtk.EditableLabel.
+ */
+public class Jots.EditableLabel : Jots.Bin {
 
     private const string STYLE_MONOSPACE = "monospace";
     private Gtk.EditableLabel editablelabel;
@@ -34,10 +34,9 @@ public class Jots.EditableLabel : Granite.Bin {
             xalign = 0.5f,
             halign = Gtk.Align.CENTER,
             valign = Gtk.Align.CENTER,
-            tooltip_markup = Granite.markup_accel_tooltip (
-                {"<Control>L"},
-                //TRANSLATORS: Tooltip when a user hovers the title of a sticky note. You are not constrained by space
-                _("Click to edit the title")
+            tooltip_markup = Jots.Util.markup_accel_tooltip (
+                _("Click to edit the title"),
+                "Ctrl+L"
             )
         };
         child = editablelabel;

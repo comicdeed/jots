@@ -147,78 +147,78 @@ checkbutton.color-button:checked > check,
 window.themed.BLUEBERRY,
 window.background.themed.BLUEBERRY,
 .BLUEBERRY {
-    background-color: @BLUEBERRY_100;
-    color: @BLUEBERRY_900;
+    background-color: #cde2fc;
+    color: #0f3d7a;
 }
 
 window.themed.MINT,
 window.background.themed.MINT,
 .MINT {
-    background-color: @MINT_100;
-    color: @MINT_900;
+    background-color: #c2f0d6;
+    color: #0d542c;
 }
 
 window.themed.LIME,
 window.background.themed.LIME,
 .LIME {
-    background-color: @LIME_100;
-    color: @LIME_900;
+    background-color: #d9f2a7;
+    color: #365e0a;
 }
 
 window.themed.BANANA,
 window.background.themed.BANANA,
 .BANANA {
-    background-color: @BANANA_100;
-    color: @BANANA_900;
+    background-color: #fef08a;
+    color: #713f12;
 }
 
 window.themed.ORANGE,
 window.background.themed.ORANGE,
 .ORANGE {
-    background-color: @ORANGE_100;
-    color: @ORANGE_900;
+    background-color: #fed7aa;
+    color: #7c2d12;
 }
 
 window.themed.STRAWBERRY,
 window.background.themed.STRAWBERRY,
 .STRAWBERRY {
-    background-color: @STRAWBERRY_100;
-    color: @STRAWBERRY_900;
+    background-color: #fecdd3;
+    color: #881337;
 }
 
 window.themed.BUBBLEGUM,
 window.background.themed.BUBBLEGUM,
 .BUBBLEGUM {
-    background-color: @BUBBLEGUM_100;
-    color: @BUBBLEGUM_900;
+    background-color: #fbcfe8;
+    color: #831843;
 }
 
 window.themed.GRAPE,
 window.background.themed.GRAPE,
 .GRAPE {
-    background-color: @GRAPE_100;
-    color: @GRAPE_900;
+    background-color: #e9d5ff;
+    color: #581c87;
 }
 
 window.themed.COCOA,
 window.background.themed.COCOA,
 .COCOA {
-    background-color: @COCOA_100;
-    color: @COCOA_900;
+    background-color: #ede0d4;
+    color: #432818;
 }
 
 window.themed.SLATE,
 window.background.themed.SLATE,
 .SLATE {
-    background-color: @SLATE_100;
-    color: @SLATE_900;
+    background-color: #e2e8f0;
+    color: #0f172a;
 }
 
 window.themed.LATTE,
 window.background.themed.LATTE,
 .LATTE {
-    background-color: @LATTE_100;
-    color: @LATTE_900;
+    background-color: #faebd7;
+    color: #4a2810;
 }
 
 /* ======================================================== */
@@ -261,6 +261,11 @@ window.themed text selection {
 }
 
 window.themed titlebar,
+window.themed headerbar,
+window.themed headerbar.flat,
+window.themed .headertitle,
+window.themed editablelabel,
+window.themed editablelabel label,
 window.themed titlebar image,
 window.themed .themedbutton > button > box > image,
 window.themed .themedbutton > image,
@@ -269,10 +274,20 @@ window.themed {
 }
 
 window.themed titlebar,
+window.themed headerbar,
+window.themed headerbar.flat,
+window.themed .headertitle,
+window.themed scrolledwindow,
 window.themed textview,
+window.themed textview.view,
+window.themed textview text,
+window.themed textview > text,
+window.themed editablelabel,
 window.themed editablelabel.editing {
+    background: transparent;
     background-color: transparent;
     border-bottom-color: transparent;
+    box-shadow: none;
     color: inherit;
 }
 
@@ -381,6 +396,11 @@ window.background.themed.dark.LATTE {
 }
 
 window.themed.dark titlebar,
+window.themed.dark headerbar,
+window.themed.dark headerbar.flat,
+window.themed.dark .headertitle,
+window.themed.dark editablelabel,
+window.themed.dark editablelabel label,
 window.themed.dark titlebar image,
 window.themed.dark .themedbutton > button > box > image,
 window.themed.dark .themedbutton > image {
@@ -388,9 +408,20 @@ window.themed.dark .themedbutton > image {
 }
 
 window.themed.dark titlebar,
+window.themed.dark headerbar,
+window.themed.dark headerbar.flat,
+window.themed.dark .headertitle,
+window.themed.dark scrolledwindow,
 window.themed.dark textview,
+window.themed.dark textview.view,
+window.themed.dark textview text,
+window.themed.dark textview > text,
+window.themed.dark editablelabel,
 window.themed.dark editablelabel.editing {
+    background: transparent;
     background-color: transparent;
+    border-bottom-color: transparent;
+    box-shadow: none;
     color: #f0f0f4;
 }
 

@@ -76,7 +76,7 @@
         headerbar = new Gtk.HeaderBar () {
             show_title_buttons = false
         };
-        headerbar.add_css_class (Granite.STYLE_CLASS_FLAT);
+        headerbar.add_css_class ("flat");
         headerbar.add_css_class ("headertitle");
 
         // Defime the label you can edit. Which is editable.

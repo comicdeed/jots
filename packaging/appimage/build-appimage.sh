@@ -11,10 +11,10 @@ OUTPUT_DIR="${OUTPUT_DIR:-dist}"
 echo "==> Building Jots AppImage ${VERSION} for ${ARCH}..."
 mkdir -p "${OUTPUT_DIR}"
 
-# 1. Compile Once into isolated DESTDIR
-if [ ! -d "${STAGE_DIR}/usr" ]; then
-    echo "==> Staging Jots via Meson..."
-    rm -rf "${BUILD_DIR}" "${STAGE_DIR}"
+# 1. Compile into isolated DESTDIR
+echo "==> Compiling Jots via Meson..."
+rm -rf "${STAGE_DIR}"
+if [ ! -d "${BUILD_DIR}" ]; then
     meson setup "${BUILD_DIR}" \
         --prefix=/usr \
         --buildtype=release \
@@ -22,9 +22,9 @@ if [ ! -d "${STAGE_DIR}/usr" ]; then
         -Dprofile=linux \
         -Ddevelopment=false \
         -Dicon_variant=default
-    meson compile -C "${BUILD_DIR}"
-    DESTDIR="$(pwd)/${STAGE_DIR}" meson install -C "${BUILD_DIR}"
 fi
+meson compile -C "${BUILD_DIR}"
+DESTDIR="$(pwd)/${STAGE_DIR}" meson install -C "${BUILD_DIR}"
 
 # 2. Pre-compile schemas inside staging
 glib-compile-schemas "${STAGE_DIR}/usr/share/glib-2.0/schemas"
@@ -76,6 +76,7 @@ if [ ! -f "appimagetool-${ARCH}.AppImage" ]; then
 fi
 
 export OUTPUT="${OUTPUT_DIR}/Jots-${VERSION}-${ARCH}.AppImage"
+rm -f "${OUTPUT}"
 ./appimagetool-${ARCH}.AppImage "${APPDIR}" "${OUTPUT}"
 
 echo "==> Successfully created ${OUTPUT}!"

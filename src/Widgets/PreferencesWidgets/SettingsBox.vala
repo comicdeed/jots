@@ -29,17 +29,31 @@ public class Jots.SettingsBox : Gtk.Box {
         widget.hexpand = true;
         widget.valign = Gtk.Align.CENTER;
 
-        var label = new Granite.HeaderLabel (text) {
-            mnemonic_widget = widget,
-            valign = Gtk.Align.CENTER,  //We need this else labels without descriptions keep a space for it
-            hexpand = true,
+        var text_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 2) {
+            valign = Gtk.Align.CENTER,
+            hexpand = true
         };
+
+        var title_label = new Gtk.Label (text) {
+            use_underline = true,
+            mnemonic_widget = widget,
+            xalign = 0.0f,
+            halign = Gtk.Align.START
+        };
+        title_label.add_css_class ("heading");
+        text_box.append (title_label);
 
         if (description != null) {
-            label.secondary_text = description;
-        };
+            var desc_label = new Gtk.Label (description) {
+                xalign = 0.0f,
+                halign = Gtk.Align.START,
+                wrap = true
+            };
+            desc_label.add_css_class ("dim-label");
+            text_box.append (desc_label);
+        }
 
-        append (label);
+        append (text_box);
         append (widget);
     }
 }

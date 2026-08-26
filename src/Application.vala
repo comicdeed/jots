@@ -136,7 +136,6 @@ public class Jots.Application : Gtk.Application {
         debug ("Jots Startup…");
         base.startup ();
         Gtk.init ();
-        Granite.init ();
 
         Gtk.Window.set_default_icon_name (APP_ID);
 
@@ -155,50 +154,13 @@ public class Jots.Application : Gtk.Application {
         var action_restore = lookup_action (Application.ACTION_RESTORE_LAST);
         ((SimpleAction)action_restore).set_enabled (false);
 
-        // Force the eOS icon theme, and set the blueberry as fallback, if for some reason it fails for individual notes
-        var granite_settings = Granite.Settings.get_default ();
+        // Set default icon theme
         gtk_settings = Gtk.Settings.get_default ();
-#if WINDOWS
-        gtk_settings.gtk_icon_theme_name = "Adwaita";
-#else
-        gtk_settings.gtk_icon_theme_name = "elementary";
-#endif
-        // Check if elementary stylesheet is available on the system / sandbox
-        var theme_installed = false;
-        var data_dirs = GLib.Environment.get_system_data_dirs ();
-        foreach (var dir in data_dirs) {
-            if (GLib.File.new_for_path (GLib.Path.build_filename (dir, "themes", DEFAULT_STYLESHEET)).query_exists ()) {
-                theme_installed = true;
-                break;
-            }
-        }
-        var user_theme_dir = GLib.Path.build_filename (GLib.Environment.get_user_data_dir (), "themes", DEFAULT_STYLESHEET);
-        if (GLib.File.new_for_path (user_theme_dir).query_exists ()) {
-            theme_installed = true;
+        if (GLib.Environment.get_variable ("GTK_THEME") != null) {
+            gtk_settings.gtk_theme_name = GLib.Environment.get_variable ("GTK_THEME");
         }
 
-        if (theme_installed) {
-            gtk_settings.gtk_theme_name = DEFAULT_STYLESHEET;
-        } else {
-            gtk_settings.gtk_theme_name = "Adwaita";
-        }
-
-        // Also follow dark if system is dark lIke mY sOul.
-        if (GLib.Environment.get_variable ("FORCE_DARK") == "1") {
-            gtk_settings.gtk_application_prefer_dark_theme = true;
-        } else if (GLib.Environment.get_variable ("FORCE_LIGHT") == "1") {
-            gtk_settings.gtk_application_prefer_dark_theme = false;
-        } else {
-            gtk_settings.gtk_application_prefer_dark_theme = (
-                    granite_settings.prefers_color_scheme == DARK
-                );
-
-            granite_settings.notify["prefers-color-scheme"].connect (() => {
-                gtk_settings.gtk_application_prefer_dark_theme = (
-                        granite_settings.prefers_color_scheme == DARK
-                    );
-            });
-        }
+        init_color_scheme_sync ();
 
         print ("""
 🎉✨ ACTIVATING: SUPER COOL JOTS 😎🔥❗🎶🤌
@@ -336,5 +298,133 @@ Please wait while the app remembers all the things…
 
         activate ();
         return 0;
+    }
+
+    private uint portal_signal_id = 0;
+
+    private void init_color_scheme_sync () {
+        // 1. Initial detection via XDG Portal
+        sync_system_dark_mode ();
+
+        // 2. Subscribe to FreeDesktop XDG Portal SettingChanged signal (universal across all DEs & Flatpaks)
+        try {
+            var conn = GLib.Bus.get_sync (GLib.BusType.SESSION, null);
+            portal_signal_id = conn.signal_subscribe (
+                null,
+                "org.freedesktop.portal.Settings",
+                "SettingChanged",
+                null,
+                null,
+                GLib.DBusSignalFlags.NONE,
+                on_portal_setting_changed
+            );
+        } catch (GLib.Error e) {
+            debug ("Could not subscribe to XDG Portal SettingChanged: %s", e.message);
+        }
+
+        // 3. Listen to standard GTK theme property changes
+        gtk_settings.notify["gtk-theme-name"].connect (() => {
+            sync_system_dark_mode ();
+        });
+        gtk_settings.notify["gtk-application-prefer-dark-theme"].connect (() => {
+            update_all_windows_dark_mode ();
+        });
+    }
+
+    private void on_portal_setting_changed (GLib.DBusConnection connection,
+                                            string? sender_name,
+                                            string object_path,
+                                            string interface_name,
+                                            string signal_name,
+                                            GLib.Variant parameters) {
+        if (parameters.n_children () >= 3) {
+            string ns = parameters.get_child_value (0).get_string ();
+            string key = parameters.get_child_value (1).get_string ();
+            if (ns == "org.freedesktop.appearance" && key == "color-scheme") {
+                GLib.Variant val = parameters.get_child_value (2);
+                while (val.is_of_type (GLib.VariantType.VARIANT)) {
+                    val = val.get_variant ();
+                }
+                uint32 scheme = val.get_uint32 ();
+                debug ("XDG Portal SettingChanged received color-scheme: %u", scheme);
+                if (scheme == 1) {
+                    gtk_settings.gtk_application_prefer_dark_theme = true;
+                } else if (scheme == 2) {
+                    gtk_settings.gtk_application_prefer_dark_theme = false;
+                } else {
+                    gtk_settings.gtk_application_prefer_dark_theme = (gtk_settings.gtk_theme_name != null && gtk_settings.gtk_theme_name.down ().contains ("dark"));
+                }
+                update_all_windows_dark_mode ();
+            }
+        }
+    }
+
+    public void sync_system_dark_mode () {
+        if (GLib.Environment.get_variable ("FORCE_DARK") == "1") {
+            gtk_settings.gtk_application_prefer_dark_theme = true;
+            update_all_windows_dark_mode ();
+            return;
+        }
+        if (GLib.Environment.get_variable ("FORCE_LIGHT") == "1") {
+            gtk_settings.gtk_application_prefer_dark_theme = false;
+            update_all_windows_dark_mode ();
+            return;
+        }
+
+        bool is_dark = false;
+        bool portal_resolved = false;
+
+        // Primary: Query standard FreeDesktop XDG Portal
+        try {
+            var conn = GLib.Bus.get_sync (GLib.BusType.SESSION, null);
+            var result = conn.call_sync (
+                "org.freedesktop.portal.Desktop",
+                "/org/freedesktop/portal/desktop",
+                "org.freedesktop.portal.Settings",
+                "Read",
+                new GLib.Variant ("(ss)", "org.freedesktop.appearance", "color-scheme"),
+                new GLib.VariantType ("(v)"),
+                GLib.DBusCallFlags.NONE,
+                1000,
+                null
+            );
+            if (result != null) {
+                GLib.Variant val = result.get_child_value (0);
+                while (val.is_of_type (GLib.VariantType.VARIANT)) {
+                    val = val.get_variant ();
+                }
+                uint32 scheme = val.get_uint32 ();
+                debug ("XDG Portal Read color-scheme: %u", scheme);
+                if (scheme == 1) { // 1 = prefer-dark
+                    is_dark = true;
+                    portal_resolved = true;
+                } else if (scheme == 2) { // 2 = prefer-light
+                    is_dark = false;
+                    portal_resolved = true;
+                }
+                // scheme == 0 is "No preference" (do not mark resolved, check theme name)
+            }
+        } catch (GLib.Error e) {
+            debug ("XDG Portal Settings.Read fallback: %s", e.message);
+        }
+
+        if (!portal_resolved) {
+            if (gtk_settings.gtk_theme_name != null && gtk_settings.gtk_theme_name.down ().contains ("dark")) {
+                is_dark = true;
+            } else {
+                is_dark = false;
+            }
+        }
+
+        gtk_settings.gtk_application_prefer_dark_theme = is_dark;
+        update_all_windows_dark_mode ();
+    }
+
+    public void update_all_windows_dark_mode () {
+        foreach (var win in get_windows ()) {
+            if (win is StickyNoteWindow) {
+                ((StickyNoteWindow)win).sync_dark_mode ();
+            }
+        }
     }
 }

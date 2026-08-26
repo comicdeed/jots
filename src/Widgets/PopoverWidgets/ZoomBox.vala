@@ -43,26 +43,26 @@ public class Jots.ZoomBox : Gtk.Box {
         //TRANSLATORS: These are displayed on small linked buttons in a menu. User can click them to change zoom
         var zoom_out_button = new Gtk.Button.from_icon_name ("zoom-out-symbolic") {
             action_name = ZoomController.ACTION_PREFIX + ZoomController.ACTION_ZOOM_OUT,
-            tooltip_markup = Granite.markup_accel_tooltip (
-                {"<Control>minus", "<Control>KP_Subtract"},
-                _("Zoom out")
-                )
-            };
+            tooltip_markup = Jots.Util.markup_accel_tooltip (
+                _("Zoom out"),
+                "Ctrl+-"
+            )
+        };
 
         zoom_default_button = new Gtk.Button () {
             action_name = ZoomController.ACTION_PREFIX + ZoomController.ACTION_ZOOM_DEFAULT,
-            tooltip_markup = Granite.markup_accel_tooltip (
-                { "<Control>equal", "<Control>0", "<Control>KP_0" },
-                _("Default zoom level")
-                )
-            };
+            tooltip_markup = Jots.Util.markup_accel_tooltip (
+                _("Default zoom level"),
+                "Ctrl+0"
+            )
+        };
 
         var zoom_in_button = new Gtk.Button.from_icon_name ("zoom-in-symbolic") {
             action_name = ZoomController.ACTION_PREFIX + ZoomController.ACTION_ZOOM_IN,
-            tooltip_markup = Granite.markup_accel_tooltip (
-                {"<Control>plus", "<Control>KP_Add"},
-                _("Zoom in")
-                )
+            tooltip_markup = Jots.Util.markup_accel_tooltip (
+                _("Zoom in"),
+                "Ctrl++"
+            )
         };
 
         append (zoom_out_button);

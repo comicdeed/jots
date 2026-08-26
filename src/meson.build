@@ -13,8 +13,7 @@ config_file = configure_file(
 
 #================================
 dependencies = [
-        dependency('gtk4', version: '>=4.14'),          # Because of working on oldbuntu.  Should be 4.16: var(--prop) css notation for theming
-        dependency('granite-7', version: '>=7.6.0'),    # Required for Granite.Bin
+        dependency('gtk4', version: '>=4.14'),
         dependency('gee-0.8'),
         dependency('gobject-2.0'),
         dependency('json-glib-1.0'),
@@ -30,6 +29,7 @@ sources = files (
     'Objects' / 'ListPrefix.vala',
 
     'Utils' / 'Random.vala',
+    'Utils' / 'Markup.vala',
 
     'Services' / 'MarkdownSerializer.vala',
     'Services' / 'Storage.vala',
@@ -41,6 +41,7 @@ sources = files (
     'Services' / 'ColorController.vala',
     'Services' / 'FontController.vala',
 
+    'Widgets' / 'Bin.vala',
     'Widgets' / 'EditableLabel.vala',
     'Widgets' / 'TextView.vala',
     'Widgets' / 'ActionBar.vala',

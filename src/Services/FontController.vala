@@ -90,13 +90,9 @@ namespace Jots {
          * Query the desktop system default interface font.
          */
         public static string get_system_default_font () {
-            var schema_source = GLib.SettingsSchemaSource.get_default ();
-            if (schema_source != null && schema_source.lookup ("org.gnome.desktop.interface", true) != null) {
-                var iface_settings = new GLib.Settings ("org.gnome.desktop.interface");
-                var font_name = iface_settings.get_string ("font-name");
-                if (font_name != null && font_name.strip () != "") {
-                    return font_name;
-                }
+            var gtk_settings = Gtk.Settings.get_default ();
+            if (gtk_settings != null && gtk_settings.gtk_font_name != null && gtk_settings.gtk_font_name.strip () != "") {
+                return gtk_settings.gtk_font_name;
             }
             return "Sans 11";
         }
@@ -105,14 +101,6 @@ namespace Jots {
          * Query the desktop system monospace font.
          */
         public static string get_system_monospace_font () {
-            var schema_source = GLib.SettingsSchemaSource.get_default ();
-            if (schema_source != null && schema_source.lookup ("org.gnome.desktop.interface", true) != null) {
-                var iface_settings = new GLib.Settings ("org.gnome.desktop.interface");
-                var mono_name = iface_settings.get_string ("monospace-font-name");
-                if (mono_name != null && mono_name.strip () != "") {
-                    return mono_name;
-                }
-            }
             return "Monospace 10";
         }
 

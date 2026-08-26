@@ -93,54 +93,6 @@
 @define-color LATTE_900 #583f2d;
 
 /* ======================================================== */
-/* Color Button (Granite Palette) Styling                   */
-/* ======================================================== */
-
-checkbutton.color-button,
-.color-button {
-    min-width: 22px;
-    min-height: 22px;
-    padding: 0;
-    margin: 1px;
-    border-radius: 9999px;
-    background: transparent;
-    border: none;
-    box-shadow: none;
-}
-
-checkbutton.color-button check,
-checkbutton.color-button > check,
-.color-button check {
-    min-width: 18px;
-    min-height: 18px;
-    border-radius: 9999px;
-    background-image: none;
-    color: transparent;
-    border: 1px solid rgba(0, 0, 0, 0.25);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
-    margin: 0;
-}
-
-checkbutton.color-button:checked check,
-checkbutton.color-button:checked > check,
-.color-button:checked check {
-    border-color: #ffffff;
-    box-shadow: 0 0 0 2px #3689e6, 0 1px 3px rgba(0, 0, 0, 0.3);
-}
-
-.color-button.blueberry check, .color-button.blueberry > check { background-color: @BLUEBERRY_500; }
-.color-button.mint check,      .color-button.mint > check      { background-color: @MINT_500; }
-.color-button.lime check,      .color-button.lime > check      { background-color: @LIME_500; }
-.color-button.banana check,    .color-button.banana > check    { background-color: @BANANA_500; }
-.color-button.orange check,    .color-button.orange > check    { background-color: @ORANGE_500; }
-.color-button.strawberry check, .color-button.strawberry > check { background-color: @STRAWBERRY_500; }
-.color-button.bubblegum check, .color-button.bubblegum > check { background-color: @BUBBLEGUM_500; }
-.color-button.grape check,     .color-button.grape > check     { background-color: @GRAPE_500; }
-.color-button.cocoa check,     .color-button.cocoa > check     { background-color: @COCOA_500; }
-.color-button.slate check,     .color-button.slate > check     { background-color: @SLATE_500; }
-.color-button.latte check,     .color-button.latte > check     { background-color: @LATTE_500; }
-
-/* ======================================================== */
 /* Light Mode Window Themes (Direct Color Assignment)       */
 /* ======================================================== */
 

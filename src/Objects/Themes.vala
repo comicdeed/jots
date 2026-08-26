@@ -55,6 +55,23 @@ public enum Jots.Themes {
         return this.to_string ().ascii_down ();
     }
 
+    public string to_hex_color () {
+        switch (this) {
+            case BLUEBERRY:     return "#4285f4";
+            case MINT:          return "#2ecc71";
+            case LIME:          return "#87d322";
+            case BANANA:        return "#f6d32d";
+            case ORANGE:        return "#ff7800";
+            case STRAWBERRY:    return "#ed333b";
+            case BUBBLEGUM:     return "#e0569a";
+            case GRAPE:         return "#9141ac";
+            case COCOA:         return "#865e3c";
+            case SLATE:         return "#606f7b";
+            case LATTE:         return "#bfa07a";
+            default:            return "#4285f4";
+        }
+    }
+
     /*************************************************/
     /**
     * for the UI, as translated, proper name

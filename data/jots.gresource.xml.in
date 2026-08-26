@@ -20,5 +20,9 @@
     <file alias="icons/symbolic/actions/view-list-symbolic.svg">icons/actions/view-list-symbolic.svg</file>
     <file alias="icons/scalable/actions/open-menu-symbolic.svg">icons/actions/open-menu-symbolic.svg</file>
     <file alias="icons/symbolic/actions/open-menu-symbolic.svg">icons/actions/open-menu-symbolic.svg</file>
+    <file alias="icons/scalable/actions/zoom-in-symbolic.svg">icons/actions/zoom-in-symbolic.svg</file>
+    <file alias="icons/symbolic/actions/zoom-in-symbolic.svg">icons/actions/zoom-in-symbolic.svg</file>
+    <file alias="icons/scalable/actions/zoom-out-symbolic.svg">icons/actions/zoom-out-symbolic.svg</file>
+    <file alias="icons/symbolic/actions/zoom-out-symbolic.svg">icons/actions/zoom-out-symbolic.svg</file>
   </gresource>
 </gresources>

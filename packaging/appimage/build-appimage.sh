@@ -59,10 +59,19 @@ fi
     --icon-file "${APPDIR}/usr/share/icons/hicolor/scalable/apps/io.github.comicdeed.jots.svg" \
     --plugin gtk
 
-# 6. Bundle full runtime and font rendering dependencies for universal host backwards compatibility
-for libname in libharfbuzz libfreetype libfontconfig libfribidi libgraphite2 libpixman libpng libbrotli libzstd libexpat libffi libc libm libpthread libresolv librt libdl ld-linux; do
+# 6. Bundle full runtime, SVG engine, and font rendering dependencies for universal host backwards compatibility
+for libname in librsvg libharfbuzz libfreetype libfontconfig libfribidi libgraphite2 libpixman libpng libbrotli libzstd libexpat libffi libc libm libpthread libresolv librt libdl ld-linux; do
     find /lib/${ARCH}-linux-gnu /usr/lib/${ARCH}-linux-gnu -name "${libname}*.so*" -exec cp -d {} "${APPDIR}/usr/lib/" \; 2>/dev/null || true
 done
+
+# Ensure SVG loader is copied and gdk-pixbuf loaders.cache is generated
+mkdir -p "${APPDIR}/usr/lib/gdk-pixbuf-2.0/2.10.0/loaders"
+find /usr/lib/${ARCH}-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders /usr/lib/gdk-pixbuf-2.0/2.10.0/loaders -name "libpixbufloader-*.so" -exec cp -u {} "${APPDIR}/usr/lib/gdk-pixbuf-2.0/2.10.0/loaders/" \; 2>/dev/null || true
+
+if command -v gdk-pixbuf-query-loaders >/dev/null 2>&1; then
+    gdk-pixbuf-query-loaders "${APPDIR}/usr/lib/gdk-pixbuf-2.0/2.10.0/loaders"/*.so > "${APPDIR}/usr/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache" 2>/dev/null || true
+    sed -i "s|${APPDIR}||g" "${APPDIR}/usr/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache" 2>/dev/null || true
+fi
 
 # Re-apply custom AppRun launcher
 cp packaging/appimage/AppRun "${APPDIR}/AppRun"

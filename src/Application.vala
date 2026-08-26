@@ -163,7 +163,15 @@ public class Jots.Application : Gtk.Application {
 #else
         gtk_settings.gtk_icon_theme_name = "elementary";
 #endif
-        gtk_settings.gtk_theme_name = DEFAULT_STYLESHEET;
+        // AppImage does not bundle elementary stylesheet theme assets by default,
+        // so forcing that theme leaves the app effectively unthemed at runtime.
+        // Keep Flatpak/native behavior, but force a guaranteed built-in fallback on AppImage.
+        if (GLib.Environment.get_variable ("APPIMAGE") != null
+            || GLib.Environment.get_variable ("APPDIR") != null) {
+            gtk_settings.gtk_theme_name = "Adwaita";
+        } else {
+            gtk_settings.gtk_theme_name = DEFAULT_STYLESHEET;
+        }
 
         // Also follow dark if system is dark lIke mY sOul.
         if (GLib.Environment.get_variable ("FORCE_DARK") == "1") {

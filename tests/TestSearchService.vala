@@ -75,21 +75,21 @@ namespace Jots.Tests {
 
             var search_service = new SearchService (storage);
 
-            var noteA = new NoteData () {
+            var note_a = new NoteData () {
                 id = "stored-a",
                 title = "Meeting Notes",
                 content = "Discuss Q3 quarterly architecture roadmap and milestones",
                 theme = Themes.BLUEBERRY
             };
-            var noteB = new NoteData () {
+            var note_b = new NoteData () {
                 id = "stored-b",
                 title = "Recipe Ideas",
                 content = "Pasta with garlic and olive oil",
                 theme = Themes.BANANA
             };
 
-            storage.save_note (noteA);
-            storage.save_note (noteB);
+            storage.save_note (note_a);
+            storage.save_note (note_b);
 
             var results = search_service.search ("quarterly");
             assert_true (results.size == 1);

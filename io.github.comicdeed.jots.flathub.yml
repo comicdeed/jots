@@ -21,6 +21,7 @@ modules:
   - name: libportal
     buildsystem: meson
     config-opts:
+      - --libdir=lib
       - -Ddocs=false
       - -Dtests=false
       - -Dbackend-gtk4=enabled

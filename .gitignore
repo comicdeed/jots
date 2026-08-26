@@ -2,6 +2,7 @@
 .*
 !.gitignore
 !.valalintignore
+!.vala-lint.conf
 !.editorconfig
 !.github/
 !.agents/

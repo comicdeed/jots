@@ -74,5 +74,5 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Lint
-        run: io.elementary.vala-lint src tests
+        run: io.elementary.vala-lint -c .vala-lint.conf src tests
 

@@ -34,4 +34,4 @@ services:
     volumes:
       - .:/workspace
     working_dir: /workspace
-    command: ["io.elementary.vala-lint", "src", "tests"]
+    command: ["io.elementary.vala-lint", "-c", ".vala-lint.conf", "src", "tests"]

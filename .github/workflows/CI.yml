@@ -2,8 +2,58 @@ name: CI
 
 on:
   push:
+  pull_request:
 
 jobs:
+  appimage-and-tests:
+    name: "Build AppImage & Run Tests (x86_64)"
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Install Build Dependencies
+        run: |
+          sudo add-apt-repository -y ppa:elementary-os/daily
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            meson ninja-build valac gcc pkg-config gettext xvfb \
+            libgtk-4-dev libgranite-7-dev libgee-0.8-dev \
+            libjson-glib-dev libportal-dev libportal-gtk4-dev \
+            desktop-file-utils libglib2.0-bin appstream \
+            file wget curl zsync
+
+      - name: Compile and Run Unit Tests
+        run: |
+          meson setup builddir --prefix=/usr --buildtype=debug -Dprofile=linux
+          meson compile -C builddir
+          GSK_RENDERER=cairo GTK_A11Y=none xvfb-run -a meson test -C builddir --verbose
+
+      - name: Verify AppImage Assembly
+        run: |
+          DESTDIR="$(pwd)/stage" meson install -C builddir
+          glib-compile-schemas stage/usr/share/glib-2.0/schemas
+          
+          # Assemble AppDir
+          cp -r stage AppDir
+          cp packaging/appimage/AppRun AppDir/AppRun
+          chmod +x AppDir/AppRun
+
+          # Fetch linuxdeploy and plugin
+          export APPIMAGE_EXTRACT_AND_RUN=1
+          wget -q https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+          wget -q https://raw.githubusercontent.com/linuxdeploy/linuxdeploy-plugin-gtk/master/linuxdeploy-plugin-gtk.sh
+          chmod +x linuxdeploy-x86_64.AppImage linuxdeploy-plugin-gtk.sh
+
+          ./linuxdeploy-x86_64.AppImage \
+            --appdir AppDir \
+            --desktop-file AppDir/usr/share/applications/io.github.comicdeed.jots.desktop \
+            --icon-file AppDir/usr/share/icons/hicolor/scalable/apps/io.github.comicdeed.jots.svg \
+            --plugin gtk \
+            --output appimage
+
   flatpak:
     name: Flatpak (${{ matrix.configuration.arch }})
     runs-on: ${{ matrix.configuration.runs-on }}
@@ -23,7 +73,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Build
         uses: flatpak/flatpak-github-actions/flatpak-builder@v6.7
@@ -31,8 +81,8 @@ jobs:
           bundle: Jots.flatpak
           manifest-path: io.github.comicdeed.jots.yml
           run-tests: true
-          repository-name: appcenter
-          repository-url: https://flatpak.elementary.io/repo.flatpakrepo
+          repository-name: flathub
+          repository-url: https://dl.flathub.org/repo/flathub.flatpakrepo
           cache-key: "flatpak-builder-${{ github.sha }}"
           branch: daily
           arch: ${{ matrix.configuration.arch }}
@@ -46,7 +96,8 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Lint
         run: io.elementary.vala-lint -d .
+

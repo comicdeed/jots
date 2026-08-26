@@ -15,6 +15,7 @@ To maintain focus and avoid context bloat, refer to specialized documentation on
 * **Roadmap & Idea Matrix**: [`docs/roadmap.md`](docs/roadmap.md) — Graded initiatives and feature backlog.
 * **Developer Setup & Tooling**: [`docs/development/setup.md`](docs/development/setup.md) — Workstation setup, Git branch guardrails, tooling prerequisites, and editor extensions.
 * **Documentation Style**: [`docs/development/documentation-style.md`](docs/development/documentation-style.md) — GNOME developer style rules.
+* **Release Workflow & Automation**: [`docs/development/release-workflow.md`](docs/development/release-workflow.md) — Release branching strategy, AppStream changelog curation, and automated multi-arch GitHub releases.
 * **Pull Request Guidelines**: [`docs/development/pull-request-guidelines.md`](docs/development/pull-request-guidelines.md) — Contribution checklists and attribution standards.
 
 ---
@@ -80,18 +81,25 @@ flatpak run --command=jots-unit-tests io.github.comicdeed.jots.devel
 
 ---
 
-## 🚀 Git Release Workflow & Release Notes
+## 🚀 Git Release Workflow & Release Automation
 
 * **Branching Strategy**:
   - `main`: Protected production branch containing verified **Stable releases**.
   - `develop`: Primary integration branch where `feat/*` and `fix/*` PRs land.
   - `release/X.Y.Z[-beta.N]`: Short-lived preparation branch cut from `develop`.
-* **Release Notes Generation Skill**:
-  - Use [`.agents/skills/release-notes/SKILL.md`](.agents/skills/release-notes/SKILL.md) to generate concise AppStream XML for `data/jots.metainfo.xml.in.in`.
-  - **Beta Releases (`X.Y.Z-beta.N`)**: Range `git log <last-tag>..HEAD` (incremental delta).
-  - **Stable Releases (`X.Y.Z`)**: Range `git log <last-stable-tag>..HEAD` (cumulative milestone changelog).
-* **Tagging & Publishing**:
-  - Beta tags (`X.Y.Z-beta.N`) are tagged on `develop` or `main` and publish to Flathub's `beta` branch (`flathub-beta`).
-  - Stable tags (`X.Y.Z`) are tagged on `main` and publish to Flathub's `master` branch.
-  - GitHub Actions automatically extracts release notes from `data/jots.metainfo.xml.in.in` and publishes the GitHub Release.
+* **Release Preparation on `release/*` Branch**:
+  1. Cut `release/X.Y.Z[-beta.N]` from `develop`.
+  2. Bump `version: 'X.Y.Z[-beta.N]'` in `meson.build`.
+  3. Execute the release notes skill [`.agents/skills/release-notes/SKILL.md`](.agents/skills/release-notes/SKILL.md):
+     - Run `git log <base-tag>..HEAD --oneline --no-merges`
+     - Add curated `<release>` entry to `data/jots.metainfo.xml.in.in`.
+     - Update [`docs/user-guide.md`](docs/user-guide.md) if shortcuts or UI features changed.
+  4. Commit: `chore(release): prepare X.Y.Z[-beta.N] release`.
+  5. Open Pull Request: `release/X.Y.Z[-beta.N]` $\rightarrow$ `main`.
+* **Automated Release on PR Merge**:
+  - Merging the `release/*` PR into `main` automatically triggers `.github/workflows/release.yml`:
+    1. Extracts the version and automatically creates & pushes git tag `X.Y.Z[-beta.N]` to `main`.
+    2. Builds multi-architecture AppImages (`x86_64`, `aarch64`), Flatpak standalone bundles, and Windows installers.
+    3. Extracts release notes directly from `data/jots.metainfo.xml.in.in` and creates the GitHub Release with all compiled assets attached.
+    4. Automatically merges `main` back into `develop` to keep version bumps and metadata synchronized.
 

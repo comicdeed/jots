@@ -42,6 +42,14 @@ namespace Jots.Tests {
                     break;
                 }
             }
+            if (!found) {
+                try {
+                    var res = GLib.resources_lookup_data ("/io/github/comicdeed/jots/fonts/RedactedScript-Regular.ttf", GLib.ResourceLookupFlags.NONE);
+                    found = (res != null && res.get_size () > 0);
+                } catch (GLib.Error e) {
+                    found = false;
+                }
+            }
             assert_true (found);
         });
     }

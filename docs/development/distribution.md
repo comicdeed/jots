@@ -57,13 +57,28 @@ When creating native distribution packages (`.deb`, `.rpm`, `.pkg.tar.zst`):
   * DBus messaging and `libportal` are Linux-specific and must be excluded or stubbed out.
   * GTK 4 backend rendering on macOS Quartz requires native window decorations and key accelerator adjustments.
 
-### C. Snap and AppImage
-* **Status**: Unofficial (community contributions welcome).
-* When packaging for Snap or AppImage, ensure the GSettings schemas and desktop file actions (`New Note`) map correctly to the runtime confinement.
+### C. AppImage Packaging
+* **Status**: Official release target (`packaging/appimage/`).
+* **Tooling**: Built via `linuxdeploy` + `linuxdeploy-plugin-gtk` with a custom dual-entrypoint `AppRun` script.
+* **Dual-Entrypoint**: Normal execution launches the GTK4 GUI (`io.github.comicdeed.jots`); passing `--mcp` or executing as `jots-mcp` launches the headless AI Model Context Protocol server over `stdio`.
+* **Child Process Isolation**: The `AppRun` wrapper isolates `LD_LIBRARY_PATH` and `XDG_DATA_DIRS` to prevent library pollution into external helper applications (such as web browsers or mail clients spawned via `Ctrl + Click`).
 
 ---
 
-## 5. Flathub Distribution & Channel Release Lifecycle
+## 5. Direct Release Pipeline (GitHub Releases)
+
+Jots uses a **Compile Once, Package Many** automated GitHub Actions matrix (`.github/workflows/release.yml`) triggered automatically when merging a `release/*` PR into `main` (or on manual dispatch / pushed tags). See the complete [Release Workflow & Automation Guide](release-workflow.md).
+
+| Artifact | Target Audience / Format | Key Characteristics |
+| :--- | :--- | :--- |
+| **`Jots-<version>-<arch>.AppImage`** | Linux (Portable Click-and-Run) | Self-contained single-file executable for Ubuntu, Debian, Fedora, Arch, elementary OS. |
+| **`io.github.comicdeed.jots-<version>.flatpak`** | Linux (Flatpak Standalone) | Single-file Flatpak bundle installable via `flatpak install io.github.comicdeed.jots-<version>.flatpak`. |
+| **`Jots-<version>-Installer.exe`** | Windows (x86_64) | Standalone NSIS installer built with MSYS2. |
+| **`SHA256SUMS.txt`** | Integrity Checksums | Cryptographic checksums for all release assets. |
+
+---
+
+## 6. AppCenter & Downstream Repositories
 
 Flathub distributes Jots across two official channels:
 

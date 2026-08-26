@@ -38,6 +38,7 @@ cp packaging/appimage/AppRun "${APPDIR}/AppRun"
 chmod +x "${APPDIR}/AppRun"
 
 # 4. Fetch linuxdeploy tooling if not present
+export APPIMAGE_EXTRACT_AND_RUN=1
 if [ ! -f "linuxdeploy-${ARCH}.AppImage" ]; then
     echo "==> Downloading linuxdeploy-${ARCH}.AppImage..."
     wget -q "https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-${ARCH}.AppImage"

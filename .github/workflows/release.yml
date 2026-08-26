@@ -78,6 +78,7 @@ jobs:
           chmod +x AppDir/AppRun
 
           # Fetch linuxdeploy and GTK plugin
+          export APPIMAGE_EXTRACT_AND_RUN=1
           wget -q "https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-${ARCH}.AppImage"
           wget -q "https://github.com/linuxdeploy/linuxdeploy-plugin-gtk/releases/download/continuous/linuxdeploy-plugin-gtk.sh"
           chmod +x "linuxdeploy-${ARCH}.AppImage" linuxdeploy-plugin-gtk.sh

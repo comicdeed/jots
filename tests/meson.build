@@ -84,4 +84,8 @@ test_executable = executable(
     install: true
 )
 
-test('canary-unit-tests', test_executable, is_parallel: true)
+test_env = environment()
+test_env.set('GSK_RENDERER', 'cairo')
+test_env.set('GTK_A11Y', 'none')
+
+test('canary-unit-tests', test_executable, env: test_env, is_parallel: true)

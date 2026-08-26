@@ -52,13 +52,34 @@ if [ ! -f "linuxdeploy-plugin-gtk.sh" ]; then
     chmod +x "linuxdeploy-plugin-gtk.sh"
 fi
 
-# 5. Execute linuxdeploy with GTK plugin
-export OUTPUT="${OUTPUT_DIR}/Jots-${VERSION}-${ARCH}.AppImage"
+# 5. Execute linuxdeploy with GTK plugin to populate dependencies
 ./linuxdeploy-${ARCH}.AppImage \
     --appdir "${APPDIR}" \
     --desktop-file "${APPDIR}/usr/share/applications/io.github.comicdeed.jots.desktop" \
     --icon-file "${APPDIR}/usr/share/icons/hicolor/scalable/apps/io.github.comicdeed.jots.svg" \
-    --plugin gtk \
-    --output appimage
+    --plugin gtk
+
+# 6. Bundle glibc runtime for universal host backwards compatibility
+cp -d /lib/${ARCH}-linux-gnu/libc.so* "${APPDIR}/usr/lib/" || true
+cp -d /lib/${ARCH}-linux-gnu/libm.so* "${APPDIR}/usr/lib/" || true
+cp -d /lib/${ARCH}-linux-gnu/libpthread.so* "${APPDIR}/usr/lib/" || true
+cp -d /lib/${ARCH}-linux-gnu/libresolv.so* "${APPDIR}/usr/lib/" || true
+cp -d /lib/${ARCH}-linux-gnu/librt.so* "${APPDIR}/usr/lib/" || true
+cp -d /lib/${ARCH}-linux-gnu/libdl.so* "${APPDIR}/usr/lib/" || true
+cp -d /lib/${ARCH}-linux-gnu/ld-linux-*.so* "${APPDIR}/usr/lib/" || true
+
+# Re-apply custom AppRun launcher
+cp packaging/appimage/AppRun "${APPDIR}/AppRun"
+chmod +x "${APPDIR}/AppRun"
+
+# 7. Package AppImage via appimagetool
+if [ ! -f "appimagetool-${ARCH}.AppImage" ]; then
+    echo "==> Downloading appimagetool-${ARCH}.AppImage..."
+    wget -q "https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-${ARCH}.AppImage"
+    chmod +x "appimagetool-${ARCH}.AppImage"
+fi
+
+export OUTPUT="${OUTPUT_DIR}/Jots-${VERSION}-${ARCH}.AppImage"
+./appimagetool-${ARCH}.AppImage "${APPDIR}" "${OUTPUT}"
 
 echo "==> Successfully created ${OUTPUT}!"

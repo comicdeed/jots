@@ -20,12 +20,25 @@ export GTK_PATH="$APPDIR/usr/lib/gtk-4.0"
 
 # Dual-Entrypoint Resolution
 INVOCATION_NAME=$(basename "$0")
+RUN_BIN="$APPDIR/usr/bin/io.github.comicdeed.jots"
 
 if [ "$1" = "--mcp" ]; then
     shift
-    exec "$APPDIR/usr/bin/jots-mcp" "$@"
+    RUN_BIN="$APPDIR/usr/bin/jots-mcp"
 elif [ "$INVOCATION_NAME" = "jots-mcp" ] || [ "${JOTS_MODE:-}" = "mcp" ]; then
-    exec "$APPDIR/usr/bin/jots-mcp" "$@"
+    RUN_BIN="$APPDIR/usr/bin/jots-mcp"
+fi
+
+# Detect bundled dynamic linker for universal glibc compatibility
+DYNAMIC_LINKER=""
+if [ -f "$APPDIR/usr/lib/ld-linux-x86-64.so.2" ]; then
+    DYNAMIC_LINKER="$APPDIR/usr/lib/ld-linux-x86-64.so.2"
+elif [ -f "$APPDIR/usr/lib/ld-linux-aarch64.so.1" ]; then
+    DYNAMIC_LINKER="$APPDIR/usr/lib/ld-linux-aarch64.so.1"
+fi
+
+if [ -n "$DYNAMIC_LINKER" ]; then
+    exec "$DYNAMIC_LINKER" --library-path "$APPDIR/usr/lib:$APPDIR/usr/lib/x86_64-linux-gnu:$APPDIR/usr/lib/aarch64-linux-gnu" "$RUN_BIN" "$@"
 else
-    exec "$APPDIR/usr/bin/io.github.comicdeed.jots" "$@"
+    exec "$RUN_BIN" "$@"
 fi

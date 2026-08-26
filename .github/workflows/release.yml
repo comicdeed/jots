@@ -145,15 +145,32 @@ jobs:
           wget -q "https://raw.githubusercontent.com/linuxdeploy/linuxdeploy-plugin-gtk/master/linuxdeploy-plugin-gtk.sh"
           chmod +x "linuxdeploy-${ARCH}.AppImage" linuxdeploy-plugin-gtk.sh
 
-          # Package AppImage
-          export VERSION="${{ needs.init-release.outputs.tag_name }}"
-          export OUTPUT="dist/Jots-${VERSION}-${ARCH}.AppImage"
+          # 1. Populate libraries and GTK assets via linuxdeploy
           ./linuxdeploy-${ARCH}.AppImage \
             --appdir AppDir \
             --desktop-file AppDir/usr/share/applications/io.github.comicdeed.jots.desktop \
             --icon-file AppDir/usr/share/icons/hicolor/scalable/apps/io.github.comicdeed.jots.svg \
-            --plugin gtk \
-            --output appimage
+            --plugin gtk
+
+          # 2. Bundle glibc runtime for universal host backwards compatibility
+          cp -d /lib/${ARCH}-linux-gnu/libc.so* AppDir/usr/lib/ || true
+          cp -d /lib/${ARCH}-linux-gnu/libm.so* AppDir/usr/lib/ || true
+          cp -d /lib/${ARCH}-linux-gnu/libpthread.so* AppDir/usr/lib/ || true
+          cp -d /lib/${ARCH}-linux-gnu/libresolv.so* AppDir/usr/lib/ || true
+          cp -d /lib/${ARCH}-linux-gnu/librt.so* AppDir/usr/lib/ || true
+          cp -d /lib/${ARCH}-linux-gnu/libdl.so* AppDir/usr/lib/ || true
+          cp -d /lib/${ARCH}-linux-gnu/ld-linux-*.so* AppDir/usr/lib/ || true
+
+          # 3. Ensure custom AppRun launcher is applied
+          cp packaging/appimage/AppRun AppDir/AppRun
+          chmod +x AppDir/AppRun
+
+          # 4. Package AppImage via appimagetool
+          wget -q "https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-${ARCH}.AppImage"
+          chmod +x "appimagetool-${ARCH}.AppImage"
+          export VERSION="${{ needs.init-release.outputs.tag_name }}"
+          export OUTPUT="dist/Jots-${VERSION}-${ARCH}.AppImage"
+          ./appimagetool-${ARCH}.AppImage AppDir "$OUTPUT"
 
           cd dist && sha256sum "Jots-${VERSION}-${ARCH}.AppImage" > "Jots-${VERSION}-${ARCH}.AppImage.sha256"
 

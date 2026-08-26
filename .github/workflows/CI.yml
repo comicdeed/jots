@@ -52,8 +52,23 @@ jobs:
             --appdir AppDir \
             --desktop-file AppDir/usr/share/applications/io.github.comicdeed.jots.desktop \
             --icon-file AppDir/usr/share/icons/hicolor/scalable/apps/io.github.comicdeed.jots.svg \
-            --plugin gtk \
-            --output appimage
+            --plugin gtk
+
+          # Bundle glibc runtime
+          cp -d /lib/x86_64-linux-gnu/libc.so* AppDir/usr/lib/ || true
+          cp -d /lib/x86_64-linux-gnu/libm.so* AppDir/usr/lib/ || true
+          cp -d /lib/x86_64-linux-gnu/libpthread.so* AppDir/usr/lib/ || true
+          cp -d /lib/x86_64-linux-gnu/libresolv.so* AppDir/usr/lib/ || true
+          cp -d /lib/x86_64-linux-gnu/librt.so* AppDir/usr/lib/ || true
+          cp -d /lib/x86_64-linux-gnu/libdl.so* AppDir/usr/lib/ || true
+          cp -d /lib/x86_64-linux-gnu/ld-linux-*.so* AppDir/usr/lib/ || true
+
+          cp packaging/appimage/AppRun AppDir/AppRun
+          chmod +x AppDir/AppRun
+
+          wget -q https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
+          chmod +x appimagetool-x86_64.AppImage
+          ./appimagetool-x86_64.AppImage AppDir Jots-CI-x86_64.AppImage
 
   flatpak:
     name: Flatpak (${{ matrix.configuration.arch }})

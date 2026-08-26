@@ -196,6 +196,14 @@ Please wait while the app remembers all the things…
         window_removed.connect (check_if_quit);
 
         // build all the stylesheets
+        var fallback_provider = new Gtk.CssProvider ();
+        fallback_provider.load_from_resource (APP_PATH + "/FallbackPalette.css");
+        Gtk.StyleContext.add_provider_for_display (
+            Gdk.Display.get_default (),
+            fallback_provider,
+            Gtk.STYLE_PROVIDER_PRIORITY_FALLBACK
+        );
+
         var app_provider = new Gtk.CssProvider ();
         app_provider.load_from_resource (APP_PATH + "/Application.css");
         Gtk.StyleContext.add_provider_for_display (

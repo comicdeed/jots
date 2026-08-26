@@ -13,16 +13,14 @@ mkdir -p "${OUTPUT_DIR}"
 
 # 1. Compile into isolated DESTDIR
 echo "==> Compiling Jots via Meson..."
-rm -rf "${STAGE_DIR}"
-if [ ! -d "${BUILD_DIR}" ]; then
-    meson setup "${BUILD_DIR}" \
-        --prefix=/usr \
-        --buildtype=release \
-        --strip \
-        -Dprofile=linux \
-        -Ddevelopment=false \
-        -Dicon_variant=default
-fi
+rm -rf "${STAGE_DIR}" "${BUILD_DIR}"
+meson setup "${BUILD_DIR}" \
+    --prefix=/usr \
+    --buildtype=release \
+    --strip \
+    -Dprofile=linux \
+    -Ddevelopment=false \
+    -Dicon_variant=default
 meson compile -C "${BUILD_DIR}"
 DESTDIR="$(pwd)/${STAGE_DIR}" meson install -C "${BUILD_DIR}"
 

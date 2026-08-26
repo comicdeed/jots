@@ -144,7 +144,19 @@ graph LR
 
 ### Quick Client Setup
 
-#### Claude Desktop (`~/.config/Claude/claude_desktop_config.json`)
+#### Claude Desktop (AppImage)
+```json
+{
+  "mcpServers": {
+    "jots": {
+      "command": "/path/to/Jots-x86_64.AppImage",
+      "args": ["--mcp"]
+    }
+  }
+}
+```
+
+#### Claude Desktop (Flatpak)
 ```json
 {
   "mcpServers": {
@@ -161,13 +173,13 @@ graph LR
 {
   "mcpServers": {
     "jots": {
-      "command": "flatpak",
-      "args": ["run", "--command=jots-mcp", "io.github.comicdeed.jots"]
+      "command": "/path/to/Jots-x86_64.AppImage",
+      "args": ["--mcp"]
     }
   }
 }
 ```
-*(Note: If using the development Flatpak build, replace `io.github.comicdeed.jots` with `io.github.comicdeed.jots.devel`)*
+*(Note: If using Flatpak, pass `"command": "flatpak"` and `"args": ["run", "--command=jots-mcp", "io.github.comicdeed.jots"]`)*
 
 ### Available AI Tools
 * **`list_notes`**: Returns an overview of all open desktop sticky notes with titles, themes, and word counts.

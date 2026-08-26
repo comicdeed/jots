@@ -174,7 +174,7 @@ namespace Jots {
             }
 
             // Perform migration
-            debug ("Migrating legacy saved_state.json to markdown files...");
+            debug ("Migrating legacy saved_state.json to markdown files…");
             var parsed = parse_legacy_json_file (legacy_savefile_path);
             if (parsed.size > 0) {
                 import_notes (parsed);

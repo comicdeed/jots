@@ -17,6 +17,117 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  build-linux-appimage:
+    name: "Build AppImage (${{ matrix.arch }})"
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x86_64
+            runner: ubuntu-24.04
+            use_qemu: false
+          - arch: aarch64
+            runner: ubuntu-24.04
+            use_qemu: true
+
+    steps:
+      - name: 'Checkout sources'
+        uses: actions/checkout@v4
+        with:
+          lfs: 'true'
+
+      - name: 'Set up QEMU (for aarch64)'
+        if: matrix.use_qemu
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: arm64
+
+      - name: 'Install dependencies'
+        run: |
+          sudo add-apt-repository -y ppa:elementary-os/daily
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            meson ninja-build valac gcc pkg-config gettext \
+            libgtk-4-dev libgranite-7-dev libgee-0.8-dev \
+            libjson-glib-dev libportal-dev libportal-gtk4-dev \
+            desktop-file-utils libglib2.0-bin appstream \
+            file wget curl zsync
+
+      - name: 'Compile Once into DESTDIR staging'
+        run: |
+          meson setup builddir \
+            --prefix=/usr \
+            --buildtype=release \
+            --strip \
+            -Dprofile=linux \
+            -Ddevelopment=false \
+            -Dicon_variant=default
+          meson compile -C builddir
+          DESTDIR="$(pwd)/stage" meson install -C builddir
+          glib-compile-schemas stage/usr/share/glib-2.0/schemas
+
+      - name: 'Build AppImage via linuxdeploy'
+        run: |
+          ARCH="${{ matrix.arch }}"
+          mkdir -p dist
+          
+          # Prepare AppDir
+          cp -r stage AppDir
+          cp packaging/appimage/AppRun AppDir/AppRun
+          chmod +x AppDir/AppRun
+
+          # Fetch linuxdeploy and GTK plugin
+          export APPIMAGE_EXTRACT_AND_RUN=1
+          wget -q "https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-${ARCH}.AppImage"
+          wget -q "https://raw.githubusercontent.com/linuxdeploy/linuxdeploy-plugin-gtk/master/linuxdeploy-plugin-gtk.sh"
+          chmod +x "linuxdeploy-${ARCH}.AppImage" linuxdeploy-plugin-gtk.sh
+
+          # Package AppImage
+          export OUTPUT="dist/Jots-${ARCH}.AppImage"
+          ./linuxdeploy-${ARCH}.AppImage \
+            --appdir AppDir \
+            --desktop-file AppDir/usr/share/applications/io.github.comicdeed.jots.desktop \
+            --icon-file AppDir/usr/share/icons/hicolor/scalable/apps/io.github.comicdeed.jots.svg \
+            --plugin gtk \
+            --output appimage
+
+          cd dist && sha256sum "Jots-${ARCH}.AppImage" > "Jots-${ARCH}.AppImage.sha256"
+
+      - name: 'Upload AppImage Artifact'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Jots-${{ matrix.arch }}-AppImage
+          path: dist/*
+
+  build-flatpak-bundle:
+    name: "Build Flatpak Bundle (x86_64)"
+    runs-on: ubuntu-24.04
+    steps:
+      - name: 'Checkout sources'
+        uses: actions/checkout@v4
+        with:
+          lfs: 'true'
+
+      - name: 'Install Flatpak & Builder'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y flatpak flatpak-builder
+          flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+
+      - name: 'Build and Export Flatpak Bundle'
+        run: |
+          flatpak-builder --force-clean --repo=repo --install-deps-from=flathub builddir io.github.comicdeed.jots.yml
+          mkdir -p dist
+          flatpak build-bundle repo dist/io.github.comicdeed.jots.flatpak io.github.comicdeed.jots
+          cd dist && sha256sum io.github.comicdeed.jots.flatpak > io.github.comicdeed.jots.flatpak.sha256
+
+      - name: 'Upload Flatpak Bundle Artifact'
+        uses: actions/upload-artifact@v4
+        with:
+          name: io.github.comicdeed.jots-Flatpak
+          path: dist/*
+
   msys2:
     name: "Prepare Windows Installer"
     strategy:
@@ -72,20 +183,25 @@ jobs:
           if-no-files-found: ignore
 
   github-release:
-    name: "Publish GitHub Release"
-    needs: [msys2]
+    name: "Publish Consolidated GitHub Release"
+    needs: [build-linux-appimage, build-flatpak-bundle, msys2]
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout sources'
         uses: actions/checkout@v4
 
-      - name: 'Download Windows Installer Artifact'
+      - name: 'Download all artifacts'
         uses: actions/download-artifact@v4
-        continue-on-error: true
         with:
-          name: Jots-Installer.exe
-          path: ./dist/
+          path: ./dist-artifacts
+
+      - name: 'Consolidate release distribution assets'
+        run: |
+          mkdir -p ./release-dist
+          find ./dist-artifacts -type f -exec cp {} ./release-dist/ \;
+          cd ./release-dist
+          sha256sum * | grep -v '\.sha256$' | grep -v 'SHA256SUMS' > SHA256SUMS.txt || true
 
       - name: 'Extract Release Notes from Metainfo'
         id: extract_notes
@@ -117,7 +233,6 @@ jobs:
           body_path: release_notes.md
           generate_release_notes: true
           prerelease: ${{ contains(github.ref, 'beta') || contains(github.ref, 'alpha') || contains(github.ref, 'rc') }}
-          files: |
-            ./dist/Jots-Installer.exe
+          files: ./release-dist/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

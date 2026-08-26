@@ -1,0 +1,31 @@
+#!/bin/bash
+set -e
+
+# Resolve AppDir absolute path
+SELF=$(readlink -f "$0")
+APPDIR=$(dirname "$SELF")
+
+# Preserve host environment for clean child process spawning (e.g. web browser on Ctrl+Click)
+export ORIGINAL_LD_LIBRARY_PATH="${LD_LIBRARY_PATH:-}"
+export ORIGINAL_XDG_DATA_DIRS="${XDG_DATA_DIRS:-}"
+export ORIGINAL_PATH="${PATH:-}"
+
+# Configure AppDir internal runtime environment
+export PATH="$APPDIR/usr/bin:$PATH"
+export LD_LIBRARY_PATH="$APPDIR/usr/lib:$APPDIR/usr/lib/x86_64-linux-gnu:$APPDIR/usr/lib/aarch64-linux-gnu:${LD_LIBRARY_PATH:-}"
+export XDG_DATA_DIRS="$APPDIR/usr/share:${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
+export GSETTINGS_SCHEMA_DIR="$APPDIR/usr/share/glib-2.0/schemas"
+export GDK_PIXBUF_MODULE_FILE="$APPDIR/usr/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache"
+export GTK_PATH="$APPDIR/usr/lib/gtk-4.0"
+
+# Dual-Entrypoint Resolution
+INVOCATION_NAME=$(basename "$0")
+
+if [ "$1" = "--mcp" ]; then
+    shift
+    exec "$APPDIR/usr/bin/jots-mcp" "$@"
+elif [ "$INVOCATION_NAME" = "jots-mcp" ] || [ "${JOTS_MODE:-}" = "mcp" ]; then
+    exec "$APPDIR/usr/bin/jots-mcp" "$@"
+else
+    exec "$APPDIR/usr/bin/io.github.comicdeed.jots" "$@"
+fi

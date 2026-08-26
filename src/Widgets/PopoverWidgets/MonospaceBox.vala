@@ -37,9 +37,9 @@ public class Jots.MonospaceBox : Gtk.Box {
         var mono_default_toggle = new Gtk.ToggleButton () {
             action_name = NoteView.ACTION_PREFIX + NoteView.ACTION_TOGGLE_MONO,
             child = new Gtk.Label (_("Default")),
-            tooltip_markup = Granite.markup_accel_tooltip (
-                {"<Control>m"},
-                _("Use default text font")
+            tooltip_markup = Jots.Util.markup_accel_tooltip (
+                _("Use default text font"),
+                "Ctrl+M"
             ),
             active = true
         };
@@ -47,9 +47,9 @@ public class Jots.MonospaceBox : Gtk.Box {
         mono_monospace_toggle = new Gtk.ToggleButton () {
             action_name = NoteView.ACTION_PREFIX + NoteView.ACTION_TOGGLE_MONO,
             child = new Gtk.Label (_("Monospace")),
-                tooltip_markup = Granite.markup_accel_tooltip (
-                {"<Control>m"},
-                _("Use monospaced font")
+            tooltip_markup = Jots.Util.markup_accel_tooltip (
+                _("Use monospaced font"),
+                "Ctrl+M"
             )
         };
         mono_monospace_toggle.add_css_class ("monospace");

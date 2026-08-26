@@ -17,3 +17,6 @@ dist
 *.flatpak
 *.AppImage
 *.sha256
+linuxdeploy-*.sh
+squashfs-root/
+

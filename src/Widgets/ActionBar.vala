@@ -6,10 +6,10 @@
  */
 
 /**
-* We use Granite.Bin to subclass ActionBar.
-* Everything is kept there but most widgets are public
-*/
- public class Jots.ActionBar : Granite.Bin {
+ * Single-child custom ActionBar container.
+ * Everything is kept there but most widgets are public
+ */
+public class Jots.ActionBar : Jots.Bin {
 
     public Gtk.ActionBar actionbar;
     public Gtk.Button list_button;
@@ -29,10 +29,9 @@
             icon_name = "list-add-symbolic",
             width_request = ICON_SIZE,
             height_request = ICON_SIZE,
-            tooltip_markup = Granite.markup_accel_tooltip (
-                {"<Control>n"},
-                //TRANSLATORS: The 5 next ones are tooltips for buttons. You are not constrained by space
-                _("New sticky note")
+            tooltip_markup = Jots.Util.markup_accel_tooltip (
+                _("New sticky note"),
+                "Ctrl+N"
             ),
             has_frame = false
         };
@@ -43,9 +42,9 @@
             icon_name = "edit-delete-symbolic",
             width_request = ICON_SIZE,
             height_request = ICON_SIZE,
-            tooltip_markup = Granite.markup_accel_tooltip (
-                {"<Control>w"},
-                _("Delete sticky note")
+            tooltip_markup = Jots.Util.markup_accel_tooltip (
+                _("Delete sticky note"),
+                "Ctrl+W"
             ),
             has_frame = false
         };
@@ -57,9 +56,9 @@
             icon_name = "view-list-symbolic",
             width_request = ICON_SIZE,
             height_request = ICON_SIZE,
-            tooltip_markup = Granite.markup_accel_tooltip (
-                {"<Shift>F12"},
-                _("Toggle list")
+            tooltip_markup = Jots.Util.markup_accel_tooltip (
+                _("Toggle list"),
+                "Shift+F12"
             ),
             has_frame = false
         };
@@ -71,9 +70,9 @@
             icon_name = Jots.Utils.random_emote (),
             width_request = ICON_SIZE,
             height_request = ICON_SIZE,
-            tooltip_markup = Granite.markup_accel_tooltip (
-                {"<Control>period"},
-                _("Insert emoji")
+            tooltip_markup = Jots.Util.markup_accel_tooltip (
+                _("Insert emoji"),
+                "Ctrl+."
             ),
             has_frame = false
         };
@@ -85,9 +84,9 @@
             icon_name = "open-menu-symbolic",
             width_request = ICON_SIZE,
             height_request = ICON_SIZE,
-            tooltip_markup = Granite.markup_accel_tooltip (
-                {"<Control>g", "<Control>o"},
-                _("Preferences for this sticky note")
+            tooltip_markup = Jots.Util.markup_accel_tooltip (
+                _("Preferences for this sticky note"),
+                "Ctrl+G"
             ),
             has_frame = false,
             direction = Gtk.ArrowType.UP

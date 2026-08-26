@@ -446,13 +446,32 @@ namespace Jots {
                 GLib.MatchInfo info;
                 if (regex.match (text, 0, out info)) {
                     while (info.matches ()) {
-                        int text_s = 0;
-                        int text_e = 0;
-                        if (info.fetch_pos (1, out text_s, out text_e)) {
+                        int full_s = 0, full_e = 0;
+                        int text_s = 0, text_e = 0;
+                        int url_s = 0, url_e = 0;
+                        string uri = "";
+
+                        if (info.fetch_pos (1, out text_s, out text_e) && info.fetch_pos (2, out url_s, out url_e)) {
+                            uri = info.fetch (2);
+                            info.fetch_pos (0, out full_s, out full_e);
+                        } else if (info.fetch_pos (3, out url_s, out url_e)) {
+                            uri = info.fetch (3);
+                            full_s = url_s;
+                            full_e = url_e;
+                        }
+
+                        if (uri.length > 0) {
                             Gtk.TextIter s, e;
-                            get_iter_at_byte_offset (text, out s, text_s);
-                            get_iter_at_byte_offset (text, out e, text_e);
+                            get_iter_at_byte_offset (text, out s, full_s);
+                            get_iter_at_byte_offset (text, out e, full_e);
                             apply_tag_by_name (TAG_LINK, s, e);
+
+                            var uri_tag_name = "url:" + uri;
+                            var tag = tag_table.lookup (uri_tag_name);
+                            if (tag == null) {
+                                tag = create_tag (uri_tag_name);
+                            }
+                            apply_tag (tag, s, e);
                         }
                         info.next ();
                     }
@@ -488,6 +507,11 @@ namespace Jots {
             if (highlight_timeout_id != 0) {
                 GLib.Source.remove (highlight_timeout_id);
                 highlight_timeout_id = 0;
+            }
+            if (settings != null) {
+                settings.changed[KEY_CUSTOM_FONTS].disconnect (refresh_code_tag_fonts);
+                settings.changed[KEY_MONOSPACE_FONT].disconnect (refresh_code_tag_fonts);
+                settings = null;
             }
         }
     }

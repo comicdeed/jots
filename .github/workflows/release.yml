@@ -107,11 +107,10 @@ jobs:
 
       - name: 'Install dependencies'
         run: |
-          sudo add-apt-repository -y ppa:elementary-os/daily
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
             meson ninja-build valac gcc pkg-config gettext \
-            libgtk-4-dev libgranite-7-dev libgee-0.8-dev \
+            libgtk-4-dev libgee-0.8-dev \
             libjson-glib-dev libportal-dev libportal-gtk4-dev \
             desktop-file-utils libglib2.0-bin appstream \
             file wget curl zsync
@@ -236,7 +235,7 @@ jobs:
           install: |
             git make zip unzip
             mingw-w64-${{ matrix.variant.package }}-meson mingw-w64-${{ matrix.variant.package }}-gcc mingw-w64-${{ matrix.variant.package }}-vala mingw-w64-${{ matrix.variant.package }}-desktop-file-utils
-            mingw-w64-${{ matrix.variant.package }}-gsettings-desktop-schemas mingw-w64-${{ matrix.variant.package }}-granite7 mingw-w64-${{ matrix.variant.package }}-gtk-elementary-theme mingw-w64-${{ matrix.variant.package }}-elementary-icon-theme mingw-w64-${{ matrix.variant.package }}-libgee mingw-w64-${{ matrix.variant.package }}-json-glib
+            mingw-w64-${{ matrix.variant.package }}-gsettings-desktop-schemas mingw-w64-${{ matrix.variant.package }}-libgee mingw-w64-${{ matrix.variant.package }}-json-glib
             mingw-w64-${{ matrix.variant.package }}-nsis mingw-w64-${{ matrix.variant.package }}-adwaita-icon-theme
 
       - name: 'Setup build directory'

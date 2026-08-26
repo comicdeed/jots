@@ -22,7 +22,7 @@ public class Jots.ColorPill : Gtk.CheckButton {
         }
 
         construct {
-            add_css_class (Granite.STYLE_CLASS_COLOR_BUTTON);
+            add_css_class ("color-button");
 
             //if (color == Themes.IDK) {
             //    add_css_class ("auto");

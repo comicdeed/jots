@@ -8,14 +8,16 @@
 namespace Jots {
 
     /**
-     * A text view for sticky notes with native Markdown rendering and smart formatting.
+     * A text view for sticky notes with native Markdown rendering, URL navigation, and smart formatting.
      */
-    public class TextView : Granite.HyperTextView {
+    public class TextView : Gtk.TextView {
 
         public Jots.MarkdownBuffer markdown_buffer;
 
         private Gtk.EventControllerKey keyboard;
         private Gdk.FrameClock? frame_clock;
+
+        public signal void link_activated (string uri);
 
         public string text {
             owned get { return buffer.text; }
@@ -57,6 +59,15 @@ namespace Jots {
             keyboard.key_pressed.connect (on_key_pressed);
             add_controller (keyboard);
 
+            var click_gesture = new Gtk.GestureClick ();
+            click_gesture.released.connect (on_click_released);
+            add_controller (click_gesture);
+
+            var motion = new Gtk.EventControllerMotion ();
+            motion.motion.connect (on_mouse_motion);
+            motion.leave.connect (() => { set_cursor_from_name (null); });
+            add_controller (motion);
+
             // Context menu items
             var menuitem_pref = new GLib.MenuItem (
                 _("Show Preferences"),
@@ -78,6 +89,45 @@ namespace Jots {
 
             markdown_buffer = new Jots.MarkdownBuffer ();
             buffer = (Gtk.TextBuffer) markdown_buffer;
+        }
+
+        private void on_click_released (Gtk.GestureClick gesture, int n_press, double x, double y) {
+            int bx, by;
+            window_to_buffer_coords (Gtk.TextWindowType.WIDGET, (int)x, (int)y, out bx, out by);
+
+            Gtk.TextIter iter;
+            get_iter_at_location (out iter, bx, by);
+
+            foreach (var tag in iter.get_tags ()) {
+                if (tag.name != null && tag.name.has_prefix ("url:")) {
+                    var uri = tag.name.substring ("url:".length);
+                    link_activated (uri);
+                    try {
+                        Gtk.show_uri (get_root () as Gtk.Window, uri, Gdk.CURRENT_TIME);
+                    } catch (Error e) {
+                        warning ("Failed to open URI %s: %s", uri, e.message);
+                    }
+                    break;
+                }
+            }
+        }
+
+        private void on_mouse_motion (Gtk.EventControllerMotion controller, double x, double y) {
+            int bx, by;
+            window_to_buffer_coords (Gtk.TextWindowType.WIDGET, (int)x, (int)y, out bx, out by);
+
+            Gtk.TextIter iter;
+            get_iter_at_location (out iter, bx, by);
+
+            bool on_link = false;
+            foreach (var tag in iter.get_tags ()) {
+                if (tag.name != null && tag.name.has_prefix ("url:")) {
+                    on_link = true;
+                    break;
+                }
+            }
+
+            set_cursor_from_name (on_link ? "pointer" : "text");
         }
 
         public void toggle_list () {

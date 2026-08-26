@@ -89,6 +89,9 @@ jobs:
           rm -rf /tmp/* /var/tmp/* || true
           mkdir -p /root/.local/share/flatpak/repo
           ostree config --repo=/root/.local/share/flatpak/repo set core.min-free-space-percent 0 2>/dev/null || true
+          mkdir -p .flatpak-builder/repo
+          ostree init --repo=.flatpak-builder/repo --mode=bare-user-only 2>/dev/null || true
+          ostree config --repo=.flatpak-builder/repo set core.min-free-space-percent 0 2>/dev/null || true
 
       - name: Checkout
         uses: actions/checkout@v4

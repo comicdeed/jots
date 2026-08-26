@@ -18,7 +18,7 @@ if [ ! -d "${STAGE_DIR}/usr" ]; then
         --prefix=/usr \
         --buildtype=release \
         --strip \
-        -Dprofile=default \
+        -Dprofile=linux \
         -Ddevelopment=false \
         -Dicon_variant=default
     meson compile -C "${BUILD_DIR}"

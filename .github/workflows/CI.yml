@@ -18,7 +18,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
-            meson ninja-build valac gcc pkg-config \
+            meson ninja-build valac gcc pkg-config gettext \
             libgtk-4-dev libgranite-7-dev libgee-0.8-dev \
             libjson-glib-dev libportal-dev libportal-gtk4-dev \
             desktop-file-utils libglib2.0-bin appstream \

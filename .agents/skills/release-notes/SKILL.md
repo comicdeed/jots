@@ -51,11 +51,11 @@ This skill operates as **Step 3** of the official Jots release process. Always c
 
 ### 1. Determine Base Tag and Target Version
 ```bash
-# For Beta: find the immediately preceding tag
+# For Beta: find the immediately preceding tag (e.g. 1.1.0-beta.1)
 PREV_TAG=$(git describe --tags --abbrev=0)
 
-# For Stable: find the latest stable tag (excluding -beta, -alpha, -rc)
-PREV_STABLE_TAG=$(git tag --list --sort=-v:refname | grep -v -E '(beta|alpha|rc)' | head -n 1)
+# For Stable: find the latest stable tag (sorted by tag commit date to prevent pre-fork legacy tag collision)
+PREV_STABLE_TAG=$(git tag --sort=-creatordate | grep -v -E '(beta|alpha|rc)' | head -n 1)
 ```
 
 ### 2. Inspect Commit History

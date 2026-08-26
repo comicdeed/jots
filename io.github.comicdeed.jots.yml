@@ -2,7 +2,7 @@ id: io.github.comicdeed.jots
 base: io.elementary.BaseApp
 base-version: 'circe-25.08'
 runtime: org.gnome.Platform
-runtime-version: '49'
+runtime-version: '50'
 sdk: org.gnome.Sdk
 command: io.github.comicdeed.jots
 

@@ -32,14 +32,13 @@
 
 ---
 
-## Installation and build instructions
+## Installation and quick start
 
-Jots is distributed as a sandboxed Flatpak application:
-
-* **Flathub**: [Download on Flathub](https://flathub.org/apps/io.github.comicdeed.jots)
-* **AppCenter**: [Get it on AppCenter](https://appcenter.elementary.io/io.github.comicdeed.jots)
-* **Local compilation**: Refer to the [Building Guide](docs/development/building.md) for native and sandbox compilation instructions.
-* **Windows**: Experimental installers are available in the Releases section. Detailed MSYS2 build steps are available in the [Windows Build Guide](docs/development/windows.md).
+* **AppImage (Click-and-Run)**: Download `Jots-x86_64.AppImage` from [GitHub Releases](https://github.com/comicdeed/jots/releases), make it executable (`chmod +x Jots-x86_64.AppImage`), and double-click to run anywhere without installation.
+* **Flatpak Bundle**: Download `io.github.comicdeed.jots.flatpak` and install with `flatpak install io.github.comicdeed.jots.flatpak`.
+* **AppCenter**: [Get it on elementary OS AppCenter](https://appcenter.elementary.io/io.github.comicdeed.jots)
+* **Local compilation**: Refer to the [Developer Setup Guide](docs/development/setup.md) or [Building Guide](docs/development/building.md) for compilation instructions.
+* **Windows**: Experimental installers are available in the Releases section (see the [Windows Build Guide](docs/development/windows.md)).
 
 ---
 

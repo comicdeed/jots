@@ -97,6 +97,14 @@ git add meson.build data/jots.metainfo.xml.in.in docs/user-guide.md
 git commit -m "chore(release): prepare 1.0.0-beta.1 release"
 git push origin release/1.0.0-beta.1
 
+### 5. Pull Request Merge Strategy
+* **For `feat/*` / `fix/*` $\rightarrow$ `develop`**: Use **Squash and Merge** to maintain atomic, clean feature commits on `develop`.
+* **For `release/*` $\rightarrow$ `main`**: Use **Merge Commit (`--merge --no-ff`)**. Do **not** squash-merge release PRs into `main`, as squashing creates an artificial SHA divergence between `main` and `develop`. Using a standard merge commit preserves linear ancestry and ensures `develop` remains 0 commits ahead/behind after the release.
+
+```bash
+gh pr merge release/1.1.0 --merge --delete-branch
+```
+
 gh pr create --base main --head release/1.0.0-beta.1 \
   --title "release: 1.0.0-beta.1" \
   --body "Release preparation for 1.0.0-beta.1"

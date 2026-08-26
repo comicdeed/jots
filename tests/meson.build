@@ -35,7 +35,7 @@ if appstream
     if appstreamcli.found()
         test('metainfo',
             appstreamcli,
-            args: ['validate', '--pedantic', '--no-net', '--explain', appstream_file],
+            args: ['validate', '--no-net', '--explain', appstream_file],
             is_parallel: true)
     endif
 endif

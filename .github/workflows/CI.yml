@@ -84,6 +84,12 @@ jobs:
       options: --privileged
 
     steps:
+      - name: Free runner disk space and configure OSTree
+        run: |
+          rm -rf /tmp/* /var/tmp/* || true
+          mkdir -p /root/.local/share/flatpak/repo
+          ostree config --repo=/root/.local/share/flatpak/repo set core.min-free-space-percent 0 2>/dev/null || true
+
       - name: Checkout
         uses: actions/checkout@v4
 

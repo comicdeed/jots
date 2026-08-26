@@ -7,6 +7,8 @@ if [ -L "$SELF" ]; then
     SELF=$(readlink -f "$SELF")
 fi
 APPDIR=$(cd "${SELF%/*}" && pwd)
+export APPDIR
+export APPIMAGE="${APPIMAGE:-$0}"
 
 # Configure internal data and theme paths
 export PATH="$APPDIR/usr/bin:$PATH"

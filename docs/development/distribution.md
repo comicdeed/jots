@@ -67,7 +67,7 @@ When creating native distribution packages (`.deb`, `.rpm`, `.pkg.tar.zst`):
 
 ## 5. Direct Release Pipeline (GitHub Releases)
 
-Jots uses a **Compile Once, Package Many** automated GitHub Actions matrix (`.github/workflows/release.yml`) triggered on release tags:
+Jots uses a **Compile Once, Package Many** automated GitHub Actions matrix (`.github/workflows/release.yml`) triggered automatically when merging a `release/*` PR into `main` (or on manual dispatch / pushed tags). See the complete [Release Workflow & Automation Guide](release-workflow.md).
 
 | Artifact | Target Audience / Format | Key Characteristics |
 | :--- | :--- | :--- |

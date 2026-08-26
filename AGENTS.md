@@ -15,6 +15,7 @@ To maintain focus and avoid context bloat, refer to specialized documentation on
 * **Roadmap & Idea Matrix**: [`docs/roadmap.md`](docs/roadmap.md) — Graded initiatives and feature backlog.
 * **Developer Setup & Tooling**: [`docs/development/setup.md`](docs/development/setup.md) — Workstation setup, Git branch guardrails, tooling prerequisites, and editor extensions.
 * **Documentation Style**: [`docs/development/documentation-style.md`](docs/development/documentation-style.md) — GNOME developer style rules.
+* **Release Workflow & Automation**: [`docs/development/release-workflow.md`](docs/development/release-workflow.md) — Release branching strategy, AppStream changelog curation, and automated multi-arch GitHub releases.
 * **Pull Request Guidelines**: [`docs/development/pull-request-guidelines.md`](docs/development/pull-request-guidelines.md) — Contribution checklists and attribution standards.
 
 ---

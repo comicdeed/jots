@@ -47,7 +47,7 @@ fi
 
 if [ ! -f "linuxdeploy-plugin-gtk.sh" ]; then
     echo "==> Downloading linuxdeploy-plugin-gtk.sh..."
-    wget -q "https://github.com/linuxdeploy/linuxdeploy-plugin-gtk/releases/download/continuous/linuxdeploy-plugin-gtk.sh"
+    wget -q "https://raw.githubusercontent.com/linuxdeploy/linuxdeploy-plugin-gtk/master/linuxdeploy-plugin-gtk.sh"
     chmod +x "linuxdeploy-plugin-gtk.sh"
 fi
 

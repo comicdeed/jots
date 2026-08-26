@@ -25,10 +25,10 @@ jobs:
       matrix:
         include:
           - arch: x86_64
-            runner: ubuntu-22.04
+            runner: ubuntu-24.04
             use_qemu: false
           - arch: aarch64
-            runner: ubuntu-22.04
+            runner: ubuntu-24.04
             use_qemu: true
 
     steps:
@@ -100,7 +100,7 @@ jobs:
 
   build-flatpak-bundle:
     name: "Build Flatpak Bundle (x86_64)"
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: 'Checkout sources'
         uses: actions/checkout@v4

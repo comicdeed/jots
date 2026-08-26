@@ -88,6 +88,19 @@
     </screenshots>
 
     <releases>
+        <release version="1.1.0-beta.1" type="development" date="2026-08-26">
+            <description>
+                <p>Jots 1.1.0-beta.1 introduces portable AppImage distribution, standalone offline Flatpak bundles, and GNOME Platform 50 runtime upgrades.</p>
+                <p>Major Highlights:</p>
+                <ul>
+                    <li>AppImage Distribution: Self-contained click-and-run executables for x86_64 and aarch64 Linux distributions</li>
+                    <li>Dual-Entrypoint AppRun: Run GUI sticky notes normally or launch headlessly as an AI MCP server with --mcp</li>
+                    <li>Offline Flatpak Bundles: Standalone single-file .flatpak packages installable without remote repository setup</li>
+                    <li>GNOME Platform 50 &amp; Granite 7.6: Runtime modernizations and improved software-rendered fallback stability</li>
+                    <li>Automated Release Pipeline: Continuous matrix releases with cryptographic SHA256 verification</li>
+                </ul>
+            </description>
+        </release>
         <release version="1.0.0" date="2026-08-25">
             <description>
                 <p>Inaugural release of Jots — the next-generation lightweight sticky notes application, forked and evolved from Jorts 4.3.0.</p>

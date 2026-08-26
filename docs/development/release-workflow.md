@@ -112,10 +112,10 @@ When the Pull Request is merged into `main`, [`.github/workflows/release.yml`](.
    - Reads the target version from `data/jots.metainfo.xml.in.in`.
    - Creates and pushes the git tag (`1.0.0-beta.1`) to `main`.
 2. **Multi-Architecture Build Matrix**:
-   - **`Jots-x86_64.AppImage`**: Portable Linux executable (x86_64).
-   - **`Jots-aarch64.AppImage`**: Portable Linux executable built with QEMU (aarch64).
-   - **`io.github.comicdeed.jots.flatpak`**: Standalone offline Flatpak bundle.
-   - **`Jots-Installer.exe`**: Native Windows installer built via MSYS2 / MinGW.
+   - **`Jots-<version>-x86_64.AppImage`**: Portable Linux executable (x86_64).
+   - **`Jots-<version>-aarch64.AppImage`**: Portable Linux executable built with QEMU (aarch64).
+   - **`io.github.comicdeed.jots-<version>.flatpak`**: Standalone offline Flatpak bundle.
+   - **`Jots-<version>-Installer.exe`**: Native Windows installer built via MSYS2 / MinGW.
 3. **Cryptographic Checksums**:
    - Computes `SHA256SUMS.txt` for all release assets.
 4. **GitHub Release Publication**:

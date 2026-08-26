@@ -71,9 +71,9 @@ Jots uses a **Compile Once, Package Many** automated GitHub Actions matrix (`.gi
 
 | Artifact | Target Audience / Format | Key Characteristics |
 | :--- | :--- | :--- |
-| **`Jots-<arch>.AppImage`** | Linux (Portable Click-and-Run) | Self-contained single-file executable for Ubuntu, Debian, Fedora, Arch, elementary OS. |
-| **`io.github.comicdeed.jots.flatpak`** | Linux (Flatpak Standalone) | Single-file Flatpak bundle installable via `flatpak install io.github.comicdeed.jots.flatpak`. |
-| **`Jots-Installer.exe`** | Windows (x86_64) | Standalone NSIS installer built with MSYS2. |
+| **`Jots-<version>-<arch>.AppImage`** | Linux (Portable Click-and-Run) | Self-contained single-file executable for Ubuntu, Debian, Fedora, Arch, elementary OS. |
+| **`io.github.comicdeed.jots-<version>.flatpak`** | Linux (Flatpak Standalone) | Single-file Flatpak bundle installable via `flatpak install io.github.comicdeed.jots-<version>.flatpak`. |
+| **`Jots-<version>-Installer.exe`** | Windows (x86_64) | Standalone NSIS installer built with MSYS2. |
 | **`SHA256SUMS.txt`** | Integrity Checksums | Cryptographic checksums for all release assets. |
 
 ---

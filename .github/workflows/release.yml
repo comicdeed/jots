@@ -154,7 +154,8 @@ jobs:
           chmod +x "linuxdeploy-${ARCH}.AppImage" linuxdeploy-plugin-gtk.sh
 
           # Package AppImage
-          export OUTPUT="dist/Jots-${ARCH}.AppImage"
+          export VERSION="${{ needs.init-release.outputs.tag_name }}"
+          export OUTPUT="dist/Jots-${VERSION}-${ARCH}.AppImage"
           ./linuxdeploy-${ARCH}.AppImage \
             --appdir AppDir \
             --desktop-file AppDir/usr/share/applications/io.github.comicdeed.jots.desktop \
@@ -162,7 +163,7 @@ jobs:
             --plugin gtk \
             --output appimage
 
-          cd dist && sha256sum "Jots-${ARCH}.AppImage" > "Jots-${ARCH}.AppImage.sha256"
+          cd dist && sha256sum "Jots-${VERSION}-${ARCH}.AppImage" > "Jots-${VERSION}-${ARCH}.AppImage.sha256"
 
       - name: 'Upload AppImage Artifact'
         uses: actions/upload-artifact@v4
@@ -188,10 +189,11 @@ jobs:
 
       - name: 'Build and Export Flatpak Bundle'
         run: |
+          VERSION="${{ needs.init-release.outputs.tag_name }}"
           flatpak-builder --force-clean --repo=repo --install-deps-from=flathub builddir io.github.comicdeed.jots.yml
           mkdir -p dist
-          flatpak build-bundle repo dist/io.github.comicdeed.jots.flatpak io.github.comicdeed.jots
-          cd dist && sha256sum io.github.comicdeed.jots.flatpak > io.github.comicdeed.jots.flatpak.sha256
+          flatpak build-bundle repo "dist/io.github.comicdeed.jots-${VERSION}.flatpak" io.github.comicdeed.jots
+          cd dist && sha256sum "io.github.comicdeed.jots-${VERSION}.flatpak" > "io.github.comicdeed.jots-${VERSION}.flatpak.sha256"
 
       - name: 'Upload Flatpak Bundle Artifact'
         uses: actions/upload-artifact@v4
@@ -243,15 +245,17 @@ jobs:
       - name: 'Create windows installer'
         id: build_installer
         run: |
+          VERSION="${{ needs.init-release.outputs.tag_name }}"
           cp builddir/windows/installer.nsi .
           makensis installer.nsi
+          cp Jots-Installer.exe "Jots-${VERSION}-Installer.exe"
 
       - name: 'Upload Installer Artifact'
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: Jots-Installer.exe
-          path: Jots-Installer.exe
+          name: Jots-Windows-Installer
+          path: Jots-*-Installer.exe
           if-no-files-found: ignore
 
   github-release:

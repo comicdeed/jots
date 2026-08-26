@@ -1,13 +1,14 @@
 #!/bin/bash
 set -euo pipefail
 
-# Architecture detection
+# Architecture and version detection
 ARCH="${ARCH:-$(uname -m)}"
+VERSION="${VERSION:-$(grep -m 1 "version:" meson.build | cut -d"'" -f2)}"
 STAGE_DIR="${STAGE_DIR:-stage}"
 BUILD_DIR="${BUILD_DIR:-builddir-appimage}"
 OUTPUT_DIR="${OUTPUT_DIR:-dist}"
 
-echo "==> Building Jots AppImage for ${ARCH}..."
+echo "==> Building Jots AppImage ${VERSION} for ${ARCH}..."
 mkdir -p "${OUTPUT_DIR}"
 
 # 1. Compile Once into isolated DESTDIR
@@ -52,7 +53,7 @@ if [ ! -f "linuxdeploy-plugin-gtk.sh" ]; then
 fi
 
 # 5. Execute linuxdeploy with GTK plugin
-export OUTPUT="${OUTPUT_DIR}/Jots-${ARCH}.AppImage"
+export OUTPUT="${OUTPUT_DIR}/Jots-${VERSION}-${ARCH}.AppImage"
 ./linuxdeploy-${ARCH}.AppImage \
     --appdir "${APPDIR}" \
     --desktop-file "${APPDIR}/usr/share/applications/io.github.comicdeed.jots.desktop" \

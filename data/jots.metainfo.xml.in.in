@@ -88,6 +88,16 @@
     </screenshots>
 
     <releases>
+        <release version="1.1.1" date="2026-08-26">
+            <description>
+                <p>Jots 1.1.1 fixes standalone SVG icon rendering in AppImage packages and hardens packaging workflows.</p>
+                <p>Highlights &amp; Fixes:</p>
+                <ul>
+                    <li>Bundled SVG Engine: Added librsvg2 and gdk-pixbuf SVG loader modules to CI runners and AppImage bundles to guarantee crisp magnifying glass zoom icons across all desktop environments</li>
+                    <li>Packaging Guardrails: Added strict build assertions ensuring standalone SVG loaders are packaged in all AppImage builds</li>
+                </ul>
+            </description>
+        </release>
         <release version="1.1.0" date="2026-08-26">
             <description>
                 <p>Jots 1.1.0 is a major milestone delivering pure GTK4 architecture, standalone AppImage packages, discrete Cairo color styling, and cross-desktop theming.</p>

@@ -68,6 +68,11 @@ done
 mkdir -p "${APPDIR}/usr/lib/gdk-pixbuf-2.0/2.10.0/loaders"
 find /usr/lib/${ARCH}-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders /usr/lib/gdk-pixbuf-2.0/2.10.0/loaders -name "libpixbufloader-*.so" -exec cp -u {} "${APPDIR}/usr/lib/gdk-pixbuf-2.0/2.10.0/loaders/" \; 2>/dev/null || true
 
+if [ ! -f "${APPDIR}/usr/lib/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-svg.so" ]; then
+    echo "ERROR: libpixbufloader-svg.so not found! Please install librsvg2-common." >&2
+    exit 1
+fi
+
 if command -v gdk-pixbuf-query-loaders >/dev/null 2>&1; then
     gdk-pixbuf-query-loaders "${APPDIR}/usr/lib/gdk-pixbuf-2.0/2.10.0/loaders"/*.so > "${APPDIR}/usr/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache" 2>/dev/null || true
     sed -i "s|${APPDIR}||g" "${APPDIR}/usr/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache" 2>/dev/null || true

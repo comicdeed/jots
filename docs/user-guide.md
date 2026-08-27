@@ -139,59 +139,24 @@ Access global preferences by right-clicking a note or selecting **Preferences** 
 
 Jots includes a native [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server (`jots-mcp`) allowing AI assistants (Claude Desktop, Cursor, Gemini CLI, and Antigravity) to read, create, search, and update your sticky notes in real time.
 
-```mermaid
-graph LR
-    AI[AI Assistant / Claude / Cursor] -->|stdio MCP| Mcp["jots-mcp (Native Binary)"]
-    Mcp -->|D-Bus IPC| Jots[Jots Desktop App]
-    Jots -->|Live GUI| Notes[Desktop Sticky Notes]
-```
+For full setup and protocol reference, use the canonical guide: [docs/development/mcp-server.md](docs/development/mcp-server.md).
 
-### Quick Client Setup
+### TL;DR
 
-#### Claude Desktop (AppImage)
-```json
-{
-  "mcpServers": {
-    "jots": {
-      "command": "/path/to/Jots-x86_64.AppImage",
-      "args": ["--mcp"]
-    }
-  }
-}
-```
+Use one of the following launch modes in your MCP client:
 
-#### Claude Desktop (Flatpak)
-```json
-{
-  "mcpServers": {
-    "jots": {
-      "command": "flatpak",
-      "args": ["run", "--command=jots-mcp", "io.github.comicdeed.jots"]
-    }
-  }
-}
-```
+* **AppImage (recommended)**: `command: /path/to/Jots-<version>-<arch>.AppImage`, `args: ["--mcp"]`
+* **Flatpak**: `command: flatpak`, `args: ["run", "--command=jots-mcp", "io.github.comicdeed.jots"]`
+* **Native host install**: `command: jots-mcp`
 
-#### Cursor (`.cursor/mcp.json`)
-```json
-{
-  "mcpServers": {
-    "jots": {
-      "command": "/path/to/Jots-x86_64.AppImage",
-      "args": ["--mcp"]
-    }
-  }
-}
-```
-*(Note: If using Flatpak, pass `"command": "flatpak"` and `"args": ["run", "--command=jots-mcp", "io.github.comicdeed.jots"]`)*
+### Available AI Capabilities
+Your MCP client can:
 
-### Available AI Tools
-* **`list_notes`**: Returns an overview of all open desktop sticky notes with titles, themes, and word counts.
-* **`read_note(id)`**: Reads the complete body text and properties of a specific note.
-* **`create_note(title, content, theme)`**: Spawns a new sticky note window live on your desktop.
-* **`update_note(id, title, content, theme)`**: Updates an open note's text, title, or theme color in real time.
-* **`delete_note(id)`**: Closes and deletes a sticky note.
-* **`search_notes(query)`**: Searches note titles and body content case-insensitively.
+* List and search notes.
+* Read note content and metadata.
+* Create new notes.
+* Update existing notes.
+* Delete notes.
 
 ---
 

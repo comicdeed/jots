@@ -49,7 +49,7 @@ Jots is currently Linux-first. AppImage and Flatpak are the supported distributi
 
 Jots includes a native [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server (`jots-mcp`) allowing AI assistants (Claude Desktop, Cursor, Gemini CLI, and Antigravity) to query, create, edit, search, and delete sticky notes live on the desktop.
 
-See the **[MCP Integration Guide](docs/development/mcp-server.md)** or the **[User Guide AI Section](docs/user-guide.md#7-ai-assistant--mcp-integration)** for setup details.
+For setup, use the canonical **[MCP Integration Guide](docs/development/mcp-server.md#2-client-configuration-examples)**.
 
 ---
 

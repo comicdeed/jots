@@ -61,6 +61,7 @@ Welcome to Jots! Jots is a lightweight, distraction-free sticky notes applicatio
 | **`Ctrl + 0`** | **Reset Zoom** | Resets text zoom to the default 100% scale. |
 | **`Ctrl + Scroll`** | **Smooth Zoom** | Scales text size dynamically using mouse scroll wheel or touchpad pinch. |
 | **`Ctrl + Click`** | **Open Link** | Opens a detected URL or email address in your default web browser or mail app. |
+| **`F1`** | **Quick Cheat Sheet** | Opens, presents, or restores the built-in indestructible quick reference Cheat Sheet note. |
 
 ---
 
@@ -120,11 +121,14 @@ Jots comes with 10 carefully designed pastel color palettes that adapt seamlessl
 
 ---
 
-## 6. Preferences & Privacy Effects
+## 6. Preferences, Privacy & Note Protection
 
 Access global preferences by right-clicking a note or selecting **Preferences** from the app menu:
 
 * **Scribbly Privacy Mode (`Ctrl + H`)**: When enabled, any note window that loses desktop focus immediately obfuscates its text and code elements with playful handwritten squiggles using the embedded `Redacted Script` typeface. Focusing the note instantly restores crystal-clear readable text.
+* **Lock Note (Read-Only)**: Open the note popover menu (**`Ctrl + G`**) and toggle **Lock Note (Read-Only)** to protect sensitive or reference notes from accidental keyboard edits and title modifications.
+* **Always Visible (Privacy Exemption)**: Toggle **Always Visible** in a note's popover menu to exempt that specific sticky note from Scribbly privacy obfuscation, keeping reference checklists or guides crisp and legible even when unfocused.
+* **Built-in Quick Cheat Sheet (`F1`)**: Jots includes a built-in, read-only, privacy-exempt reference note with standard shortcuts and syntax tips. Press **`F1`** anytime to summon it, bring it to the front, or recreate it if closed.
 * **Hide Action Bar (`Ctrl + T`)**: Hides the bottom toolbar on note windows to maximize writing space.
 * **Autostart on Login**: Integrates with your desktop portal to automatically relaunch all your open sticky notes when you log into your computer.
 * **Import from Jorts Migration Helper**: Seamlessly import your existing sticky notes from Jorts (`io.github.elly_code.jorts`). The import is **100% non-destructive**—your original Jorts `saved_state.json` file is never deleted or altered. You can trigger migration from the first-run prompt or anytime via the **Import from Jorts** button in Preferences.

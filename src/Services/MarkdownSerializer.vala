@@ -30,6 +30,8 @@ namespace Jots {
             sb.append_printf ("zoom: %d\n", note.zoom);
             sb.append_printf ("width: %d\n", note.width);
             sb.append_printf ("height: %d\n", note.height);
+            sb.append_printf ("readonly: %s\n", note.readonly ? "true" : "false");
+            sb.append_printf ("always_visible: %s\n", note.always_visible ? "true" : "false");
 
             sb.append (FRONT_MATTER_DELIMITER);
             sb.append ("\n");
@@ -159,6 +161,14 @@ namespace Jots {
                         if (h > 50) {
                             note.height = h;
                         }
+                        break;
+                    case "readonly":
+                        note.readonly = (val.down () == "true" || val == "1");
+                        break;
+                    case "always_visible":
+                    case "alwaysvisible":
+                    case "no_privacy":
+                        note.always_visible = (val.down () == "true" || val == "1");
                         break;
                 }
             }

@@ -63,6 +63,7 @@ public class Jots.Application : Gtk.Application {
     public const string ACTION_NEW = "action_new";
     public const string ACTION_SAVE = "action_save";
     public const string ACTION_RESTORE_LAST = "action_restore_last";
+    public const string ACTION_SHOW_CHEATSHEET = "action_show_cheatsheet";
 
     public static Gee.MultiMap<string, string> action_accelerators = new Gee.HashMultiMap<string, string> ();
 
@@ -73,7 +74,8 @@ public class Jots.Application : Gtk.Application {
         { ACTION_SHOW_PREFERENCES, action_show_preferences},
         { ACTION_NEW, nm_new_note},
         { ACTION_SAVE, nm_save_all},
-        { ACTION_RESTORE_LAST, nm_restore_last_deleted}
+        { ACTION_RESTORE_LAST, nm_restore_last_deleted},
+        { ACTION_SHOW_CHEATSHEET, action_show_cheatsheet}
     };
 
     public Application () {
@@ -148,6 +150,7 @@ public class Jots.Application : Gtk.Application {
         set_accels_for_action (ACTION_PREFIX + ACTION_NEW, {"<Control>N"});
         set_accels_for_action (ACTION_PREFIX + ACTION_SAVE, {"<Control>S"});
         set_accels_for_action (ACTION_PREFIX + ACTION_RESTORE_LAST, {"<Control>R"});
+        set_accels_for_action (ACTION_PREFIX + ACTION_SHOW_CHEATSHEET, {"F1"});
 
         note_manager = new Jots.NoteManager (this);
         font_controller = new Jots.FontController ();
@@ -262,6 +265,10 @@ Please wait while the app remembers all the things…
 
     private void nm_restore_last_deleted () {
         note_manager.restore_last_deleted ();
+    }
+
+    private void action_show_cheatsheet () {
+        note_manager.show_cheatsheet ();
     }
 
     // checked upon window closing to make sure we do not linger in the background

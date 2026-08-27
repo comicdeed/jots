@@ -77,8 +77,12 @@ public class Jots.NoteManager : Object, Jots.ActiveNotesProvider {
             var note_data = new NoteData ();
             note_data.theme = DEFAULT_THEME;
 
-            print ("\nNo note in storage! Let's create a new one");
+            print ("\nNo note in storage! Let's create a new one and a cheat sheet");
             create_note (note_data);
+
+            var cheatsheet = get_default_cheatsheet_data ();
+            storage.save_note (cheatsheet);
+            create_note (cheatsheet);
 
         } else {
             foreach (var note_data in loaded_notes) {
@@ -253,6 +257,45 @@ public class Jots.NoteManager : Object, Jots.ActiveNotesProvider {
         ((SimpleAction)action_restore).set_enabled (false);
 
         last_deleted = null;
+    }
+
+    public NoteData get_default_cheatsheet_data () {
+        var cheatsheet = new NoteData ();
+        cheatsheet.id = CHEATSHEET_NOTE_ID;
+        cheatsheet.title = _(CHEATSHEET_TITLE);
+        cheatsheet.content = CHEATSHEET_CONTENT;
+        cheatsheet.theme = DEFAULT_THEME;
+        cheatsheet.readonly = true;
+        cheatsheet.always_visible = true;
+        cheatsheet.width = DEFAULT_WIDTH + 60;
+        cheatsheet.height = DEFAULT_HEIGHT + 60;
+        return cheatsheet;
+    }
+
+    public void show_cheatsheet () {
+        debug ("Showing cheat sheet");
+        // 1. Check if cheatsheet is already open
+        foreach (var win in open_notes) {
+            if (win.note_id == CHEATSHEET_NOTE_ID) {
+                win.show ();
+                win.present ();
+                return;
+            }
+        }
+
+        // 2. Check if saved in storage
+        var saved_cheatsheet = storage.load_note_by_id (CHEATSHEET_NOTE_ID);
+        if (saved_cheatsheet != null) {
+            saved_cheatsheet.readonly = true;
+            saved_cheatsheet.always_visible = true;
+            create_note (saved_cheatsheet);
+            return;
+        }
+
+        // 3. Create fresh from template
+        var cheatsheet = get_default_cheatsheet_data ();
+        storage.save_note (cheatsheet);
+        create_note (cheatsheet);
     }
 
     /*************************************************/

@@ -62,4 +62,28 @@ namespace Jots {
     const string KEY_DEFAULT_FONT       = "default-font";
     const string KEY_MONOSPACE_FONT     = "monospace-font";
     const string KEY_JORTS_MIGRATION_PROMPTED = "jorts-migration-prompted";
+
+    // Built-in Cheat Sheet constants
+    public const string CHEATSHEET_NOTE_ID   = "jots-cheatsheet";
+    public const string CHEATSHEET_TITLE     = "Jots Cheat Sheet";
+    public const string CHEATSHEET_CONTENT   = """# Jots Cheat Sheet
+
+### ⌨️ Shortcuts
+* **Ctrl + N**: New Sticky Note
+* **Ctrl + F**: Search Notes
+* **Ctrl + W**: Close Note
+* **Ctrl + Shift + Z**: Scribbly (Privacy) Mode
+* **Ctrl + Scroll / Pinch**: Zoom Text
+* **F1**: Show / Restore this Cheat Sheet
+
+### 📝 Markdown Formatting
+* `# H1`, `## H2`, `### H3`
+* `**Bold**`, `*Italic*`, `~~Strikethrough~~`
+* `- [ ] Task`, `- [x] Completed`
+* `> Blockquote`
+* ` `code` ` or ``` code blocks ```
+
+### 🤖 AI Automation
+* Connect Claude, Cursor, or Gemini CLI via `jots-mcp`.
+""";
 }

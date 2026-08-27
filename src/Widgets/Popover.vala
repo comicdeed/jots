@@ -17,6 +17,8 @@ public class Jots.Popover : Gtk.Popover {
     private Jots.ColorBox color_box;
     private Jots.MonospaceBox monospace_box;
     private Jots.ZoomBox font_size_box;
+    private Jots.ToggleRow readonly_row;
+    private Jots.ToggleRow always_visible_row;
 
     public Themes color {
         get {return color_box.color;}
@@ -29,7 +31,25 @@ public class Jots.Popover : Gtk.Popover {
     }
 
     public int zoom { set {font_size_box.zoom = value;}}
+
+    public bool is_readonly {
+        get { return readonly_row.active; }
+        set { readonly_row.active = value; }
+    }
+
+    public bool is_always_visible {
+        get { return always_visible_row.active; }
+        set { always_visible_row.active = value; }
+    }
+
     public signal void theme_changed (Jots.Themes selected);
+    public signal void readonly_toggled (bool is_readonly);
+    public signal void always_visible_toggled (bool is_always_visible);
+
+    public void set_controls_locked (bool locked) {
+        readonly_row.row_sensitive = !locked;
+        always_visible_row.row_sensitive = !locked;
+    }
 
     public Popover () {
         Object (
@@ -52,6 +72,7 @@ public class Jots.Popover : Gtk.Popover {
         add_binding_action (Gdk.Key.m, Gdk.ModifierType.CONTROL_MASK, NoteView.ACTION_PREFIX + NoteView.ACTION_TOGGLE_MONO, null);
         add_binding_action (Gdk.Key.f, Gdk.ModifierType.CONTROL_MASK, StickyNoteWindow.ACTION_PREFIX + StickyNoteWindow.ACTION_SEARCH, null);
         add_binding_action (Gdk.Key.F, Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.SHIFT_MASK, StickyNoteWindow.ACTION_PREFIX + StickyNoteWindow.ACTION_SEARCH, null);
+        add_binding_action (Gdk.Key.F1, 0, Application.ACTION_PREFIX + Application.ACTION_SHOW_CHEATSHEET, null);
 
         add_binding_action (Gdk.Key.F12, Gdk.ModifierType.SHIFT_MASK, TextView.ACTION_PREFIX + TextView.ACTION_TOGGLE_LIST, null);
    }
@@ -65,10 +86,18 @@ public class Jots.Popover : Gtk.Popover {
         color_box = new Jots.ColorBox ();
         monospace_box = new Jots.MonospaceBox ();
         font_size_box = new Jots.ZoomBox ();
+        readonly_row = new Jots.ToggleRow (_("Lock Note (Read-Only)"), _("Prevent accidental edits or deletions"));
+        always_visible_row = new Jots.ToggleRow (_("Always Visible"), _("Exempt from Privacy (Scribbly) obfuscation"));
 
         view.append (color_box);
         view.append (monospace_box);
         view.append (font_size_box);
+        view.append (new Gtk.Separator (Gtk.Orientation.HORIZONTAL));
+        view.append (readonly_row);
+        view.append (always_visible_row);
+
+        readonly_row.toggled.connect (on_readonly_toggled);
+        always_visible_row.toggled.connect (on_always_visible_toggled);
 
         child = view;
 
@@ -85,6 +114,14 @@ public class Jots.Popover : Gtk.Popover {
         color_box.theme_changed.connect ((theme) => {theme_changed (theme);});
     }
 
+    private void on_readonly_toggled (bool active) {
+        readonly_toggled (active);
+    }
+
+    private void on_always_visible_toggled (bool active) {
+        always_visible_toggled (active);
+    }
+
     /**
     * Switches the .monospace class depending on the note setting
     */
@@ -96,5 +133,7 @@ public class Jots.Popover : Gtk.Popover {
 
     ~Popover () {
         debug ("Destroyed");
+        readonly_row.toggled.disconnect (on_readonly_toggled);
+        always_visible_row.toggled.disconnect (on_always_visible_toggled);
     }
 }

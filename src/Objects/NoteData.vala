@@ -26,6 +26,8 @@ public class Jots.NoteData {
     public int zoom;
     public int width;
     public int height;
+    public bool readonly;
+    public bool always_visible;
 
     // The standard constructor only does random
     public NoteData () {
@@ -37,6 +39,8 @@ public class Jots.NoteData {
         zoom = latest_zoom;
         width = DEFAULT_WIDTH;
         height = DEFAULT_HEIGHT;
+        readonly = false;
+        always_visible = false;
     }    
 
     /*************************************************/
@@ -56,8 +60,10 @@ public class Jots.NoteData {
         if (zoom < ZOOM_MIN)        { zoom = ZOOM_MIN;}
         else if (zoom > ZOOM_MAX)   { zoom = ZOOM_MAX;}
 
-        width       = (int)node.get_int_member_with_default ("width", DEFAULT_WIDTH);
-        height      = (int)node.get_int_member_with_default ("height", DEFAULT_HEIGHT);
+        width          = (int)node.get_int_member_with_default ("width", DEFAULT_WIDTH);
+        height         = (int)node.get_int_member_with_default ("height", DEFAULT_HEIGHT);
+        readonly       = node.get_boolean_member_with_default ("readonly", false);
+        always_visible = node.get_boolean_member_with_default ("always_visible", false);
     }
 
     /*************************************************/
@@ -85,6 +91,10 @@ public class Jots.NoteData {
         builder.add_int_value (width);
         builder.set_member_name ("height");
         builder.add_int_value (height);
+        builder.set_member_name ("readonly");
+        builder.add_boolean_value (readonly);
+        builder.set_member_name ("always_visible");
+        builder.add_boolean_value (always_visible);
         builder.end_object ();
 
         return builder.get_root ().get_object ();
@@ -104,6 +114,8 @@ public class Jots.NoteData {
         this.zoom = parsed.zoom;
         this.width = parsed.width;
         this.height = parsed.height;
+        this.readonly = parsed.readonly;
+        this.always_visible = parsed.always_visible;
     }
 
     /*************************************************/

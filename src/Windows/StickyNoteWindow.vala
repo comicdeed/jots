@@ -126,6 +126,8 @@ public class Jots.StickyNoteWindow : Gtk.ApplicationWindow {
         view.editablelabel.changed.connect (on_editable_changed);
         view.textview.buffer.changed.connect (has_changed);
         popover.theme_changed.connect (color_controller.on_color_changed);
+        popover.readonly_toggled.connect (on_popover_readonly_toggled);
+        popover.always_visible_toggled.connect (on_popover_always_visible_toggled);
 
         // Respect animation settings for showing ui elements
         if (Application.gtk_settings.gtk_enable_animations && (!Application.settings.get_boolean (KEY_HIDEBAR))) {
@@ -188,6 +190,29 @@ public class Jots.StickyNoteWindow : Gtk.ApplicationWindow {
         has_changed ();
     }
 
+    public bool is_readonly {
+        get { return _readonly; }
+        set {
+            _readonly = value;
+            textview.editable = !value;
+            view.editablelabel.sensitive = !value;
+            popover.is_readonly = value;
+            has_changed ();
+        }
+    }
+    private bool _readonly = false;
+
+    public bool always_visible {
+        get { return _always_visible; }
+        set {
+            _always_visible = value;
+            popover.is_always_visible = value;
+            scribbly_controller.always_visible = value;
+            has_changed ();
+        }
+    }
+    private bool _always_visible = false;
+
     /**
     * Package the note into a NoteData and pass it back.
     * Used by NoteManager to pass all informations conveniently for storage
@@ -206,7 +231,9 @@ public class Jots.StickyNoteWindow : Gtk.ApplicationWindow {
             monospace = popover.monospace,
             zoom = zoom_controller.zoom,
             width = this_width,
-            height = this_height
+            height = this_height,
+            readonly = this.is_readonly,
+            always_visible = this.always_visible
         };
 
         return data;
@@ -221,6 +248,24 @@ public class Jots.StickyNoteWindow : Gtk.ApplicationWindow {
         note_id = data.id;
         set_default_size (data.width, data.height);
         view.title = data.title;
+
+        if (data.id == CHEATSHEET_NOTE_ID) {
+            data.readonly = true;
+            data.always_visible = true;
+        }
+
+        _readonly = data.readonly;
+        textview.editable = !_readonly;
+        view.editablelabel.sensitive = !_readonly;
+        popover.is_readonly = _readonly;
+
+        _always_visible = data.always_visible || (data.id == CHEATSHEET_NOTE_ID);
+        popover.is_always_visible = _always_visible;
+        scribbly_controller.always_visible = _always_visible;
+
+        if (data.id == CHEATSHEET_NOTE_ID) {
+            popover.set_controls_locked (true);
+        }
 
         if (view.title != null && view.title.strip () != "") {
 #if DEVEL
@@ -285,6 +330,18 @@ public class Jots.StickyNoteWindow : Gtk.ApplicationWindow {
         search_popover.focus_and_select ();
     }
 
+    private void on_popover_readonly_toggled (bool active) {
+        if (note_id != CHEATSHEET_NOTE_ID) {
+            this.is_readonly = active;
+        }
+    }
+
+    private void on_popover_always_visible_toggled (bool active) {
+        if (note_id != CHEATSHEET_NOTE_ID) {
+            this.always_visible = active;
+        }
+    }
+
     ~StickyNoteWindow () {
         debug ("Destroying %s", view.title);
 
@@ -298,6 +355,8 @@ public class Jots.StickyNoteWindow : Gtk.ApplicationWindow {
         view.editablelabel.changed.disconnect (on_editable_changed);
         view.textview.buffer.changed.disconnect (has_changed);
         popover.theme_changed.disconnect (color_controller.on_color_changed);
+        popover.readonly_toggled.disconnect (on_popover_readonly_toggled);
+        popover.always_visible_toggled.disconnect (on_popover_always_visible_toggled);
 
         color_controller.dispose ();
         zoom_controller.dispose ();

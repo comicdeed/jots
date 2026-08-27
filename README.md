@@ -30,10 +30,18 @@
 
 ## Installation and quick start
 
-* **AppImage (Click-and-Run)**: Download `Jots-x86_64.AppImage` or `Jots-aarch64.AppImage` from [GitHub Releases](https://github.com/comicdeed/jots/releases), make it executable (`chmod +x Jots-*.AppImage`), and run directly on any Linux distribution without installation.
-* **Flatpak Bundle**: Download `io.github.comicdeed.jots-<version>-x86_64.flatpak` from [GitHub Releases](https://github.com/comicdeed/jots/releases) and install with `flatpak install io.github.comicdeed.jots-*.flatpak`.
+Jots is currently Linux-first. AppImage and Flatpak are the supported distribution paths. Windows installers are published for early access but are currently experimental and untested.
+
+**Recommended (Primary Distribution):**
+
+<a href="https://github.com/comicdeed/jots/releases/latest">
+  <img src="data/badges/download-appimage.svg" alt="Download AppImage" width="280" />
+</a>
+
+* **Linux AppImage (Recommended, Click-and-Run)**: Download `Jots-x86_64.AppImage` or `Jots-aarch64.AppImage` from the [latest release](https://github.com/comicdeed/jots/releases/latest), make it executable (`chmod +x Jots-*.AppImage`), and run directly on any Linux distribution without installation.
+* **Linux Flatpak (Alternative)**: Download `io.github.comicdeed.jots-<version>-x86_64.flatpak` from the [latest release](https://github.com/comicdeed/jots/releases/latest) and install with `flatpak install io.github.comicdeed.jots-*.flatpak`.
 * **Local compilation**: Refer to the [Developer Setup Guide](docs/development/setup.md) or [Building Guide](docs/development/building.md) for compilation instructions.
-* **Windows**: Native NSIS installers are available in the Releases section (see the [Windows Build Guide](docs/development/windows.md)).
+* **Windows (Experimental, Untested)**: Native NSIS installers are available in the [latest release](https://github.com/comicdeed/jots/releases/latest) for early testing (see the [Windows Build Guide](docs/development/windows.md)).
 
 ---
 

@@ -13,7 +13,7 @@ Welcome to Jots! Jots is a lightweight, distraction-free sticky notes applicatio
 * [5. Themes & Appearance](#5-themes--appearance)
 * [6. Preferences & Privacy Effects](#6-preferences--privacy-effects)
 * [7. AI Assistant & MCP Integration](#7-ai-assistant--mcp-integration)
-* [8. Markdown Storage, Backups & Obsidian/Logseq Interoperability](#8-markdown-storage-backups--obsidianlogseq-interoperability)
+* [8. Markdown Storage, Backups & Tool Interoperability](#8-markdown-storage-backups--tool-interoperability)
 
 ---
 
@@ -191,7 +191,7 @@ graph LR
 
 ---
 
-## 8. Markdown Storage, Backups & Obsidian/Logseq Interoperability
+## 8. Markdown Storage, Backups & Tool Interoperability
 
 ### Native Markdown File Storage
 Jots persists every sticky note as a separate, human-readable `.md` Markdown file containing standardized YAML front-matter headers:
@@ -226,8 +226,8 @@ height: 320
   ~/.local/share/io.github.comicdeed.jots/notes/
   ```
 
-### Obsidian & Logseq Interoperability
-Because notes are saved directly as `.md` files with standard YAML headers:
-* You can point your **Obsidian Vault** or **Logseq Directory** directly to your Jots notes directory to access and edit sticky notes seamlessly from both apps.
+### External Markdown Tools & Interoperability
+Because notes are saved directly as plain `.md` files with standard YAML front-matter headers:
+* You can potentially point external note-taking tools or vaults (such as **Obsidian** or **Logseq**) to your Jots notes directory to read and edit notes across applications.
 * You can easily version control your notes with `git` or synchronize them with Syncthing / Nextcloud.
 * Automatic migration ensures any legacy `saved_state.json` file from older Jots releases is automatically converted into separate `.md` files upon startup without losing data.

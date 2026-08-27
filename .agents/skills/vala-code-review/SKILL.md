@@ -1,14 +1,14 @@
 ---
 name: vala-code-review
 description: >-
-  Comprehensive, senior-level code review for Vala, GTK4, and Granite desktop applications.
-  Audits memory management (reference cycles, weak references, GLib source removal), UTF-8 safety,
-  Pango markup escaping, Vala/GTK4 idioms, and architectural boundaries.
+  Comprehensive, senior-level code review for Vala and GTK4 desktop applications.
+  Audits memory management (reference cycles, weak references, GLib source removal), null safety,
+  type validation, UTF-8 safety, Pango markup escaping, error handling, and architectural boundaries.
 ---
 
 # Senior Vala & GNOME Engineering Code Review
 
-This skill defines the rigorous code review process for Vala, GTK4, and Granite applications (such as Jots). When activated, the agent operates as a Senior Vala / GNOME Systems Engineer prioritizing correctness, maintainability, memory safety, and performance.
+This skill defines the rigorous code review process for Vala and GTK4 applications (such as Jots). When activated, the agent operates as a Senior Vala / GNOME Systems Engineer prioritizing correctness, maintainability, memory safety, and performance.
 
 ---
 
@@ -23,9 +23,10 @@ This skill defines the rigorous code review process for Vala, GTK4, and Granite 
 
 3. **Canary Test Suite Verification**:
    - Verify that new or modified unit tests are registered in the test runner (`tests/Main.vala`).
-   - Run the test suite within the Flatpak sandbox:
+   - Run the test suite:
      ```bash
-     flatpak run --command=jots-unit-tests io.github.comicdeed.jots.devel
+     docker compose run --rm test
+     docker compose run --rm lint
      ```
 
 4. **Structured Review Report Output**:
@@ -39,27 +40,39 @@ This skill defines the rigorous code review process for Vala, GTK4, and Granite 
 
 ## 🔍 Audit Checklist
 
+> **Reference:** All rules below are formally defined in [`docs/development/vala-coding-standards.md`](../../docs/development/vala-coding-standards.md).
+> When flagging a finding, cite the rule number (e.g. **VCS-01**, **VCS-13**) for precision.
+
 ### 1. Memory Management & Signal Lifecycles
-* [ ] **Circular References**: Ensure bidirectional dependencies (e.g., coordinators and services) use `weak` or `unowned` references to prevent reference-counting memory leaks.
-* [ ] **GLib Source Removal**: All `GLib.Timeout.add()` / `GLib.Idle.add()` timers must be cleared (`Source.remove()`) on widget destruction (`~Destructor` / `dispose`).
-* [ ] **Signal Disconnections & Unparenting**: Popovers and temporary floating widgets must be properly unparented (`popover.unparent()`) when their parent container is torn down.
-* [ ] **Action Hijacking**: Ensure custom child widgets (e.g. checkbuttons, color pills) embedded in list rows do not intercept parent container clicks or activate unintended window actions.
+* [ ] **VCS-01 — No Lambda Cycles**: Signal connections use named instance methods, never lambdas that capture `this` or any instance field.
+* [ ] **VCS-02 — Destructor Disconnects**: Every `signal.connect()` has a matching `signal.disconnect()` in `~ClassName ()`. Also checks: GLib sources removed, popovers unparented, sub-controllers disposed.
+* [ ] **VCS-03 — weak vs unowned**: Back-references from child objects use `weak` (nullable, tracked). Short-lived borrows use `unowned` (non-owning, non-nullable).
+* [ ] **VCS-04 — No Raw Pointers**: No `void*`, `uint8*`, or raw pointer casts in application code. Isolate all C-interop in `[CCode]` binding files.
 
-### 2. UTF-8 & Character Slicing Safety
-* [ ] **Byte vs. Character Offsets**: Vala `string.substring()` and `string.length` operate on *byte* offsets. Ensure string slicing never cuts mid-sequence through multibyte UTF-8 codepoints (emojis, umlauts, CJK).
-* [ ] **Character Boundary Alignment**: Verify boundary adjustments step backward through continuation bytes (`(((uint8) str[pos]) & 0xC0) == 0x80`).
-* [ ] **Null-Safe Collation**: Ensure `(a.title ?? "").collate(b.title ?? "")` protects against `null` strings during sorting.
+### 2. Null Safety & Type Validation
+* [ ] **VCS-12 — Nullable Access Guards**: Every `T?` variable or return value is null-checked before access. No unchecked dereference of nullable types.
+* [ ] **VCS-13 — Safe Casting**: Downcasts use `obj as MyType` with a null check. Blind `(MyType) obj` casts are flagged unless immediately preceded by an `is` check.
+* [ ] **VCS-14 — Nullability Contracts**: Public method signatures use `T` (non-nullable) or `T?` (nullable) intentionally and consistently. No unnecessary nullable parameters.
 
-### 3. Pango Markup & XML Entity Safety
-* [ ] **Escaping Order**: Never apply regex replacements or string transformations on already-escaped XML strings (`Markup.escape_text`). Doing so corrupts entities (e.g., `&amp;` -> `&<b>amp</b>;`).
-* [ ] **Highlighting Strategy**: Tokenize or find match intervals directly on unescaped text, escape matched and non-matched chunks independently, and enclose matches in `<b>...</b>`.
+### 3. UTF-8 & Character Slicing Safety
+* [ ] **VCS-10 — Byte Boundary Safety**: `string.substring()` slicing steps back through UTF-8 continuation bytes before cutting.
+* [ ] **VCS-11 — Null-Safe Collation**: String comparisons and sorts use `(s ?? "").collate(...)` or equivalent null guards.
 
-### 4. Vala & GTK4 Idioms & Architecture
-* [ ] **GObject Properties**: Use standard Vala properties (`get; construct set;`) rather than ad-hoc getter/setter methods where applicable.
-* [ ] **Boundary Decoupling**: Use lightweight interfaces or delegates (e.g., `ActiveNotesProvider`) rather than passing monolithic window managers into persistence or utility layers.
-* [ ] **Guardrail Validation**: Validate MCP and D-Bus parameters against system limits (`MAX_NOTE_TITLE_LENGTH`, `MAX_NOTE_CONTENT_LENGTH`, `MAX_SEARCH_RESULTS`).
-* [ ] **Deprecation Avoidance**: Check for modern GTK4 / Granite 7 replacements (e.g., `Granite.HeaderLabel.Size`, `Granite.CssClass`).
+### 4. Pango Markup & XML Entity Safety
+* [ ] **VCS-20 — Escape-Then-Wrap Order**: `Markup.escape_text()` is applied to raw, unescaped text chunks *before* wrapping in `<b>...</b>`. Never escape first and then apply regex replacements.
 
-### 5. Test Rigor & Edge Cases
+### 5. GObject Properties, Lifecycle & GTK4 Idioms
+* [ ] **VCS-30 — GObject Property Syntax**: Properties use Vala `get; set;` syntax rather than ad-hoc getter/setter methods.
+* [ ] **VCS-31 — No Base-Class Property Shadowing**: Custom property names do not collide with `Gtk.Widget` / `Gtk.Box` / `Gtk.Window` inherited properties.
+* [ ] **VCS-32 — Service/UI Decoupling**: Services and controllers operate through `weak Gtk.Window` references and public properties — never by casting to concrete window subclasses.
+* [ ] **VCS-33 — construct Blocks & dispose()**: Object properties are set via `Object (...)` or `construct`. Classes holding unmanaged resources (GLib sources, file handles) override `dispose ()` and call `base.dispose ()`.
+
+### 6. Error Handling & Robustness
+* [ ] **VCS-50 — throws with errordomain**: Fallible methods declare `throws` with a named `errordomain`. No silent `bool` return codes for failure conditions.
+* [ ] **VCS-51 — Specific Catch Blocks**: Catch clauses target named error codes. No bare `catch (Error e)` blocks that swallow failures without re-throwing or logging at `critical`.
+* [ ] **VCS-52 — GLib Logging over assert**: Production paths use `warning ()`, `critical ()`, `return_if_fail ()`, or `return_val_if_fail ()`. `assert ()` is limited to true compile-time / debug-only invariants.
+
+### 7. Test Rigor & Edge Cases
 * [ ] **Boundary Conditions**: Tests cover empty strings, whitespace-only inputs, max-length limits, and special regex characters (`- [ ]`, `*`, `+`, `()`).
 * [ ] **Identifier Uniqueness**: Use-case identifiers follow domain numbering without collisions (e.g., `/SearchService/UC_80_10_...`).
+* [ ] **Null & Error Paths**: Tests exercise `null` inputs and error-path branches, not only happy paths.

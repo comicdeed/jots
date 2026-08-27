@@ -18,7 +18,7 @@ graph LR
 ```
 
 - **Transport**: Standard input/output (`stdio`) JSON-RPC 2.0.
-- **Native IPC**: Native D-Bus session bus communication with the running Jots application (`io.github.comicdeed.jots.Notes` / `io.github.comicdeed.jots.devel`).
+- **Native IPC**: Native D-Bus session bus communication with the running Jots application (`io.github.comicdeed.jots.Notes` / `io.github.comicdeed.jots`, with `io.github.comicdeed.jots.devel` in development builds).
 - **Encapsulation**: Strict D-Bus boundary; storage internals remain completely private to Jots.
 - **Binary Footprint**: ~50 KB native executable, `< 2ms` startup, zero Python runtime dependencies.
 
@@ -26,7 +26,21 @@ graph LR
 
 ## 2. Client Configuration Examples
 
-### Flatpak Installation (Recommended)
+### AppImage Installation (Recommended for Release Builds)
+Add the following to your AI client configuration (e.g. `~/.config/Claude/claude_desktop_config.json`, `.cursor/mcp.json`, or Antigravity settings):
+
+```json
+{
+  "mcpServers": {
+    "jots": {
+      "command": "/path/to/Jots-<version>-<arch>.AppImage",
+      "args": ["--mcp"]
+    }
+  }
+}
+```
+
+### Flatpak Installation (Alternative)
 Add the following to your AI client configuration (e.g. `~/.config/Claude/claude_desktop_config.json`, `.cursor/mcp.json`, or Antigravity settings):
 
 ```json
@@ -37,7 +51,7 @@ Add the following to your AI client configuration (e.g. `~/.config/Claude/claude
       "args": [
         "run",
         "--command=jots-mcp",
-        "io.github.comicdeed.jots.devel"
+        "io.github.comicdeed.jots"
       ]
     }
   }
@@ -58,10 +72,18 @@ If Jots is installed natively from source or `.deb`/RPM package:
 ```
 
 ### Antigravity / Gemini CLI
-Run directly via Flatpak command or native binary:
+Run directly via AppImage, Flatpak, or native binary:
 
 ```bash
-flatpak run --command=jots-mcp io.github.comicdeed.jots.devel
+/path/to/Jots-<version>-<arch>.AppImage --mcp
+```
+
+```bash
+flatpak run --command=jots-mcp io.github.comicdeed.jots
+```
+
+```bash
+jots-mcp
 ```
 
 ---

@@ -13,6 +13,7 @@ A curated backlog of architectural enhancements, capabilities, and feature candi
 * [3. Planned Backlog (Tier 2)](#3-planned-backlog-tier-2)
   * [3.1 Bidirectional Note Linking (`[[Note Title]]`)](#31-bidirectional-note-linking-note-title)
   * [3.2 Note Archiving and Trash Bin Lifecycle](#32-note-archiving-and-trash-bin-lifecycle)
+  * [3.3 AppImage Update Information Embedding](#33-appimage-update-information-embedding)
 * [4. Deferred / Incubating Concepts (Tier 4)](#4-deferred--incubating-concepts-tier-4)
   * [4.1 Google Keep Backend Synchronization](#41-google-keep-backend-synchronization)
 * [5. Completed Initiatives](#5-completed-initiatives)
@@ -35,6 +36,7 @@ A curated backlog of architectural enhancements, capabilities, and feature candi
 | **Free-Form In-Text Tagging (`#tag`)** | 4.0 | 4.0 | 3.8 | **3.95** | 🟢 Tier 1 (Active Priority) |
 | **Bidirectional Note Linking (`[[Note]]`)** | 3.8 | 3.6 | 3.4 | **3.63** | 🟡 Tier 2 (Planned Backlog) |
 | **Note Archiving & Trash Lifecycle** | 3.4 | 3.8 | 4.2 | **3.74** | 🟡 Tier 2 (Planned Backlog) |
+| **AppImage Update Info Embedding** | 3.0 | 4.2 | 4.5 | **3.72** | 🟡 Tier 2 (Planned Backlog) |
 | **Google Keep Backend Sync** | 3.0 | 1.8 | 1.2 | **2.13** | 🔴 Tier 4 (Deferred) |
 
 ---
@@ -71,6 +73,20 @@ A curated backlog of architectural enhancements, capabilities, and feature candi
 ### 3.2 Note Archiving and Trash Bin Lifecycle
 * **Score**: `3.74` (Tier 2: Planned Backlog)
 * **Goal**: Provide a lightweight trash/archive directory instead of immediate file deletion, allowing easy recovery of accidentally discarded notes.
+
+### 3.3 AppImage Update Information Embedding
+* **Score**: `3.72` (Tier 2: Planned Backlog)
+* **Goal**: Embed [AppImage update information](https://github.com/AppImage/AppImageSpec/blob/master/draft.md#update-information) into released AppImage binaries so that tools such as `AppImageUpdate` and `appimageupdatetool` can perform efficient delta auto-updates without requiring users to re-download the full binary.
+* **Background**: The [AppImage Type 2 spec](https://github.com/AppImage/AppImageSpec/blob/master/draft.md#type-2-image-format) defines an optional `.upd-info` ELF section (a 512-byte field inside the runtime). When populated, it describes the transport mechanism and location of a `.zsync` control file. The `zsync` algorithm downloads only the changed binary blocks, making incremental upgrades fast even over metered connections.
+* **Implementation Strategy**:
+  * **Transport string**: Use the `gh-releases-zsync` format to point at the GitHub Releases page:
+    ```
+    gh-releases-zsync|comicdeed|jots|latest|Jots-*-x86_64.AppImage.zsync
+    ```
+  * **Build-time injection**: Pass the `-u` flag to `appimagetool` during `packaging/appimage/build-appimage.sh` so the string is written into the `.upd-info` section of each produced AppImage.
+  * **CI artifact generation**: Extend `.github/workflows/release.yml` to run `zsyncmake` on the packaged `x86_64` and `aarch64` AppImages, producing a matching `.zsync` sidecar file per architecture, and upload both artifacts to the GitHub Release.
+  * **Packaging guardrail**: Assert in `build-appimage.sh` that the `.upd-info` section is non-empty after build (e.g., `readelf -S Jots.AppImage | grep upd_info`) to prevent silent regressions.
+  * **Architecture parity (Docker / CI)**: Per the zero-dependency-drift rule, add `zsync` / `zsyncmake` to both `packaging/appimage/Dockerfile` and the runner `apt` install step in `CI.yml` / `release.yml` simultaneously.
 
 ---
 

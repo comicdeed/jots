@@ -20,7 +20,7 @@ graph LR
 - **Transport**: Standard input/output (`stdio`) JSON-RPC 2.0.
 - **Native IPC**: Native D-Bus session bus communication with the running Jots application (`io.github.comicdeed.jots.Notes` / `io.github.comicdeed.jots`, with `io.github.comicdeed.jots.devel` in development builds).
 - **Encapsulation**: Strict D-Bus boundary; storage internals remain completely private to Jots.
-- **Binary Footprint**: ~50 KB native executable, `< 2ms` startup, zero Python runtime dependencies.
+- **Binary Footprint**: ~50 KB native executable, `< 2ms` startup, no external runtime dependencies.
 
 ---
 

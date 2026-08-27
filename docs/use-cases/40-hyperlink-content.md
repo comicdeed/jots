@@ -1,6 +1,6 @@
 # Domain 40: Hyperlink and Rich Content
 
-Link and email pattern detection, Unicode character offset tracking, incremental scanning, and interaction handlers in `Granite.HyperTextView`.
+Link and email pattern detection, Unicode character offset tracking, incremental scanning, and interaction handlers in `MarkdownBuffer`.
 
 ---
 

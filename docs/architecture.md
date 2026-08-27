@@ -105,7 +105,7 @@ sequenceDiagram
 
 | Constraint | Limit | Rationale |
 | :--- | :---: | :--- |
-| **Max Note Content** | `10,000` chars (~10 KB) | Maintains sub-millisecond regex scanning in `Granite.HyperTextView` and prevents UI frame hitching. |
+| **Max Note Content** | `10,000` chars (~10 KB) | Maintains sub-millisecond regex scanning in `MarkdownBuffer` and prevents UI frame hitching. |
 | **Max Note Title** | `120` chars | Prevents header bar overflow and geometry distortion. |
 | **Max Active Notes** | `50` notes | Prevents window spam and desktop compositor texture exhaustion. |
 | **Max Search Results** | `20` matches | Capped with snippets to prevent LLM context token blowout. |

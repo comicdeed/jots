@@ -62,12 +62,12 @@ If you prefer to compile Jots natively on your host system, install the developm
 
 #### Debian/Ubuntu/elementary OS
 ```bash
-sudo apt install libgranite-7-dev libjson-glib-1.0-0 libgee-0.8-2 meson libvala-0.56-0 libportal-gtk4-dev
+sudo apt install libjson-glib-1.0-0 libgee-0.8-2 meson libvala-0.56-0 libportal-gtk4-dev
 ```
 
 #### Fedora
 ```bash
-sudo dnf install granite-7-devel json-glib-devel libgee-devel meson libvala libportal-devel
+sudo dnf install json-glib-devel libgee-devel meson libvala libportal-devel
 ```
 
 ### Meson Setup & Build

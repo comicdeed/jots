@@ -74,7 +74,7 @@ Model Context Protocol (MCP) JSON-RPC tooling, D-Bus session bus IPC, note synch
 * **Trigger**: External client attempts to create or update note with body exceeding `MAX_NOTE_CONTENT_LENGTH` (10,000 chars).
 * **Post-conditions**:
   * Rejects request at both Pydantic schema validation layer and native Vala core with an explicit error.
-  * Preserves UI thread responsiveness in `Granite.HyperTextView`.
+  * Preserves UI thread responsiveness in `MarkdownBuffer`.
 
 ### `UC-70.40.20` Active notes ceiling enforcement
 * **Trigger**: External client attempts to call `create_note` when 50 active notes are already open.

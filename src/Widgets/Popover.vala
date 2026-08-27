@@ -47,8 +47,8 @@ public class Jots.Popover : Gtk.Popover {
     public signal void always_visible_toggled (bool is_always_visible);
 
     public void set_controls_locked (bool locked) {
-        readonly_row.row_sensitive = !locked;
-        always_visible_row.row_sensitive = !locked;
+        readonly_row.sensitive = !locked;
+        always_visible_row.sensitive = !locked;
     }
 
     public Popover () {

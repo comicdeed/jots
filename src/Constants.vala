@@ -85,5 +85,7 @@ namespace Jots {
 
 ### 🤖 AI Automation
 * Connect Claude, Cursor, or Gemini CLI via `jots-mcp`.
+
 """;
+
 }

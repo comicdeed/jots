@@ -166,8 +166,6 @@ namespace Jots {
                         note.readonly = (val.down () == "true" || val == "1");
                         break;
                     case "always_visible":
-                    case "alwaysvisible":
-                    case "no_privacy":
                         note.always_visible = (val.down () == "true" || val == "1");
                         break;
                 }

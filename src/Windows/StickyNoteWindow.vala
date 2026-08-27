@@ -259,7 +259,7 @@ public class Jots.StickyNoteWindow : Gtk.ApplicationWindow {
         view.editablelabel.sensitive = !_readonly;
         popover.is_readonly = _readonly;
 
-        _always_visible = data.always_visible || (data.id == CHEATSHEET_NOTE_ID);
+        _always_visible = data.always_visible;
         popover.is_always_visible = _always_visible;
         scribbly_controller.always_visible = _always_visible;
 

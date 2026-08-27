@@ -22,13 +22,6 @@ namespace Jots {
             set { switch_widget.active = value; }
         }
 
-        public bool row_sensitive {
-            get { return switch_widget.sensitive; }
-            set {
-                switch_widget.sensitive = value;
-                label_widget.sensitive = value;
-            }
-        }
 
         public ToggleRow (string label_text, string? tooltip_text = null) {
             Object (

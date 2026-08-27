@@ -77,7 +77,7 @@ public class Jots.NoteManager : Object, Jots.ActiveNotesProvider {
             var note_data = new NoteData ();
             note_data.theme = DEFAULT_THEME;
 
-            print ("\nNo note in storage! Let's create a new one and a cheat sheet");
+            debug ("No note in storage! Let's create a new one and a cheat sheet");
             create_note (note_data);
 
             var cheatsheet = get_default_cheatsheet_data ();
@@ -259,7 +259,7 @@ public class Jots.NoteManager : Object, Jots.ActiveNotesProvider {
         last_deleted = null;
     }
 
-    public NoteData get_default_cheatsheet_data () {
+    private NoteData get_default_cheatsheet_data () {
         var cheatsheet = new NoteData ();
         cheatsheet.id = CHEATSHEET_NOTE_ID;
         cheatsheet.title = _(CHEATSHEET_TITLE);

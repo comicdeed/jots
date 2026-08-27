@@ -14,6 +14,7 @@ A curated backlog of architectural enhancements, capabilities, and feature candi
   * [3.1 Bidirectional Note Linking (`[[Note Title]]`)](#31-bidirectional-note-linking-note-title)
   * [3.2 Note Archiving and Trash Bin Lifecycle](#32-note-archiving-and-trash-bin-lifecycle)
   * [3.3 AppImage Update Information Embedding](#33-appimage-update-information-embedding)
+  * [3.4 AppImage Provenance and Signature Verification](#34-appimage-provenance-and-signature-verification)
 * [4. Deferred / Incubating Concepts (Tier 4)](#4-deferred--incubating-concepts-tier-4)
   * [4.1 Google Keep Backend Synchronization](#41-google-keep-backend-synchronization)
 * [5. Completed Initiatives](#5-completed-initiatives)
@@ -37,6 +38,7 @@ A curated backlog of architectural enhancements, capabilities, and feature candi
 | **Bidirectional Note Linking (`[[Note]]`)** | 3.8 | 3.6 | 3.4 | **3.63** | 🟡 Tier 2 (Planned Backlog) |
 | **Note Archiving & Trash Lifecycle** | 3.4 | 3.8 | 4.2 | **3.74** | 🟡 Tier 2 (Planned Backlog) |
 | **AppImage Update Info Embedding** | 3.0 | 4.2 | 4.5 | **3.72** | 🟡 Tier 2 (Planned Backlog) |
+| **AppImage Provenance & Signatures** | 3.2 | 4.4 | 4.0 | **3.92** | 🟡 Tier 2 (Planned Backlog) |
 | **Google Keep Backend Sync** | 3.0 | 1.8 | 1.2 | **2.13** | 🔴 Tier 4 (Deferred) |
 
 ---
@@ -87,6 +89,17 @@ A curated backlog of architectural enhancements, capabilities, and feature candi
   * **CI artifact generation**: Extend `.github/workflows/release.yml` to run `zsyncmake` on the packaged `x86_64` and `aarch64` AppImages, producing a matching `.zsync` sidecar file per architecture, and upload both artifacts to the GitHub Release.
   * **Packaging guardrail**: Assert in `build-appimage.sh` that the `.upd-info` section is non-empty after build (e.g., `readelf -S Jots.AppImage | grep upd_info`) to prevent silent regressions.
   * **Architecture parity (Docker / CI)**: Per the zero-dependency-drift rule, add `zsync` / `zsyncmake` to both `packaging/appimage/Dockerfile` and the runner `apt` install step in `CI.yml` / `release.yml` simultaneously.
+
+### 3.4 AppImage Provenance and Signature Verification
+* **Score**: `3.92` (Tier 2: Planned Backlog)
+* **Goal**: Improve release trust and provenance by cryptographically signing shipped AppImages and publishing verification material, following the AppImage signature guidance: [Embedding a signature in an AppImage](https://docs.appimage.org/packaging-guide/optional/signatures.html).
+* **Background**: Unsigned binaries require users to trust the distribution channel alone. Embedded signatures and public verification keys allow users, downstream packagers, and automated pipelines to validate artifact origin and integrity after download.
+* **Implementation Strategy**:
+  * **Release key management**: Create a dedicated Jots release-signing GPG key, store private key material as encrypted CI secrets, and publish the armored public key in the repository and release assets.
+  * **Build-time signing**: Enable AppImage signing in `packaging/appimage/build-appimage.sh` for both `x86_64` and `aarch64` outputs so each produced artifact contains an embedded signature section.
+  * **Verification artifacts**: Attach the public key and a concise `VERIFY.md` snippet to each GitHub Release, including exact commands to validate signatures with AppImage tooling and GPG.
+  * **CI provenance checks**: Add a post-build verification stage in `.github/workflows/release.yml` that fails the release if signature extraction or signature verification fails for any architecture.
+  * **Operational hardening**: Define key rotation cadence, revocation certificate storage, and incident response steps for compromised signing keys in `docs/development/release-workflow.md`.
 
 ---
 

@@ -13,10 +13,11 @@ A curated backlog of architectural enhancements, capabilities, and feature candi
     - [2.1 Note Organizer and Management Interface](#21-note-organizer-and-management-interface)
     - [2.2 Free-Form In-Text Tagging with Autocompletion](#22-free-form-in-text-tagging-with-autocompletion)
   - [3. Planned Backlog (Tier 2)](#3-planned-backlog-tier-2)
-    - [3.1 Bidirectional Note Linking (`[[Note Title]]`)](#31-bidirectional-note-linking-note-title)
-    - [3.2 Note Archiving and Trash Bin Lifecycle](#32-note-archiving-and-trash-bin-lifecycle)
-    - [3.3 AppImage Update Information Embedding](#33-appimage-update-information-embedding)
-    - [3.4 AppImage Provenance and Signature Verification](#34-appimage-provenance-and-signature-verification)
+    - [3.1 Daily Routine Adoption \& Presence](#31-daily-routine-adoption--presence)
+    - [3.2 Bidirectional Note Linking (`[[Note Title]]`)](#32-bidirectional-note-linking-note-title)
+    - [3.3 Note Archiving and Trash Bin Lifecycle](#33-note-archiving-and-trash-bin-lifecycle)
+    - [3.4 AppImage Update Information Embedding](#34-appimage-update-information-embedding)
+    - [3.5 AppImage Provenance and Signature Verification](#35-appimage-provenance-and-signature-verification)
   - [4. Deferred / Incubating Concepts (Tier 4)](#4-deferred--incubating-concepts-tier-4)
     - [4.1 Google Keep Backend Synchronization](#41-google-keep-backend-synchronization)
   - [5. Completed Initiatives](#5-completed-initiatives)
@@ -35,6 +36,7 @@ The score matrix is curated to include only non-completed roadmap candidates (ac
 | :--- | :---: | :---: | :---: | :---: | :---: |
 | **Note Organizer & Management Interface** | 4.4 | 4.6 | 4.2 | **4.42** | 🟢 Tier 1 (Active Priority) |
 | **Free-Form In-Text Tagging (`#tag`)** | 4.0 | 4.0 | 3.8 | **3.95** | 🟢 Tier 1 (Active Priority) |
+| **Daily Routine Adoption & Presence** | 4.1 | 4.4 | 4.3 | **4.26** | 🟡 Tier 2 (Planned Backlog) |
 | **Bidirectional Note Linking (`[[Note]]`)** | 3.8 | 3.6 | 3.4 | **3.63** | 🟡 Tier 2 (Planned Backlog) |
 | **Note Archiving & Trash Lifecycle** | 3.4 | 3.8 | 4.2 | **3.74** | 🟡 Tier 2 (Planned Backlog) |
 | **AppImage Update Info Embedding** | 3.0 | 4.2 | 4.5 | **3.72** | 🟡 Tier 2 (Planned Backlog) |
@@ -65,18 +67,30 @@ The score matrix is curated to include only non-completed roadmap candidates (ac
 
 ## 3. Planned Backlog (Tier 2)
 
-### 3.1 Bidirectional Note Linking (`[[Note Title]]`)
+### 3.1 Daily Routine Adoption & Presence
+* **Score**: `4.26` (Tier 2: Planned Backlog)
+* **Goal**: Increase daily active usage by ensuring Jots appears at the right time with minimal user friction, while preserving explicit user control.
+* **Implementation Strategy**:
+  * **Dual Startup Modes (User Choice)**: Support two explicit modes: (a) "Launch Jots on login" (desktop autostart) and (b) "Launch Jots only when MCP needs it" (no login autostart), so assistant-first users can avoid startup clutter.
+  * **First MCP Invocation Guided Enablement**: When `jots-mcp` receives an operation and the GUI app is not running, offer one-time guided setup for either startup mode instead of defaulting directly to login autostart.
+  * **Mid-Session Quit Policy**: If the user intentionally quits Jots during a session, treat it as temporary suppression and avoid immediate forced relaunch loops; only relaunch on the next explicit MCP action that requires UI-backed operations.
+  * **Distro-Aware Launch Resolution**: Add a startup resolver in `jots-mcp` that detects available launch paths in priority order (active D-Bus name activation, desktop ID via `gio launch`, Flatpak ID invocation, then direct binary fallback) to handle distro/package differences predictably.
+  * **Capability Probing and Telemetry-Free Fallback**: Perform local capability checks before launch attempts, store the successful method locally for future invocations, and surface actionable local errors when no method works.
+  * **Safety and Predictability Constraints**: Keep behavior explicit and reversible, including visible toggle state, one-time prompt suppression, user-overridable cooldown after manual quit, and no repeated background auto-enables without consent.
+  * **Cross-Context Documentation**: Update `docs/user-guide.md` and MCP setup docs to explain when autostart is recommended, how to enable/disable it, and expected behavior in both desktop and assistant-first usage.
+
+### 3.2 Bidirectional Note Linking (`[[Note Title]]`)
 * **Score**: `3.63` (Tier 2: Planned Backlog)
 * **Goal**: Inter-note navigation using wiki-style `[[Note Title]]` links that open or focus target sticky notes on click.
 * **Implementation Strategy**:
   * Recognize `[[...]]` patterns in `MarkdownBuffer` and render as clickable note links.
   * Resolve target note by UUID or Title in `NoteManager`.
 
-### 3.2 Note Archiving and Trash Bin Lifecycle
+### 3.3 Note Archiving and Trash Bin Lifecycle
 * **Score**: `3.74` (Tier 2: Planned Backlog)
 * **Goal**: Provide a lightweight trash/archive directory instead of immediate file deletion, allowing easy recovery of accidentally discarded notes.
 
-### 3.3 AppImage Update Information Embedding
+### 3.4 AppImage Update Information Embedding
 * **Score**: `3.72` (Tier 2: Planned Backlog)
 * **Goal**: Embed [AppImage update information](https://github.com/AppImage/AppImageSpec/blob/master/draft.md#update-information) into released AppImage binaries so that tools such as `AppImageUpdate` and `appimageupdatetool` can perform efficient delta auto-updates without requiring users to re-download the full binary.
 * **Background**: The [AppImage Type 2 spec](https://github.com/AppImage/AppImageSpec/blob/master/draft.md#type-2-image-format) defines an optional `.upd-info` ELF section (a 512-byte field inside the runtime). When populated, it describes the transport mechanism and location of a `.zsync` control file. The `zsync` algorithm downloads only the changed binary blocks, making incremental upgrades fast even over metered connections.
@@ -90,7 +104,7 @@ The score matrix is curated to include only non-completed roadmap candidates (ac
   * **Packaging guardrail**: Assert in `build-appimage.sh` that the `.upd-info` section is non-empty after build (e.g., `readelf -S Jots.AppImage | grep upd_info`) to prevent silent regressions.
   * **Architecture parity (Docker / CI)**: Per the zero-dependency-drift rule, add `zsync` / `zsyncmake` to both `packaging/appimage/Dockerfile` and the runner `apt` install step in `CI.yml` / `release.yml` simultaneously.
 
-### 3.4 AppImage Provenance and Signature Verification
+### 3.5 AppImage Provenance and Signature Verification
 * **Score**: `3.92` (Tier 2: Planned Backlog)
 * **Goal**: Improve release trust and provenance by cryptographically signing shipped AppImages and publishing verification material, following the AppImage signature guidance: [Embedding a signature in an AppImage](https://docs.appimage.org/packaging-guide/optional/signatures.html).
 * **Background**: Unsigned binaries require users to trust the distribution channel alone. Embedded signatures and public verification keys allow users, downstream packagers, and automated pipelines to validate artifact origin and integrity after download.

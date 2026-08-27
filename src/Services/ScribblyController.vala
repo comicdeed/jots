@@ -26,6 +26,15 @@ namespace Jots {
             }
         }
 
+        private bool _always_visible = false;
+        public bool always_visible {
+            get { return _always_visible; }
+            set {
+                _always_visible = value;
+                update_scribble_state ();
+            }
+        }
+
         public ScribblyController (Gtk.Window window) {
             this.window = window;
 
@@ -76,9 +85,10 @@ namespace Jots {
                 return;
             }
 
-            bool is_scribbled_active = _scribble && !window.is_active;
+            bool is_exempt = _always_visible;
+            bool is_scribbled_active = _scribble && !window.is_active && !is_exempt;
 
-            if (_scribble) {
+            if (_scribble && !is_exempt) {
                 window.add_css_class (STYLE_SCRIBBLED);
                 if (!window.is_active) {
                     window.add_css_class (STYLE_UNFOCUSED);

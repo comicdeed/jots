@@ -17,12 +17,13 @@ To maintain focus and avoid context bloat, refer to specialized documentation on
 * **Documentation Style**: [`docs/development/documentation-style.md`](docs/development/documentation-style.md) — GNOME developer style rules.
 * **Release Workflow & Automation**: [`docs/development/release-workflow.md`](docs/development/release-workflow.md) — Release branching strategy, AppStream changelog curation, and automated multi-arch GitHub releases.
 * **Pull Request Guidelines**: [`docs/development/pull-request-guidelines.md`](docs/development/pull-request-guidelines.md) — Contribution checklists and attribution standards.
+* **Vala Coding Standards**: [`docs/development/vala-coding-standards.md`](docs/development/vala-coding-standards.md) — **Read before writing any widget or signal connection.** Standing rules for signal lifecycle (VCS-01–04), null safety & type validation (VCS-12–14), UTF-8 safety (VCS-10/11), Pango markup (VCS-20), GObject lifecycle & GTK4 idioms (VCS-30–33), error handling (VCS-50–52), and architectural guardrails (VCS-40/41).
 
 ---
 
 ## 🏗️ Architecture Summary
 
-Jots is a lightweight GTK4/Granite 7 sticky notes app and MCP server written entirely in **Vala**:
+Jots is a lightweight GTK4 sticky notes app and MCP server written entirely in **Vala**:
 1. **`Jots.Application`**: Main entry point, GSettings/theme management, and D-Bus registration.
 2. **`Jots.NoteManager`**: Central coordinator managing active windows (`open_notes`) and debounced saving.
 3. **`Jots.NoteService`**: Native D-Bus service (`io.github.comicdeed.jots.Notes`) for real-time desktop IPC.

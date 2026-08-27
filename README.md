@@ -22,7 +22,7 @@
 * 🎨 **10 pastel color themes**: Thoughtfully designed color palettes that adapt to light and dark system styles.
 * 🔤 **Typography customization**: Custom proportional and code monospace font selection with automatic monospace catalog filtering.
 * 🔒 **Scribbly privacy mode**: Focus-driven text obfuscation with handwritten squiggles (`Redacted Script`) to protect sensitive notes from shoulder surfing.
-* 📂 **Markdown storage & interoperability**: Notes are stored as plain `.md` files with YAML front matter—directly compatible with **Obsidian**, **Logseq**, `git`, and backup tools.
+* 📂 **Markdown storage & interoperability**: Notes are stored as standard plain `.md` files with YAML front matter—enabling integration with external Markdown editors, knowledge bases (such as Obsidian or Logseq), `git`, and backup tools.
 * 🤖 **Native MCP server (`jots-mcp`)**: Built-in Model Context Protocol server enabling AI assistants (Claude Desktop, Cursor, Gemini CLI, Antigravity) to manage desktop notes in real time.
 * ⚡ **Fast and lightweight**: Written in native Vala/GTK4 with sub-millisecond startup, zero heavy runtimes, and low memory usage.
 
@@ -45,9 +45,9 @@ See the **[MCP Integration Guide](docs/development/mcp-server.md)** or the **[Us
 
 ---
 
-## Markdown storage and Obsidian/Logseq interoperability
+## Markdown storage and tool interoperability
 
-All notes are stored as individual `.md` Markdown files with standardized YAML front-matter headers containing note metadata (UUID, title, theme, zoom, and window dimensions):
+All notes are stored as individual `.md` Markdown files with standardized YAML front-matter headers containing note metadata (UUID, title, theme, zoom, and window dimensions). Because notes are saved in plain text, you can read them with standard text tools, version control them with Git, or potentially integrate them into personal knowledge base directories (such as Obsidian or Logseq):
 
 ```markdown
 ---

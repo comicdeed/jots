@@ -13,7 +13,7 @@ Welcome to Jots! Jots is a lightweight, distraction-free sticky notes applicatio
 * [5. Themes & Appearance](#5-themes--appearance)
 * [6. Preferences & Privacy Effects](#6-preferences--privacy-effects)
 * [7. AI Assistant & MCP Integration](#7-ai-assistant--mcp-integration)
-* [8. Markdown Storage, Backups & Obsidian/Logseq Interoperability](#8-markdown-storage-backups--obsidianlogseq-interoperability)
+* [8. Markdown Storage, Backups & Tool Interoperability](#8-markdown-storage-backups--tool-interoperability)
 
 ---
 
@@ -61,6 +61,7 @@ Welcome to Jots! Jots is a lightweight, distraction-free sticky notes applicatio
 | **`Ctrl + 0`** | **Reset Zoom** | Resets text zoom to the default 100% scale. |
 | **`Ctrl + Scroll`** | **Smooth Zoom** | Scales text size dynamically using mouse scroll wheel or touchpad pinch. |
 | **`Ctrl + Click`** | **Open Link** | Opens a detected URL or email address in your default web browser or mail app. |
+| **`F1`** | **Quick Cheat Sheet** | Opens, presents, or restores the built-in indestructible quick reference Cheat Sheet note. |
 
 ---
 
@@ -120,11 +121,14 @@ Jots comes with 10 carefully designed pastel color palettes that adapt seamlessl
 
 ---
 
-## 6. Preferences & Privacy Effects
+## 6. Preferences, Privacy & Note Protection
 
 Access global preferences by right-clicking a note or selecting **Preferences** from the app menu:
 
 * **Scribbly Privacy Mode (`Ctrl + H`)**: When enabled, any note window that loses desktop focus immediately obfuscates its text and code elements with playful handwritten squiggles using the embedded `Redacted Script` typeface. Focusing the note instantly restores crystal-clear readable text.
+* **Lock Note (Read-Only)**: Open the note popover menu (**`Ctrl + G`**) and toggle **Lock Note (Read-Only)** to protect sensitive or reference notes from accidental keyboard edits and title modifications.
+* **Always Visible (Privacy Exemption)**: Toggle **Always Visible** in a note's popover menu to exempt that specific sticky note from Scribbly privacy obfuscation, keeping reference checklists or guides crisp and legible even when unfocused.
+* **Built-in Quick Cheat Sheet (`F1`)**: Jots includes a built-in, read-only, privacy-exempt reference note with standard shortcuts and syntax tips. Press **`F1`** anytime to summon it, bring it to the front, or recreate it if closed.
 * **Hide Action Bar (`Ctrl + T`)**: Hides the bottom toolbar on note windows to maximize writing space.
 * **Autostart on Login**: Integrates with your desktop portal to automatically relaunch all your open sticky notes when you log into your computer.
 * **Import from Jorts Migration Helper**: Seamlessly import your existing sticky notes from Jorts (`io.github.elly_code.jorts`). The import is **100% non-destructive**—your original Jorts `saved_state.json` file is never deleted or altered. You can trigger migration from the first-run prompt or anytime via the **Import from Jorts** button in Preferences.
@@ -191,7 +195,7 @@ graph LR
 
 ---
 
-## 8. Markdown Storage, Backups & Obsidian/Logseq Interoperability
+## 8. Markdown Storage, Backups & Tool Interoperability
 
 ### Native Markdown File Storage
 Jots persists every sticky note as a separate, human-readable `.md` Markdown file containing standardized YAML front-matter headers:
@@ -226,8 +230,8 @@ height: 320
   ~/.local/share/io.github.comicdeed.jots/notes/
   ```
 
-### Obsidian & Logseq Interoperability
-Because notes are saved directly as `.md` files with standard YAML headers:
-* You can point your **Obsidian Vault** or **Logseq Directory** directly to your Jots notes directory to access and edit sticky notes seamlessly from both apps.
+### External Markdown Tools & Interoperability
+Because notes are saved directly as plain `.md` files with standard YAML front-matter headers:
+* You can potentially point external note-taking tools or vaults (such as **Obsidian** or **Logseq**) to your Jots notes directory to read and edit notes across applications.
 * You can easily version control your notes with `git` or synchronize them with Syncthing / Nextcloud.
 * Automatic migration ensures any legacy `saved_state.json` file from older Jots releases is automatically converted into separate `.md` files upon startup without losing data.

@@ -12,7 +12,7 @@
 namespace Jots {
 
     /*************************************************/
-    const string DONATE_LINK             = "https://ko-fi.com/teamcons/tip";
+    const string COMMUNITY_LINK          = "https://github.com/comicdeed/jots/discussions";
 
     // signature theme
 #if HALLOWEEN

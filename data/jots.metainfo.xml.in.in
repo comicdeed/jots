@@ -28,9 +28,8 @@
     <project_group>@PUBLISHER@</project_group>
     <url type="homepage">https://github.com/@PUBLISHER@/@APP_NAME@</url>
     <url type="bugtracker">https://github.com/@PUBLISHER@/@APP_NAME@/issues</url>
-    <url type="help">https://github.com/@PUBLISHER@/@APP_NAME@/wiki</url>
+    <url type="help">https://github.com/@PUBLISHER@/@APP_NAME@/discussions</url>
     <url type="translate">https://github.com/@PUBLISHER@/@APP_NAME@/blob/main/po/README.md</url>
-    <url type="donation">https://ko-fi.com/teamcons/tip</url>
     <url type="vcs-browser">https://github.com/@PUBLISHER@/@APP_NAME@</url>
 
     <content_rating type="oars-1.1"/>

@@ -314,8 +314,8 @@ namespace Jots {
             };
 
             actionbar.start_widget = new Gtk.LinkButton.with_label (
-                DONATE_LINK,
-                _("Support us!")
+                COMMUNITY_LINK,
+                _("Get help")
             );
 
             var right_box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, Jots.SPACING_DOUBLE);

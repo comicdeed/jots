@@ -1,6 +1,6 @@
 ---
 name: release-notes
-description: Curates high-signal, concise AppStream metadata and GitHub release notes for Jots, adhering to GNOME/elementary HIG and differentiating between incremental Beta and cumulative Stable release diffs.
+description: Use when asked to prepare or update Jots release notes, AppStream <release> entries, or GitHub release text; analyzes commit ranges for Beta vs Stable releases and produces concise, user-experience-first notes with technical changes in a separate section.
 ---
 
 # Release Notes Generation Skill

@@ -77,6 +77,7 @@ flatpak run --command=jots-unit-tests io.github.comicdeed.jots.devel
   - **Hard Packaging Guardrails**: Packaging scripts like `packaging/appimage/build-appimage.sh` must include strict assertions (e.g., checking that `libpixbufloader-svg.so` and runtime libraries exist in `AppDir`) so that missing dependencies fail fast in CI instead of producing broken packages.
 * **Test & Use-Case Cross-Referencing**: When writing unit tests in `tests/`, embed the permanent use-case identifier (`/<Component>/UC_XX_YY_ZZ/<ScenarioName>`) and link to `docs/use-cases/`.
 * **User Guide Synchronization**: Whenever modifying user-facing features, keyboard shortcuts, or settings, update [`docs/user-guide.md`](docs/user-guide.md).
+* **SPDX Attribution Maintenance**: For changes to source, tests, scripts, CSS, or build/config files, preserve existing SPDX headers and add/update `SPDX-FileCopyrightText` entries for new contributors when they make substantive edits.
 * **Honest Attribution**: When opening a PR, include the attribution block in `docs/development/pull-request-guidelines.md`.
 
 ---

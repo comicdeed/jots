@@ -1,6 +1,6 @@
 /*
  * SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText:  2026 Jots Contributors
+ * SPDX-FileCopyrightText:  2026 Dino Korah (github.com/codemedic)
  */
 
 namespace Jots {

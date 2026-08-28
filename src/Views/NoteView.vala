@@ -3,6 +3,7 @@
  * SPDX-FileCopyrightText:  2017-2024 Lains
  *                          2025 Contributions from the ellie_Commons community (github.com/ellie-commons/)
  *                          2025-2026 Stella & Charlie (teamcons.carrd.co)
+ *                          2026 Dino Korah (github.com/codemedic)
  */
 
  public class Jots.NoteView : Gtk.Box {

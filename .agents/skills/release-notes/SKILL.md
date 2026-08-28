@@ -12,8 +12,22 @@ This skill defines the standard procedure for analyzing git commits, filtering d
 ## 🎯 Core Principles
 
 1. **User-Centric Focus**: Highlight tangible user benefits, new features, shortcuts, styling, and genuine bug fixes. Completely exclude internal refactors, test additions, code review cleanup, and CI maintenance commits.
-2. **Strict Conciseness**: Maximum 15–20 lines total. Keep descriptions crisp and high-impact.
-3. **Single Source of Truth**: The `<release>` block in `data/jots.metainfo.xml.in.in` is the canonical source of truth, from which GitHub Releases and app store listings are derived.
+2. **Human, Experience-First Tone**: Write in clear, natural language that describes what people can now do, feel, or notice. Avoid robotic changelog phrasing, implementation jargon, and commit-message style fragments.
+3. **Separate Technical Notes**: If important technical changes must be called out, place them in a distinct section labeled **Technical Notes** (or **Technical Changes**) after user-facing highlights.
+4. **Strict Conciseness**: Maximum 15–20 lines total. Keep descriptions crisp and high-impact.
+5. **Single Source of Truth**: The `<release>` block in `data/jots.metainfo.xml.in.in` is the canonical source of truth, from which GitHub Releases and app store listings are derived.
+
+### Language and Tone Rules (Mandatory)
+* Lead with outcomes for everyday users, not architecture details.
+* Prefer verbs tied to user action and comfort: "find", "focus", "organize", "read", "move faster", "feel smoother".
+* Keep wording plain and approachable; assume non-technical readers.
+* Avoid mechanical templates like "Added X", "Implemented Y", "Refactored Z" unless unavoidable.
+* Mention keyboard shortcuts only when they improve discoverability.
+* Only include technical depth when it materially affects trust, reliability, privacy, compatibility, or integrations.
+
+### Required Section Order
+1. **What is better for users** (default section; always present)
+2. **Technical Notes** (optional, but required when significant technical changes are included)
 
 ---
 
@@ -65,9 +79,10 @@ git log "${BASE_TAG}..HEAD" --oneline --no-merges
 
 ### 3. Categorize Changes
 Group commits into standard high-signal categories:
-* **`✨ Features`**: (`feat:` commits) Major new functionality, shortcuts, and capabilities.
-* **`🎨 Design & UX`**: (`style:`, `feat(theme):` commits) Theming, contrast, typography, and styling improvements.
-* **`🔒 Privacy & Fixes`**: (`fix:` commits) Bug fixes and security/privacy enhancements.
+* **`✨ What is better for users`**: Major user-visible improvements, smoother workflows, clearer interactions, and meaningful fixes.
+* **`🎨 Design and comfort`**: Theming, contrast, readability, typography, and visual polish that improves day-to-day use.
+* **`🔒 Reliability, privacy, and trust`**: Fixes that protect data, reduce surprises, or improve confidence.
+* **`🛠️ Technical Notes`**: Important engineering changes worth surfacing for advanced users, packagers, or integrators.
 
 *Omit all `chore:`, `ci:`, `test:`, `refactor:`, and internal code review commits.*
 
@@ -84,16 +99,19 @@ Check corresponding entries in:
 ```xml
         <release version="1.0.0-beta.1" type="development" date="2026-08-25">
             <description>
-                <p>Inaugural Beta release of Jots — the next-generation lightweight sticky notes application, forked and evolved from Jorts 4.3.0.</p>
-                <p>Major Highlights:</p>
+                <p>This beta focuses on making everyday note-taking faster, clearer, and more comfortable.</p>
+                <p>What is better for users:</p>
                 <ul>
-                    <li>Full-Text Search: Real-time search popover querying live text buffers and saved notes with relevance scoring (Ctrl+F)</li>
-                    <li>Markdown Storage &amp; Live Rendering: Individual Markdown file persistence with inline syntax rendering for headers, lists, checklists (- [ ]), and code blocks</li>
-                    <li>Model Context Protocol (MCP) Server: Standalone native binary (jots-mcp) enabling AI assistants to securely read and create desktop sticky notes</li>
-                    <li>Desaturated Dark Mode: High-contrast pastel color derivation optimized for dark themes and accessibility</li>
-                    <li>Custom Typography: Configurable default and monospace note fonts in Preferences</li>
-                    <li>Jorts Migration Helper: Non-destructive first-run prompt and Preferences tool to copy notes from existing Jorts installations</li>
-                    <li>Scribbly Privacy Mode: Fixed dynamic font obfuscation when notes lose focus (Ctrl+H)</li>
+                    <li>Search feels more immediate, helping you find the right note quickly.</li>
+                    <li>Markdown notes remain plain and portable while rendering live for easier reading.</li>
+                    <li>Theme and typography updates improve readability and reduce eye strain.</li>
+                    <li>Migration from Jorts is safer with a non-destructive import flow.</li>
+                    <li>Scribbly privacy behavior is more consistent when notes lose focus.</li>
+                </ul>
+                <p>Technical Notes:</p>
+                <ul>
+                    <li>Added a standalone native `jots-mcp` binary for MCP integrations over stdio JSON-RPC 2.0.</li>
+                    <li>Improved search indexing and retrieval paths across active buffers and persisted Markdown files.</li>
                 </ul>
             </description>
         </release>
@@ -103,15 +121,28 @@ Check corresponding entries in:
 ```markdown
 # 🚀 Jots 1.0.0-beta.1 (Inaugural Beta)
 
-Welcome to the inaugural beta release of **Jots** (`io.github.comicdeed.jots`), a lightweight, elegant desktop sticky notes application with native Markdown storage, full-text search, and AI assistant integration.
+Welcome to the inaugural beta release of **Jots** (`io.github.comicdeed.jots`) with improvements focused on everyday note-taking speed, clarity, and comfort.
 
 *Jots is an independent fork and modern evolution of the classic Jorts application by Lains and community contributors.*
 
-### ✨ Highlights
-* **Full-Text Search Engine**: Real-time popover search (`Ctrl+F` / `Ctrl+Shift+F`) querying active windows and saved Markdown notes.
-* **Markdown Storage & Rendering**: Plaintext `.md` persistence with live syntax highlighting for `# Headings`, `- [ ]` task checklists, and code blocks.
-* **Model Context Protocol (MCP) Server**: Standalone native binary (`jots-mcp`) over stdio JSON-RPC 2.0 for AI agent integration.
-* **Desaturated Dark Mode & Typography**: High-contrast pastel surfaces and custom font configuration via Preferences.
-* **Non-Destructive Jorts Migration**: One-click first-run prompt and Preferences tool to safely copy existing Jorts notes.
-* **Scribbly Privacy Mode**: Fixed dynamic font obfuscation on unfocused notes (`Ctrl+H`).
+### ✨ What is better for users
+* **Find notes faster**: Search now feels immediate, helping you jump to the right note without breaking focus.
+* **Write in plain Markdown naturally**: Notes are saved as readable `.md` files with live rendering for structure and task lists.
+* **Read more comfortably**: Theme and typography improvements increase contrast and reduce visual strain over long sessions.
+* **Switch safely from Jorts**: Migration is non-destructive, so you can bring notes over with confidence.
+* **Protect glance privacy**: Scribbly mode behaves more consistently when notes lose focus.
+
+### 🛠️ Technical Notes
+* Added a native `jots-mcp` server for Model Context Protocol integration over stdio JSON-RPC 2.0.
+* Improved search indexing and retrieval paths for active windows and persisted Markdown notes.
 ```
+
+---
+
+## ✅ Quality Gate Before Finalizing Notes
+
+Before publishing, verify all of the following:
+* The first section is explicitly user experience driven.
+* No purely internal change appears unless it impacts users directly.
+* Any key technical architecture/runtime change is moved into **Technical Notes**.
+* The wording sounds like a product update for users, not a commit digest for developers.

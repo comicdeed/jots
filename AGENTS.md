@@ -34,7 +34,7 @@ Jots is a lightweight GTK4 sticky notes app and MCP server written entirely in *
 
 ---
 
-## 📦 Post-Clone Setup & Build Workflows
+## 📦 Post-Clone Setup, Standard Build/Test Workflows
 
 ### 1. Enable Repository Git Hooks (Post-Clone)
 After cloning the repository, configure Git to use the tracked hooks in `.githooks/` to activate the local branch guardrail:
@@ -42,25 +42,83 @@ After cloning the repository, configure Git to use the tracked hooks in `.githoo
 git config core.hooksPath .githooks
 ```
 
-### 2. Build and Install Jots (Flatpak Sandbox)
+### 2. Standard non-CI workflow model (humans and agents)
+Use this decision model for compile, run, and test.
+
+1. **Native mode (optional acceleration path when host toolchain is compatible)**
+```bash
+meson setup builddir --prefix=/usr --buildtype=debug -Dprofile=linux
+meson compile -C builddir
+GSK_RENDERER=cairo GTK_A11Y=none xvfb-run -a meson test -C builddir --verbose
+```
+
+Use native mode only when the host environment satisfies the repository toolchain requirements (notably GTK4 >= 4.14 and pkg-config visibility for system GTK libraries).
+
+2. **AppImage mode (formal packaging path, mode-specific verification)**
+Stable package:
+```bash
+docker compose run --rm appimage
+```
+Devel package:
+```bash
+docker compose run --rm appimage-devel
+```
+Cached devel package rebuild (faster repeat packaging):
+```bash
+docker compose run --rm appimage-devel-cached
+```
+Containerized Meson canary tests:
+```bash
+docker compose run --rm meson-test
+```
+Build devel AppImage for embedded test runner:
+```bash
+docker compose run --rm appimage-devel
+```
+Direct devel AppImage test execution after build (faster repeat runs and selector support):
+```bash
+./dist/Jots-devel-<version>-<arch>.AppImage --unit-tests
+./dist/Jots-devel-<version>-<arch>.AppImage --unit-tests -p /McpProtocol/UC_70_10_10/InitializeHandshake
+```
+Direct script fallback only when Compose is unavailable:
+```bash
+./packaging/appimage/build-appimage.sh
+./packaging/appimage/build-appimage.sh --devel
+```
+
+3. **Flatpak mode (maintained parity with AppImage)**
+Devel build + run + tests:
 ```bash
 flatpak run org.flatpak.Builder --force-clean --sandbox --user --install --install-deps-from=flathub --ccache builddir io.github.comicdeed.jots.devel.yml
-```
-
-### 2. Run Jots Locally
-```bash
 flatpak run io.github.comicdeed.jots.devel
+flatpak run --command=jots-unit-tests io.github.comicdeed.jots.devel
 ```
-
-### 3. Run Native MCP Server in Flatpak
+Direct Flatpak devel test reruns with selectors:
+```bash
+flatpak run --command=jots-unit-tests io.github.comicdeed.jots.devel
+flatpak run --command=jots-unit-tests io.github.comicdeed.jots.devel -p /McpProtocol/UC_70_10_10/InitializeHandshake
+```
+Stable build + run + tests:
+```bash
+flatpak run org.flatpak.Builder --force-clean --sandbox --user --install --install-deps-from=flathub --ccache builddir io.github.comicdeed.jots.yml
+flatpak run io.github.comicdeed.jots
+flatpak run --command=jots-unit-tests io.github.comicdeed.jots
+```
+Flatpak MCP server (devel):
 ```bash
 flatpak run --command=jots-mcp io.github.comicdeed.jots.devel
 ```
 
-### 4. Run Canary Unit Tests
-```bash
-flatpak run --command=jots-unit-tests io.github.comicdeed.jots.devel
-```
+Default to package-mode workflows for day-to-day validation. Use native mode as an optional fast path only when host compatibility is confirmed.
+
+Escalate from native-only to package-mode verification whenever a change touches packaging-sensitive behavior (AppRun or packaging scripts, launch semantics, D-Bus/MCP, portal/autostart, sandbox permissions, install/runtime paths).
+
+Targeted package-mode tests (for example devel AppImage embedded tests and Flatpak devel tests) must run in their full packaged runtime setup because these checks can depend on packaging-specific environment details such as session bus wiring, sandbox permissions, and desktop portal behavior.
+
+Artifacts are written to `dist/`.
+
+### 3. Windows Packaging (Experimental)
+For local Windows packaging, follow `docs/development/windows.md` in an MSYS2 UCRT64 shell.
 
 ---
 

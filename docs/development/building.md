@@ -1,14 +1,61 @@
 # Building & Running Jots
 
-This document describes how to compile, install, and run Jots on Linux systems. 
+This document describes how to compile, package, test, and run Jots on Linux systems.
 
 > 💡 **Developer Setup**: For complete repository cloning, Git guardrails configuration, and IDE tooling setup, see the **[Developer Setup Guide](setup.md)**.
 
 ---
 
-## 1. Building via Flatpak (Recommended)
+## 1. Packaging Workflows (Non-CI)
 
-Flatpak is the recommended compilation and deployment method for Jots as it automatically pulls all elementary OS and GNOME runtime dependencies inside a sandbox.
+For day-to-day work, AppImage is the primary packaging path. Flatpak is actively maintained for parity. Native builds are an optional acceleration path when host toolchain compatibility is satisfied.
+
+1. **Primary path: AppImage via Docker Compose (default, repeatable)**
+2. **Maintained parallel path: Flatpak devel build + Flatpak devel unit tests**
+3. **Optional acceleration path: Native Meson host build**
+4. **Additional path: Windows installer build (MSYS2)**
+
+### A. AppImage via Docker Compose (Default)
+Stable AppImage:
+```bash
+docker compose run --rm appimage
+```
+Devel AppImage:
+```bash
+docker compose run --rm appimage-devel
+```
+Cached devel AppImage rebuild (faster repeat packaging):
+```bash
+docker compose run --rm appimage-devel-cached
+```
+Containerized Meson canary tests (not AppImage artifact tests):
+```bash
+docker compose run --rm meson-test
+```
+Build devel AppImage for targeted package-mode tests:
+```bash
+docker compose run --rm appimage-devel
+```
+After building the devel artifact, run tests directly for faster iteration and selector support:
+```bash
+./dist/Jots-devel-<version>-<arch>.AppImage --unit-tests
+./dist/Jots-devel-<version>-<arch>.AppImage --unit-tests -p /McpProtocol/UC_70_10_10/InitializeHandshake
+```
+Fallback only when Compose is unavailable:
+```bash
+./packaging/appimage/build-appimage.sh
+./packaging/appimage/build-appimage.sh --devel
+```
+
+Generated artifacts are written to `dist/`.
+
+Targeted AppImage package-mode tests must be run in the full packaged runtime. They validate packaging-context behavior that native test runs do not fully cover.
+
+## 2. Building via Flatpak
+
+Flatpak is the recommended sandboxed runtime validation path for Jots because it automatically pulls the expected GNOME platform dependencies inside an isolated environment.
+
+Note: This document uses `flatpak run org.flatpak.Builder ...` for local workflows. CI uses `flatpak-builder ...` directly in `.github/workflows/CI.yml`; both approaches are valid.
 
 ### Prerequisites
 Make sure you have `flatpak` and `flatpak-builder` installed on your host system:
@@ -34,6 +81,16 @@ Run the development build:
 ```bash
 flatpak run io.github.comicdeed.jots.devel
 ```
+Run Flatpak devel unit tests:
+```bash
+flatpak run --command=jots-unit-tests io.github.comicdeed.jots.devel
+```
+Direct Flatpak devel test reruns with selectors:
+```bash
+flatpak run --command=jots-unit-tests io.github.comicdeed.jots.devel
+flatpak run --command=jots-unit-tests io.github.comicdeed.jots.devel -p /McpProtocol/UC_70_10_10/InitializeHandshake
+```
+These tests should be used for targeted package-mode verification when behavior depends on Flatpak sandbox/portal/session integration.
 
 #### B. Stable Flathub Release
 Builds the standard production release using Flathub dependencies:
@@ -47,9 +104,9 @@ flatpak run io.github.comicdeed.jots
 
 ---
 
-## 2. Native Compilation (Local Build)
+## 3. Native Compilation (Local Build)
 
-If you prefer to compile Jots natively on your host system, install the development dependencies and build using Meson.
+Use this path when your host toolchain matches repository requirements (including GTK4 >= 4.14).
 
 ### Native Dependencies
 * `libgtk-4-dev`
@@ -60,7 +117,7 @@ If you prefer to compile Jots natively on your host system, install the developm
 * `meson`
 * `valac`
 
-#### Debian/Ubuntu/elementary OS
+#### Debian/Ubuntu
 ```bash
 sudo apt install libjson-glib-1.0-0 libgee-0.8-2 meson libvala-0.56-0 libportal-gtk4-dev
 ```
@@ -94,3 +151,9 @@ To uninstall:
 ```bash
 sudo meson compile --clean -C builddir
 ```
+
+## 4. Windows Packaging (Experimental)
+
+For local Windows installer packaging, follow the dedicated guide:
+
+* [Windows Build Guide](windows.md)

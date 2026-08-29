@@ -15,6 +15,7 @@ VERSION="${VERSION:-$(grep -m 1 "version:" meson.build | cut -d"'" -f2)}"
 STAGE_DIR="${STAGE_DIR:-stage}"
 BUILD_DIR="${BUILD_DIR:-builddir-appimage}"
 OUTPUT_DIR="${OUTPUT_DIR:-dist}"
+CLEAN_BUILD="${CLEAN_BUILD:-1}"
 
 # Devel vs stable build configuration
 if [ "$DEVEL" = "1" ]; then
@@ -37,14 +38,38 @@ mkdir -p "${OUTPUT_DIR}"
 
 # 1. Compile into isolated DESTDIR
 echo "==> Compiling Jots via Meson..."
-rm -rf "${STAGE_DIR}" "${BUILD_DIR}"
-meson setup "${BUILD_DIR}" \
-    --prefix=/usr \
-    --buildtype=${BUILDTYPE} \
-    ${STRIP_FLAG} \
-    -Dprofile=linux \
-    -Ddevelopment=${MESON_DEVELOPMENT} \
-    -Dicon_variant=default
+if [ "${CLEAN_BUILD}" = "1" ]; then
+    echo "==> Clean build mode enabled (CLEAN_BUILD=1)."
+    rm -rf "${STAGE_DIR}" "${BUILD_DIR}"
+    meson setup "${BUILD_DIR}" \
+        --prefix=/usr \
+        --buildtype=${BUILDTYPE} \
+        ${STRIP_FLAG} \
+        -Dprofile=linux \
+        -Ddevelopment=${MESON_DEVELOPMENT} \
+        -Dicon_variant=default
+else
+    echo "==> Incremental build mode enabled (CLEAN_BUILD=0)."
+    rm -rf "${STAGE_DIR}"
+    if [ -d "${BUILD_DIR}" ]; then
+        meson setup "${BUILD_DIR}" \
+            --reconfigure \
+            --prefix=/usr \
+            --buildtype=${BUILDTYPE} \
+            ${STRIP_FLAG} \
+            -Dprofile=linux \
+            -Ddevelopment=${MESON_DEVELOPMENT} \
+            -Dicon_variant=default
+    else
+        meson setup "${BUILD_DIR}" \
+            --prefix=/usr \
+            --buildtype=${BUILDTYPE} \
+            ${STRIP_FLAG} \
+            -Dprofile=linux \
+            -Ddevelopment=${MESON_DEVELOPMENT} \
+            -Dicon_variant=default
+    fi
+fi
 meson compile -C "${BUILD_DIR}"
 DESTDIR="$(pwd)/${STAGE_DIR}" meson install -C "${BUILD_DIR}"
 

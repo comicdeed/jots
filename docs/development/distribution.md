@@ -6,7 +6,7 @@ Technical guidelines, dependency requirements, and architectural considerations 
 
 ## 1. Primary target and packaging philosophy
 
-Jots is developed as a pure GTK4 desktop application targeting modern Linux desktop environments (GNOME, KDE Plasma, elementary OS, XFCE). Downstream maintainers packaging Jots for native distributions (e.g. Debian, Arch, Fedora, openSUSE) or alternative platforms should review the integration requirements below.
+Jots is developed as a pure GTK4 desktop application targeting modern Linux desktop environments (GNOME, KDE Plasma, XFCE). Downstream maintainers packaging Jots for native distributions (e.g. Debian, Arch, Fedora, openSUSE) or alternative platforms should review the integration requirements below.
 
 ---
 
@@ -41,7 +41,7 @@ When creating native distribution packages (`.deb`, `.rpm`, `.pkg.tar.zst`):
 
 ### C. Icon variants
 * Production builds install the default icon suite from `data/icons/default/` into `/usr/share/icons/hicolor/`.
-* The development icon variant is installed automatically when passing `-Dprofile=development` to Meson.
+* The development icon variant is installed automatically when passing `-Ddevelopment=true` to Meson.
 
 ---
 
@@ -64,6 +64,48 @@ When creating native distribution packages (`.deb`, `.rpm`, `.pkg.tar.zst`):
 * **Dual-Entrypoint**: Normal execution launches the GTK4 GUI (`io.github.comicdeed.jots`); passing `--mcp` or executing as `jots-mcp` launches the headless AI Model Context Protocol server over `stdio`.
 * **Child Process Isolation**: The `AppRun` wrapper isolates `LD_LIBRARY_PATH` and `XDG_DATA_DIRS` to prevent library pollution into external helper applications (such as web browsers or mail clients spawned via `Ctrl + Click`).
 
+### D. Local non-CI packaging default (humans and agents)
+For day-to-day local packaging, AppImage via Docker Compose is the primary path to keep outputs repeatable across developer machines. Flatpak is a maintained parallel path and should be built and tested regularly.
+
+```bash
+docker compose run --rm appimage
+docker compose run --rm appimage-devel
+docker compose run --rm appimage-devel-cached
+docker compose run --rm meson-test
+```
+
+`meson-test` runs containerized Meson canary tests from source; it does not execute the built AppImage artifact.
+
+After building a devel AppImage, direct invocation is preferred for repeated package-mode test runs and test selectors:
+
+```bash
+./dist/Jots-devel-<version>-<arch>.AppImage --unit-tests
+./dist/Jots-devel-<version>-<arch>.AppImage --unit-tests -p /McpProtocol/UC_70_10_10/InitializeHandshake
+```
+
+Flatpak maintained devel/test path:
+
+```bash
+flatpak run org.flatpak.Builder --force-clean --sandbox --user --install --install-deps-from=flathub --ccache builddir io.github.comicdeed.jots.devel.yml
+flatpak run --command=jots-unit-tests io.github.comicdeed.jots.devel
+```
+
+Direct Flatpak devel test reruns with selectors:
+
+```bash
+flatpak run --command=jots-unit-tests io.github.comicdeed.jots.devel
+flatpak run --command=jots-unit-tests io.github.comicdeed.jots.devel -p /McpProtocol/UC_70_10_10/InitializeHandshake
+```
+
+Targeted package-mode tests should be executed in full package context (AppImage devel runtime or Flatpak devel sandbox) when validating package-specific behavior such as portal/autostart and session-bus-integrated flows.
+
+Use direct AppImage script entrypoints only when Compose is not available:
+
+```bash
+./packaging/appimage/build-appimage.sh
+./packaging/appimage/build-appimage.sh --devel
+```
+
 ---
 
 ## 5. Direct Release Pipeline (GitHub Releases)
@@ -72,7 +114,7 @@ Jots uses a **Compile Once, Package Many** automated GitHub Actions matrix (`.gi
 
 | Artifact | Target Audience / Format | Key Characteristics |
 | :--- | :--- | :--- |
-| **`Jots-<version>-<arch>.AppImage`** | Linux (Portable Click-and-Run) | Self-contained single-file executable for Ubuntu, Debian, Fedora, Arch, elementary OS. |
+| **`Jots-<version>-<arch>.AppImage`** | Linux (Portable Click-and-Run) | Self-contained single-file executable for Ubuntu, Debian, Fedora, Arch, and similar modern Linux distributions. |
 | **`io.github.comicdeed.jots-<version>.flatpak`** | Linux (Flatpak Standalone) | Single-file Flatpak bundle installable via `flatpak install io.github.comicdeed.jots-<version>.flatpak`. |
 | **`Jots-<version>-Installer.exe`** | Windows (x86_64) | Standalone NSIS installer built with MSYS2. |
 | **`SHA256SUMS.txt`** | Integrity Checksums | Cryptographic checksums for all release assets. |

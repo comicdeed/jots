@@ -24,10 +24,20 @@ git checkout develop
 
 ## 2. Tooling Prerequisites
 
-### A. Flatpak Sandbox Environment (Recommended)
+### A. Docker + Compose (Primary for Local AppImage Packaging)
+Use containerized packaging first for repeatable host-independent AppImage outputs:
+
+```bash
+docker --version
+docker compose version
+```
+
+All day-to-day local AppImage packaging commands in this repository assume `docker compose`.
+
+### B. Flatpak Sandbox Environment (Recommended for App Runtime and UI Testing)
 Flatpak is the standard development and debugging environment for Jots. Ensure `flatpak` and `flatpak-builder` are installed:
 
-#### Ubuntu / Debian / elementary OS:
+#### Ubuntu / Debian:
 ```bash
 sudo apt install flatpak flatpak-builder
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
@@ -39,8 +49,8 @@ sudo dnf install flatpak flatpak-builder
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 ```
 
-### B. Vala Linter & Quality Tooling
-Install `vala-lint` to check code style against elementary / GNOME standards:
+### C. Vala Linter & Quality Tooling
+Install `vala-lint` to check code style against project Vala/GNOME standards:
 ```bash
 # Via Flatpak or native package manager
 io.elementary.vala-lint -d .
@@ -50,34 +60,90 @@ io.elementary.vala-lint -d .
 
 ## 3. Recommended IDEs & Editor Extensions
 
-* **GNOME Builder / elementary Code**: Native Vala syntax highlighting, auto-completion, and integrated Meson/Flatpak build targets out of the box.
+* **GNOME Builder / VS Code**: Native Vala syntax highlighting, auto-completion, and integrated Meson/Flatpak build targets out of the box.
 * **VS Code / VSCodium / Cursor**:
   - **Vala Language Server (`gvls`)** extension for rich code navigation and symbol lookup.
   - **Meson** extension for build target configuration.
 
 ---
 
-## 4. Quick Build & Verification Workflows
+## 4. Standard Build, Run, and Test Workflows (Non-CI)
 
-### 1. Build Development Flatpak
+### 1. Native Mode (Optional Fast Path)
+Use native Meson as an acceleration path when your host satisfies repository toolchain requirements (notably GTK4 >= 4.14 and correct pkg-config visibility).
+
+```bash
+meson setup builddir --prefix=/usr --buildtype=debug -Dprofile=linux
+meson compile -C builddir
+GSK_RENDERER=cairo GTK_A11Y=none xvfb-run -a meson test -C builddir --verbose
+```
+
+### 2. AppImage Mode (Formal Packaging)
+Use AppImage mode for formal packaging output and package-mode behavior checks.
+
+Stable AppImage:
+```bash
+docker compose run --rm appimage
+```
+Devel AppImage:
+```bash
+docker compose run --rm appimage-devel
+```
+Cached devel AppImage rebuild (recommended for repeated packaging iterations):
+```bash
+docker compose run --rm appimage-devel-cached
+```
+Containerized Meson canary tests (not AppImage artifact tests):
+```bash
+docker compose run --rm meson-test
+```
+Build devel AppImage for embedded test runner:
+```bash
+docker compose run --rm appimage-devel
+```
+Direct devel AppImage test execution after build (recommended for repeated runs):
+```bash
+./dist/Jots-devel-<version>-<arch>.AppImage --unit-tests
+./dist/Jots-devel-<version>-<arch>.AppImage --unit-tests -p /McpProtocol/UC_70_10_10/InitializeHandshake
+```
+Direct script fallback only when Compose is unavailable:
+```bash
+./packaging/appimage/build-appimage.sh
+./packaging/appimage/build-appimage.sh --devel
+```
+Output artifacts are placed in `dist/`.
+
+### 3. Flatpak Mode (Maintained Parity with AppImage)
+Note: Local developer commands in this guide use `flatpak run org.flatpak.Builder ...`, while CI currently uses `flatpak-builder ...` directly in `.github/workflows/CI.yml`. Both are valid and intentional for their respective environments.
+
+Devel build + run + unit tests:
 ```bash
 flatpak run org.flatpak.Builder --force-clean --sandbox --user --install --install-deps-from=flathub --ccache builddir io.github.comicdeed.jots.devel.yml
-```
-
-### 2. Run Jots Locally
-```bash
 flatpak run io.github.comicdeed.jots.devel
-```
-
-### 3. Run Automated Canary Unit Tests
-```bash
 flatpak run --command=jots-unit-tests io.github.comicdeed.jots.devel
 ```
-
-### 4. Test Native MCP Server over stdio
+Direct Flatpak devel test reruns with selectors:
+```bash
+flatpak run --command=jots-unit-tests io.github.comicdeed.jots.devel
+flatpak run --command=jots-unit-tests io.github.comicdeed.jots.devel -p /McpProtocol/UC_70_10_10/InitializeHandshake
+```
+Stable build + run + unit tests:
+```bash
+flatpak run org.flatpak.Builder --force-clean --sandbox --user --install --install-deps-from=flathub --ccache builddir io.github.comicdeed.jots.yml
+flatpak run io.github.comicdeed.jots
+flatpak run --command=jots-unit-tests io.github.comicdeed.jots
+```
+Flatpak MCP server (devel):
 ```bash
 flatpak run --command=jots-mcp io.github.comicdeed.jots.devel
 ```
+
+### 4. Escalation Rules
+Escalate from native-only to AppImage and/or Flatpak verification whenever a change touches packaging-sensitive behavior: AppRun or packaging scripts, launch semantics, D-Bus/MCP behavior, portal/autostart paths, sandbox permissions, or install/runtime path logic.
+
+For day-to-day validation, package-mode workflows (AppImage and Flatpak) are the primary source of truth. Native mode is optional when host compatibility is confirmed.
+
+Targeted package-mode tests require full packaged runtime setup. Use devel AppImage embedded tests and Flatpak devel tests when validating behavior that depends on package context (for example desktop portal integration, session bus access, and sandbox-specific execution paths).
 
 ---
 

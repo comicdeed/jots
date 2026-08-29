@@ -12,6 +12,7 @@ A curated backlog of architectural enhancements, capabilities, and feature candi
   - [2. High-Priority Initiatives (Tier 1)](#2-high-priority-initiatives-tier-1)
     - [2.1 Note Organizer and Management Interface](#21-note-organizer-and-management-interface)
     - [2.2 Free-Form In-Text Tagging with Autocompletion](#22-free-form-in-text-tagging-with-autocompletion)
+    - [2.3 Automated Git Backup and Remote Synchronization](#23-automated-git-backup-and-remote-synchronization)
   - [3. Planned Backlog (Tier 2)](#3-planned-backlog-tier-2)
     - [3.1 Daily Routine Adoption \& Presence](#31-daily-routine-adoption--presence)
     - [3.2 Bidirectional Note Linking (`[[Note Title]]`)](#32-bidirectional-note-linking-note-title)
@@ -35,6 +36,7 @@ The score matrix is curated to include only non-completed roadmap candidates (ac
 | Feature Concept | Impact (40%) | Alignment (35%) | Feasibility (25%) | Composite Score | Tier / Status |
 | :--- | :---: | :---: | :---: | :---: | :---: |
 | **Note Organizer & Management Interface** | 4.4 | 4.6 | 4.2 | **4.42** | 🟢 Tier 1 (Active Priority) |
+| **Automated Git Backup & Remote Sync** | 4.5 | 4.6 | 4.0 | **4.41** | 🟢 Tier 1 (Active Priority) |
 | **Free-Form In-Text Tagging (`#tag`)** | 4.0 | 4.0 | 3.8 | **3.95** | 🟢 Tier 1 (Active Priority) |
 | **Daily Routine Adoption & Presence** | 4.1 | 4.4 | 4.3 | **4.26** | 🟡 Tier 2 (Planned Backlog) |
 | **Bidirectional Note Linking (`[[Note]]`)** | 3.8 | 3.6 | 3.4 | **3.63** | 🟡 Tier 2 (Planned Backlog) |
@@ -62,6 +64,26 @@ The score matrix is curated to include only non-completed roadmap candidates (ac
 * **Implementation Strategy**:
   * Leverage `GtkTextTag` in `MarkdownBuffer` (`TAG_TAG`) for subtle pastel highlight badge styling.
   * Index active tags in memory via `NoteManager` to power autocompletion and category filters in the Note Organizer.
+
+### 2.3 Automated Git Backup and Remote Synchronization
+* **Score**: `4.41` (Tier 1: Active Priority)
+* **Goal**: Prevent catastrophic data loss, maintain an immutable local change history, and enable seamless multi-device backup by synchronizing the Markdown storage repository (`~/.local/share/<app_id>/notes/`) with a user-specified Git remote.
+* **Implementation Strategy**:
+  * **Preferences Configuration**:
+    * Add a dedicated **Backup & Synchronization** group in the Preferences window.
+    * Allow configuring a Git remote repository URL (SSH or HTTPS) or auto-detect an existing upstream remote if the notes directory is already initialized as a Git repository.
+    * Provide a periodic backup cadence selector (e.g. Disabled, Every 5 min, 15 min, 30 min, Hourly).
+  * **Hybrid Commit & Push Trigger Mechanics**:
+    * **Debounced Save Commit**: Hook into `Storage.save_note()` / `Storage.delete_note()` (or directory file monitors) to create debounced, automatic Git commits upon editing with clean, descriptive commit messages (e.g., `backup: update note <title-or-id>`).
+    * **Periodic Remote Push**: A background non-blocking timer pushes queued commits to the remote at the configured sync interval.
+    * **Immediate Sync on Demand & Clean Exit**: Provide a manual "Sync Now" trigger in preferences/menu and perform an automatic non-blocking flush and push on application shutdown.
+  * **Non-Blocking Execution & Offline Resilience**:
+    * Execute all Git operations asynchronously via `GLib.Subprocess` (or `libgit2-glib`) to eliminate any UI blocking, latency, or hangs on slow/flaky connections.
+    * Seamlessly queue commits locally while offline; automatically resume pushing once network connectivity is restored without surfacing blocking modal dialogs.
+  * **Repository Initialization & Strict Allowlist `.gitignore` Policy**:
+    * Transparently initialize `git init` on first enable if not already present.
+    * **Startup `.gitignore` Evaluation**: On startup (and initialization), evaluate and ensure a strict allowlist-based `.gitignore` is present.
+    * **Allowlist Default (`*` with `!*.md`)**: Ignore everything by default (`*`), un-ignoring only `.gitignore`, directories (`!*/`), and Markdown notes (`!*.md`). This guards against committing stray editor swap files (`*.swp`, `*~`, `.#*`), OS metadata (`.DS_Store`), temporary backups, or newly introduced internal app files, while leaving a clean path to expand allowed extensions in the future.
 
 ---
 

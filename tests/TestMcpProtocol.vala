@@ -314,5 +314,61 @@ namespace Jots.Tests {
             var resp_prompt_get = protocol.process_message ("{\"jsonrpc\":\"2.0\",\"id\":\"4\",\"method\":\"prompts/get\",\"params\":{\"name\":\"create_action_items\",\"arguments\":{\"items\":\"- Buy coffee\\n- Fix bug\"}}}");
             assert_true (resp_prompt_get.contains ("Buy coffee"));
         });
+
+        /**
+         * UC-70.50.20: Packaging-aware error guidance when D-Bus proxy is disconnected
+         */
+        GLib.Test.add_func ("/McpProtocol/UC_70_50_20/PackagingAwareDisconnectedError", () => {
+            var protocol = new Jots.McpProtocol (null);
+
+            var saved_flatpak = GLib.Environment.get_variable ("FLATPAK_ID");
+            var saved_appimage = GLib.Environment.get_variable ("APPIMAGE");
+
+            // 1. Flatpak environment
+            GLib.Environment.unset_variable ("APPIMAGE");
+            GLib.Environment.set_variable ("FLATPAK_ID", "io.github.comicdeed.jots.devel", true);
+
+            var resp_flatpak = protocol.process_message ("{\"jsonrpc\":\"2.0\",\"id\":\"1\",\"method\":\"tools/call\",\"params\":{\"name\":\"list_notes\",\"arguments\":{}}}");
+            assert_true (resp_flatpak != null);
+            assert_true (resp_flatpak.contains ("\"isError\":true"));
+            assert_true (resp_flatpak.contains ("flatpak run io.github.comicdeed.jots.devel"));
+
+            // 2. AppImage environment (detects dynamic path, e.g. Gear Lever rename)
+            GLib.Environment.unset_variable ("FLATPAK_ID");
+            var custom_appimage = "/home/user/Applications/jots.appimage";
+            GLib.Environment.set_variable ("APPIMAGE", custom_appimage, true);
+
+            var resp_appimage = protocol.process_message ("{\"jsonrpc\":\"2.0\",\"id\":\"2\",\"method\":\"tools/call\",\"params\":{\"name\":\"list_notes\",\"arguments\":{}}}");
+            assert_true (resp_appimage != null);
+            assert_true (resp_appimage.contains ("\"isError\":true"));
+            assert_true (resp_appimage.contains (custom_appimage));
+
+            // 3. Native environment
+            GLib.Environment.unset_variable ("FLATPAK_ID");
+            GLib.Environment.unset_variable ("APPIMAGE");
+
+            var resp_native = protocol.process_message ("{\"jsonrpc\":\"2.0\",\"id\":\"3\",\"method\":\"tools/call\",\"params\":{\"name\":\"list_notes\",\"arguments\":{}}}");
+            assert_true (resp_native != null);
+            assert_true (resp_native.contains ("\"isError\":true"));
+            assert_true (resp_native.contains (APP_ID));
+
+            // 4. Resource read when proxy is disconnected
+            var resp_res_read = protocol.process_message ("{\"jsonrpc\":\"2.0\",\"id\":\"4\",\"method\":\"resources/read\",\"params\":{\"uri\":\"jots://notes\"}}");
+            assert_true (resp_res_read != null);
+            assert_true (resp_res_read.contains ("\"code\":-32603"));
+            assert_true (resp_res_read.contains (APP_ID));
+
+            // Restore environment
+            if (saved_flatpak != null) {
+                GLib.Environment.set_variable ("FLATPAK_ID", saved_flatpak, true);
+            } else {
+                GLib.Environment.unset_variable ("FLATPAK_ID");
+            }
+            if (saved_appimage != null) {
+                GLib.Environment.set_variable ("APPIMAGE", saved_appimage, true);
+            } else {
+                GLib.Environment.unset_variable ("APPIMAGE");
+            }
+        });
     }
 }

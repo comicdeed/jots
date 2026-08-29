@@ -30,6 +30,7 @@ sources = files (
 
     'Utils' / 'Random.vala',
     'Utils' / 'Markup.vala',
+    'Utils' / 'PackagingContext.vala',
 
     'Services' / 'MarkdownSerializer.vala',
     'Services' / 'Storage.vala',
@@ -124,6 +125,7 @@ mcp_sources = files(
     'Objects' / 'ZoomType.vala',
     'Objects' / 'Zoom.vala',
     'Utils' / 'Random.vala',
+    'Utils' / 'PackagingContext.vala',
 )
 
 mcp_dependencies = [

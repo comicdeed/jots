@@ -362,7 +362,7 @@ namespace Jots {
             var args_obj = (args_node != null && args_node.get_node_type () == Json.NodeType.OBJECT) ? args_node.get_object () : new Json.Object ();
 
             if (proxy == null) {
-                return format_tool_error (id_node, "Could not connect to Jots D-Bus service. Ensure Jots is running.");
+                return format_tool_error (id_node, get_not_running_error_message ());
             }
 
             try {
@@ -544,7 +544,7 @@ namespace Jots {
             }
 
             if (proxy == null) {
-                return format_error (id_node, -32603, "Could not connect to Jots D-Bus service.");
+                return format_error (id_node, -32603, get_not_running_error_message ());
             }
 
             try {
@@ -755,6 +755,16 @@ namespace Jots {
             builder.end_object ();
 
             return generator_to_string (builder);
+        }
+
+        public static string get_not_running_error_message () {
+            var ctx = PackagingContext.detect ();
+            var exec_cmd = ctx.get_exec_command (APP_ID) ?? APP_ID;
+
+            return "Could not connect to Jots D-Bus service. The Jots desktop application is not running.\n\n"
+                 + "To start Jots on this system, run:\n"
+                 + "  " + exec_cmd + "\n\n"
+                 + "Once the application is running, please retry this operation.";
         }
 
         private void add_id_to_builder (Json.Builder builder, Json.Node? id_node) {

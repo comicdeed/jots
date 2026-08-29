@@ -154,6 +154,12 @@ public class Jots.Application : Gtk.Application {
 
         note_manager = new Jots.NoteManager (this);
         font_controller = new Jots.FontController ();
+
+#if LIBPORTAL
+        // Sync the autostart toggle to actual filesystem state.
+        // GSettings tracks user intent; the .desktop file on disk is ground truth.
+        sync_autostart_state ();
+#endif
         var action_restore = lookup_action (Application.ACTION_RESTORE_LAST);
         ((SimpleAction)action_restore).set_enabled (false);
 
@@ -312,6 +318,18 @@ Please wait while the app remembers all the things…
         activate ();
         return 0;
     }
+
+#if LIBPORTAL
+    private void sync_autostart_state () {
+        var actual = Jots.Autostart.is_active ();
+        var stored = settings.get_boolean (KEY_AUTOSTART);
+        if (actual != stored) {
+            debug ("Autostart state desync detected: filesystem=%s gsettings=%s — correcting",
+                actual.to_string (), stored.to_string ());
+            settings.set_boolean (KEY_AUTOSTART, actual);
+        }
+    }
+#endif
 
     private uint portal_signal_id = 0;
 

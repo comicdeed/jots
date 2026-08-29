@@ -27,7 +27,7 @@
 		<key name="autostart" type="b">
 			<default>false</default>
 			<summary>Autostart the app</summary>
-			<description>Cannot read systems flag, so may desync if user does shit</description>
+			<description>Reflects actual autostart registration state. Synced with filesystem on startup.</description>
 		</key>
 		<key name="use-custom-fonts" type="b">
 			<default>false</default>

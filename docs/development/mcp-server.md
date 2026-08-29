@@ -109,3 +109,16 @@ jots-mcp
 | **Max Note Title** | `120` chars | Prevents header bar overflow. |
 | **Active Notes Ceiling** | `50` notes | Prevents desktop window spam and texture exhaustion. |
 | **Search Results** | `20` matches | Caps search results to prevent LLM context token inflation. |
+
+---
+
+## 5. Application Disconnected Handling
+
+When `jots-mcp` receives a tool call or resource read while the Jots desktop application is closed, it dynamically detects the running packaging environment (`PackagingContext`) and returns actionable launch instructions in the JSON-RPC error response:
+
+* **Flatpak**: returns `flatpak run <id>`
+* **AppImage**: returns the exact dynamic `$APPIMAGE` path
+* **Native**: returns the native executable name
+
+This enables autonomous AI agents or users to start the desktop app immediately and resume note operations without guessing the system installation format.
+

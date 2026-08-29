@@ -19,6 +19,7 @@ public static int main (string[] args) {
     Jots.Tests.register_search_service_tests ();
     Jots.Tests.register_migration_helper_tests ();
     Jots.Tests.register_cheatsheet_tests ();
+    Jots.Tests.register_autostart_tests ();
 
     return GLib.Test.run ();
 }

@@ -17,11 +17,31 @@ export GSETTINGS_SCHEMA_DIR="$APPDIR/usr/share/glib-2.0/schemas"
 export GDK_PIXBUF_MODULE_FILE="$APPDIR/usr/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache"
 export GTK_PATH="$APPDIR/usr/lib/gtk-4.0"
 
+# Detect devel vs stable binary (same AppRun serves both build variants)
+IS_DEVEL=0
+if [ -f "$APPDIR/usr/bin/io.github.comicdeed.jots.devel" ]; then
+    GUI_BIN="$APPDIR/usr/bin/io.github.comicdeed.jots.devel"
+    IS_DEVEL=1
+else
+    GUI_BIN="$APPDIR/usr/bin/io.github.comicdeed.jots"
+fi
+
 # Dual-Entrypoint Resolution (pure bash)
 INVOCATION_NAME="${0##*/}"
-RUN_BIN="$APPDIR/usr/bin/io.github.comicdeed.jots"
+RUN_BIN="$GUI_BIN"
 
-if [ "$1" = "--mcp" ]; then
+if [ "$1" = "--unit-tests" ]; then
+    if [ "$IS_DEVEL" = "0" ]; then
+        echo "jots: --unit-tests is only available in devel builds." >&2
+        echo "Build a devel AppImage with: ./packaging/appimage/build-appimage.sh --devel" >&2
+        exit 1
+    fi
+    shift
+    # Apply headless GTK environment for the test runner (caller can still override)
+    export GSK_RENDERER="${GSK_RENDERER:-cairo}"
+    export GTK_A11Y="${GTK_A11Y:-none}"
+    RUN_BIN="$APPDIR/usr/bin/jots-unit-tests"
+elif [ "$1" = "--mcp" ]; then
     shift
     RUN_BIN="$APPDIR/usr/bin/jots-mcp"
 elif [ "$INVOCATION_NAME" = "jots-mcp" ] || [ "${JOTS_MODE:-}" = "mcp" ]; then

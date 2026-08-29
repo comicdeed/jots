@@ -9,6 +9,16 @@ services:
     working_dir: /workspace
     command: ["./packaging/appimage/build-appimage.sh"]
 
+  appimage-devel:
+    build:
+      context: packaging/appimage
+      dockerfile: Dockerfile
+    image: jots-builder:latest
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
+    command: ["./packaging/appimage/build-appimage.sh", "--devel"]
+
   test:
     build:
       context: packaging/appimage

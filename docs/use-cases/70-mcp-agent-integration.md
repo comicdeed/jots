@@ -81,3 +81,18 @@ Model Context Protocol (MCP) JSON-RPC tooling, D-Bus session bus IPC, note synch
 * **Post-conditions**:
   * Rejects note creation with error: `Maximum active notes limit reached (50). Please delete or clean up unused notes.`
   * Prevents window explosion and desktop compositor texture exhaustion.
+
+---
+
+## 70.50 Packaging-aware connection error handling
+
+### `UC-70.50.20` Packaging-aware disconnected D-Bus guidance
+* **Trigger**: External AI client calls an MCP tool (`tools/call`) or reads a resource (`resources/read`) while Jots is not running on D-Bus.
+* **Pre-conditions**: `proxy == null` (D-Bus session service disconnected).
+* **Post-conditions**:
+  * Inspects `PackagingContext.detect()` at runtime.
+  * In Flatpak: returns error with `flatpak run <app-id>`.
+  * In AppImage: dynamically detects `$APPIMAGE` runtime file path (handling renamed files like `jots.appimage`) and returns that exact path.
+  * In Native: returns error with canonical desktop application identifier.
+  * Enables calling LLMs or users to take immediate, packaging-accurate launch actions.
+

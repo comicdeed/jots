@@ -667,6 +667,30 @@ namespace Jots {
                 return;
             }
 
+            bool remote_has_any_heads = yield remote_has_any_heads_async ();
+            if (!enabled || epoch != execution_epoch) {
+                finish_remote_sync_attempt (epoch);
+                return;
+            }
+
+            bool has_local_commits = yield local_branch_has_commits_async ();
+            if (!enabled || epoch != execution_epoch) {
+                finish_remote_sync_attempt (epoch);
+                return;
+            }
+
+            if (!has_local_commits) {
+                next_remote_auto_sync_allowed_usec = 0;
+                remote_auto_failure_streak = 0;
+                if (remote_branch_exists || remote_has_any_heads) {
+                    set_status (BACKUP_STATUS_REMOTE_DIVERGED, true);
+                } else {
+                    set_status (BACKUP_STATUS_REPOSITORY_READY, true);
+                }
+                finish_remote_sync_attempt (epoch);
+                return;
+            }
+
             int behind = 0;
             int ahead = 0;
             if (remote_branch_exists) {
@@ -839,11 +863,29 @@ namespace Jots {
 
         private async string? get_current_branch_async () {
             var branch_result = yield run_git_command_async ({"rev-parse", "--abbrev-ref", "HEAD"});
-            if (!branch_result.success) {
+            if (branch_result.success) {
+                var branch = sanitize_branch_name (branch_result.stdout_text);
+                if (branch != null) {
+                    return branch;
+                }
+            }
+
+            // In a fresh repository without commits, symbolic-ref still resolves the target branch.
+            var symbolic_ref_result = yield run_git_command_async ({"symbolic-ref", "--quiet", "--short", "HEAD"});
+            if (!symbolic_ref_result.success) {
                 return null;
             }
 
-            var branch = branch_result.stdout_text.strip ();
+            return sanitize_branch_name (symbolic_ref_result.stdout_text);
+        }
+
+        private async bool local_branch_has_commits_async () {
+            var verify_head = yield run_git_command_async ({"rev-parse", "--verify", "HEAD"});
+            return verify_head.success;
+        }
+
+        internal static string? sanitize_branch_name (string raw_branch_text) {
+            var branch = raw_branch_text.strip ();
             if (branch == "" || branch == "HEAD") {
                 return null;
             }
@@ -854,6 +896,32 @@ namespace Jots {
         private async bool remote_branch_exists_async (string branch_name) {
             var show_ref = yield run_git_command_async ({"show-ref", "--verify", "--quiet", "refs/remotes/origin/" + branch_name});
             return show_ref.success;
+        }
+
+        private async bool remote_has_any_heads_async () {
+            var refs = yield run_git_command_async ({"for-each-ref", "--format=%(refname:short)", "refs/remotes/origin"});
+            if (!refs.success) {
+                return false;
+            }
+
+            return remote_head_listing_has_branch (refs.stdout_text);
+        }
+
+        internal static bool remote_head_listing_has_branch (string refs_output) {
+            if (refs_output.strip () == "") {
+                return false;
+            }
+
+            foreach (var line in refs_output.split ("\n")) {
+                var ref_name = line.strip ();
+                if (ref_name == "" || ref_name == "origin/HEAD") {
+                    continue;
+                }
+
+                return true;
+            }
+
+            return false;
         }
 
         private async bool get_remote_divergence_counts_async (string branch_name, out int behind, out int ahead) {

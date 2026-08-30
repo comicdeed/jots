@@ -134,6 +134,15 @@ Access global preferences by right-clicking a note or selecting **Preferences** 
 * **Import from Jorts Migration Helper**: Seamlessly import your existing sticky notes from Jorts (`io.github.elly_code.jorts`). The import is **100% non-destructive**—your original Jorts `saved_state.json` file is never deleted or altered. You can trigger migration from the first-run prompt or anytime via the **Import from Jorts** button in Preferences.
 * **Backup & Sync**: Configure a remote Git repository URL, choose an automatic sync cadence, run **Sync now** for immediate synchronization, and use **Test connection** to verify remote reachability. Status text reports preparation, local commits, remote sync progress, divergence, and deferred retry states.
 
+### Backup And Sync First-Time Outcomes
+
+When you connect a remote repository for backup, these are the expected outcomes:
+
+* **Local notes repo has no commits, remote is empty**: Jots shows a ready state and waits for your first note change before pushing.
+* **Local notes repo has no commits, remote already has content (for example `main` or `master`)**: Jots shows a remote divergence state so you can resolve direction before syncing.
+* **Local notes repo has commits, remote is empty**: Jots pushes local backup history to the remote on sync.
+* **Local and remote both have commits and differ**: Jots surfaces divergence when histories conflict, or completes sync when one side is cleanly ahead.
+
 ---
 
 ## 7. AI Assistant & MCP Integration

@@ -142,6 +142,27 @@ namespace Jots.Tests {
         });
 
         /**
+         * UC-80.10.05c: Branch name sanitization rejects unresolved HEAD and whitespace-only values.
+         */
+        GLib.Test.add_func ("/GitSyncService/UC_80_10_05c/BranchNameSanitization", () => {
+            assert_null (Jots.GitSyncService.sanitize_branch_name ("HEAD"));
+            assert_null (Jots.GitSyncService.sanitize_branch_name ("   "));
+            assert_cmpstr (Jots.GitSyncService.sanitize_branch_name ("main\n"), GLib.CompareOperator.EQ, "main");
+            assert_cmpstr (Jots.GitSyncService.sanitize_branch_name (" feature/test "), GLib.CompareOperator.EQ, "feature/test");
+        });
+
+        /**
+         * UC-80.10.05d: Remote head listings detect content regardless of main/master branch naming.
+         */
+        GLib.Test.add_func ("/GitSyncService/UC_80_10_05d/RemoteHeadListingDetection", () => {
+            assert_false (Jots.GitSyncService.remote_head_listing_has_branch (""));
+            assert_false (Jots.GitSyncService.remote_head_listing_has_branch ("origin/HEAD\n"));
+            assert_true (Jots.GitSyncService.remote_head_listing_has_branch ("origin/main\n"));
+            assert_true (Jots.GitSyncService.remote_head_listing_has_branch ("origin/master\n"));
+            assert_true (Jots.GitSyncService.remote_head_listing_has_branch ("origin/HEAD\norigin/main\n"));
+        });
+
+        /**
          * UC-80.10.10: Upstream count parser accepts canonical tab-delimited output.
          */
         GLib.Test.add_func ("/GitSyncService/UC_80_10_10/ParseUpstreamCountsTabDelimited", () => {

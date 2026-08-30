@@ -88,6 +88,23 @@
     </screenshots>
 
     <releases>
+        <release version="1.3.0-beta.2" type="development" date="2026-08-30">
+            <description>
+                <p>This beta strengthens backup and sync behavior for first-time remote setup and branch-name edge cases.</p>
+                <p>Changes in this beta:</p>
+                <ul>
+                    <li>Backup setup now handles empty local history more safely when the remote already contains notes history.</li>
+                    <li>Remote content detection now recognizes common branch conventions such as main and master.</li>
+                    <li>Backup and Sync preference ordering is clearer, with setup inputs and actions shown before status details.</li>
+                    <li>Manual sync, retry, and status transitions are more consistent under active backup operations.</li>
+                </ul>
+                <p>Technical Notes:</p>
+                <ul>
+                    <li>Resolved Vala lint violations in branch divergence parsing and note identifier tests.</li>
+                    <li>Expanded Git sync coverage for branch-name sanitization and remote head detection behavior.</li>
+                </ul>
+            </description>
+        </release>
         <release version="1.2.0" date="2026-08-27">
             <description>
                 <p>Jots 1.2.0 adds a built-in quick reference note and fine-grained per-note protection controls.</p>

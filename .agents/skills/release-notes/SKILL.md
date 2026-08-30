@@ -26,7 +26,7 @@ This skill defines the standard procedure for analyzing git commits, filtering d
 * Only include technical depth when it materially affects trust, reliability, privacy, compatibility, or integrations.
 
 ### Required Section Order
-1. **What is better for users** (default section; always present)
+1. **Changes in this release** (default section; always present)
 2. **Technical Notes** (optional, but required when significant technical changes are included)
 
 ---
@@ -79,7 +79,7 @@ git log "${BASE_TAG}..HEAD" --oneline --no-merges
 
 ### 3. Categorize Changes
 Group commits into standard high-signal categories:
-* **`✨ What is better for users`**: Major user-visible improvements, smoother workflows, clearer interactions, and meaningful fixes.
+* **`✨ Changes in this release`**: Major user-visible improvements, smoother workflows, clearer interactions, and meaningful fixes.
 * **`🎨 Design and comfort`**: Theming, contrast, readability, typography, and visual polish that improves day-to-day use.
 * **`🔒 Reliability, privacy, and trust`**: Fixes that protect data, reduce surprises, or improve confidence.
 * **`🛠️ Technical Notes`**: Important engineering changes worth surfacing for advanced users, packagers, or integrators.
@@ -100,7 +100,7 @@ Check corresponding entries in:
         <release version="1.0.0-beta.1" type="development" date="2026-08-25">
             <description>
                 <p>This beta focuses on making everyday note-taking faster, clearer, and more comfortable.</p>
-                <p>What is better for users:</p>
+                <p>Changes in this beta:</p>
                 <ul>
                     <li>Search feels more immediate, helping you find the right note quickly.</li>
                     <li>Markdown notes remain plain and portable while rendering live for easier reading.</li>
@@ -125,7 +125,7 @@ Welcome to the inaugural beta release of **Jots** (`io.github.comicdeed.jots`) w
 
 *Jots is an independent fork and modern evolution of the classic Jorts application by Lains and community contributors.*
 
-### ✨ What is better for users
+### ✨ Changes in this release
 * **Find notes faster**: Search now feels immediate, helping you jump to the right note without breaking focus.
 * **Write in plain Markdown naturally**: Notes are saved as readable `.md` files with live rendering for structure and task lists.
 * **Read more comfortably**: Theme and typography improvements increase contrast and reduce visual strain over long sessions.

@@ -95,6 +95,19 @@ namespace Jots.Tests {
         });
 
         /**
+         * UC-80.10.04a: Automatic sync start gate blocks while any internal work is active.
+         */
+        GLib.Test.add_func ("/GitSyncService/UC_80_10_04a/AutomaticSyncStartGate", () => {
+            assert_true (Jots.GitSyncService.can_start_automatic_remote_sync (true, true, false, 0, 0, false));
+            assert_false (Jots.GitSyncService.can_start_automatic_remote_sync (false, true, false, 0, 0, false));
+            assert_false (Jots.GitSyncService.can_start_automatic_remote_sync (true, false, false, 0, 0, false));
+            assert_false (Jots.GitSyncService.can_start_automatic_remote_sync (true, true, true, 0, 0, false));
+            assert_false (Jots.GitSyncService.can_start_automatic_remote_sync (true, true, false, 1, 0, false));
+            assert_false (Jots.GitSyncService.can_start_automatic_remote_sync (true, true, false, 0, 1, false));
+            assert_false (Jots.GitSyncService.can_start_automatic_remote_sync (true, true, false, 0, 0, true));
+        });
+
+        /**
          * UC-80.10.05: Cadence values map to expected scheduler intervals.
          */
         GLib.Test.add_func ("/GitSyncService/UC_80_10_05/CadenceIntervalMapping", () => {
@@ -104,6 +117,28 @@ namespace Jots.Tests {
             assert_cmpint ((int) Jots.GitSyncService.cadence_interval_ms_for (3), GLib.CompareOperator.EQ, 30 * 60 * 1000);
             assert_cmpint ((int) Jots.GitSyncService.cadence_interval_ms_for (4), GLib.CompareOperator.EQ, 60 * 60 * 1000);
             assert_cmpint ((int) Jots.GitSyncService.cadence_interval_ms_for (99), GLib.CompareOperator.EQ, 0);
+        });
+
+        /**
+         * UC-80.10.05a: Status arbitration rejects lower-priority transitions unless forced.
+         */
+        GLib.Test.add_func ("/GitSyncService/UC_80_10_05a/StatusTransitionArbitration", () => {
+            assert_true (Jots.GitSyncService.should_accept_status_transition (60, 60, false));
+            assert_true (Jots.GitSyncService.should_accept_status_transition (40, 60, false));
+            assert_false (Jots.GitSyncService.should_accept_status_transition (90, 60, false));
+            assert_true (Jots.GitSyncService.should_accept_status_transition (90, 60, true));
+        });
+
+        /**
+         * UC-80.10.05b: Timeout parsing uses safe fallback and clamps unreasonable overrides.
+         */
+        GLib.Test.add_func ("/GitSyncService/UC_80_10_05b/GitTimeoutOverrideParsing", () => {
+            assert_cmpint ((int) Jots.GitSyncService.parse_git_command_timeout_seconds (null, 30), GLib.CompareOperator.EQ, 30);
+            assert_cmpint ((int) Jots.GitSyncService.parse_git_command_timeout_seconds ("", 30), GLib.CompareOperator.EQ, 30);
+            assert_cmpint ((int) Jots.GitSyncService.parse_git_command_timeout_seconds ("0", 30), GLib.CompareOperator.EQ, 30);
+            assert_cmpint ((int) Jots.GitSyncService.parse_git_command_timeout_seconds ("abc", 30), GLib.CompareOperator.EQ, 30);
+            assert_cmpint ((int) Jots.GitSyncService.parse_git_command_timeout_seconds ("3", 30), GLib.CompareOperator.EQ, 3);
+            assert_cmpint ((int) Jots.GitSyncService.parse_git_command_timeout_seconds ("999", 30), GLib.CompareOperator.EQ, 300);
         });
 
         /**

@@ -509,11 +509,14 @@ namespace Jots {
         }
 
         private void request_remote_sync_automatic (uint64 epoch) {
-            if (!enabled || epoch != execution_epoch || remote_sync_in_progress) {
-                return;
-            }
-
-            if (pending_intents.size > 0 || execution_queue.size > 0 || execution_in_progress) {
+            if (!can_start_automatic_remote_sync (
+                enabled,
+                epoch == execution_epoch,
+                remote_sync_in_progress,
+                pending_intents.size,
+                execution_queue.size,
+                execution_in_progress
+            )) {
                 return;
             }
 
@@ -713,6 +716,21 @@ namespace Jots {
 
         internal static bool should_defer_automatic_sync (int64 now_usec, int64 next_allowed_usec) {
             return next_allowed_usec > 0 && now_usec < next_allowed_usec;
+        }
+
+        internal static bool can_start_automatic_remote_sync (
+            bool backup_enabled,
+            bool epoch_is_current,
+            bool remote_sync_active,
+            int pending_intent_count,
+            int execution_queue_count,
+            bool execution_active
+        ) {
+            if (!backup_enabled || !epoch_is_current || remote_sync_active) {
+                return false;
+            }
+
+            return pending_intent_count == 0 && execution_queue_count == 0 && !execution_active;
         }
 
         internal static bool has_internal_work_for_status_poll (
@@ -1057,6 +1075,7 @@ namespace Jots {
         private async GitCommandResult run_git_command_async (string[] args) {
             string stdout_text = "";
             string stderr_text = "";
+            uint timeout_seconds = git_command_timeout_seconds ();
 
             var argv = new string[args.length + 1];
             argv[0] = "git";
@@ -1071,7 +1090,7 @@ namespace Jots {
                 var process = launcher.spawnv (argv);
 
                 var cancellable = new Cancellable ();
-                uint timeout_id = Timeout.add_seconds (GIT_COMMAND_TIMEOUT_SECONDS, () => {
+                uint timeout_id = Timeout.add_seconds (timeout_seconds, () => {
                     cancellable.cancel ();
                     return Source.REMOVE;
                 });
@@ -1082,7 +1101,7 @@ namespace Jots {
                     remove_timer_source (ref timeout_id);
                     if (e is IOError.CANCELLED) {
                         process.force_exit ();
-                        return new GitCommandResult (false, "", "git command timed out after %u seconds".printf (GIT_COMMAND_TIMEOUT_SECONDS));
+                        return new GitCommandResult (false, "", "git command timed out after %u seconds".printf (timeout_seconds));
                     }
 
                     return new GitCommandResult (false, "", e.message);
@@ -1102,13 +1121,53 @@ namespace Jots {
 
         private void set_status (string status_text, bool force = false) {
             int new_priority = status_priority_for (status_text);
-            if (!force && current_status_priority > new_priority) {
+            if (!should_accept_status_transition (current_status_priority, new_priority, force)) {
                 return;
             }
 
             current_status_text = status_text;
             current_status_priority = new_priority;
             settings.set_string (KEY_BACKUP_SYNC_STATUS, status_text);
+        }
+
+        internal static bool should_accept_status_transition (int current_priority, int new_priority, bool force) {
+            if (force) {
+                return true;
+            }
+
+            return current_priority <= new_priority;
+        }
+
+        private uint git_command_timeout_seconds () {
+            var raw = Environment.get_variable ("JOTS_GIT_COMMAND_TIMEOUT_SECONDS");
+            return parse_git_command_timeout_seconds (raw, GIT_COMMAND_TIMEOUT_SECONDS);
+        }
+
+        internal static uint parse_git_command_timeout_seconds (string? raw_value, uint fallback_seconds) {
+            if (raw_value == null) {
+                return fallback_seconds;
+            }
+
+            var raw = raw_value.strip ();
+            if (raw == "") {
+                return fallback_seconds;
+            }
+
+            uint64 parsed = 0;
+            if (!uint64.try_parse (raw, out parsed)) {
+                return fallback_seconds;
+            }
+
+            if (parsed == 0) {
+                return fallback_seconds;
+            }
+
+            // Guardrail to prevent accidentally setting extreme timeout values.
+            if (parsed > 300) {
+                return 300;
+            }
+
+            return (uint) parsed;
         }
 
         internal static int status_priority_for (string status_text) {

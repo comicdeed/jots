@@ -25,7 +25,7 @@ datadir = get_option('datadir')
 development = get_option('development')
 if development
   app_id +=  '.devel'
-  add_project_arguments('--define=DEVEL', '--define=LATTE', language: 'vala')
+    add_project_arguments('--define=DEVEL', language: 'vala')
 
 endif
 

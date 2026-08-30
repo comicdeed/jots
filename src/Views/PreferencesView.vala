@@ -464,15 +464,10 @@ namespace Jots {
                 }
 
                 Application.git_sync_service.test_remote_connection_async.begin ((obj, res) => {
-                    try {
-                        bool reachable = Application.git_sync_service.test_remote_connection_async.end (res);
-                        toast.title = reachable
-                            ? _("Remote repository is reachable")
-                            : _("Remote repository check failed");
-                    } catch (Error e) {
-                        warning ("Remote repository check failed: %s", e.message);
-                        toast.title = _("Remote repository check failed");
-                    }
+                    bool reachable = Application.git_sync_service.test_remote_connection_async.end (res);
+                    toast.title = reachable
+                        ? _("Remote repository is reachable")
+                        : _("Remote repository check failed");
 
                     toast.send_notification ();
                 });

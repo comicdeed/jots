@@ -104,7 +104,9 @@ fi
     --appdir "${APPDIR}" \
     --desktop-file "${APPDIR}/usr/share/applications/${APP_ID}.desktop" \
     --icon-file "${APPDIR}/usr/share/icons/hicolor/scalable/apps/${APP_ID}.svg" \
-    --plugin gtk
+    --plugin gtk 2>&1 | sed -E \
+    -e '/Could not find copyright files for file/d' \
+    -e '/Not calling strip on binary .*rpath starts with \$/d'
 
 # 6. Bundle full runtime, SVG engine, and font rendering dependencies for universal host backwards compatibility
 for libname in librsvg libharfbuzz libfreetype libfontconfig libfribidi libgraphite2 libpixman libpng libbrotli libzstd libexpat libffi libc libm libpthread libresolv librt libdl ld-linux; do

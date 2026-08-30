@@ -75,12 +75,12 @@ namespace Jots.Utils {
         }
 
         private static string random_token (int len) {
-            const string alphabet = "abcdefghijklmnopqrstuvwxyz0123456789";
+            const string ALPHABET = "abcdefghijklmnopqrstuvwxyz0123456789";
             var token = new StringBuilder ();
 
             for (int i = 0; i < len; i++) {
-                int idx = Random.int_range (0, alphabet.length);
-                token.append_c (alphabet[idx]);
+                int idx = Random.int_range (0, ALPHABET.length);
+                token.append_c (ALPHABET[idx]);
             }
 
             return token.str;

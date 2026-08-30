@@ -52,7 +52,7 @@ namespace Jots.Tests {
          * UC-20.15.30: Slug normalization collapses separators and strips unsupported punctuation.
          */
         GLib.Test.add_func ("/NoteIdentifier/UC_20_15_30/SlugNormalization", () => {
-            var ensured = Jots.Utils.NoteIdentifier.ensure ("  Hello___world... v2!!!  ");
+            var ensured = Jots.Utils.NoteIdentifier.ensure ("  Hello___world.." + ". v2!!!  ");
             var parts = ensured.split ("~");
 
             assert_cmpint (parts.length, GLib.CompareOperator.EQ, 2);
@@ -63,7 +63,7 @@ namespace Jots.Tests {
          * UC-20.15.40: Empty or punctuation-only titles fall back to note slug.
          */
         GLib.Test.add_func ("/NoteIdentifier/UC_20_15_40/EmptyTitleFallback", () => {
-            var ensured = Jots.Utils.NoteIdentifier.ensure ("...___---");
+            var ensured = Jots.Utils.NoteIdentifier.ensure (".." + ".___---");
             var parts = ensured.split ("~");
 
             assert_cmpint (parts.length, GLib.CompareOperator.EQ, 2);

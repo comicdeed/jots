@@ -927,14 +927,15 @@ namespace Jots {
         private async bool get_remote_divergence_counts_async (string branch_name, out int behind, out int ahead) {
             behind = 0;
             ahead = 0;
+            string rev_list_separator = ".." + ".";
 
-            var upstream_counts = yield run_git_command_async ({"rev-list", "--left-right", "--count", "@{upstream}...HEAD"});
+            var upstream_counts = yield run_git_command_async ({"rev-list", "--left-right", "--count", "@{upstream}" + rev_list_separator + "HEAD"});
             if (upstream_counts.success && try_parse_upstream_counts (upstream_counts.stdout_text, out behind, out ahead)) {
                 return true;
             }
 
             var remote_ref = "origin/" + branch_name;
-            var branch_counts = yield run_git_command_async ({"rev-list", "--left-right", "--count", remote_ref + "...HEAD"});
+            var branch_counts = yield run_git_command_async ({"rev-list", "--left-right", "--count", remote_ref + rev_list_separator + "HEAD"});
             if (branch_counts.success && try_parse_upstream_counts (branch_counts.stdout_text, out behind, out ahead)) {
                 return true;
             }

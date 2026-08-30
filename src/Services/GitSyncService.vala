@@ -124,10 +124,10 @@ namespace Jots {
                 return;
             }
 
-            remote_sync_requested = true;
             flush_pending_intents_for_manual_sync ();
 
             if (execution_in_progress || execution_queue.size > 0 || pending_intents.size > 0) {
+                remote_sync_requested = true;
                 set_status (BACKUP_STATUS_FINALIZING_LOCAL_CHANGES);
                 if (!execution_in_progress && execution_queue.size > 0) {
                     process_execution_queue_async.begin (execution_epoch);
@@ -135,6 +135,7 @@ namespace Jots {
                 return;
             }
 
+            remote_sync_requested = false;
             synchronize_remote_async.begin (execution_epoch);
         }
 

@@ -18,14 +18,14 @@
 
 ## Key features
 
-* 📝 **Live Markdown rendering**: Real-time syntax highlighting for headings (H1–H3), bold/italic/strikethrough emphasis, blockquotes, code spans, code fences, task lists (`- [ ]`, `- [x]`), and clickable links without modal preview toggles.
-* 🎨 **10 pastel color themes**: Thoughtfully designed color palettes that adapt to light and dark system styles.
-* 🔤 **Typography customization**: Custom proportional and code monospace font selection with automatic monospace catalog filtering.
-* 🔒 **Scribbly privacy mode**: Focus-driven text obfuscation with handwritten squiggles (`Redacted Script`) to protect sensitive notes from shoulder surfing.
-* 📂 **Markdown storage & interoperability**: Notes are stored as standard plain `.md` files with YAML front matter—enabling integration with external Markdown editors, knowledge bases (such as Obsidian or Logseq), `git`, and backup tools.
-* 🔁 **Automated Git backup sync**: Configure a remote Git repository (SSH/HTTPS), choose a sync cadence, run **Sync now** for immediate updates, and use **Test connection** to verify remote reachability.
-* 🤖 **Native MCP server (`jots-mcp`)**: Built-in Model Context Protocol server enabling AI assistants (Claude Desktop, Cursor, Gemini CLI, Antigravity) to manage desktop notes in real time.
-* ⚡ **Fast and lightweight**: Written in native Vala/GTK4 with sub-millisecond startup, zero heavy runtimes, and low memory usage.
+* 📝 **Markdown that just works**: Type with simple Markdown and see formatting as you write, including checklists and links.
+* 🎨 **Color themes**: Pick from 10 pastel themes that look good in both light and dark mode.
+* 🔤 **Font controls**: Choose your preferred text and code fonts to match how you like to read and write.
+* 🔒 **Scribbly privacy mode**: Hide note text with hand-drawn style masking when someone is nearby.
+* 📂 **Plain Markdown files**: Notes are saved as regular `.md` files, so you can use them with other tools and keep your own backups.
+* 🔁 **Git backup sync**: Connect a Git remote, choose how often to sync, and use **Sync now** when you want an immediate backup.
+* 🤖 **AI-ready with MCP**: Connect compatible assistants (Claude Desktop, Cursor, Gemini CLI, Antigravity) to manage notes from AI tools.
+* ⚡ **Fast and lightweight**: Starts quickly and stays responsive.
 
 ---
 

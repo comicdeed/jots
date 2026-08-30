@@ -1,5 +1,5 @@
 # On new app releases or release/* PR merge to main
-# Build multi-arch AppImages, Flatpak bundles, Windows installers, and publish GitHub Release
+# Build multi-arch AppImages, Flatpak bundles, and publish GitHub Release
 name: Release
 
 on:
@@ -160,67 +160,9 @@ jobs:
           path: dist/*
           retention-days: 2
 
-  msys2:
-    name: "Prepare Windows Installer"
-    needs: [init-release]
-    strategy:
-      matrix:
-        variant:
-          - arch: x86_64
-            runner: windows-latest
-            sys: mingw64
-            package: x86_64
-      fail-fast: false
-    runs-on: ${{ matrix.variant.runner }}
-    defaults:
-      run:
-        shell: msys2 {0}
-
-    steps:
-      - name: 'Checkout latest sources'
-        uses: actions/checkout@v4
-        with:
-          lfs: 'true'
-
-      - name: 'Prepare MSYS2'
-        uses: msys2/setup-msys2@v2
-        with:
-          msystem: ${{ matrix.variant.sys }}
-          update: true
-          install: |
-            git make zip unzip
-            mingw-w64-${{ matrix.variant.package }}-meson mingw-w64-${{ matrix.variant.package }}-gcc mingw-w64-${{ matrix.variant.package }}-vala mingw-w64-${{ matrix.variant.package }}-desktop-file-utils
-            mingw-w64-${{ matrix.variant.package }}-gtk4 mingw-w64-${{ matrix.variant.package }}-gsettings-desktop-schemas mingw-w64-${{ matrix.variant.package }}-libgee mingw-w64-${{ matrix.variant.package }}-json-glib
-            mingw-w64-${{ matrix.variant.package }}-librsvg mingw-w64-${{ matrix.variant.package }}-nsis mingw-w64-${{ matrix.variant.package }}-adwaita-icon-theme
-
-      - name: 'Setup build directory'
-        run: |
-          meson setup builddir -Dprofile='windows' --buildtype=release
-          meson compile -C builddir
-          
-      - name: 'Setup for deployment'
-        run: builddir/windows/deploy.sh builddir
-
-      - name: 'Create windows installer'
-        id: build_installer
-        run: |
-          VERSION="${{ needs.init-release.outputs.tag_name }}"
-          cp builddir/windows/installer.nsi .
-          makensis installer.nsi
-          cp Jots-Installer.exe "Jots-${VERSION}-Installer.exe"
-
-      - name: 'Upload Installer Artifact'
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: Jots-Windows-Installer
-          path: Jots-*-Installer.exe
-          if-no-files-found: ignore
-          retention-days: 2
-
   github-release:
     name: "Publish Consolidated GitHub Release"
-    needs: [init-release, build-linux-appimage, build-flatpak-bundle, msys2]
+    needs: [init-release, build-linux-appimage, build-flatpak-bundle]
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout sources'

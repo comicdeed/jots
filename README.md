@@ -30,7 +30,7 @@
 
 ## Installation and quick start
 
-Jots is currently Linux-first. AppImage and Flatpak are the supported distribution paths. Windows installers are published for early access but are currently experimental and untested.
+Jots is currently Linux-first. AppImage and Flatpak are the supported distribution paths. Windows installers are currently not published in automated releases.
 
 **Recommended (Primary Distribution):**
 
@@ -41,7 +41,7 @@ Jots is currently Linux-first. AppImage and Flatpak are the supported distributi
 * **Linux AppImage (Recommended, Click-and-Run)**: Download `Jots-<version>-<arch>.AppImage` (currently `Jots-<version>-x86_64.AppImage` or `Jots-<version>-aarch64.AppImage`) from the [latest release](https://github.com/comicdeed/jots/releases/latest), make it executable (`chmod +x Jots-*.AppImage`), and run directly on any Linux distribution without installation.
 * **Linux Flatpak (Alternative)**: Download `io.github.comicdeed.jots-<version>-x86_64.flatpak` from the [latest release](https://github.com/comicdeed/jots/releases/latest) and install with `flatpak install io.github.comicdeed.jots-*.flatpak`.
 * **Local compilation**: Refer to the [Developer Setup Guide](docs/development/setup.md) or [Building Guide](docs/development/building.md) for compilation instructions.
-* **Windows (Experimental, Untested)**: Download `Jots-<version>-Installer.exe` (x86_64 only) from the [latest release](https://github.com/comicdeed/jots/releases/latest) for early testing (see the [Windows Build Guide](docs/development/windows.md)).
+* **Windows (Manual Build Only)**: Automated release installers are currently disabled. If you want official release installers re-enabled, open a request in the [Issues tab](https://github.com/comicdeed/jots/issues) with the `feature request` label. If you need Windows now, build locally using the [Windows Build Guide](docs/development/windows.md).
 
 ---
 

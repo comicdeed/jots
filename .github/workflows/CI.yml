@@ -2,10 +2,17 @@ name: CI
 
 on:
   push:
-    branches-ignore:
-      - main
+    branches:
+      - develop
   pull_request:
+    branches:
+      - develop
+      - main
   workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   appimage-and-tests:

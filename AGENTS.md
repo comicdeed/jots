@@ -157,12 +157,14 @@ For local Windows packaging, follow `docs/development/windows.md` in an MSYS2 UC
 * **Release Preparation on `release/*` Branch**:
   1. Cut `release/X.Y.Z[-beta.N]` from `develop`.
   2. Bump `version: 'X.Y.Z[-beta.N]'` in `meson.build`.
-  3. Execute the release notes skill [`.agents/skills/release-notes/SKILL.md`](.agents/skills/release-notes/SKILL.md):
+  3. For intermediate non-critical release-branch commits, include `[skip ci]` in the commit subject to avoid unnecessary CI runs.
+  4. Run full CI only when the release branch is ready for validation before merge to `main`.
+  5. Execute the release notes skill [`.agents/skills/release-notes/SKILL.md`](.agents/skills/release-notes/SKILL.md):
      - Run `git log <base-tag>..HEAD --oneline --no-merges`
      - Add curated `<release>` entry to `data/jots.metainfo.xml.in.in`.
      - Update [`docs/user-guide.md`](docs/user-guide.md) if shortcuts or UI features changed.
-  4. Commit: `chore(release): prepare X.Y.Z[-beta.N] release`.
-  5. Open Pull Request: `release/X.Y.Z[-beta.N]` $\rightarrow$ `main`.
+  6. Commit: `chore(release): prepare X.Y.Z[-beta.N] release`.
+  7. Open Pull Request: `release/X.Y.Z[-beta.N]` $\rightarrow$ `main`.
 * **Automated Release on PR Merge**:
   - Merging the `release/*` PR into `main` automatically triggers `.github/workflows/release.yml`:
     1. Extracts the version and automatically creates & pushes git tag `X.Y.Z[-beta.N]` to `main`.

@@ -75,6 +75,8 @@ namespace Jots {
     const string BACKUP_STATUS_REPOSITORY_READY = "Backup repository ready";
     const string BACKUP_STATUS_PENDING = "Changes detected; backup sync setup in progress";
     const string BACKUP_STATUS_LOCAL_COMMIT_CREATED = "Backup updated locally";
+    const string BACKUP_STATUS_EXTERNAL_CHANGES_DETECTED = "External changes detected in notes repository";
+    const string BACKUP_STATUS_REMOTE_DIVERGED = "Remote changes detected; sync update needed";
     const string BACKUP_STATUS_GITIGNORE_RESTORED = "Managed .gitignore restored";
     const string BACKUP_STATUS_ERROR = "Backup setup failed";
 

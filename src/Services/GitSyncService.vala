@@ -44,6 +44,7 @@ namespace Jots {
     public class GitSyncService : Object {
 
         private const int64 COMMIT_DEBOUNCE_USEC = 120 * 1000 * 1000;
+        private const uint STATUS_POLL_INTERVAL_MS = 300 * 1000;
         private const string GITIGNORE_CANONICAL = "*\n!.gitignore\n!*/\n!*.md\n";
 
         private Storage storage;
@@ -52,8 +53,10 @@ namespace Jots {
         private bool gitignore_warning_emitted = false;
         private bool bootstrap_in_progress = false;
         private bool execution_in_progress = false;
+        private bool status_poll_in_progress = false;
         private uint64 execution_epoch = 0;
         private uint debounce_timer_id = 0;
+        private uint status_poll_timer_id = 0;
         private Gee.HashMap<string, BackupCommitIntent> pending_intents = new Gee.HashMap<string, BackupCommitIntent> ();
         private Gee.ArrayList<BackupCommitIntent> execution_queue = new Gee.ArrayList<BackupCommitIntent> ();
 
@@ -72,6 +75,7 @@ namespace Jots {
                     enable_backup_async.begin (execution_epoch);
                 } else {
                     clear_pending_intents ();
+                    stop_status_poll_timer ();
                     set_status (BACKUP_STATUS_DISABLED);
                 }
             });
@@ -87,6 +91,7 @@ namespace Jots {
 
         public void shutdown () {
             clear_pending_intents ();
+            stop_status_poll_timer ();
         }
 
         private async void enable_backup_async (uint64 epoch) {
@@ -128,6 +133,7 @@ namespace Jots {
 
             if (enabled && epoch == execution_epoch) {
                 set_status (BACKUP_STATUS_REPOSITORY_READY);
+                start_status_poll_timer (epoch);
             }
             bootstrap_in_progress = false;
 
@@ -353,6 +359,129 @@ namespace Jots {
                 Source.remove (debounce_timer_id);
                 debounce_timer_id = 0;
             }
+        }
+
+        private void start_status_poll_timer (uint64 epoch) {
+            stop_status_poll_timer ();
+            status_poll_timer_id = Timeout.add (STATUS_POLL_INTERVAL_MS, () => {
+                if (!enabled || epoch != execution_epoch) {
+                    return Source.REMOVE;
+                }
+
+                poll_external_state_async.begin (epoch);
+                return Source.CONTINUE;
+            });
+
+            poll_external_state_async.begin (epoch);
+        }
+
+        private void stop_status_poll_timer () {
+            if (status_poll_timer_id != 0) {
+                Source.remove (status_poll_timer_id);
+                status_poll_timer_id = 0;
+            }
+        }
+
+        private async void poll_external_state_async (uint64 epoch) {
+            if (status_poll_in_progress || !enabled || epoch != execution_epoch) {
+                return;
+            }
+
+            status_poll_in_progress = true;
+
+            if (!(yield ensure_repository_async ()) || !enabled || epoch != execution_epoch) {
+                status_poll_in_progress = false;
+                return;
+            }
+
+            var status_result = yield run_git_command_async ({"status", "--porcelain"});
+            if (!enabled || epoch != execution_epoch) {
+                status_poll_in_progress = false;
+                return;
+            }
+
+            if (!status_result.success) {
+                warning ("Git status poll failed: %s", status_result.stderr_text);
+                set_status (BACKUP_STATUS_ERROR);
+                status_poll_in_progress = false;
+                return;
+            }
+
+            bool has_internal_work = pending_intents.size > 0 || execution_queue.size > 0 || execution_in_progress;
+            bool has_external_worktree_changes = status_result.stdout_text.strip () != "";
+
+            if (!has_internal_work && has_external_worktree_changes) {
+                set_status (BACKUP_STATUS_EXTERNAL_CHANGES_DETECTED);
+                status_poll_in_progress = false;
+                return;
+            }
+
+            var upstream_result = yield run_git_command_async ({"rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{upstream}"});
+            if (!enabled || epoch != execution_epoch) {
+                status_poll_in_progress = false;
+                return;
+            }
+
+            if (upstream_result.success) {
+                var counts = yield run_git_command_async ({"rev-list", "--left-right", "--count", "@{upstream}...HEAD"});
+                if (!enabled || epoch != execution_epoch) {
+                    status_poll_in_progress = false;
+                    return;
+                }
+
+                int behind = 0;
+                int ahead = 0;
+                if (counts.success && try_parse_upstream_counts (counts.stdout_text, out behind, out ahead)) {
+                    if (!has_internal_work && (ahead > 0 || behind > 0)) {
+                        set_status (BACKUP_STATUS_REMOTE_DIVERGED);
+                        status_poll_in_progress = false;
+                        return;
+                    }
+                }
+            }
+
+            if (!has_internal_work) {
+                set_status (BACKUP_STATUS_REPOSITORY_READY);
+            }
+
+            status_poll_in_progress = false;
+        }
+
+        internal static bool try_parse_upstream_counts (string raw, out int behind, out int ahead) {
+            behind = 0;
+            ahead = 0;
+
+            var normalized = raw.strip ().replace ("\t", " ");
+            if (normalized == "") {
+                return false;
+            }
+
+            string[] parts = normalized.split (" ");
+            var compact = new Gee.ArrayList<string> ();
+            foreach (var part in parts) {
+                var trimmed = part.strip ();
+                if (trimmed != "") {
+                    compact.add (trimmed);
+                }
+            }
+
+            if (compact.size < 2) {
+                return false;
+            }
+
+            int64 behind64 = 0;
+            int64 ahead64 = 0;
+            if (!int64.try_parse (compact.get (0), out behind64) || !int64.try_parse (compact.get (1), out ahead64)) {
+                return false;
+            }
+
+            if (behind64 < 0 || behind64 > int.MAX || ahead64 < 0 || ahead64 > int.MAX) {
+                return false;
+            }
+
+            behind = (int) behind64;
+            ahead = (int) ahead64;
+            return true;
         }
 
         private BackupChangeType classify_change (NoteData note, NoteData? previous_note) {

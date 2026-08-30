@@ -45,6 +45,7 @@ endif
 
 test_sources = files(
     'Main.vala',
+    'TestGitSyncService.vala',
     'TestNoteIdentifier.vala',
     'TestNoteData.vala',
     'TestMarkdownStorage.vala',

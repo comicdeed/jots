@@ -8,6 +8,7 @@ public static int main (string[] args) {
     Gtk.init ();
 
     // Register all Canary test suites
+    Jots.Tests.register_git_sync_service_tests ();
     Jots.Tests.register_note_identifier_tests ();
     Jots.Tests.register_note_data_tests ();
     Jots.Tests.register_markdown_storage_tests ();

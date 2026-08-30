@@ -82,5 +82,10 @@
 			<summary>Backup sync last run text</summary>
 			<description>Read-only last successful synchronization label shown in preferences</description>
 		</key>
+		<key name="backup-sync-gitignore-sha" type="s">
+			<default>''</default>
+			<summary>Managed gitignore checksum</summary>
+			<description>Stores checksum for Jots-managed .gitignore policy to detect manual drift</description>
+		</key>
 	</schema>
 </schemalist>

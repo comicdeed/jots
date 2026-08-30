@@ -31,9 +31,11 @@ sources = files (
     'Utils' / 'Random.vala',
     'Utils' / 'Markup.vala',
     'Utils' / 'PackagingContext.vala',
+    'Utils' / 'NoteIdentifier.vala',
 
     'Services' / 'MarkdownSerializer.vala',
     'Services' / 'Storage.vala',
+    'Services' / 'GitSyncService.vala',
     'Services' / 'SearchService.vala',
     'Services' / 'NoteManager.vala',
     'Services' / 'NoteService.vala',
@@ -125,6 +127,7 @@ mcp_sources = files(
     'Objects' / 'ZoomType.vala',
     'Objects' / 'Zoom.vala',
     'Utils' / 'Random.vala',
+    'Utils' / 'NoteIdentifier.vala',
     'Utils' / 'PackagingContext.vala',
 )
 

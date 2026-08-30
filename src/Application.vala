@@ -48,6 +48,7 @@ public class Jots.Application : Gtk.Application {
     public static Jots.FontController font_controller;
     public static Jots.PreferenceWindow? preferences;
     public static Jots.NoteService? note_service;
+    public static Jots.GitSyncService? git_sync_service;
     private uint dbus_registration_id = 0;
 
     // Used for commandline option handling
@@ -153,6 +154,8 @@ public class Jots.Application : Gtk.Application {
         set_accels_for_action (ACTION_PREFIX + ACTION_SHOW_CHEATSHEET, {"F1"});
 
         note_manager = new Jots.NoteManager (this);
+        git_sync_service = new Jots.GitSyncService (note_manager.storage, settings);
+        git_sync_service.initialize ();
         font_controller = new Jots.FontController ();
 
 #if LIBPORTAL
@@ -317,6 +320,14 @@ Please wait while the app remembers all the things…
 
         activate ();
         return 0;
+    }
+
+    public override void shutdown () {
+        if (git_sync_service != null) {
+            git_sync_service.shutdown ();
+        }
+
+        base.shutdown ();
     }
 
 #if LIBPORTAL

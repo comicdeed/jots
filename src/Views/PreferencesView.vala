@@ -364,6 +364,9 @@ namespace Jots {
                 xalign = 1.0f
             };
             status_value.add_css_class ("dim-label");
+            Application.settings.bind (KEY_BACKUP_SYNC_STATUS,
+                status_value, "label",
+                GLib.SettingsBindFlags.DEFAULT);
             page.append (new Jots.SettingsBox (_("Status"), _("Current backup and sync state"), status_value));
 
             var last_sync_value = new Gtk.Label (Application.settings.get_string (KEY_BACKUP_SYNC_LAST_SYNC)) {
@@ -372,26 +375,26 @@ namespace Jots {
                 xalign = 1.0f
             };
             last_sync_value.add_css_class ("dim-label");
+            Application.settings.bind (KEY_BACKUP_SYNC_LAST_SYNC,
+                last_sync_value, "label",
+                GLib.SettingsBindFlags.DEFAULT);
             page.append (new Jots.SettingsBox (_("Last successful sync"), null, last_sync_value));
 
-            var enable_toggle = new Gtk.Switch () {
-                sensitive = false
-            };
+            var enable_toggle = new Gtk.Switch ();
             Application.settings.bind (KEY_BACKUP_SYNC_ENABLED,
                 enable_toggle, "active",
                 GLib.SettingsBindFlags.DEFAULT);
-            page.append (new Jots.SettingsBox (_("Enable backup and sync"), _("Coming soon in the next phase"), enable_toggle));
+            page.append (new Jots.SettingsBox (_("Enable backup and sync"), _("Creates and maintains a local Git backup repository for notes"), enable_toggle));
 
             var remote_entry = new Gtk.Entry () {
                 placeholder_text = _("https://example.com/notes.git"),
                 valign = Gtk.Align.CENTER,
-                sensitive = false,
                 width_chars = 24
             };
             Application.settings.bind (KEY_BACKUP_SYNC_REMOTE_URL,
                 remote_entry, "text",
                 GLib.SettingsBindFlags.DEFAULT);
-            page.append (new Jots.SettingsBox (_("Remote repository URL"), _("Stored now; not wired to sync engine yet"), remote_entry));
+            page.append (new Jots.SettingsBox (_("Remote repository URL"), _("Stored for upcoming pull/push sync phases"), remote_entry));
 
             string[] cadence_items = {
                 _("Disabled"),
@@ -402,14 +405,13 @@ namespace Jots {
             };
             var cadence_dropdown = new Gtk.DropDown.from_strings (cadence_items) {
                 halign = Gtk.Align.END,
-                valign = Gtk.Align.CENTER,
-                sensitive = false
+                valign = Gtk.Align.CENTER
             };
             cadence_dropdown.selected = Application.settings.get_enum (KEY_BACKUP_SYNC_CADENCE);
             cadence_dropdown.notify["selected"].connect (() => {
                 Application.settings.set_enum (KEY_BACKUP_SYNC_CADENCE, (int) cadence_dropdown.selected);
             });
-            page.append (new Jots.SettingsBox (_("Sync cadence"), _("Preference scaffold only for now"), cadence_dropdown));
+            page.append (new Jots.SettingsBox (_("Sync cadence"), _("Applies to upcoming remote sync checks"), cadence_dropdown));
 
             var sync_now_button = new Gtk.Button () {
                 label = _("Sync now"),

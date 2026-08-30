@@ -74,7 +74,7 @@ namespace Jots.Tests {
         GLib.Test.add_func ("/NoteData/UC_20_10_40/UuidAssignmentAndPersistence", () => {
             var note = new Jots.NoteData ();
             assert_true (note.id != null && note.id.length > 0);
-            assert_true (GLib.Uuid.string_is_valid (note.id));
+            assert_true (note.id.contains ("~"));
 
             var original_id = note.id;
             var json = note.to_json ();
@@ -94,7 +94,7 @@ namespace Jots.Tests {
                 var note = new Jots.NoteData.from_json (legacy_obj);
 
                 assert_true (note.id != null && note.id.length > 0);
-                assert_true (GLib.Uuid.string_is_valid (note.id));
+                assert_true (note.id.contains ("~"));
                 assert_cmpstr (note.title, GLib.CompareOperator.EQ, "Legacy Note");
             } catch (GLib.Error e) {
                 GLib.Test.fail ();

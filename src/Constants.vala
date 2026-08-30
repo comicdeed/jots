@@ -68,6 +68,14 @@ namespace Jots {
     const string KEY_BACKUP_SYNC_CADENCE = "backup-sync-cadence";
     const string KEY_BACKUP_SYNC_STATUS = "backup-sync-status";
     const string KEY_BACKUP_SYNC_LAST_SYNC = "backup-sync-last-sync";
+    const string KEY_BACKUP_SYNC_GITIGNORE_SHA = "backup-sync-gitignore-sha";
+
+    const string BACKUP_STATUS_DISABLED = "Backup disabled";
+    const string BACKUP_STATUS_PREPARING = "Preparing backup repository";
+    const string BACKUP_STATUS_READY = "Backup active";
+    const string BACKUP_STATUS_PENDING = "Local changes queued";
+    const string BACKUP_STATUS_GITIGNORE_RESTORED = "Managed .gitignore restored";
+    const string BACKUP_STATUS_ERROR = "Backup setup failed";
 
     // Built-in Cheat Sheet constants
     public const string CHEATSHEET_NOTE_ID   = "jots-cheatsheet";

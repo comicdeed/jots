@@ -10,7 +10,7 @@ namespace Jots.Tests {
          */
         GLib.Test.add_func ("/MarkdownStorage/UC_20_20_10/SerializationRoundTrip", () => {
             var note = new Jots.NoteData ();
-            note.id = "test-uuid-1234";
+            note.id = "markdown-planning-note~ab12cd";
             note.title = "Markdown Planning Note";
             note.content = "# Header\n\n- [x] Item 1\n- [ ] Item 2\n\n**Bold** and *Italic* text.";
             note.theme = Jots.Themes.BANANA;
@@ -22,7 +22,7 @@ namespace Jots.Tests {
             var md = note.to_markdown ();
             var restored = new Jots.NoteData.from_markdown (md);
 
-            assert_cmpstr (restored.id, GLib.CompareOperator.EQ, "test-uuid-1234");
+            assert_cmpstr (restored.id, GLib.CompareOperator.EQ, "markdown-planning-note~ab12cd");
             assert_cmpstr (restored.title, GLib.CompareOperator.EQ, "Markdown Planning Note");
             assert_cmpstr (restored.content, GLib.CompareOperator.EQ, "# Header\n\n- [x] Item 1\n- [ ] Item 2\n\n**Bold** and *Italic* text.");
             assert_true (restored.theme == Jots.Themes.BANANA);
@@ -30,6 +30,17 @@ namespace Jots.Tests {
             assert_cmpint (restored.zoom, GLib.CompareOperator.EQ, 140);
             assert_cmpint (restored.width, GLib.CompareOperator.EQ, 350);
             assert_cmpint (restored.height, GLib.CompareOperator.EQ, 400);
+        });
+
+        /**
+         * UC-20.20.15: Front matter missing backup identifier gets generated fallback
+         */
+        GLib.Test.add_func ("/MarkdownStorage/UC_20_20_15/MissingIdFallback", () => {
+            var md = "---\ntitle: \"Roadmap Notes\"\ncolor: 0\n---\nBody";
+            var restored = new Jots.NoteData.from_markdown (md);
+
+            assert_true (restored.id != null && restored.id.length > 0);
+            assert_true (restored.id.contains ("~"));
         });
 
         /**

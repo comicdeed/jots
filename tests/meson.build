@@ -45,6 +45,7 @@ endif
 
 test_sources = files(
     'Main.vala',
+    'TestNoteIdentifier.vala',
     'TestNoteData.vala',
     'TestMarkdownStorage.vala',
     'TestMarkdownBuffer.vala',
@@ -61,6 +62,7 @@ test_sources = files(
     meson.project_source_root() / 'src' / 'Objects' / 'SearchResult.vala',
     meson.project_source_root() / 'src' / 'Services' / 'MarkdownSerializer.vala',
     meson.project_source_root() / 'src' / 'Services' / 'Storage.vala',
+    meson.project_source_root() / 'src' / 'Services' / 'GitSyncService.vala',
     meson.project_source_root() / 'src' / 'Services' / 'SearchService.vala',
     meson.project_source_root() / 'src' / 'Services' / 'FontController.vala',
     meson.project_source_root() / 'src' / 'Services' / 'ScribblyController.vala',
@@ -71,6 +73,7 @@ test_sources = files(
     meson.project_source_root() / 'src' / 'Widgets' / 'TextBuffer.vala',
     meson.project_source_root() / 'src' / 'Widgets' / 'MarkdownBuffer.vala',
     meson.project_source_root () / 'src' / 'Utils' / 'Random.vala',
+    meson.project_source_root () / 'src' / 'Utils' / 'NoteIdentifier.vala',
     meson.project_source_root () / 'src' / 'Utils' / 'Markup.vala',
     meson.project_source_root () / 'src' / 'Utils' / 'PackagingContext.vala',
     meson.project_source_root () / 'src' / 'Widgets' / 'Bin.vala',

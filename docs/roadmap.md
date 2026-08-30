@@ -14,7 +14,7 @@ A curated backlog of architectural enhancements, capabilities, and feature candi
     - [2.2 Free-Form In-Text Tagging with Autocompletion](#22-free-form-in-text-tagging-with-autocompletion)
     - [2.3 Automated Git Backup and Remote Synchronization](#23-automated-git-backup-and-remote-synchronization)
   - [3. Planned Backlog (Tier 2)](#3-planned-backlog-tier-2)
-    - [3.1 Daily Routine Adoption \& Presence](#31-daily-routine-adoption--presence)
+    - [3.1 Daily Routine Adoption \& Presence (Moved to Completed Initiatives)](#31-daily-routine-adoption--presence-moved-to-completed-initiatives)
     - [3.2 Bidirectional Note Linking (`[[Note Title]]`)](#32-bidirectional-note-linking-note-title)
     - [3.3 Note Archiving and Trash Bin Lifecycle](#33-note-archiving-and-trash-bin-lifecycle)
     - [3.4 AppImage Update Information Embedding](#34-appimage-update-information-embedding)
@@ -26,6 +26,7 @@ A curated backlog of architectural enhancements, capabilities, and feature candi
     - [5.2 Markdown Storage with YAML Front Matter \& Live Rendering](#52-markdown-storage-with-yaml-front-matter--live-rendering)
     - [5.3 Typography Customization \& Obfuscated Scribbly Mode](#53-typography-customization--obfuscated-scribbly-mode)
     - [5.4 Local Full-Text Search \& Interactive Popover](#54-local-full-text-search--interactive-popover)
+    - [5.5 Daily Routine Adoption \& Presence](#55-daily-routine-adoption--presence)
 
 ---
 
@@ -38,7 +39,6 @@ The score matrix is curated to include only non-completed roadmap candidates (ac
 | **Note Organizer & Management Interface** | 4.4 | 4.6 | 4.2 | **4.42** | 🟢 Tier 1 (Active Priority) |
 | **Automated Git Backup & Remote Sync** | 4.5 | 4.6 | 4.0 | **4.41** | 🟢 Tier 1 (Active Priority) |
 | **Free-Form In-Text Tagging (`#tag`)** | 4.0 | 4.0 | 3.8 | **3.95** | 🟢 Tier 1 (Active Priority) |
-| **Daily Routine Adoption & Presence** | 4.1 | 4.4 | 4.3 | **4.26** | 🟡 Tier 2 (Planned Backlog) |
 | **Bidirectional Note Linking (`[[Note]]`)** | 3.8 | 3.6 | 3.4 | **3.63** | 🟡 Tier 2 (Planned Backlog) |
 | **Note Archiving & Trash Lifecycle** | 3.4 | 3.8 | 4.2 | **3.74** | 🟡 Tier 2 (Planned Backlog) |
 | **AppImage Update Info Embedding** | 3.0 | 4.2 | 4.5 | **3.72** | 🟡 Tier 2 (Planned Backlog) |
@@ -89,17 +89,9 @@ The score matrix is curated to include only non-completed roadmap candidates (ac
 
 ## 3. Planned Backlog (Tier 2)
 
-### 3.1 Daily Routine Adoption & Presence
-* **Score**: `4.26` (Tier 2: Planned Backlog)
-* **Goal**: Increase daily active usage by ensuring Jots appears at the right time with minimal user friction, while preserving explicit user control.
-* **Implementation Strategy**:
-  * **Dual Startup Modes (User Choice)**: Support two explicit modes: (a) "Launch Jots on login" (desktop autostart) and (b) "Launch Jots only when MCP needs it" (no login autostart), so assistant-first users can avoid startup clutter.
-  * **First MCP Invocation Guided Enablement**: When `jots-mcp` receives an operation and the GUI app is not running, offer one-time guided setup for either startup mode instead of defaulting directly to login autostart.
-  * **Mid-Session Quit Policy**: If the user intentionally quits Jots during a session, treat it as temporary suppression and avoid immediate forced relaunch loops; only relaunch on the next explicit MCP action that requires UI-backed operations.
-  * **Distro-Aware Launch Resolution**: Add a startup resolver in `jots-mcp` that detects available launch paths in priority order (active D-Bus name activation, desktop ID via `gio launch`, Flatpak ID invocation, then direct binary fallback) to handle distro/package differences predictably.
-  * **Capability Probing and Telemetry-Free Fallback**: Perform local capability checks before launch attempts, store the successful method locally for future invocations, and surface actionable local errors when no method works.
-  * **Safety and Predictability Constraints**: Keep behavior explicit and reversible, including visible toggle state, one-time prompt suppression, user-overridable cooldown after manual quit, and no repeated background auto-enables without consent.
-  * **Cross-Context Documentation**: Update `docs/user-guide.md` and MCP setup docs to explain when autostart is recommended, how to enable/disable it, and expected behavior in both desktop and assistant-first usage.
+### 3.1 Daily Routine Adoption & Presence (Moved to Completed Initiatives)
+* **Status**: Moved to [Section 5.5: Daily Routine Adoption & Presence](#55-daily-routine-adoption--presence).
+* **Note**: The remaining manual-quit suppression/cooldown hardening is tracked as feedback-driven follow-up work and is intentionally deferred until a real user issue is reported.
 
 ### 3.2 Bidirectional Note Linking (`[[Note Title]]`)
 * **Score**: `3.63` (Tier 2: Planned Backlog)
@@ -168,3 +160,9 @@ The score matrix is curated to include only non-completed roadmap candidates (ac
 * **Status**: ✅ **Completed** (v1.0.0)
 * **Summary**: Implemented hybrid in-memory and disk full-text search engine (`Jots.SearchService`) and interactive desktop popover (`Jots.SearchPopover`) with relevance scoring, snippet extraction, and keyboard navigation (`Ctrl + F` / `Ctrl + Shift + F`).
 * **Documentation**: See [`docs/user-guide.md`](user-guide.md#searching-notes).
+
+### 5.5 Daily Routine Adoption & Presence
+* **Status**: ✅ **Completed**
+* **Summary**: Delivered packaging-aware launch guidance for disconnected MCP requests and explicit autostart control with runtime-aware command resolution. `jots-mcp` now returns actionable launch commands based on runtime packaging context (Flatpak/AppImage/Native), enabling assistant-driven recovery by launching the app and retrying. Autostart controls are synchronized to on-disk registration state to keep user intent and actual startup behavior aligned.
+* **Deferred hardening (intentional)**: Manual-quit suppression/cooldown behavior remains deferred and will be implemented only if validated user feedback indicates relaunch-loop friction.
+* **Documentation**: See [`docs/development/mcp-server.md`](development/mcp-server.md#5-application-disconnected-handling), [`docs/user-guide.md`](user-guide.md#5-preferences-and-customization), and [`docs/user-guide.md`](user-guide.md#6-ai-assistant--mcp-integration).

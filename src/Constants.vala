@@ -80,6 +80,9 @@ namespace Jots {
     const string BACKUP_STATUS_REMOTE_NOT_CONFIGURED = "Set a remote repository URL to enable sync";
     const string BACKUP_STATUS_SYNCING_REMOTE = "Syncing backup with remote repository";
     const string BACKUP_STATUS_REMOTE_SYNCED = "Backup synchronized with remote repository";
+    const string BACKUP_STATUS_TESTING_REMOTE = "Checking remote repository connectivity";
+    const string BACKUP_STATUS_REMOTE_REACHABLE = "Remote repository is reachable";
+    const string BACKUP_STATUS_REMOTE_UNREACHABLE = "Remote repository check failed";
     const string BACKUP_STATUS_GITIGNORE_RESTORED = "Managed .gitignore restored";
     const string BACKUP_STATUS_ERROR = "Backup setup failed";
 

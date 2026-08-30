@@ -117,6 +117,44 @@ namespace Jots {
             stop_remote_sync_timer ();
         }
 
+        public void request_remote_sync_now () {
+            if (!enabled) {
+                set_status (BACKUP_STATUS_DISABLED);
+                return;
+            }
+
+            synchronize_remote_async.begin (execution_epoch);
+        }
+
+        public async bool test_remote_connection_async () {
+            if (!enabled) {
+                set_status (BACKUP_STATUS_DISABLED);
+                return false;
+            }
+
+            var remote_url = settings.get_string (KEY_BACKUP_SYNC_REMOTE_URL).strip ();
+            if (remote_url == "") {
+                set_status (BACKUP_STATUS_REMOTE_NOT_CONFIGURED);
+                return false;
+            }
+
+            if (!(yield ensure_repository_async ()) || !(yield ensure_git_identity_async ()) || !ensure_managed_gitignore ()) {
+                set_status (BACKUP_STATUS_ERROR);
+                return false;
+            }
+
+            set_status (BACKUP_STATUS_TESTING_REMOTE);
+            var probe_result = yield run_git_command_async ({"ls-remote", "--heads", remote_url});
+            if (!probe_result.success) {
+                warning ("Remote connectivity check failed: %s", probe_result.stderr_text);
+                set_status (BACKUP_STATUS_REMOTE_UNREACHABLE);
+                return false;
+            }
+
+            set_status (BACKUP_STATUS_REMOTE_REACHABLE);
+            return true;
+        }
+
         private async void enable_backup_async (uint64 epoch) {
             if (bootstrap_in_progress) {
                 return;
@@ -852,6 +890,7 @@ namespace Jots {
             try {
                 var launcher = new SubprocessLauncher (SubprocessFlags.STDOUT_PIPE | SubprocessFlags.STDERR_PIPE);
                 launcher.set_cwd (storage.get_notes_dir_path ());
+                launcher.setenv ("GIT_TERMINAL_PROMPT", "0", true);
                 var process = launcher.spawnv (argv);
                 yield process.communicate_utf8_async (null, null, out stdout_text, out stderr_text);
                 return new GitCommandResult (process.get_successful (), stdout_text ?? "", stderr_text ?? "");

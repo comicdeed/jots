@@ -418,14 +418,64 @@ namespace Jots {
                 sensitive = false,
                 width_request = 96
             };
-            page.append (new Jots.SettingsBox (_("Immediate sync"), _("Will be enabled when backup backend is implemented"), sync_now_button));
+            page.append (new Jots.SettingsBox (_("Immediate sync"), _("Run backup synchronization with the configured remote now"), sync_now_button));
 
             var test_connection_button = new Gtk.Button () {
                 label = _("Test connection"),
                 sensitive = false,
                 width_request = 96
             };
-            page.append (new Jots.SettingsBox (_("Remote check"), _("Will verify remote reachability in a future update"), test_connection_button));
+            page.append (new Jots.SettingsBox (_("Remote check"), _("Verify reachability for the configured remote repository"), test_connection_button));
+
+            sync_now_button.clicked.connect (() => {
+                if (Application.git_sync_service == null) {
+                    return;
+                }
+
+                Application.git_sync_service.request_remote_sync_now ();
+                toast.title = _("Remote sync requested");
+                toast.send_notification ();
+            });
+
+            test_connection_button.clicked.connect (() => {
+                if (Application.git_sync_service == null) {
+                    return;
+                }
+
+                Application.git_sync_service.test_remote_connection_async.begin ((obj, res) => {
+                    try {
+                        bool reachable = Application.git_sync_service.test_remote_connection_async.end (res);
+                        toast.title = reachable
+                            ? _("Remote repository is reachable")
+                            : _("Remote repository check failed");
+                    } catch (Error e) {
+                        toast.title = _("Remote repository check failed");
+                    }
+
+                    toast.send_notification ();
+                });
+            });
+
+            Application.settings.changed[KEY_BACKUP_SYNC_ENABLED].connect (() => {
+                bool backup_enabled = Application.settings.get_boolean (KEY_BACKUP_SYNC_ENABLED);
+                bool has_remote_url = Application.settings.get_string (KEY_BACKUP_SYNC_REMOTE_URL).strip () != "";
+                bool actions_enabled = backup_enabled && has_remote_url;
+                sync_now_button.sensitive = actions_enabled;
+                test_connection_button.sensitive = actions_enabled;
+            });
+            Application.settings.changed[KEY_BACKUP_SYNC_REMOTE_URL].connect (() => {
+                bool backup_enabled = Application.settings.get_boolean (KEY_BACKUP_SYNC_ENABLED);
+                bool has_remote_url = Application.settings.get_string (KEY_BACKUP_SYNC_REMOTE_URL).strip () != "";
+                bool actions_enabled = backup_enabled && has_remote_url;
+                sync_now_button.sensitive = actions_enabled;
+                test_connection_button.sensitive = actions_enabled;
+            });
+
+            bool backup_enabled = Application.settings.get_boolean (KEY_BACKUP_SYNC_ENABLED);
+            bool has_remote_url = Application.settings.get_string (KEY_BACKUP_SYNC_REMOTE_URL).strip () != "";
+            bool actions_enabled = backup_enabled && has_remote_url;
+            sync_now_button.sensitive = actions_enabled;
+            test_connection_button.sensitive = actions_enabled;
 
             return wrap_page (page);
         }

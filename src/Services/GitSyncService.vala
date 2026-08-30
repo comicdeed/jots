@@ -530,6 +530,7 @@ namespace Jots {
 
             int64 now_usec = GLib.get_monotonic_time ();
             if (should_defer_automatic_sync (now_usec, next_remote_auto_sync_allowed_usec)) {
+                set_status (BACKUP_STATUS_REMOTE_RETRY_SCHEDULED);
                 return;
             }
 

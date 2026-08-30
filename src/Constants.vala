@@ -81,6 +81,7 @@ namespace Jots {
     const string BACKUP_STATUS_FINALIZING_LOCAL_CHANGES = "Finalizing local backup changes before remote sync";
     const string BACKUP_STATUS_SYNC_REQUEST_QUEUED = "Sync request queued; current sync still in progress";
     const string BACKUP_STATUS_SYNCING_REMOTE = "Syncing backup with remote repository";
+    const string BACKUP_STATUS_REMOTE_RETRY_SCHEDULED = "Remote sync retry scheduled after recent failure";
     const string BACKUP_STATUS_REMOTE_SYNCED = "Backup synchronized with remote repository";
     const string BACKUP_STATUS_TESTING_REMOTE = "Checking remote repository connectivity";
     const string BACKUP_STATUS_REMOTE_REACHABLE = "Remote repository is reachable";

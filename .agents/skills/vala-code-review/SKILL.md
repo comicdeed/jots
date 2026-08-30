@@ -2,7 +2,8 @@
 name: vala-code-review
 description: >-
    Comprehensive code-review skill for Vala and GTK4 desktop applications.
-   Use when asked to review a Vala change, PR, or diff, or to run a safety/quality audit before merge.
+   Use when asked to review a Vala change, PR, or diff, or to run a safety/quality audit before merge,
+   or to conduct a full repository health and tech-debt audit.
    Trigger on requests such as "review this Vala PR", "audit signal lifecycle", "check null and cast safety",
    "verify GTK4 memory cleanup", "do a senior GNOME review", or "validate tests and edge cases".
    Audits memory management (reference cycles, weak references, GLib source removal), null safety,
@@ -30,6 +31,7 @@ Use this skill when the task is code-review driven rather than implementation dr
 1. **Diff Scope Analysis**:
    - Inspect the complete changeset between the target base branch (`develop` or `main`) and `HEAD` (`git diff <base>...HEAD`).
    - Catalog all modified, added, and removed files.
+   - For full codebase audits: Traverse the `src/` directory and map out module boundaries, global state, and system-wide patterns rather than focusing on a diff.
 
 2. **Systematic Checklist Auditing**:
    - Cross-examine the changes against each category in the [Audit Checklist](#-audit-checklist).
@@ -46,7 +48,7 @@ Use this skill when the task is code-review driven rather than implementation dr
    Produce a structured report with:
    - **Executive Summary**
    - **Strengths & Architecture Highlights**
-   - **Detailed Findings & Recommendations** (Ranked by severity: 🔴 High, 🟡 Medium, 🟢 Low / Nit) with exact file/line references and concrete code fixes.
+   - **Detailed Findings & Recommendations** (Ranked by priority: P1 (Critical/High Impact), P2 (Moderate/Tech Debt), P3 (Low/Quick Wins), P4 (Nitpicks)) with exact file/line references and concrete code fixes.
    - **Verdict / Sign-off Recommendation** (`APPROVED`, `REQUEST CHANGES`, or `BLOCKED`).
 
 ---
@@ -89,3 +91,7 @@ Use this skill when the task is code-review driven rather than implementation dr
 * [ ] **Boundary Conditions**: Tests cover empty strings, whitespace-only inputs, max-length limits, and special regex characters (`- [ ]`, `*`, `+`, `()`).
 * [ ] **Identifier Uniqueness**: Use-case identifiers follow domain numbering without collisions (e.g., `/SearchService/UC_80_10_...`).
 * [ ] **Null & Error Paths**: Tests exercise `null` inputs and error-path branches, not only happy paths.
+
+### 8. Architectural Boundaries & System Health
+* [ ] **State Management**: Global state is minimized. UI components do not hold authoritative business logic state.
+* [ ] **System-Wide Performance**: No heavy synchronous I/O or blocking operations on the main GTK thread across module boundaries.

@@ -63,7 +63,8 @@ jobs:
 
       - name: Build Flatpak & Run Tests
         run: |
-          flatpak-builder --user --force-clean --repo=repo --install-deps-from=flathub builddir io.github.comicdeed.jots.yml
+          flatpak-builder --user --force-clean --install --repo=repo --install-deps-from=flathub builddir io.github.comicdeed.jots.yml
+          GSK_RENDERER=cairo GTK_A11Y=none xvfb-run -a flatpak run --command=jots-unit-tests io.github.comicdeed.jots
 
   lint:
     name: Lint

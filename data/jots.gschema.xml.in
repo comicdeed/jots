@@ -8,6 +8,14 @@
     <value value='4' nick="dot"/>
   </enum>
 
+	<enum id="@APP_ID@.backup-sync-cadence">
+		<value value='0' nick="disabled"/>
+		<value value='1' nick="every-5-min"/>
+		<value value='2' nick="every-15-min"/>
+		<value value='3' nick="every-30-min"/>
+		<value value='4' nick="hourly"/>
+	</enum>
+
   <schema path="@APP_PATH@/" id="@APP_ID@">
 		<key name="scribbly-mode-active" type="b">
 			<default>false</default>
@@ -27,7 +35,7 @@
 		<key name="autostart" type="b">
 			<default>false</default>
 			<summary>Autostart the app</summary>
-			<description>Cannot read systems flag, so may desync if user does shit</description>
+			<description>Reflects actual autostart registration state. Synced with filesystem on startup.</description>
 		</key>
 		<key name="use-custom-fonts" type="b">
 			<default>false</default>
@@ -48,6 +56,36 @@
 			<default>false</default>
 			<summary>Whether the first-run Jorts migration prompt was shown</summary>
 			<description>Tracks if user has been offered to import notes from Jorts on initial startup</description>
+		</key>
+		<key name="backup-sync-enabled" type="b">
+			<default>false</default>
+			<summary>Enable backup and sync preferences</summary>
+			<description>Stores UI state for backup and sync configuration while backend wiring is not yet active</description>
+		</key>
+		<key name="backup-sync-remote-url" type="s">
+			<default>''</default>
+			<summary>Backup remote URL</summary>
+			<description>Stores the configured Git remote URL for future backup and synchronization support</description>
+		</key>
+		<key enum="@APP_ID@.backup-sync-cadence" name="backup-sync-cadence">
+			<default>'disabled'</default>
+			<summary>Backup sync cadence</summary>
+			<description>Stores selected periodic synchronization cadence for future backup support</description>
+		</key>
+		<key name="backup-sync-status" type="s">
+			<default>'Not configured'</default>
+			<summary>Backup sync status text</summary>
+			<description>Read-only status label shown in preferences for backup and sync state</description>
+		</key>
+		<key name="backup-sync-last-sync" type="s">
+			<default>'Never'</default>
+			<summary>Backup sync last run text</summary>
+			<description>Read-only last successful synchronization label shown in preferences</description>
+		</key>
+		<key name="backup-sync-gitignore-sha" type="s">
+			<default>''</default>
+			<summary>Managed gitignore checksum</summary>
+			<description>Stores checksum for Jots-managed .gitignore policy to detect manual drift</description>
 		</key>
 	</schema>
 </schemalist>

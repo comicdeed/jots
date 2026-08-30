@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="1925.4774"
+   height="681.18054"
+   viewBox="0 0 1925.4774 681.18054"
+   role="img"
+   aria-labelledby="title desc"
+   version="1.1"
+   id="svg24"
+   sodipodi:docname="download-appimage.svg"
+   inkscape:version="1.4 (e7c3feb, 2024-10-09)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <sodipodi:namedview
+     id="namedview24"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showguides="true"
+     inkscape:zoom="0.56017368"
+     inkscape:cx="689.96458"
+     inkscape:cy="440.93468"
+     inkscape:window-width="2560"
+     inkscape:window-height="1368"
+     inkscape:window-x="0"
+     inkscape:window-y="240"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg24" />
+  <title
+     id="title">Download AppImage Badge</title>
+  <desc
+     id="desc">A rounded black download badge with AppImage icon and the text Download AppImage.</desc>
+  <defs
+     id="defs10">
+    <linearGradient
+       id="appBlueTop"
+       x1="41.649082"
+       y1="31.11713"
+       x2="41.649082"
+       y2="632.71503"
+       gradientTransform="matrix(0.86436476,0,0,1.0158387,0,4.3900139)"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         offset="0%"
+         stop-color="#3FA8EE"
+         id="stop1" />
+      <stop
+         offset="100%"
+         stop-color="#2D84D0"
+         id="stop2" />
+    </linearGradient>
+    <linearGradient
+       id="appBlueBottom"
+       x1="17.437361"
+       y1="1259.3649"
+       x2="17.437361"
+       y2="1511.2379"
+       gradientTransform="scale(2.0645327,0.48437112)"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         offset="0%"
+         stop-color="#2456B1"
+         id="stop3" />
+      <stop
+         offset="100%"
+         stop-color="#1B489F"
+         id="stop4" />
+    </linearGradient>
+    <linearGradient
+       id="foldFace"
+       x1="458"
+       y1="36"
+       x2="556"
+       y2="134"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         offset="0%"
+         stop-color="#DBF0FF"
+         id="stop5" />
+      <stop
+         offset="100%"
+         stop-color="#91CFF8"
+         id="stop6" />
+    </linearGradient>
+    <linearGradient
+       id="foldUnder"
+       x1="458"
+       y1="36"
+       x2="458"
+       y2="134"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         offset="0%"
+         stop-color="#B7DEFA"
+         id="stop7" />
+      <stop
+         offset="100%"
+         stop-color="#83BDE8"
+         id="stop8" />
+    </linearGradient>
+    <linearGradient
+       id="arrowGrad"
+       x1="0"
+       y1="0"
+       x2="0"
+       y2="1">
+      <stop
+         offset="0%"
+         stop-color="#FFFFFF"
+         id="stop9" />
+      <stop
+         offset="100%"
+         stop-color="#E8EEF8"
+         id="stop10" />
+    </linearGradient>
+    <clipPath
+       id="panelClip">
+      <path
+         d="m 124,36 h 334 l 98,98 v 510 a 88,88 0 0 1 -88,88 H 124 A 88,88 0 0 1 36,644 V 124 a 88,88 0 0 1 88,-88 z"
+         id="path10" />
+    </clipPath>
+  </defs>
+  <!-- Outer badge -->
+  <rect
+     x="5.8407001"
+     y="5.8407001"
+     width="1913.796"
+     height="669.49915"
+     rx="102.32177"
+     ry="97.710693"
+     fill="#000000"
+     stroke="#ffffff"
+     stroke-width="11.6814"
+     id="rect10" />
+  <g
+     transform="matrix(0.9,0,0,0.9,21.893513,30.693513)"
+     id="g23">
+    <!-- Left AppImage panel -->
+    <path
+       d="m 124,36 h 334 l 98,86.04941 V 569.85754 A 88,77.268855 0 0 1 468,647.1264 H 124 A 88,77.268855 0 0 1 36,569.85754 V 113.26886 A 88,77.268855 0 0 1 124,36 Z"
+       fill="url(#appBlueTop)"
+       id="path11"
+       style="fill:url(#appBlueTop);stroke-width:0.937046" />
+    <g
+       clip-path="url(#panelClip)"
+       id="g11"
+       transform="translate(0,-79.215361)">
+      <rect
+         x="36"
+         y="610"
+         width="520"
+         height="122"
+         fill="url(#appBlueBottom)"
+         id="rect11"
+         style="fill:url(#appBlueBottom)" />
+    </g>
+    <g
+       clip-path="url(#panelClip)"
+       id="g13">
+      <path
+         d="m 458,36 98,98 V 36 Z"
+         fill="url(#foldFace)"
+         id="path12"
+         style="fill:url(#foldFace)" />
+      <path
+         d="m 458,36 64,64 34,34 h -56 q -42,0 -42,-42 z"
+         fill="url(#foldUnder)"
+         opacity="0.9"
+         id="path13"
+         style="fill:url(#foldUnder)" />
+      <line
+         x1="458"
+         y1="36"
+         x2="556"
+         y2="134"
+         stroke="#eaf8ff"
+         stroke-width="1.5"
+         opacity="0.35"
+         id="line13" />
+    </g>
+    <!-- Arrow -->
+    <g
+       fill="#ffffff"
+       id="g14"
+       transform="matrix(0.84282666,0,0,0.84282666,46.523307,-4.9912468)">
+      <rect
+         x="254"
+         y="110"
+         width="84"
+         height="170"
+         rx="9"
+         ry="9"
+         id="rect13" />
+      <path
+         d="M 187,215 H 405 L 296,336 Z"
+         id="path14" />
+    </g>
+    <!-- Gear -->
+    <g
+       transform="matrix(0.84282666,0,0,0.84282666,296,384.80543)"
+       id="g22">
+      <g
+         fill="#ffffff"
+         id="g21">
+        <rect
+           x="-16"
+           y="-120"
+           width="32"
+           height="40"
+           rx="8"
+           ry="8"
+           id="rect14" />
+        <rect
+           x="-16"
+           y="-120"
+           width="32"
+           height="40"
+           rx="8"
+           ry="8"
+           transform="rotate(45)"
+           id="rect15" />
+        <rect
+           x="-16"
+           y="-120"
+           width="32"
+           height="40"
+           rx="8"
+           ry="8"
+           transform="rotate(90)"
+           id="rect16" />
+        <rect
+           x="-16"
+           y="-120"
+           width="32"
+           height="40"
+           rx="8"
+           ry="8"
+           transform="rotate(135)"
+           id="rect17" />
+        <rect
+           x="-16"
+           y="-120"
+           width="32"
+           height="40"
+           rx="8"
+           ry="8"
+           transform="scale(-1)"
+           id="rect18" />
+        <rect
+           x="-16"
+           y="-120"
+           width="32"
+           height="40"
+           rx="8"
+           ry="8"
+           transform="rotate(-135)"
+           id="rect19" />
+        <rect
+           x="-16"
+           y="-120"
+           width="32"
+           height="40"
+           rx="8"
+           ry="8"
+           transform="rotate(-90)"
+           id="rect20" />
+        <rect
+           x="-16"
+           y="-120"
+           width="32"
+           height="40"
+           rx="8"
+           ry="8"
+           transform="rotate(-45)"
+           id="rect21" />
+        <circle
+           r="84"
+           id="circle21"
+           cx="0"
+           cy="0" />
+      </g>
+      <circle
+         r="43"
+         fill="#4f9cd9"
+         id="circle22"
+         cx="0"
+         cy="0" />
+    </g>
+    <!-- AppImage text on panel -->
+    <text
+       x="296"
+       y="606.78467"
+       text-anchor="middle"
+       fill="#ffffff"
+       font-size="74px"
+       font-weight="700"
+       font-family="Cantarell, 'Noto Sans', 'DejaVu Sans', Arial, sans-serif"
+       id="text22">AppImage</text>
+  </g>
+  <!-- Right-side badge text -->
+  <text
+     x="633.81287"
+     y="275.66449"
+     fill="#ffffff"
+     font-size="132px"
+     font-weight="500"
+     letter-spacing="0.2"
+     font-family="Cantarell, 'Noto Sans', 'DejaVu Sans', Arial, sans-serif"
+     id="text23">Download</text>
+  <text
+     x="633.81287"
+     y="511.66455"
+     fill="#ffffff"
+     font-size="224px"
+     font-weight="700"
+     letter-spacing="0"
+     font-family="Cantarell, 'Noto Sans', 'DejaVu Sans', Arial, sans-serif"
+     id="text24">AppImage</text>
+  <metadata
+     id="metadata24">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:title>Download AppImage Badge</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+</svg>

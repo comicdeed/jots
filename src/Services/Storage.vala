@@ -3,6 +3,7 @@
  * SPDX-FileCopyrightText:  2017-2024 Lains
  *                          2025 Contributions from the ellie_Commons community (github.com/ellie-commons/)
  *                          2025-2026 Stella & Charlie (teamcons.carrd.co)
+ *                          2026 Dino Korah (github.com/codemedic)
  */
 
 namespace Jots {
@@ -18,6 +19,9 @@ namespace Jots {
         private File datadir;
         private File notes_dir;
         private string legacy_savefile_path;
+
+        public signal void note_saved (NoteData note, NoteData? previous_note, string note_path);
+        public signal void note_deleted (string note_id, string note_path);
 
         construct {
             var path_data = GLib.Path.build_path (Path.DIR_SEPARATOR_S, Environment.get_user_data_dir (), APP_ID);
@@ -54,6 +58,14 @@ namespace Jots {
             } catch (Error e) {
                 warning ("Failed to create override notes directory: %s", e.message);
             }
+        }
+
+        public File get_notes_dir () {
+            return notes_dir;
+        }
+
+        public string get_notes_dir_path () {
+            return notes_dir.get_path ();
         }
 
         public const string JORTS_APP_ID = "io.github.elly_code.jorts";
@@ -196,8 +208,10 @@ namespace Jots {
          */
         public void save_note (NoteData note) {
             ensure_directories ();
+            note.id = Jots.Utils.NoteIdentifier.ensure (note.title, note.id);
             var filename = "%s.md".printf (note.id);
             var file = notes_dir.get_child (filename);
+            var previous_note = load_note_by_id (note.id);
             var md_content = note.to_markdown ();
 
             try {
@@ -209,6 +223,7 @@ namespace Jots {
                     null
                 );
                 debug ("Saved note %s to %s", note.id, file.get_path ());
+                note_saved (note, previous_note, file.get_path ());
             } catch (Error e) {
                 warning ("Failed to save note %s: %s", note.id, e.message);
             }
@@ -224,6 +239,7 @@ namespace Jots {
                 try {
                     file.delete ();
                     debug ("Deleted note file: %s", file.get_path ());
+                    note_deleted (note_id, file.get_path ());
                 } catch (Error e) {
                     warning ("Failed to delete note file %s: %s", note_id, e.message);
                 }

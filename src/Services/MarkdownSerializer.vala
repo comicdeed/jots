@@ -1,8 +1,6 @@
 /*
  * SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText:  2017-2024 Lains
- *                          2025 Contributions from the ellie_Commons community (github.com/ellie-commons/)
- *                          2025-2026 Stella & Charlie (teamcons.carrd.co)
+ * SPDX-FileCopyrightText:  2026 Dino Korah (github.com/codemedic)
  */
 
 namespace Jots {
@@ -80,6 +78,7 @@ namespace Jots {
                     }
 
                     parse_front_matter (front_matter, note);
+                    note.id = Jots.Utils.NoteIdentifier.ensure (note.title, note.id);
                     note.content = body;
                     return note;
                 }
@@ -97,6 +96,8 @@ namespace Jots {
                     note.title = first_line.substring (2).strip ();
                 }
             }
+
+            note.id = Jots.Utils.NoteIdentifier.ensure (note.title, note.id);
 
             return note;
         }

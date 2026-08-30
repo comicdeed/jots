@@ -99,9 +99,31 @@ sequenceDiagram
 3. The window is removed from `open_notes`, closed, and remaining notes are saved immediately.
 4. User presses `Ctrl+R` to restore: `restore_last_deleted()` respawns the window from cached data.
 
+### 3.5 Backup Remote State Matrix (`GitSyncService`)
+
+`GitSyncService` uses remote fetch + branch resolution + local commit presence checks before push/pull decisions. The matrix below captures expected outcomes for first-time and mid-stream remote configuration.
+
+| Scenario | Local Has Commits | Remote Has Commits | Branch Relation | Expected Status Outcome |
+| :--- | :---: | :---: | :--- | :--- |
+| A | No | No | Same branch | `ready-no-local-commit` |
+| B | No | Yes | Same branch | `remote-diverged-no-local-commit` |
+| C | No | Yes | Different branch name | `remote-diverged-no-local-commit` (remote content detected via any `origin/*` head) |
+| D | Yes | No | Same branch | `remote-synced` |
+| E | Yes | Yes | Same branch, local ahead | `remote-synced` |
+| F | Yes | Yes | Same branch, local behind only | `ready` (after pull/rebase path) |
+| G | Yes | Yes | Same branch, histories diverged | `remote-diverged` |
+
+Implementation notes:
+
+* Branch resolution first attempts `rev-parse --abbrev-ref HEAD`, then falls back to `symbolic-ref --short HEAD` for unborn branch states.
+* When local history is empty, remote presence is detected from any fetched `origin/*` branch head (excluding `origin/HEAD`) to support both `main` and `master` conventions.
+* Divergence remains a guarded state and does not auto-force merge conflicting histories.
+
 ---
 
 ## 4. Guardrails & Performance Constraints
+
+Preference and information architecture decisions follow the canonical UI and UX guidance in [docs/development/ui-ux-guidelines.md](development/ui-ux-guidelines.md).
 
 | Constraint | Limit | Rationale |
 | :--- | :---: | :--- |

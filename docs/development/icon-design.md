@@ -15,9 +15,9 @@ Rather than complex structured databases or multi-pane productivity tools, Jots 
 ## 2. Visual Anatomy and Symbolism
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="../anatomy-diagram-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="../anatomy-diagram-light.svg">
-  <img alt="Icon Anatomy and Symbolism Diagram" src="../anatomy-diagram-light.svg" width="100%">
+  <source media="(prefers-color-scheme: dark)" srcset="./anatomy-diagram-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="./anatomy-diagram-light.svg">
+  <img alt="Icon Anatomy and Symbolism Diagram" src="./anatomy-diagram-light.svg" width="100%">
 </picture>
 
 ### A. The 5×5 cm Sticky Note Pad

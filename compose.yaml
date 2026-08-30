@@ -9,6 +9,49 @@ services:
     working_dir: /workspace
     command: ["./packaging/appimage/build-appimage.sh"]
 
+  appimage-devel:
+    build:
+      context: packaging/appimage
+      dockerfile: Dockerfile
+    image: jots-builder:latest
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
+    command: ["./packaging/appimage/build-appimage.sh", "--devel"]
+
+  appimage-devel-cached:
+    build:
+      context: packaging/appimage
+      dockerfile: Dockerfile
+    image: jots-builder:latest
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
+    environment:
+      - CLEAN_BUILD=0
+    command: ["./packaging/appimage/build-appimage.sh", "--devel"]
+
+  meson-test:
+    build:
+      context: packaging/appimage
+      dockerfile: Dockerfile
+    image: jots-builder:latest
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
+    environment:
+      - GSK_RENDERER=cairo
+      - GTK_A11Y=none
+    command: >
+      bash -c "
+        rm -rf builddir-test &&
+        meson setup builddir-test --prefix=/usr --buildtype=debug -Dprofile=linux &&
+        meson compile -C builddir-test &&
+        mkdir -p /tmp/runtime-root && chmod 700 /tmp/runtime-root &&
+        XDG_RUNTIME_DIR=/tmp/runtime-root dbus-run-session -- xvfb-run -a meson test -C builddir-test --verbose
+      "
+
+  # Backward-compatible alias for meson-test.
   test:
     build:
       context: packaging/appimage

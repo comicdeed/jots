@@ -48,6 +48,7 @@ public class Jots.Application : Gtk.Application {
     public static Jots.FontController font_controller;
     public static Jots.PreferenceWindow? preferences;
     public static Jots.NoteService? note_service;
+    public static Jots.GitSyncService? git_sync_service;
     private uint dbus_registration_id = 0;
 
     // Used for commandline option handling
@@ -153,7 +154,15 @@ public class Jots.Application : Gtk.Application {
         set_accels_for_action (ACTION_PREFIX + ACTION_SHOW_CHEATSHEET, {"F1"});
 
         note_manager = new Jots.NoteManager (this);
+        git_sync_service = new Jots.GitSyncService (note_manager.storage, settings);
+        git_sync_service.initialize ();
         font_controller = new Jots.FontController ();
+
+#if LIBPORTAL
+        // Sync the autostart toggle to actual filesystem state.
+        // GSettings tracks user intent; the .desktop file on disk is ground truth.
+        sync_autostart_state ();
+#endif
         var action_restore = lookup_action (Application.ACTION_RESTORE_LAST);
         ((SimpleAction)action_restore).set_enabled (false);
 
@@ -312,6 +321,26 @@ Please wait while the app remembers all the things…
         activate ();
         return 0;
     }
+
+    public override void shutdown () {
+        if (git_sync_service != null) {
+            git_sync_service.shutdown ();
+        }
+
+        base.shutdown ();
+    }
+
+#if LIBPORTAL
+    private void sync_autostart_state () {
+        var actual = Jots.Autostart.is_active ();
+        var stored = settings.get_boolean (KEY_AUTOSTART);
+        if (actual != stored) {
+            debug ("Autostart state desync detected: filesystem=%s gsettings=%s — correcting",
+                actual.to_string (), stored.to_string ());
+            settings.set_boolean (KEY_AUTOSTART, actual);
+        }
+    }
+#endif
 
     private uint portal_signal_id = 0;
 

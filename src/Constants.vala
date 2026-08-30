@@ -3,6 +3,7 @@
  * SPDX-FileCopyrightText:  2017-2024 Lains
  *                          2025 Contributions from the ellie_Commons community (github.com/ellie-commons/)
  *                          2025-2026 Stella & Charlie (teamcons.carrd.co)
+ *                          2026 Dino Korah (github.com/codemedic)
  */
 //vala-lint=skip-file
 
@@ -12,7 +13,7 @@
 namespace Jots {
 
     /*************************************************/
-    const string DONATE_LINK             = "https://ko-fi.com/teamcons/tip";
+    const string COMMUNITY_LINK          = "https://github.com/comicdeed/jots/discussions";
 
     // signature theme
 #if HALLOWEEN
@@ -62,6 +63,31 @@ namespace Jots {
     const string KEY_DEFAULT_FONT       = "default-font";
     const string KEY_MONOSPACE_FONT     = "monospace-font";
     const string KEY_JORTS_MIGRATION_PROMPTED = "jorts-migration-prompted";
+    const string KEY_BACKUP_SYNC_ENABLED = "backup-sync-enabled";
+    const string KEY_BACKUP_SYNC_REMOTE_URL = "backup-sync-remote-url";
+    const string KEY_BACKUP_SYNC_CADENCE = "backup-sync-cadence";
+    const string KEY_BACKUP_SYNC_STATUS = "backup-sync-status";
+    const string KEY_BACKUP_SYNC_LAST_SYNC = "backup-sync-last-sync";
+    const string KEY_BACKUP_SYNC_GITIGNORE_SHA = "backup-sync-gitignore-sha";
+
+    const string BACKUP_STATUS_DISABLED = "Backup disabled";
+    const string BACKUP_STATUS_PREPARING = "Preparing backup repository";
+    const string BACKUP_STATUS_REPOSITORY_READY = "Backup repository ready";
+    const string BACKUP_STATUS_PENDING = "Changes detected; backup sync setup in progress";
+    const string BACKUP_STATUS_LOCAL_COMMIT_CREATED = "Backup updated locally";
+    const string BACKUP_STATUS_EXTERNAL_CHANGES_DETECTED = "External changes detected in notes repository";
+    const string BACKUP_STATUS_REMOTE_DIVERGED = "Remote changes detected; sync update needed";
+    const string BACKUP_STATUS_REMOTE_NOT_CONFIGURED = "Set a remote repository URL to enable sync";
+    const string BACKUP_STATUS_FINALIZING_LOCAL_CHANGES = "Finalizing local backup changes before remote sync";
+    const string BACKUP_STATUS_SYNC_REQUEST_QUEUED = "Sync request queued; current sync still in progress";
+    const string BACKUP_STATUS_SYNCING_REMOTE = "Syncing backup with remote repository";
+    const string BACKUP_STATUS_REMOTE_RETRY_SCHEDULED = "Remote sync retry scheduled after recent failure";
+    const string BACKUP_STATUS_REMOTE_SYNCED = "Backup synchronized with remote repository";
+    const string BACKUP_STATUS_TESTING_REMOTE = "Checking remote repository connectivity";
+    const string BACKUP_STATUS_REMOTE_REACHABLE = "Remote repository is reachable";
+    const string BACKUP_STATUS_REMOTE_UNREACHABLE = "Remote repository check failed";
+    const string BACKUP_STATUS_GITIGNORE_RESTORED = "Managed .gitignore restored";
+    const string BACKUP_STATUS_ERROR = "Backup setup failed";
 
     // Built-in Cheat Sheet constants
     public const string CHEATSHEET_NOTE_ID   = "jots-cheatsheet";

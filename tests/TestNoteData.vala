@@ -1,6 +1,6 @@
 /*
  * SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText:  2026 Jots Contributors
+ * SPDX-FileCopyrightText:  2026 Dino Korah (github.com/codemedic)
  */
 
 namespace Jots.Tests {
@@ -69,12 +69,12 @@ namespace Jots.Tests {
         });
 
         /**
-         * UC-20.10.40: UUID assignment and round-trip persistence
+         * UC-20.10.40: Slug identifier assignment and round-trip persistence
          */
         GLib.Test.add_func ("/NoteData/UC_20_10_40/UuidAssignmentAndPersistence", () => {
             var note = new Jots.NoteData ();
             assert_true (note.id != null && note.id.length > 0);
-            assert_true (GLib.Uuid.string_is_valid (note.id));
+            assert_true (note.id.contains ("~"));
 
             var original_id = note.id;
             var json = note.to_json ();
@@ -84,7 +84,7 @@ namespace Jots.Tests {
         });
 
         /**
-         * UC-20.10.50: Legacy JSON without UUID auto-migrates to valid UUID
+         * UC-20.10.50: Legacy JSON without id auto-generates valid slug identifier
          */
         GLib.Test.add_func ("/NoteData/UC_20_10_50/LegacyJsonUuidMigration", () => {
             var parser = new Json.Parser ();
@@ -94,7 +94,7 @@ namespace Jots.Tests {
                 var note = new Jots.NoteData.from_json (legacy_obj);
 
                 assert_true (note.id != null && note.id.length > 0);
-                assert_true (GLib.Uuid.string_is_valid (note.id));
+                assert_true (note.id.contains ("~"));
                 assert_cmpstr (note.title, GLib.CompareOperator.EQ, "Legacy Note");
             } catch (GLib.Error e) {
                 GLib.Test.fail ();

@@ -1,6 +1,6 @@
 /*
  * SPDX-License-Identifier: GPL-3.0-or-later
- * SPDX-FileCopyrightText:  2026 Jots Contributors
+ * SPDX-FileCopyrightText:  2026 Dino Korah (github.com/codemedic)
  */
 
 public static int main (string[] args) {
@@ -8,6 +8,8 @@ public static int main (string[] args) {
     Gtk.init ();
 
     // Register all Canary test suites
+    Jots.Tests.register_git_sync_service_tests ();
+    Jots.Tests.register_note_identifier_tests ();
     Jots.Tests.register_note_data_tests ();
     Jots.Tests.register_markdown_storage_tests ();
     Jots.Tests.register_markdown_buffer_tests ();
@@ -19,6 +21,7 @@ public static int main (string[] args) {
     Jots.Tests.register_search_service_tests ();
     Jots.Tests.register_migration_helper_tests ();
     Jots.Tests.register_cheatsheet_tests ();
+    Jots.Tests.register_autostart_tests ();
 
     return GLib.Test.run ();
 }

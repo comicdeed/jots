@@ -3,6 +3,7 @@
  * SPDX-FileCopyrightText:  2017-2024 Lains
  *                          2025 Contributions from the ellie_Commons community (github.com/ellie-commons/)
  *                          2025-2026 Stella & Charlie (teamcons.carrd.co)
+ *                          2026 Dino Korah (github.com/codemedic)
  */
 
  // vala-lint=skip-file
@@ -31,8 +32,8 @@ public class Jots.NoteData {
 
     // The standard constructor only does random
     public NoteData () {
-        id = GLib.Uuid.string_random ();
         title = Jots.Utils.random_title ();
+        id = Jots.Utils.NoteIdentifier.ensure (title);
         theme = Jots.Themes.random_theme (latest_theme);
         content = "";
         monospace = latest_mono;
@@ -48,9 +49,10 @@ public class Jots.NoteData {
     * Parse a node to create an associated NoteData object
     */
     public NoteData.from_json (Json.Object node) {
-        id          = node.get_string_member_with_default ("id", GLib.Uuid.string_random ());
+        id          = node.get_string_member_with_default ("id", "");
         // Translators: "Forgot title!" is optional. It never happened for me when testing, and may appear only if users tampered with the savefile
         title       = node.get_string_member_with_default ("title", (_("Forgot title!")));
+        id          = Jots.Utils.NoteIdentifier.ensure (title, id);
         theme       = (Jots.Themes)node.get_int_member_with_default ("color", Jots.Themes.random_theme ());
         content     = node.get_string_member_with_default ("content", "");
         monospace   = node.get_boolean_member_with_default ("monospace", DEFAULT_MONO);

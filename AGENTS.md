@@ -13,6 +13,7 @@ To maintain focus and avoid context bloat, refer to specialized documentation on
 * **Behavioral Use Cases**: [`docs/use-cases/README.md`](docs/use-cases/README.md) — Domain behavioral specifications (`UC-10` to `UC-70`) cross-referenced in unit tests.
 * **MCP Integration Guide**: [`docs/development/mcp-server.md`](docs/development/mcp-server.md) — Setup instructions for Claude Desktop, Cursor, Gemini CLI, and Antigravity.
 * **Roadmap & Idea Matrix**: [`docs/roadmap.md`](docs/roadmap.md) — Graded initiatives and feature backlog.
+* **UI/UX Guidelines**: [`docs/development/ui-ux-guidelines.md`](docs/development/ui-ux-guidelines.md) — Canonical evolving guidance for interface decisions, preference-surface growth, IA grouping, and UX feedback patterns.
 * **Developer Setup & Tooling**: [`docs/development/setup.md`](docs/development/setup.md) — Workstation setup, Git branch guardrails, tooling prerequisites, and editor extensions.
 * **Documentation Style**: [`docs/development/documentation-style.md`](docs/development/documentation-style.md) — GNOME developer style rules.
 * **Release Workflow & Automation**: [`docs/development/release-workflow.md`](docs/development/release-workflow.md) — Release branching strategy, AppStream changelog curation, and automated multi-arch GitHub releases.
@@ -34,7 +35,7 @@ Jots is a lightweight GTK4 sticky notes app and MCP server written entirely in *
 
 ---
 
-## 📦 Post-Clone Setup & Build Workflows
+## 📦 Post-Clone Setup, Standard Build/Test Workflows
 
 ### 1. Enable Repository Git Hooks (Post-Clone)
 After cloning the repository, configure Git to use the tracked hooks in `.githooks/` to activate the local branch guardrail:
@@ -42,25 +43,83 @@ After cloning the repository, configure Git to use the tracked hooks in `.githoo
 git config core.hooksPath .githooks
 ```
 
-### 2. Build and Install Jots (Flatpak Sandbox)
+### 2. Standard non-CI workflow model (humans and agents)
+Use this decision model for compile, run, and test.
+
+1. **Native mode (optional acceleration path when host toolchain is compatible)**
+```bash
+meson setup builddir --prefix=/usr --buildtype=debug -Dprofile=linux
+meson compile -C builddir
+GSK_RENDERER=cairo GTK_A11Y=none xvfb-run -a meson test -C builddir --verbose
+```
+
+Use native mode only when the host environment satisfies the repository toolchain requirements (notably GTK4 >= 4.14 and pkg-config visibility for system GTK libraries).
+
+2. **AppImage mode (formal packaging path, mode-specific verification)**
+Stable package:
+```bash
+docker compose run --rm appimage
+```
+Devel package:
+```bash
+docker compose run --rm appimage-devel
+```
+Cached devel package rebuild (faster repeat packaging):
+```bash
+docker compose run --rm appimage-devel-cached
+```
+Containerized Meson canary tests:
+```bash
+docker compose run --rm meson-test
+```
+Build devel AppImage for embedded test runner:
+```bash
+docker compose run --rm appimage-devel
+```
+Direct devel AppImage test execution after build (faster repeat runs and selector support):
+```bash
+./dist/Jots-devel-<version>-<arch>.AppImage --unit-tests
+./dist/Jots-devel-<version>-<arch>.AppImage --unit-tests -p /McpProtocol/UC_70_10_10/InitializeHandshake
+```
+Direct script fallback only when Compose is unavailable:
+```bash
+./packaging/appimage/build-appimage.sh
+./packaging/appimage/build-appimage.sh --devel
+```
+
+3. **Flatpak mode (maintained parity with AppImage)**
+Devel build + run + tests:
 ```bash
 flatpak run org.flatpak.Builder --force-clean --sandbox --user --install --install-deps-from=flathub --ccache builddir io.github.comicdeed.jots.devel.yml
-```
-
-### 2. Run Jots Locally
-```bash
 flatpak run io.github.comicdeed.jots.devel
+flatpak run --command=jots-unit-tests io.github.comicdeed.jots.devel
 ```
-
-### 3. Run Native MCP Server in Flatpak
+Direct Flatpak devel test reruns with selectors:
+```bash
+flatpak run --command=jots-unit-tests io.github.comicdeed.jots.devel
+flatpak run --command=jots-unit-tests io.github.comicdeed.jots.devel -p /McpProtocol/UC_70_10_10/InitializeHandshake
+```
+Stable build + run + tests:
+```bash
+flatpak run org.flatpak.Builder --force-clean --sandbox --user --install --install-deps-from=flathub --ccache builddir io.github.comicdeed.jots.yml
+flatpak run io.github.comicdeed.jots
+flatpak run --command=jots-unit-tests io.github.comicdeed.jots
+```
+Flatpak MCP server (devel):
 ```bash
 flatpak run --command=jots-mcp io.github.comicdeed.jots.devel
 ```
 
-### 4. Run Canary Unit Tests
-```bash
-flatpak run --command=jots-unit-tests io.github.comicdeed.jots.devel
-```
+Default to package-mode workflows for day-to-day validation. Use native mode as an optional fast path only when host compatibility is confirmed.
+
+Escalate from native-only to package-mode verification whenever a change touches packaging-sensitive behavior (AppRun or packaging scripts, launch semantics, D-Bus/MCP, portal/autostart, sandbox permissions, install/runtime paths).
+
+Targeted package-mode tests (for example devel AppImage embedded tests and Flatpak devel tests) must run in their full packaged runtime setup because these checks can depend on packaging-specific environment details such as session bus wiring, sandbox permissions, and desktop portal behavior.
+
+Artifacts are written to `dist/`.
+
+### 3. Windows Packaging (Experimental)
+For local Windows packaging, follow `docs/development/windows.md` in an MSYS2 UCRT64 shell.
 
 ---
 
@@ -69,11 +128,15 @@ flatpak run --command=jots-unit-tests io.github.comicdeed.jots.devel
 * **UI/UX Aesthetic Constraints**: Jots is minimal by design. Avoid adding heavy components.
 * **Encapsulation & Boundaries**: Keep storage mechanics encapsulated in `Storage.vala`. External tools interact strictly via `NoteService` D-Bus IPC.
 * **Compilation Warnings**: The build uses `-w` in `meson.build` to suppress Vala-generated C compiler noise.
+* **CI Skip Token for Non-Built Changes**: For docs-only or other non-built changes (for example Markdown/text updates), append `[skip ci]` to the commit subject to avoid unnecessary GitHub Actions runs.
+  - **Safe scope**: Documentation/content-only paths such as `*.md`, `docs/**`, `README.md`, `CONTRIBUTING.md`, and similar non-executable text assets.
+  - **Do NOT skip CI** when any build/runtime/test/release path changes, including `src/**`, `tests/**`, `data/**`, `po/**`, `meson.build`, `meson.options`, `compose.yaml`, `io.github.comicdeed.jots*.yml`, `packaging/**`, `.github/workflows/**`, or scripts.
 * **Docker & CI Packaging Parity (Crucial Rule)**:
   - **Zero Dependency Drift**: Whenever adding or updating build packages, libraries, or asset engines (e.g., `librsvg2-dev`, `librsvg2-common`, `libportal`, font rendering engines) in `packaging/appimage/Dockerfile` or `compose.yaml`, you **MUST simultaneously update the runner dependencies in `.github/workflows/CI.yml` and `.github/workflows/release.yml`**.
   - **Hard Packaging Guardrails**: Packaging scripts like `packaging/appimage/build-appimage.sh` must include strict assertions (e.g., checking that `libpixbufloader-svg.so` and runtime libraries exist in `AppDir`) so that missing dependencies fail fast in CI instead of producing broken packages.
 * **Test & Use-Case Cross-Referencing**: When writing unit tests in `tests/`, embed the permanent use-case identifier (`/<Component>/UC_XX_YY_ZZ/<ScenarioName>`) and link to `docs/use-cases/`.
 * **User Guide Synchronization**: Whenever modifying user-facing features, keyboard shortcuts, or settings, update [`docs/user-guide.md`](docs/user-guide.md).
+* **SPDX Attribution Maintenance**: For changes to source, tests, scripts, CSS, or build/config files, preserve existing SPDX headers and add/update `SPDX-FileCopyrightText` entries for new contributors when they make substantive edits.
 * **Honest Attribution**: When opening a PR, include the attribution block in `docs/development/pull-request-guidelines.md`.
 
 ---

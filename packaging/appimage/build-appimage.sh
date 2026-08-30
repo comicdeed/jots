@@ -1,26 +1,75 @@
 #!/bin/bash
 set -euo pipefail
 
+# Parse flags
+DEVEL=0
+for arg in "$@"; do
+    case "$arg" in
+        --devel) DEVEL=1 ;;
+    esac
+done
+
 # Architecture and version detection
 ARCH="${ARCH:-$(uname -m)}"
 VERSION="${VERSION:-$(grep -m 1 "version:" meson.build | cut -d"'" -f2)}"
 STAGE_DIR="${STAGE_DIR:-stage}"
 BUILD_DIR="${BUILD_DIR:-builddir-appimage}"
 OUTPUT_DIR="${OUTPUT_DIR:-dist}"
+CLEAN_BUILD="${CLEAN_BUILD:-1}"
 
-echo "==> Building Jots AppImage ${VERSION} for ${ARCH}..."
+# Devel vs stable build configuration
+if [ "$DEVEL" = "1" ]; then
+    APP_ID="io.github.comicdeed.jots.devel"
+    MESON_DEVELOPMENT=true
+    BUILDTYPE=debug
+    STRIP_FLAG=""
+    OUTPUT_SUFFIX="-devel"
+    echo "==> Building Jots DEVEL AppImage ${VERSION} for ${ARCH} (debug, unit-tests wired)..."
+else
+    APP_ID="io.github.comicdeed.jots"
+    MESON_DEVELOPMENT=false
+    BUILDTYPE=release
+    STRIP_FLAG="--strip"
+    OUTPUT_SUFFIX=""
+    echo "==> Building Jots AppImage ${VERSION} for ${ARCH}..."
+fi
+
 mkdir -p "${OUTPUT_DIR}"
 
 # 1. Compile into isolated DESTDIR
 echo "==> Compiling Jots via Meson..."
-rm -rf "${STAGE_DIR}" "${BUILD_DIR}"
-meson setup "${BUILD_DIR}" \
-    --prefix=/usr \
-    --buildtype=release \
-    --strip \
-    -Dprofile=linux \
-    -Ddevelopment=false \
-    -Dicon_variant=default
+if [ "${CLEAN_BUILD}" = "1" ]; then
+    echo "==> Clean build mode enabled (CLEAN_BUILD=1)."
+    rm -rf "${STAGE_DIR}" "${BUILD_DIR}"
+    meson setup "${BUILD_DIR}" \
+        --prefix=/usr \
+        --buildtype=${BUILDTYPE} \
+        ${STRIP_FLAG} \
+        -Dprofile=linux \
+        -Ddevelopment=${MESON_DEVELOPMENT} \
+        -Dicon_variant=default
+else
+    echo "==> Incremental build mode enabled (CLEAN_BUILD=0)."
+    rm -rf "${STAGE_DIR}"
+    if [ -d "${BUILD_DIR}" ]; then
+        meson setup "${BUILD_DIR}" \
+            --reconfigure \
+            --prefix=/usr \
+            --buildtype=${BUILDTYPE} \
+            ${STRIP_FLAG} \
+            -Dprofile=linux \
+            -Ddevelopment=${MESON_DEVELOPMENT} \
+            -Dicon_variant=default
+    else
+        meson setup "${BUILD_DIR}" \
+            --prefix=/usr \
+            --buildtype=${BUILDTYPE} \
+            ${STRIP_FLAG} \
+            -Dprofile=linux \
+            -Ddevelopment=${MESON_DEVELOPMENT} \
+            -Dicon_variant=default
+    fi
+fi
 meson compile -C "${BUILD_DIR}"
 DESTDIR="$(pwd)/${STAGE_DIR}" meson install -C "${BUILD_DIR}"
 
@@ -53,9 +102,11 @@ fi
 # 5. Execute linuxdeploy with GTK plugin to populate dependencies
 ./linuxdeploy-${ARCH}.AppImage \
     --appdir "${APPDIR}" \
-    --desktop-file "${APPDIR}/usr/share/applications/io.github.comicdeed.jots.desktop" \
-    --icon-file "${APPDIR}/usr/share/icons/hicolor/scalable/apps/io.github.comicdeed.jots.svg" \
-    --plugin gtk
+    --desktop-file "${APPDIR}/usr/share/applications/${APP_ID}.desktop" \
+    --icon-file "${APPDIR}/usr/share/icons/hicolor/scalable/apps/${APP_ID}.svg" \
+    --plugin gtk 2>&1 | sed -E \
+    -e '/Could not find copyright files for file/d' \
+    -e '/Not calling strip on binary .*rpath starts with \$/d'
 
 # 6. Bundle full runtime, SVG engine, and font rendering dependencies for universal host backwards compatibility
 for libname in librsvg libharfbuzz libfreetype libfontconfig libfribidi libgraphite2 libpixman libpng libbrotli libzstd libexpat libffi libc libm libpthread libresolv librt libdl ld-linux; do
@@ -87,10 +138,10 @@ if [ ! -f "appimagetool-${ARCH}.AppImage" ]; then
     chmod +x "appimagetool-${ARCH}.AppImage"
 fi
 
-export OUTPUT="${OUTPUT_DIR}/Jots-${VERSION}-${ARCH}.AppImage"
+export OUTPUT="${OUTPUT_DIR}/Jots${OUTPUT_SUFFIX}-${VERSION}-${ARCH}.AppImage"
 rm -f "${OUTPUT}"
 ./appimagetool-${ARCH}.AppImage "${APPDIR}" "${OUTPUT}"
 
-(cd "${OUTPUT_DIR}" && sha256sum "Jots-${VERSION}-${ARCH}.AppImage" > "Jots-${VERSION}-${ARCH}.AppImage.sha256")
+(cd "${OUTPUT_DIR}" && sha256sum "Jots${OUTPUT_SUFFIX}-${VERSION}-${ARCH}.AppImage" > "Jots${OUTPUT_SUFFIX}-${VERSION}-${ARCH}.AppImage.sha256")
 
 echo "==> Successfully created ${OUTPUT} and checksum!"

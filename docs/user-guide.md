@@ -11,7 +11,7 @@ Welcome to Jots! Jots is a lightweight, distraction-free sticky notes applicatio
 * [3. Typography & Font Customization](#3-typography--font-customization)
 * [4. Markdown Formatting & Live Rendering](#4-markdown-formatting--live-rendering)
 * [5. Themes & Appearance](#5-themes--appearance)
-* [6. Preferences & Privacy Effects](#6-preferences--privacy-effects)
+* [6. Preferences, Privacy & Note Protection](#6-preferences-privacy--note-protection)
 * [7. AI Assistant & MCP Integration](#7-ai-assistant--mcp-integration)
 * [8. Markdown Storage, Backups & Tool Interoperability](#8-markdown-storage-backups--tool-interoperability)
 
@@ -123,15 +123,25 @@ Jots comes with 10 carefully designed pastel color palettes that adapt seamlessl
 
 ## 6. Preferences, Privacy & Note Protection
 
-Access global preferences by right-clicking a note or selecting **Preferences** from the app menu:
+Access global preferences by right-clicking a note or selecting **Preferences** from the app menu. Preferences are organized into category pages (**General**, **Appearance**, **Data & Recovery**, **Backup & Sync**) for faster navigation:
 
 * **Scribbly Privacy Mode (`Ctrl + H`)**: When enabled, any note window that loses desktop focus immediately obfuscates its text and code elements with playful handwritten squiggles using the embedded `Redacted Script` typeface. Focusing the note instantly restores crystal-clear readable text.
 * **Lock Note (Read-Only)**: Open the note popover menu (**`Ctrl + G`**) and toggle **Lock Note (Read-Only)** to protect sensitive or reference notes from accidental keyboard edits and title modifications.
 * **Always Visible (Privacy Exemption)**: Toggle **Always Visible** in a note's popover menu to exempt that specific sticky note from Scribbly privacy obfuscation, keeping reference checklists or guides crisp and legible even when unfocused.
 * **Built-in Quick Cheat Sheet (`F1`)**: Jots includes a built-in, read-only, privacy-exempt reference note with standard shortcuts and syntax tips. Press **`F1`** anytime to summon it, bring it to the front, or recreate it if closed.
 * **Hide Action Bar (`Ctrl + T`)**: Hides the bottom toolbar on note windows to maximize writing space.
-* **Autostart on Login**: Integrates with your desktop portal to automatically relaunch all your open sticky notes when you log into your computer.
+* **Autostart on Login**: Automatically relaunches all your open sticky notes when you log into your desktop. Supports Flatpak (via XDG Background Portal), AppImage (preserving custom rename or Gear Lever paths), and native packages, automatically synchronizing with your system's autostart configuration on startup.
 * **Import from Jorts Migration Helper**: Seamlessly import your existing sticky notes from Jorts (`io.github.elly_code.jorts`). The import is **100% non-destructive**—your original Jorts `saved_state.json` file is never deleted or altered. You can trigger migration from the first-run prompt or anytime via the **Import from Jorts** button in Preferences.
+* **Backup & Sync**: Configure a remote Git repository URL, choose an automatic sync cadence, run **Sync now** for immediate synchronization, and use **Test connection** to verify remote reachability. Status text reports preparation, local commits, remote sync progress, divergence, and deferred retry states.
+
+### Backup And Sync First-Time Outcomes
+
+When you connect a remote repository for backup, these are the expected outcomes:
+
+* **Local notes repo has no commits, remote is empty**: Jots shows a ready state and waits for your first note change before pushing.
+* **Local notes repo has no commits, remote already has content (for example `main` or `master`)**: Jots shows a remote divergence state so you can resolve direction before syncing.
+* **Local notes repo has commits, remote is empty**: Jots pushes local backup history to the remote on sync.
+* **Local and remote both have commits and differ**: Jots surfaces divergence when histories conflict, or completes sync when one side is cleanly ahead.
 
 ---
 
@@ -139,59 +149,26 @@ Access global preferences by right-clicking a note or selecting **Preferences** 
 
 Jots includes a native [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server (`jots-mcp`) allowing AI assistants (Claude Desktop, Cursor, Gemini CLI, and Antigravity) to read, create, search, and update your sticky notes in real time.
 
-```mermaid
-graph LR
-    AI[AI Assistant / Claude / Cursor] -->|stdio MCP| Mcp["jots-mcp (Native Binary)"]
-    Mcp -->|D-Bus IPC| Jots[Jots Desktop App]
-    Jots -->|Live GUI| Notes[Desktop Sticky Notes]
-```
+For full setup and protocol reference, use the canonical guide: [docs/development/mcp-server.md](docs/development/mcp-server.md).
 
-### Quick Client Setup
+### TL;DR
 
-#### Claude Desktop (AppImage)
-```json
-{
-  "mcpServers": {
-    "jots": {
-      "command": "/path/to/Jots-x86_64.AppImage",
-      "args": ["--mcp"]
-    }
-  }
-}
-```
+Use one of the following launch modes in your MCP client:
 
-#### Claude Desktop (Flatpak)
-```json
-{
-  "mcpServers": {
-    "jots": {
-      "command": "flatpak",
-      "args": ["run", "--command=jots-mcp", "io.github.comicdeed.jots"]
-    }
-  }
-}
-```
+* **AppImage (recommended)**: `command: /path/to/Jots-<version>-<arch>.AppImage`, `args: ["--mcp"]`
+* **Flatpak**: `command: flatpak`, `args: ["run", "--command=jots-mcp", "io.github.comicdeed.jots"]`
+* **Native host install**: `command: jots-mcp`
 
-#### Cursor (`.cursor/mcp.json`)
-```json
-{
-  "mcpServers": {
-    "jots": {
-      "command": "/path/to/Jots-x86_64.AppImage",
-      "args": ["--mcp"]
-    }
-  }
-}
-```
-*(Note: If using Flatpak, pass `"command": "flatpak"` and `"args": ["run", "--command=jots-mcp", "io.github.comicdeed.jots"]`)*
+> **Tip**: If your AI client invokes an MCP tool while the Jots desktop application is closed, `jots-mcp` automatically detects your packaging environment and returns the exact command needed to launch the app so you or your assistant can start it immediately.
 
-### Available AI Tools
-* **`list_notes`**: Returns an overview of all open desktop sticky notes with titles, themes, and word counts.
-* **`read_note(id)`**: Reads the complete body text and properties of a specific note.
-* **`create_note(title, content, theme)`**: Spawns a new sticky note window live on your desktop.
-* **`update_note(id, title, content, theme)`**: Updates an open note's text, title, or theme color in real time.
-* **`delete_note(id)`**: Closes and deletes a sticky note.
-* **`search_notes(query)`**: Searches note titles and body content case-insensitively.
+### Available AI Capabilities
+Your MCP client can:
+
+* List and search notes.
+* Read note content and metadata.
+* Create new notes.
+* Update existing notes.
+* Delete notes.
 
 ---
 

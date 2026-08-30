@@ -23,8 +23,26 @@ Application settings toggles, keyboard accelerators, action bar display modes, s
 
 ## 60.20 System integration and autostart
 
-### `UC-60.20.10` Autostart portal registration
-* **Trigger**: User toggles "Show notes on log in" in Preferences.
-* **Pre-conditions**: `LIBPORTAL` support enabled.
+### `UC-60.20.10` Autostart registration — Flatpak
+* **Trigger**: User toggles "Show notes on log in" in Preferences while running via Flatpak.
+* **Pre-conditions**: `LIBPORTAL` support enabled; `FLATPAK_ID` env var is set by the Flatpak runtime.
+* **Post-conditions**: XDG Background portal registers or unregisters Jots autostart via `request_background()`.
+
+### `UC-60.20.11` Autostart registration — AppImage
+* **Trigger**: User toggles "Show notes on log in" while running via AppImage.
+* **Pre-conditions**: `LIBPORTAL` support enabled; `APPIMAGE` env var is set by the AppRun script.
 * **Post-conditions**:
-  * Requests the XDG background portal to register or unregister Jots at user session startup.
+  * On enable: writes `~/.config/autostart/io.github.comicdeed.jots.desktop` with `Exec=<AppImage path>`.
+  * On disable: removes the file.
+
+### `UC-60.20.12` Autostart registration — Native install
+* **Trigger**: User toggles "Show notes on log in" while running as a native package.
+* **Pre-conditions**: `LIBPORTAL` support enabled; neither `FLATPAK_ID` nor `APPIMAGE` env var is set.
+* **Post-conditions**:
+  * On enable: writes `~/.config/autostart/io.github.comicdeed.jots.desktop` with `Exec=io.github.comicdeed.jots`.
+  * On disable: removes the file.
+
+### `UC-60.20.13` Autostart state sync on startup
+* **Trigger**: Application startup (before the preferences window is constructed).
+* **Pre-conditions**: `LIBPORTAL` support enabled.
+* **Post-conditions**: GSettings `autostart` key is corrected to match actual filesystem state, preventing toggle desync when the user manually removes the autostart file outside the app.

@@ -2,7 +2,7 @@ project(
     'jots',
     ['c', 'vala'],        # The floor is vala
     license: 'GPL-3.0-or-later',
-    version: '1.2.0',
+    version: '1.3.0-beta.1',
     meson_version: '>= 0.59.0'
 )
 
@@ -25,7 +25,7 @@ datadir = get_option('datadir')
 development = get_option('development')
 if development
   app_id +=  '.devel'
-  add_project_arguments('--define=DEVEL', '--define=LATTE', language: 'vala')
+    add_project_arguments('--define=DEVEL', language: 'vala')
 
 endif
 

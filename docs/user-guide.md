@@ -132,7 +132,7 @@ Access global preferences by right-clicking a note or selecting **Preferences** 
 * **Hide Action Bar (`Ctrl + T`)**: Hides the bottom toolbar on note windows to maximize writing space.
 * **Autostart on Login**: Automatically relaunches all your open sticky notes when you log into your desktop. Supports Flatpak (via XDG Background Portal), AppImage (preserving custom rename or Gear Lever paths), and native packages, automatically synchronizing with your system's autostart configuration on startup.
 * **Import from Jorts Migration Helper**: Seamlessly import your existing sticky notes from Jorts (`io.github.elly_code.jorts`). The import is **100% non-destructive**—your original Jorts `saved_state.json` file is never deleted or altered. You can trigger migration from the first-run prompt or anytime via the **Import from Jorts** button in Preferences.
-* **Backup & Sync (Scaffold)**: The preferences page includes non-active Backup & Sync controls (remote URL, cadence, and action buttons) as UI scaffolding for the upcoming Git backup phase. These controls currently do not execute synchronization.
+* **Backup & Sync**: Configure a remote Git repository URL, choose an automatic sync cadence, run **Sync now** for immediate synchronization, and use **Test connection** to verify remote reachability. Status text reports preparation, local commits, remote sync progress, divergence, and deferred retry states.
 
 ---
 

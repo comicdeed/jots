@@ -52,6 +52,8 @@ namespace Jots {
         private const int BACKUP_CADENCE_HOURLY = 4;
         private const int64 REMOTE_AUTO_RETRY_COOLDOWN_USEC = 90 * 1000 * 1000;
         private const int64 REMOTE_AUTO_RETRY_COOLDOWN_MAX_USEC = 15 * 60 * 1000 * 1000;
+        private const uint GIT_COMMAND_TIMEOUT_SECONDS = 30;
+        private const int MAX_STATUS_DETAIL_CHARS = 120;
         private const string GITIGNORE_CANONICAL = "*\n!.gitignore\n!*/\n!*.md\n";
 
         private Storage storage;
@@ -69,6 +71,8 @@ namespace Jots {
         private uint debounce_timer_id = 0;
         private uint status_poll_timer_id = 0;
         private uint remote_sync_timer_id = 0;
+        private string current_status_text = "";
+        private int current_status_priority = -1;
         private Gee.HashMap<string, BackupCommitIntent> pending_intents = new Gee.HashMap<string, BackupCommitIntent> ();
         private Gee.ArrayList<BackupCommitIntent> execution_queue = new Gee.ArrayList<BackupCommitIntent> ();
 
@@ -89,7 +93,7 @@ namespace Jots {
                     clear_pending_intents ();
                     stop_status_poll_timer ();
                     stop_remote_sync_timer ();
-                    set_status (BACKUP_STATUS_DISABLED);
+                    set_status (BACKUP_STATUS_DISABLED, true);
                 }
             });
             settings.changed[KEY_BACKUP_SYNC_CADENCE].connect (() => {
@@ -112,7 +116,7 @@ namespace Jots {
             if (enabled) {
                 enable_backup_async.begin (execution_epoch);
             } else {
-                set_status (BACKUP_STATUS_DISABLED);
+                set_status (BACKUP_STATUS_DISABLED, true);
             }
         }
 
@@ -124,7 +128,7 @@ namespace Jots {
 
         public void request_remote_sync_now () {
             if (!enabled) {
-                set_status (BACKUP_STATUS_DISABLED);
+                set_status (BACKUP_STATUS_DISABLED, true);
                 return;
             }
 
@@ -132,7 +136,7 @@ namespace Jots {
 
             if (execution_in_progress || execution_queue.size > 0 || pending_intents.size > 0) {
                 remote_sync_requested = true;
-                set_status (BACKUP_STATUS_FINALIZING_LOCAL_CHANGES);
+                set_status (BACKUP_STATUS_FINALIZING_LOCAL_CHANGES, true);
                 if (!execution_in_progress && execution_queue.size > 0) {
                     process_execution_queue_async.begin (execution_epoch);
                 }
@@ -141,7 +145,7 @@ namespace Jots {
 
             if (remote_sync_in_progress) {
                 remote_sync_requested = true;
-                set_status (BACKUP_STATUS_SYNC_REQUEST_QUEUED);
+                set_status (BACKUP_STATUS_SYNC_REQUEST_QUEUED, true);
                 return;
             }
 
@@ -153,30 +157,30 @@ namespace Jots {
 
         public async bool test_remote_connection_async () {
             if (!enabled) {
-                set_status (BACKUP_STATUS_DISABLED);
+                set_status (BACKUP_STATUS_DISABLED, true);
                 return false;
             }
 
             var remote_url = settings.get_string (KEY_BACKUP_SYNC_REMOTE_URL).strip ();
             if (remote_url == "") {
-                set_status (BACKUP_STATUS_REMOTE_NOT_CONFIGURED);
+                set_status (BACKUP_STATUS_REMOTE_NOT_CONFIGURED, true);
                 return false;
             }
 
             if (!(yield ensure_repository_async ()) || !(yield ensure_git_identity_async ()) || !ensure_managed_gitignore ()) {
-                set_status (BACKUP_STATUS_ERROR);
+                set_error_status ("Remote check failed");
                 return false;
             }
 
-            set_status (BACKUP_STATUS_TESTING_REMOTE);
+            set_status (BACKUP_STATUS_TESTING_REMOTE, true);
             var probe_result = yield run_git_command_async ({"ls-remote", "--heads", remote_url});
             if (!probe_result.success) {
                 warning ("Remote connectivity check failed: %s", probe_result.stderr_text);
-                set_status (BACKUP_STATUS_REMOTE_UNREACHABLE);
+                set_error_status ("Remote unreachable", probe_result.stderr_text);
                 return false;
             }
 
-            set_status (BACKUP_STATUS_REMOTE_REACHABLE);
+            set_status (BACKUP_STATUS_REMOTE_REACHABLE, true);
             return true;
         }
 
@@ -186,7 +190,7 @@ namespace Jots {
             }
 
             bootstrap_in_progress = true;
-            set_status (BACKUP_STATUS_PREPARING);
+            set_status (BACKUP_STATUS_PREPARING, true);
             if (!enabled || epoch != execution_epoch) {
                 bootstrap_in_progress = false;
                 return;
@@ -218,7 +222,7 @@ namespace Jots {
             }
 
             if (enabled && epoch == execution_epoch) {
-                set_status (BACKUP_STATUS_REPOSITORY_READY);
+                set_status (BACKUP_STATUS_REPOSITORY_READY, true);
                 start_status_poll_timer (epoch);
                 refresh_remote_sync_schedule (epoch);
             }
@@ -236,7 +240,7 @@ namespace Jots {
 
             var change_type = classify_change (note, previous_note);
             queue_commit_intent (note.id, note_path, false, change_type);
-            set_status (BACKUP_STATUS_PENDING);
+            set_status (BACKUP_STATUS_PENDING, true);
         }
 
         private void on_note_deleted (string note_id, string note_path) {
@@ -245,7 +249,7 @@ namespace Jots {
             }
 
             queue_commit_intent (note_id, note_path, true, BackupChangeType.TEXT);
-            set_status (BACKUP_STATUS_PENDING);
+            set_status (BACKUP_STATUS_PENDING, true);
         }
 
         private void queue_commit_intent (string note_id, string note_path, bool deleted, BackupChangeType change_type) {
@@ -259,10 +263,7 @@ namespace Jots {
 
         private void arm_debounce_timer_to_earliest () {
             if (pending_intents.size == 0) {
-                if (debounce_timer_id != 0) {
-                    Source.remove (debounce_timer_id);
-                    debounce_timer_id = 0;
-                }
+                remove_timer_source (ref debounce_timer_id);
                 return;
             }
 
@@ -280,10 +281,7 @@ namespace Jots {
                 delay_ms = (uint) ((delta_usec + 999) / 1000);
             }
 
-            if (debounce_timer_id != 0) {
-                Source.remove (debounce_timer_id);
-                debounce_timer_id = 0;
-            }
+            remove_timer_source (ref debounce_timer_id);
 
             debounce_timer_id = Timeout.add (delay_ms, () => {
                 debounce_timer_id = 0;
@@ -326,7 +324,7 @@ namespace Jots {
             }
 
             if (enabled && pending_intents.size == 0) {
-                set_status (BACKUP_STATUS_REPOSITORY_READY);
+                set_status (BACKUP_STATUS_REPOSITORY_READY, true);
             }
         }
 
@@ -349,7 +347,7 @@ namespace Jots {
             }
 
             if (enabled && epoch == execution_epoch && pending_intents.size == 0) {
-                set_status (BACKUP_STATUS_REPOSITORY_READY);
+                set_status (BACKUP_STATUS_REPOSITORY_READY, true);
             }
         }
 
@@ -377,7 +375,7 @@ namespace Jots {
 
                 if (!rm_result.success) {
                     warning ("Git remove failed for %s: %s", tracked_filename, rm_result.stderr_text);
-                    set_status (BACKUP_STATUS_ERROR);
+                    set_error_status ("Failed to remove note from backup", rm_result.stderr_text);
                     return;
                 }
 
@@ -396,7 +394,7 @@ namespace Jots {
 
             if (!add_result.success) {
                 warning ("Git add failed for %s: %s", tracked_filename, add_result.stderr_text);
-                set_status (BACKUP_STATUS_ERROR);
+                set_error_status ("Failed to stage note for backup", add_result.stderr_text);
                 return;
             }
 
@@ -417,7 +415,7 @@ namespace Jots {
             }
 
             if (commit_result.success) {
-                set_status (BACKUP_STATUS_LOCAL_COMMIT_CREATED);
+                set_status (BACKUP_STATUS_LOCAL_COMMIT_CREATED, true);
                 return true;
             }
 
@@ -427,7 +425,7 @@ namespace Jots {
             }
 
             warning ("Git commit failed for '%s': %s", commit_message, commit_result.stderr_text);
-            set_status (BACKUP_STATUS_ERROR);
+            set_error_status ("Failed to create local backup commit", commit_result.stderr_text);
             return false;
         }
 
@@ -449,10 +447,7 @@ namespace Jots {
             pending_intents.clear ();
             execution_queue.clear ();
             remote_sync_requested = false;
-            if (debounce_timer_id != 0) {
-                Source.remove (debounce_timer_id);
-                debounce_timer_id = 0;
-            }
+            remove_timer_source (ref debounce_timer_id);
         }
 
         private void flush_pending_intents_for_manual_sync () {
@@ -460,10 +455,7 @@ namespace Jots {
                 return;
             }
 
-            if (debounce_timer_id != 0) {
-                Source.remove (debounce_timer_id);
-                debounce_timer_id = 0;
-            }
+            remove_timer_source (ref debounce_timer_id);
 
             foreach (var entry in pending_intents.entries) {
                 execution_queue.add (entry.value);
@@ -486,10 +478,7 @@ namespace Jots {
         }
 
         private void stop_status_poll_timer () {
-            if (status_poll_timer_id != 0) {
-                Source.remove (status_poll_timer_id);
-                status_poll_timer_id = 0;
-            }
+            remove_timer_source (ref status_poll_timer_id);
         }
 
         private void refresh_remote_sync_schedule (uint64 epoch) {
@@ -500,7 +489,7 @@ namespace Jots {
 
             var remote_url = settings.get_string (KEY_BACKUP_SYNC_REMOTE_URL).strip ();
             if (remote_url == "") {
-                set_status (BACKUP_STATUS_REMOTE_NOT_CONFIGURED);
+                set_status (BACKUP_STATUS_REMOTE_NOT_CONFIGURED, true);
                 return;
             }
 
@@ -530,7 +519,7 @@ namespace Jots {
 
             int64 now_usec = GLib.get_monotonic_time ();
             if (should_defer_automatic_sync (now_usec, next_remote_auto_sync_allowed_usec)) {
-                set_status (BACKUP_STATUS_REMOTE_RETRY_SCHEDULED);
+                set_status (BACKUP_STATUS_REMOTE_RETRY_SCHEDULED, true);
                 return;
             }
 
@@ -538,10 +527,17 @@ namespace Jots {
         }
 
         private void stop_remote_sync_timer () {
-            if (remote_sync_timer_id != 0) {
-                Source.remove (remote_sync_timer_id);
-                remote_sync_timer_id = 0;
+            remove_timer_source (ref remote_sync_timer_id);
+        }
+
+        private void remove_timer_source (ref uint source_id) {
+            if (source_id == 0) {
+                return;
             }
+
+            var id = source_id;
+            source_id = 0;
+            Source.remove (id);
         }
 
         private async void synchronize_remote_async (uint64 epoch, bool manual_trigger) {
@@ -557,12 +553,12 @@ namespace Jots {
 
             var remote_url = settings.get_string (KEY_BACKUP_SYNC_REMOTE_URL).strip ();
             if (remote_url == "") {
-                set_status (BACKUP_STATUS_REMOTE_NOT_CONFIGURED);
+                set_status (BACKUP_STATUS_REMOTE_NOT_CONFIGURED, true);
                 return;
             }
 
             remote_sync_in_progress = true;
-            set_status (BACKUP_STATUS_SYNCING_REMOTE);
+            set_status (BACKUP_STATUS_SYNCING_REMOTE, true);
 
             if (!(yield ensure_repository_async ()) || !(yield ensure_git_identity_async ()) || !ensure_managed_gitignore ()) {
                 finish_remote_sync_attempt (epoch);
@@ -575,7 +571,7 @@ namespace Jots {
             }
 
             if (!(yield ensure_remote_origin_url_async (remote_url))) {
-                set_status (BACKUP_STATUS_ERROR);
+                set_error_status ("Failed to configure remote repository");
                 apply_automatic_sync_cooldown (manual_trigger);
                 finish_remote_sync_attempt (epoch);
                 return;
@@ -589,7 +585,7 @@ namespace Jots {
 
             if (branch_name == null || branch_name.strip () == "") {
                 warning ("Unable to resolve local branch name for remote sync");
-                set_status (BACKUP_STATUS_ERROR);
+                set_error_status ("Failed to resolve local branch name");
                 apply_automatic_sync_cooldown (manual_trigger);
                 finish_remote_sync_attempt (epoch);
                 return;
@@ -603,7 +599,7 @@ namespace Jots {
 
             if (!fetch_result.success) {
                 warning ("Git fetch failed: %s", fetch_result.stderr_text);
-                set_status (BACKUP_STATUS_ERROR);
+                set_error_status ("Failed to fetch from remote", fetch_result.stderr_text);
                 apply_automatic_sync_cooldown (manual_trigger);
                 finish_remote_sync_attempt (epoch);
                 return;
@@ -620,7 +616,7 @@ namespace Jots {
             if (remote_branch_exists) {
                 if (!(yield get_remote_divergence_counts_async (branch_name, out behind, out ahead))) {
                     warning ("Unable to parse remote divergence counts");
-                    set_status (BACKUP_STATUS_ERROR);
+                    set_error_status ("Failed to read remote divergence state");
                     apply_automatic_sync_cooldown (manual_trigger);
                     finish_remote_sync_attempt (epoch);
                     return;
@@ -636,7 +632,7 @@ namespace Jots {
             }
 
             if (remote_branch_exists && behind > 0 && ahead > 0) {
-                set_status (BACKUP_STATUS_REMOTE_DIVERGED);
+                set_status (BACKUP_STATUS_REMOTE_DIVERGED, true);
                 apply_automatic_sync_cooldown (manual_trigger);
                 finish_remote_sync_attempt (epoch);
                 return;
@@ -651,7 +647,7 @@ namespace Jots {
 
                 if (!pull_result.success) {
                     warning ("Git pull --rebase failed: %s", pull_result.stderr_text);
-                    set_status (BACKUP_STATUS_REMOTE_DIVERGED);
+                    set_status (BACKUP_STATUS_REMOTE_DIVERGED, true);
                     apply_automatic_sync_cooldown (manual_trigger);
                     finish_remote_sync_attempt (epoch);
                     return;
@@ -667,7 +663,7 @@ namespace Jots {
 
                 if (!push_result.success) {
                     warning ("Git push failed: %s", push_result.stderr_text);
-                    set_status (BACKUP_STATUS_ERROR);
+                    set_error_status ("Failed to push backup changes", push_result.stderr_text);
                     apply_automatic_sync_cooldown (manual_trigger);
                     finish_remote_sync_attempt (epoch);
                     return;
@@ -684,14 +680,14 @@ namespace Jots {
                 set_last_sync_now ();
                 next_remote_auto_sync_allowed_usec = 0;
                 remote_auto_failure_streak = 0;
-                set_status (BACKUP_STATUS_REMOTE_SYNCED);
+                set_status (BACKUP_STATUS_REMOTE_SYNCED, true);
                 finish_remote_sync_attempt (epoch);
                 return;
             }
 
             next_remote_auto_sync_allowed_usec = 0;
             remote_auto_failure_streak = 0;
-            set_status (BACKUP_STATUS_REPOSITORY_READY);
+            set_status (BACKUP_STATUS_REPOSITORY_READY, true);
             finish_remote_sync_attempt (epoch);
         }
 
@@ -850,7 +846,7 @@ namespace Jots {
 
             if (!status_result.success) {
                 warning ("Git status poll failed: %s", status_result.stderr_text);
-                set_status (BACKUP_STATUS_ERROR);
+                set_error_status ("Failed to poll repository state", status_result.stderr_text);
                 status_poll_in_progress = false;
                 return;
             }
@@ -886,7 +882,7 @@ namespace Jots {
                 }
 
                 if (!has_internal_work && (ahead > 0 || behind > 0)) {
-                    set_status (BACKUP_STATUS_REMOTE_DIVERGED);
+                    set_status (BACKUP_STATUS_REMOTE_DIVERGED, true);
                     status_poll_in_progress = false;
                     return;
                 }
@@ -895,12 +891,12 @@ namespace Jots {
             if (!has_internal_work) {
                 int64 now_usec = GLib.get_monotonic_time ();
                 if (should_defer_automatic_sync (now_usec, next_remote_auto_sync_allowed_usec)) {
-                    set_status (BACKUP_STATUS_REMOTE_RETRY_SCHEDULED);
+                    set_status (BACKUP_STATUS_REMOTE_RETRY_SCHEDULED, true);
                     status_poll_in_progress = false;
                     return;
                 }
 
-                set_status (BACKUP_STATUS_REPOSITORY_READY);
+                set_status (BACKUP_STATUS_REPOSITORY_READY, true);
             }
 
             status_poll_in_progress = false;
@@ -965,7 +961,7 @@ namespace Jots {
             var init_result = yield run_git_command_async ({"init", "-q"});
             if (!init_result.success) {
                 warning ("Git repository bootstrap failed: %s", init_result.stderr_text);
-                set_status (BACKUP_STATUS_ERROR);
+                set_error_status ("Failed to initialize backup repository", init_result.stderr_text);
                 return false;
             }
 
@@ -979,7 +975,7 @@ namespace Jots {
                 var set_name = yield run_git_command_async ({"config", "--local", "user.name", "Jots Backup"});
                 if (!set_name.success) {
                     warning ("Failed to set local git user.name: %s", set_name.stderr_text);
-                    set_status (BACKUP_STATUS_ERROR);
+                    set_error_status ("Failed to configure git user name", set_name.stderr_text);
                     return false;
                 }
             }
@@ -989,7 +985,7 @@ namespace Jots {
                 var set_email = yield run_git_command_async ({"config", "--local", "user.email", "jots-backup@localhost"});
                 if (!set_email.success) {
                     warning ("Failed to set local git user.email: %s", set_email.stderr_text);
-                    set_status (BACKUP_STATUS_ERROR);
+                    set_error_status ("Failed to configure git user email", set_email.stderr_text);
                     return false;
                 }
             }
@@ -1012,7 +1008,7 @@ namespace Jots {
                     drift_detected = checksum_for (current_text) != expected_hash;
                 } catch (Error e) {
                     warning ("Failed to read managed .gitignore: %s", e.message);
-                    set_status (BACKUP_STATUS_ERROR);
+                    set_error_status ("Failed to read managed .gitignore", e.message);
                     return false;
                 }
             } else {
@@ -1021,7 +1017,7 @@ namespace Jots {
 
             if (drift_detected) {
                 if (!write_gitignore (gitignore)) {
-                    set_status (BACKUP_STATUS_ERROR);
+                    set_error_status ("Failed to restore managed .gitignore");
                     return false;
                 }
 
@@ -1073,15 +1069,109 @@ namespace Jots {
                 launcher.set_cwd (storage.get_notes_dir_path ());
                 launcher.setenv ("GIT_TERMINAL_PROMPT", "0", true);
                 var process = launcher.spawnv (argv);
-                yield process.communicate_utf8_async (null, null, out stdout_text, out stderr_text);
+
+                var cancellable = new Cancellable ();
+                uint timeout_id = Timeout.add_seconds (GIT_COMMAND_TIMEOUT_SECONDS, () => {
+                    cancellable.cancel ();
+                    return Source.REMOVE;
+                });
+
+                try {
+                    yield process.communicate_utf8_async (null, cancellable, out stdout_text, out stderr_text);
+                } catch (Error e) {
+                    remove_timer_source (ref timeout_id);
+                    if (e is IOError.CANCELLED) {
+                        process.force_exit ();
+                        return new GitCommandResult (false, "", "git command timed out after %u seconds".printf (GIT_COMMAND_TIMEOUT_SECONDS));
+                    }
+
+                    return new GitCommandResult (false, "", e.message);
+                }
+
+                remove_timer_source (ref timeout_id);
                 return new GitCommandResult (process.get_successful (), stdout_text ?? "", stderr_text ?? "");
             } catch (Error e) {
                 return new GitCommandResult (false, "", e.message);
             }
         }
 
-        private void set_status (string status_text) {
+        private void set_error_status (string reason, string details = "") {
+            var message = format_error_status (reason, details);
+            set_status (message, true);
+        }
+
+        private void set_status (string status_text, bool force = false) {
+            int new_priority = status_priority_for (status_text);
+            if (!force && current_status_priority > new_priority) {
+                return;
+            }
+
+            current_status_text = status_text;
+            current_status_priority = new_priority;
             settings.set_string (KEY_BACKUP_SYNC_STATUS, status_text);
+        }
+
+        internal static int status_priority_for (string status_text) {
+            if (status_text == BACKUP_STATUS_ERROR || status_text.has_prefix (BACKUP_STATUS_ERROR + ":")) {
+                return 100;
+            }
+
+            if (status_text == BACKUP_STATUS_REMOTE_DIVERGED || status_text == BACKUP_STATUS_REMOTE_UNREACHABLE) {
+                return 90;
+            }
+
+            if (status_text == BACKUP_STATUS_SYNCING_REMOTE
+                || status_text == BACKUP_STATUS_FINALIZING_LOCAL_CHANGES
+                || status_text == BACKUP_STATUS_SYNC_REQUEST_QUEUED
+                || status_text == BACKUP_STATUS_TESTING_REMOTE
+                || status_text == BACKUP_STATUS_PENDING
+                || status_text == BACKUP_STATUS_PREPARING
+                || status_text == BACKUP_STATUS_REMOTE_RETRY_SCHEDULED
+                || status_text == BACKUP_STATUS_EXTERNAL_CHANGES_DETECTED) {
+                return 60;
+            }
+
+            if (status_text == BACKUP_STATUS_LOCAL_COMMIT_CREATED
+                || status_text == BACKUP_STATUS_REMOTE_SYNCED
+                || status_text == BACKUP_STATUS_REMOTE_REACHABLE
+                || status_text == BACKUP_STATUS_GITIGNORE_RESTORED) {
+                return 40;
+            }
+
+            if (status_text == BACKUP_STATUS_REPOSITORY_READY) {
+                return 20;
+            }
+
+            return 10;
+        }
+
+        internal static string format_error_status (string reason, string details) {
+            var summary = reason.strip () != "" ? reason.strip () : "Operation failed";
+            var detail = details.strip ();
+            detail = truncate_utf8_chars (detail, MAX_STATUS_DETAIL_CHARS);
+
+            if (detail != "") {
+                return "%s: %s (%s)".printf (BACKUP_STATUS_ERROR, summary, detail);
+            }
+
+            return "%s: %s".printf (BACKUP_STATUS_ERROR, summary);
+        }
+
+        internal static string truncate_utf8_chars (string input, int max_chars) {
+            if (max_chars <= 0 || input == "") {
+                return "";
+            }
+
+            if (input.char_count () <= max_chars) {
+                return input;
+            }
+
+            int cut_index = input.index_of_nth_char (max_chars);
+            if (cut_index < 0) {
+                return input;
+            }
+
+            return input.substring (0, cut_index);
         }
     }
 }

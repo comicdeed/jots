@@ -6,6 +6,62 @@
 namespace Jots.Tests {
     public void register_git_sync_service_tests () {
         /**
+         * UC-80.10.01: Status priorities keep critical states above informational ones.
+         */
+        GLib.Test.add_func ("/GitSyncService/UC_80_10_01/StatusPriorityOrdering", () => {
+            int error_priority = Jots.GitSyncService.status_priority_for (Jots.BACKUP_STATUS_ERROR);
+            int diverged_priority = Jots.GitSyncService.status_priority_for (Jots.BACKUP_STATUS_REMOTE_DIVERGED);
+            int syncing_priority = Jots.GitSyncService.status_priority_for (Jots.BACKUP_STATUS_SYNCING_REMOTE);
+            int ready_priority = Jots.GitSyncService.status_priority_for (Jots.BACKUP_STATUS_REPOSITORY_READY);
+
+            assert_true (error_priority > diverged_priority);
+            assert_true (diverged_priority > syncing_priority);
+            assert_true (syncing_priority > ready_priority);
+        });
+
+        /**
+         * UC-80.10.01a: Error status formatting includes summary and optional detail.
+         */
+        GLib.Test.add_func ("/GitSyncService/UC_80_10_01a/FormatErrorStatus", () => {
+            var with_detail = Jots.GitSyncService.format_error_status ("Fetch failed", "network timeout");
+            assert_true (with_detail.has_prefix (Jots.BACKUP_STATUS_ERROR + ":"));
+            assert_true (with_detail.contains ("Fetch failed"));
+            assert_true (with_detail.contains ("network timeout"));
+
+            var without_detail = Jots.GitSyncService.format_error_status ("", "");
+            assert_true (without_detail.has_prefix (Jots.BACKUP_STATUS_ERROR + ":"));
+            assert_true (without_detail.contains ("Operation failed"));
+        });
+
+        /**
+         * UC-80.10.01b: Error status formatting preserves valid UTF-8 at truncation boundaries.
+         */
+        GLib.Test.add_func ("/GitSyncService/UC_80_10_01b/FormatErrorStatusUtf8Boundary", () => {
+            var builder = new StringBuilder ();
+            for (int i = 0; i < 140; i++) {
+                builder.append ("a");
+            }
+            builder.append ("é");
+
+            var formatted = Jots.GitSyncService.format_error_status ("Remote error", builder.str);
+            assert_true (formatted.validate ());
+            assert_true (formatted.has_prefix (Jots.BACKUP_STATUS_ERROR + ":"));
+        });
+
+        /**
+         * UC-80.10.01c: UTF-8 truncation helper preserves character boundaries.
+         */
+        GLib.Test.add_func ("/GitSyncService/UC_80_10_01c/TruncateUtf8Chars", () => {
+            var value = "abéΩz";
+            var truncated = Jots.GitSyncService.truncate_utf8_chars (value, 4);
+            assert_true (truncated.validate ());
+            assert_cmpstr (truncated, GLib.CompareOperator.EQ, "abéΩ");
+
+            var empty = Jots.GitSyncService.truncate_utf8_chars (value, 0);
+            assert_cmpstr (empty, GLib.CompareOperator.EQ, "");
+        });
+
+        /**
          * UC-80.10.02: Poll status work detector accounts for local and remote in-flight activity.
          */
         GLib.Test.add_func ("/GitSyncService/UC_80_10_02/StatusPollInternalWorkAggregation", () => {

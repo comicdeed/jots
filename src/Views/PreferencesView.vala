@@ -64,6 +64,8 @@ namespace Jots {
         public Gtk.Button close_button;
         public Gtk.StackSwitcher page_switcher { get; private set; }
         private Gtk.Stack page_stack;
+        private ulong backup_enabled_handler_id = 0;
+        private ulong backup_remote_url_handler_id = 0;
 
 #if LIBPORTAL
         Gtk.Switch autostart_toggle;
@@ -394,7 +396,7 @@ namespace Jots {
             Application.settings.bind (KEY_BACKUP_SYNC_REMOTE_URL,
                 remote_entry, "text",
                 GLib.SettingsBindFlags.DEFAULT);
-            page.append (new Jots.SettingsBox (_("Remote repository URL"), _("Stored for upcoming pull/push sync phases"), remote_entry));
+            page.append (new Jots.SettingsBox (_("Remote repository URL"), _("Used for scheduled and manual backup synchronization"), remote_entry));
 
             string[] cadence_items = {
                 _("Disabled"),
@@ -411,7 +413,7 @@ namespace Jots {
             cadence_dropdown.notify["selected"].connect (() => {
                 Application.settings.set_enum (KEY_BACKUP_SYNC_CADENCE, (int) cadence_dropdown.selected);
             });
-            page.append (new Jots.SettingsBox (_("Sync cadence"), _("Applies to upcoming remote sync checks"), cadence_dropdown));
+            page.append (new Jots.SettingsBox (_("Sync cadence"), _("Controls automatic remote backup checks"), cadence_dropdown));
 
             var sync_now_button = new Gtk.Button () {
                 label = _("Sync now"),
@@ -456,28 +458,35 @@ namespace Jots {
                 });
             });
 
-            Application.settings.changed[KEY_BACKUP_SYNC_ENABLED].connect (() => {
-                bool backup_enabled = Application.settings.get_boolean (KEY_BACKUP_SYNC_ENABLED);
-                bool has_remote_url = Application.settings.get_string (KEY_BACKUP_SYNC_REMOTE_URL).strip () != "";
-                bool actions_enabled = backup_enabled && has_remote_url;
-                sync_now_button.sensitive = actions_enabled;
-                test_connection_button.sensitive = actions_enabled;
+            backup_enabled_handler_id = Application.settings.changed[KEY_BACKUP_SYNC_ENABLED].connect (() => {
+                update_backup_action_sensitivity (sync_now_button, test_connection_button);
             });
-            Application.settings.changed[KEY_BACKUP_SYNC_REMOTE_URL].connect (() => {
-                bool backup_enabled = Application.settings.get_boolean (KEY_BACKUP_SYNC_ENABLED);
-                bool has_remote_url = Application.settings.get_string (KEY_BACKUP_SYNC_REMOTE_URL).strip () != "";
-                bool actions_enabled = backup_enabled && has_remote_url;
-                sync_now_button.sensitive = actions_enabled;
-                test_connection_button.sensitive = actions_enabled;
+            backup_remote_url_handler_id = Application.settings.changed[KEY_BACKUP_SYNC_REMOTE_URL].connect (() => {
+                update_backup_action_sensitivity (sync_now_button, test_connection_button);
             });
+            update_backup_action_sensitivity (sync_now_button, test_connection_button);
 
+            return wrap_page (page);
+        }
+
+        ~PreferencesView () {
+            if (backup_enabled_handler_id != 0) {
+                Application.settings.disconnect (backup_enabled_handler_id);
+                backup_enabled_handler_id = 0;
+            }
+
+            if (backup_remote_url_handler_id != 0) {
+                Application.settings.disconnect (backup_remote_url_handler_id);
+                backup_remote_url_handler_id = 0;
+            }
+        }
+
+        private void update_backup_action_sensitivity (Gtk.Button sync_now_button, Gtk.Button test_connection_button) {
             bool backup_enabled = Application.settings.get_boolean (KEY_BACKUP_SYNC_ENABLED);
             bool has_remote_url = Application.settings.get_string (KEY_BACKUP_SYNC_REMOTE_URL).strip () != "";
             bool actions_enabled = backup_enabled && has_remote_url;
             sync_now_button.sensitive = actions_enabled;
             test_connection_button.sensitive = actions_enabled;
-
-            return wrap_page (page);
         }
 
 #if LIBPORTAL

@@ -19,8 +19,8 @@ the actionbar has a donate me and a set back to defaults just like elementaryOS
 */
 public class Jots.PreferenceWindow : Gtk.Window {
 
-    const int DEFAULT_PREF_HEIGHT = 230;
-    const int DEFAULT_PREF_WIDTH = 460;
+    const int DEFAULT_PREF_HEIGHT = 420;
+    const int DEFAULT_PREF_WIDTH = 560;
 
     public PreferenceWindow (Jots.Application app) {
         debug ("Creating preference window");
@@ -47,9 +47,18 @@ public class Jots.PreferenceWindow : Gtk.Window {
             use_markup = true
         };
 
+        var prefview = new Jots.PreferencesView ();
+
+        var header_title = new Gtk.Box (Gtk.Orientation.VERTICAL, 4) {
+            halign = Gtk.Align.CENTER,
+            valign = Gtk.Align.CENTER
+        };
+        header_title.append (title_label);
+        header_title.append (prefview.page_switcher);
+
         var headerbar = new Gtk.HeaderBar () {
             // TRANSLATORS: Feel free to improvise. The goal is a playful wording to convey the idea of app-wide settings for Jots
-            title_widget = title_label,
+            title_widget = header_title,
             show_title_buttons = false
         };
         headerbar.add_css_class ("flat");
@@ -58,8 +67,6 @@ public class Jots.PreferenceWindow : Gtk.Window {
         set_size_request (DEFAULT_PREF_WIDTH, DEFAULT_PREF_HEIGHT);
         set_default_size (DEFAULT_PREF_WIDTH, DEFAULT_PREF_HEIGHT);
         resizable = false;
-
-        var prefview = new Jots.PreferencesView ();
 
         // Make the whole window grabbable
         var handle = new Gtk.WindowHandle () {

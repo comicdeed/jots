@@ -63,6 +63,11 @@ namespace Jots {
     const string KEY_DEFAULT_FONT       = "default-font";
     const string KEY_MONOSPACE_FONT     = "monospace-font";
     const string KEY_JORTS_MIGRATION_PROMPTED = "jorts-migration-prompted";
+    const string KEY_BACKUP_SYNC_ENABLED = "backup-sync-enabled";
+    const string KEY_BACKUP_SYNC_REMOTE_URL = "backup-sync-remote-url";
+    const string KEY_BACKUP_SYNC_CADENCE = "backup-sync-cadence";
+    const string KEY_BACKUP_SYNC_STATUS = "backup-sync-status";
+    const string KEY_BACKUP_SYNC_LAST_SYNC = "backup-sync-last-sync";
 
     // Built-in Cheat Sheet constants
     public const string CHEATSHEET_NOTE_ID   = "jots-cheatsheet";

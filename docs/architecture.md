@@ -103,6 +103,8 @@ sequenceDiagram
 
 ## 4. Guardrails & Performance Constraints
 
+Preference and information architecture decisions follow the canonical UI and UX guidance in [docs/development/ui-ux-guidelines.md](development/ui-ux-guidelines.md).
+
 | Constraint | Limit | Rationale |
 | :--- | :---: | :--- |
 | **Max Note Content** | `10,000` chars (~10 KB) | Maintains sub-millisecond regex scanning in `MarkdownBuffer` and prevents UI frame hitching. |

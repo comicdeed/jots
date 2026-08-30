@@ -19,6 +19,7 @@ A curated backlog of architectural enhancements, capabilities, and feature candi
     - [3.3 Note Archiving and Trash Bin Lifecycle](#33-note-archiving-and-trash-bin-lifecycle)
     - [3.4 AppImage Update Information Embedding](#34-appimage-update-information-embedding)
     - [3.5 AppImage Provenance and Signature Verification](#35-appimage-provenance-and-signature-verification)
+    - [3.6 Retire List Item Prefix Preference](#36-retire-list-item-prefix-preference)
   - [4. Deferred / Incubating Concepts (Tier 4)](#4-deferred--incubating-concepts-tier-4)
     - [4.1 Google Keep Backend Synchronization](#41-google-keep-backend-synchronization)
   - [5. Completed Initiatives](#5-completed-initiatives)
@@ -41,6 +42,7 @@ The score matrix is curated to include only non-completed roadmap candidates (ac
 | **Free-Form In-Text Tagging (`#tag`)** | 4.0 | 4.0 | 3.8 | **3.95** | 🟢 Tier 1 (Active Priority) |
 | **Bidirectional Note Linking (`[[Note]]`)** | 3.8 | 3.6 | 3.4 | **3.63** | 🟡 Tier 2 (Planned Backlog) |
 | **Note Archiving & Trash Lifecycle** | 3.4 | 3.8 | 4.2 | **3.74** | 🟡 Tier 2 (Planned Backlog) |
+| **Retire List Item Prefix Preference** | 3.4 | 4.5 | 4.6 | **4.09** | 🟡 Tier 2 (Planned Backlog) |
 | **AppImage Update Info Embedding** | 3.0 | 4.2 | 4.5 | **3.72** | 🟡 Tier 2 (Planned Backlog) |
 | **AppImage Provenance & Signatures** | 3.2 | 4.4 | 4.0 | **3.92** | 🟡 Tier 2 (Planned Backlog) |
 | **Google Keep Backend Sync** | 3.0 | 1.8 | 1.2 | **2.13** | 🔴 Tier 4 (Deferred) |
@@ -128,6 +130,22 @@ The score matrix is curated to include only non-completed roadmap candidates (ac
   * **Verification artifacts**: Attach the public key and a concise `VERIFY.md` snippet to each GitHub Release, including exact commands to validate signatures with AppImage tooling and GPG.
   * **CI provenance checks**: Add a post-build verification stage in `.github/workflows/release.yml` that fails the release if signature extraction or signature verification fails for any architecture.
   * **Operational hardening**: Define key rotation cadence, revocation certificate storage, and incident response steps for compromised signing keys in `docs/development/release-workflow.md`.
+
+### 3.6 Retire List Item Prefix Preference
+* **Score**: `4.09` (Tier 2: Planned Backlog)
+* **Goal**: Reduce preference-surface complexity by removing the list item prefix selector and standardizing newly inserted Markdown unordered list markers.
+* **Background**: Markdown unordered list markers (`-`, `*`, `+`) are semantically equivalent for parsing and rendering. With Markdown-native storage now canonical, prefix selection is mostly a style choice and no longer a core functional setting.
+* **Implementation Strategy**:
+  * **Standardized insertion marker**: Use a single default marker for newly inserted list items (recommended: `-`) while preserving support for existing notes containing `*` or `+`.
+  * **Preferences simplification**: Remove the list prefix control from Preferences and associated user-facing explanatory copy.
+  * **Compatibility-first parsing**: Keep list detection and rendering behavior marker-agnostic so historical notes remain unchanged and require no migration.
+  * **Config cleanup**: Remove the `list-prefix` GSettings key and related constants only after behavior and test updates are complete.
+  * **Test and docs alignment**: Update use-case references, unit tests, and user guide sections to reflect one insertion default and multi-marker compatibility.
+* **Acceptance Criteria**:
+  * Existing notes using `-`, `*`, or `+` still render and behave correctly.
+  * Pressing Enter on unordered list items continues with the standardized default marker.
+  * Preferences no longer expose list prefix configuration.
+  * No data migration is required.
 
 ---
 

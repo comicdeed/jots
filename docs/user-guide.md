@@ -11,7 +11,7 @@ Welcome to Jots! Jots is a lightweight, distraction-free sticky notes applicatio
 * [3. Typography & Font Customization](#3-typography--font-customization)
 * [4. Markdown Formatting & Live Rendering](#4-markdown-formatting--live-rendering)
 * [5. Themes & Appearance](#5-themes--appearance)
-* [6. Preferences & Privacy Effects](#6-preferences--privacy-effects)
+* [6. Preferences, Privacy & Note Protection](#6-preferences-privacy--note-protection)
 * [7. AI Assistant & MCP Integration](#7-ai-assistant--mcp-integration)
 * [8. Markdown Storage, Backups & Tool Interoperability](#8-markdown-storage-backups--tool-interoperability)
 
@@ -123,7 +123,7 @@ Jots comes with 10 carefully designed pastel color palettes that adapt seamlessl
 
 ## 6. Preferences, Privacy & Note Protection
 
-Access global preferences by right-clicking a note or selecting **Preferences** from the app menu:
+Access global preferences by right-clicking a note or selecting **Preferences** from the app menu. Preferences are organized into category pages (**General**, **Appearance**, **Data & Recovery**, **Backup & Sync**) for faster navigation:
 
 * **Scribbly Privacy Mode (`Ctrl + H`)**: When enabled, any note window that loses desktop focus immediately obfuscates its text and code elements with playful handwritten squiggles using the embedded `Redacted Script` typeface. Focusing the note instantly restores crystal-clear readable text.
 * **Lock Note (Read-Only)**: Open the note popover menu (**`Ctrl + G`**) and toggle **Lock Note (Read-Only)** to protect sensitive or reference notes from accidental keyboard edits and title modifications.
@@ -132,6 +132,7 @@ Access global preferences by right-clicking a note or selecting **Preferences** 
 * **Hide Action Bar (`Ctrl + T`)**: Hides the bottom toolbar on note windows to maximize writing space.
 * **Autostart on Login**: Automatically relaunches all your open sticky notes when you log into your desktop. Supports Flatpak (via XDG Background Portal), AppImage (preserving custom rename or Gear Lever paths), and native packages, automatically synchronizing with your system's autostart configuration on startup.
 * **Import from Jorts Migration Helper**: Seamlessly import your existing sticky notes from Jorts (`io.github.elly_code.jorts`). The import is **100% non-destructive**—your original Jorts `saved_state.json` file is never deleted or altered. You can trigger migration from the first-run prompt or anytime via the **Import from Jorts** button in Preferences.
+* **Backup & Sync (Scaffold)**: The preferences page includes non-active Backup & Sync controls (remote URL, cadence, and action buttons) as UI scaffolding for the upcoming Git backup phase. These controls currently do not execute synchronization.
 
 ---
 

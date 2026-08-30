@@ -18,6 +18,14 @@ This guide defines shared UI and UX principles for contributor-facing design and
 * Keep controls close to the workflow they affect.
 * Prefer lightweight GTK-native patterns over heavy abstractions.
 
+### Responsiveness Pillar
+
+The GTK main loop must remain responsive during all user-visible operations.
+
+1. External commands (for example Git) must execute asynchronously or in background workers.
+2. File or network work that can exceed instant latency must never block the UI thread.
+3. Long-running work must publish status updates so users understand progress.
+
 ---
 
 ## 3. Preference Surface Rule

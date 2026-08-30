@@ -26,6 +26,18 @@ namespace Jots {
         }
     }
 
+    public class GitCommandResult : Object {
+        public bool success { get; set; }
+        public string stdout_text { get; set; }
+        public string stderr_text { get; set; }
+
+        public GitCommandResult (bool success, string stdout_text, string stderr_text) {
+            this.success = success;
+            this.stdout_text = stdout_text;
+            this.stderr_text = stderr_text;
+        }
+    }
+
     /**
      * Coordinates local Git backup groundwork and reacts to internal storage events.
      */
@@ -38,8 +50,12 @@ namespace Jots {
         private GLib.Settings settings;
         private bool enabled = false;
         private bool gitignore_warning_emitted = false;
+        private bool bootstrap_in_progress = false;
+        private bool execution_in_progress = false;
+        private uint64 execution_epoch = 0;
         private uint debounce_timer_id = 0;
         private Gee.HashMap<string, BackupCommitIntent> pending_intents = new Gee.HashMap<string, BackupCommitIntent> ();
+        private Gee.ArrayList<BackupCommitIntent> execution_queue = new Gee.ArrayList<BackupCommitIntent> ();
 
         public GitSyncService (Storage storage, GLib.Settings settings) {
             this.storage = storage;
@@ -51,8 +67,9 @@ namespace Jots {
             storage.note_deleted.connect (on_note_deleted);
             settings.changed[KEY_BACKUP_SYNC_ENABLED].connect (() => {
                 enabled = settings.get_boolean (KEY_BACKUP_SYNC_ENABLED);
+                execution_epoch++;
                 if (enabled) {
-                    enable_backup ();
+                    enable_backup_async.begin (execution_epoch);
                 } else {
                     clear_pending_intents ();
                     set_status (BACKUP_STATUS_DISABLED);
@@ -60,8 +77,9 @@ namespace Jots {
             });
 
             enabled = settings.get_boolean (KEY_BACKUP_SYNC_ENABLED);
+            execution_epoch++;
             if (enabled) {
-                enable_backup ();
+                enable_backup_async.begin (execution_epoch);
             } else {
                 set_status (BACKUP_STATUS_DISABLED);
             }
@@ -71,21 +89,51 @@ namespace Jots {
             clear_pending_intents ();
         }
 
-        private void enable_backup () {
-            set_status (BACKUP_STATUS_PREPARING);
-            if (!ensure_repository ()) {
+        private async void enable_backup_async (uint64 epoch) {
+            if (bootstrap_in_progress) {
                 return;
             }
 
-            if (!ensure_git_identity ()) {
+            bootstrap_in_progress = true;
+            set_status (BACKUP_STATUS_PREPARING);
+            if (!enabled || epoch != execution_epoch) {
+                bootstrap_in_progress = false;
+                return;
+            }
+
+            if (!yield ensure_repository_async ()) {
+                bootstrap_in_progress = false;
+                return;
+            }
+
+            if (!enabled || epoch != execution_epoch) {
+                bootstrap_in_progress = false;
+                return;
+            }
+
+            if (!yield ensure_git_identity_async ()) {
+                bootstrap_in_progress = false;
+                return;
+            }
+
+            if (!enabled || epoch != execution_epoch) {
+                bootstrap_in_progress = false;
                 return;
             }
 
             if (!ensure_managed_gitignore ()) {
+                bootstrap_in_progress = false;
                 return;
             }
 
-            set_status (BACKUP_STATUS_REPOSITORY_READY);
+            if (enabled && epoch == execution_epoch) {
+                set_status (BACKUP_STATUS_REPOSITORY_READY);
+            }
+            bootstrap_in_progress = false;
+
+            if (enabled && epoch != execution_epoch) {
+                enable_backup_async.begin (execution_epoch);
+            }
         }
 
         private void on_note_saved (NoteData note, NoteData? previous_note, string note_path) {
@@ -152,6 +200,10 @@ namespace Jots {
         }
 
         private void drain_due_intents () {
+            if (!enabled) {
+                return;
+            }
+
             int64 now = GLib.get_monotonic_time ();
             var due_paths = new Gee.ArrayList<string> ();
 
@@ -167,31 +219,136 @@ namespace Jots {
                     continue;
                 }
 
-                execute_debounced_intent (intent);
+                execution_queue.add (intent);
                 pending_intents.unset (path);
             }
 
             if (pending_intents.size > 0) {
                 arm_debounce_timer_to_earliest ();
+            }
+
+            if (execution_queue.size > 0) {
+                process_execution_queue_async.begin (execution_epoch);
                 return;
             }
 
-            set_status (BACKUP_STATUS_REPOSITORY_READY);
+            if (enabled && pending_intents.size == 0) {
+                set_status (BACKUP_STATUS_REPOSITORY_READY);
+            }
         }
 
-        private void execute_debounced_intent (BackupCommitIntent intent) {
-            // Commit execution will be implemented in the next phase.
-            if (intent.deleted) {
-                debug ("Debounce expired: delete %s (%s)", intent.note_id, intent.note_path);
+        private async void process_execution_queue_async (uint64 epoch) {
+            if (execution_in_progress) {
+                return;
+            }
+
+            execution_in_progress = true;
+            while (enabled && epoch == execution_epoch && execution_queue.size > 0) {
+                var intent = execution_queue.remove_at (0);
+                yield execute_debounced_intent_async (intent, epoch);
+            }
+
+            execution_in_progress = false;
+            if (enabled && epoch == execution_epoch && pending_intents.size == 0) {
+                set_status (BACKUP_STATUS_REPOSITORY_READY);
+            }
+        }
+
+        private async void execute_debounced_intent_async (BackupCommitIntent intent, uint64 epoch) {
+            if (!enabled || epoch != execution_epoch) {
+                return;
+            }
+
+            if (!(yield ensure_repository_async ()) || !(yield ensure_git_identity_async ()) || !ensure_managed_gitignore ()) {
+                return;
+            }
+
+            if (!enabled || epoch != execution_epoch) {
                 return;
             }
 
             var change_label = intent.change_type == BackupChangeType.TEXT ? "text" : "metadata";
-            debug ("Debounce expired: update %s (%s) at %s", intent.note_id, change_label, intent.note_path);
+            var tracked_filename = File.new_for_path (intent.note_path).get_basename ();
+
+            if (intent.deleted) {
+                var rm_result = yield run_git_command_async ({"rm", "--quiet", "--ignore-unmatch", tracked_filename});
+                if (!enabled || epoch != execution_epoch) {
+                    return;
+                }
+
+                if (!rm_result.success) {
+                    warning ("Git remove failed for %s: %s", tracked_filename, rm_result.stderr_text);
+                    set_status (BACKUP_STATUS_ERROR);
+                    return;
+                }
+
+                var delete_message = "backup(note): delete %s (text)".printf (intent.note_id);
+                if (yield commit_staged_changes_async (delete_message, epoch)) {
+                    set_last_sync_now ();
+                }
+
+                return;
+            }
+
+            var add_result = yield run_git_command_async ({"add", tracked_filename});
+            if (!enabled || epoch != execution_epoch) {
+                return;
+            }
+
+            if (!add_result.success) {
+                warning ("Git add failed for %s: %s", tracked_filename, add_result.stderr_text);
+                set_status (BACKUP_STATUS_ERROR);
+                return;
+            }
+
+            var update_message = "backup(note): update %s (%s)".printf (intent.note_id, change_label);
+            if (yield commit_staged_changes_async (update_message, epoch)) {
+                set_last_sync_now ();
+            }
+        }
+
+        private async bool commit_staged_changes_async (string commit_message, uint64 epoch) {
+            if (!enabled || epoch != execution_epoch) {
+                return false;
+            }
+
+            var commit_result = yield run_git_command_async ({"commit", "-m", commit_message});
+            if (!enabled || epoch != execution_epoch) {
+                return false;
+            }
+
+            if (commit_result.success) {
+                set_status (BACKUP_STATUS_LOCAL_COMMIT_CREATED);
+                return true;
+            }
+
+            if (is_empty_commit_result (commit_result.stdout_text, commit_result.stderr_text)) {
+                debug ("Skipping empty commit for '%s'", commit_message);
+                return false;
+            }
+
+            warning ("Git commit failed for '%s': %s", commit_message, commit_result.stderr_text);
+            set_status (BACKUP_STATUS_ERROR);
+            return false;
+        }
+
+        private bool is_empty_commit_result (string stdout_text, string stderr_text) {
+            var combined = (stdout_text + "\n" + stderr_text).down ();
+            return combined.contains ("nothing to commit") || combined.contains ("no changes added to commit");
+        }
+
+        private void set_last_sync_now () {
+            if (!enabled) {
+                return;
+            }
+
+            var now = new DateTime.now_local ();
+            settings.set_string (KEY_BACKUP_SYNC_LAST_SYNC, now.format ("%Y-%m-%d %H:%M"));
         }
 
         private void clear_pending_intents () {
             pending_intents.clear ();
+            execution_queue.clear ();
             if (debounce_timer_id != 0) {
                 Source.remove (debounce_timer_id);
                 debounce_timer_id = 0;
@@ -210,17 +367,16 @@ namespace Jots {
             return BackupChangeType.METADATA;
         }
 
-        private bool ensure_repository () {
+        private async bool ensure_repository_async () {
             var notes_dir = storage.get_notes_dir ();
             var git_dir = notes_dir.get_child (".git");
             if (git_dir.query_exists ()) {
                 return true;
             }
 
-            string stdout_text;
-            string stderr_text;
-            if (!run_git_command ({"init", "-q"}, out stdout_text, out stderr_text)) {
-                warning ("Git repository bootstrap failed: %s", stderr_text);
+            var init_result = yield run_git_command_async ({"init", "-q"});
+            if (!init_result.success) {
+                warning ("Git repository bootstrap failed: %s", init_result.stderr_text);
                 set_status (BACKUP_STATUS_ERROR);
                 return false;
             }
@@ -229,23 +385,22 @@ namespace Jots {
             return true;
         }
 
-        private bool ensure_git_identity () {
-            string stdout_text;
-            string stderr_text;
-
-            bool has_name = run_git_command ({"config", "--local", "--get", "user.name"}, out stdout_text, out stderr_text);
-            if (!has_name) {
-                if (!run_git_command ({"config", "--local", "user.name", "Jots Backup"}, out stdout_text, out stderr_text)) {
-                    warning ("Failed to set local git user.name: %s", stderr_text);
+        private async bool ensure_git_identity_async () {
+            var has_name = yield run_git_command_async ({"config", "--local", "--get", "user.name"});
+            if (!has_name.success) {
+                var set_name = yield run_git_command_async ({"config", "--local", "user.name", "Jots Backup"});
+                if (!set_name.success) {
+                    warning ("Failed to set local git user.name: %s", set_name.stderr_text);
                     set_status (BACKUP_STATUS_ERROR);
                     return false;
                 }
             }
 
-            bool has_email = run_git_command ({"config", "--local", "--get", "user.email"}, out stdout_text, out stderr_text);
-            if (!has_email) {
-                if (!run_git_command ({"config", "--local", "user.email", "jots-backup@localhost"}, out stdout_text, out stderr_text)) {
-                    warning ("Failed to set local git user.email: %s", stderr_text);
+            var has_email = yield run_git_command_async ({"config", "--local", "--get", "user.email"});
+            if (!has_email.success) {
+                var set_email = yield run_git_command_async ({"config", "--local", "user.email", "jots-backup@localhost"});
+                if (!set_email.success) {
+                    warning ("Failed to set local git user.email: %s", set_email.stderr_text);
                     set_status (BACKUP_STATUS_ERROR);
                     return false;
                 }
@@ -315,9 +470,9 @@ namespace Jots {
             return checksum.get_string ();
         }
 
-        private bool run_git_command (string[] args, out string stdout_text, out string stderr_text) {
-            stdout_text = "";
-            stderr_text = "";
+        private async GitCommandResult run_git_command_async (string[] args) {
+            string stdout_text = "";
+            string stderr_text = "";
 
             var argv = new string[args.length + 1];
             argv[0] = "git";
@@ -329,11 +484,10 @@ namespace Jots {
                 var launcher = new SubprocessLauncher (SubprocessFlags.STDOUT_PIPE | SubprocessFlags.STDERR_PIPE);
                 launcher.set_cwd (storage.get_notes_dir_path ());
                 var process = launcher.spawnv (argv);
-                process.communicate_utf8 (null, null, out stdout_text, out stderr_text);
-                return process.get_successful ();
+                yield process.communicate_utf8_async (null, null, out stdout_text, out stderr_text);
+                return new GitCommandResult (process.get_successful (), stdout_text ?? "", stderr_text ?? "");
             } catch (Error e) {
-                stderr_text = e.message;
-                return false;
+                return new GitCommandResult (false, "", e.message);
             }
         }
 

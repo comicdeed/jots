@@ -35,12 +35,7 @@ namespace Jots.Utils {
                 return false;
             }
 
-            try {
-                return Regex.match_simple (SAFE_IDENTIFIER_PATTERN, value);
-            } catch (RegexError e) {
-                warning ("Identifier regex error: %s", e.message);
-                return false;
-            }
+            return Regex.match_simple (SAFE_IDENTIFIER_PATTERN, value);
         }
 
         private static string slugify (string title) {

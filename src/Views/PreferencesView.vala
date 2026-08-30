@@ -387,7 +387,6 @@ namespace Jots {
             Application.settings.bind (KEY_BACKUP_SYNC_STATUS,
                 status_value, "label",
                 GLib.SettingsBindFlags.DEFAULT);
-            page.append (new Jots.SettingsBox (_("Status"), _("Current backup and sync state"), status_value));
 
             var last_sync_value = new Gtk.Label (Application.settings.get_string (KEY_BACKUP_SYNC_LAST_SYNC)) {
                 halign = Gtk.Align.END,
@@ -398,7 +397,6 @@ namespace Jots {
             Application.settings.bind (KEY_BACKUP_SYNC_LAST_SYNC,
                 last_sync_value, "label",
                 GLib.SettingsBindFlags.DEFAULT);
-            page.append (new Jots.SettingsBox (_("Last successful sync"), null, last_sync_value));
 
             var enable_toggle = new Gtk.Switch ();
             Application.settings.bind (KEY_BACKUP_SYNC_ENABLED,
@@ -487,6 +485,9 @@ namespace Jots {
                 update_backup_action_sensitivity (sync_now_btn, test_connection_btn);
             });
             update_backup_action_sensitivity (sync_now_btn, test_connection_btn);
+
+            page.append (new Jots.SettingsBox (_("Status"), _("Current backup and sync state"), status_value));
+            page.append (new Jots.SettingsBox (_("Last successful sync"), null, last_sync_value));
 
             return wrap_page (page);
         }

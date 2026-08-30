@@ -64,6 +64,20 @@ namespace Jots {
         public Gtk.Button close_button;
         public Gtk.StackSwitcher page_switcher { get; private set; }
         private Gtk.Stack page_stack;
+        private Gtk.DropDown? list_dropdown = null;
+        private Gtk.DropDown? cadence_dropdown = null;
+        private Gtk.FontDialogButton? default_font_button = null;
+        private Gtk.FontDialogButton? mono_font_button = null;
+        private Gtk.Button? import_jorts_button = null;
+        private Gtk.Button? sync_now_button = null;
+        private Gtk.Button? test_connection_button = null;
+        private ulong list_dropdown_handler_id = 0;
+        private ulong cadence_dropdown_handler_id = 0;
+        private ulong default_font_button_handler_id = 0;
+        private ulong mono_font_button_handler_id = 0;
+        private ulong import_jorts_button_handler_id = 0;
+        private ulong sync_now_button_handler_id = 0;
+        private ulong test_connection_button_handler_id = 0;
         private ulong backup_enabled_handler_id = 0;
         private ulong backup_remote_url_handler_id = 0;
 
@@ -165,20 +179,21 @@ namespace Jots {
         private Gtk.Widget build_general_page () {
             var page = make_page_box ();
 
-            var list_dropdown = new Gtk.DropDown.from_strings (ListPrefix.ALL) {
+            var list_dropdown_widget = new Gtk.DropDown.from_strings (ListPrefix.ALL) {
                 halign = Gtk.Align.END,
                 hexpand = false,
                 valign = Gtk.Align.CENTER
             };
+            list_dropdown = list_dropdown_widget;
             list_dropdown.selected = Application.settings.get_enum (KEY_LIST);
-            list_dropdown.notify["selected"].connect (() => {
-                Application.settings.set_enum (KEY_LIST, (int) list_dropdown.selected);
+            list_dropdown_handler_id = list_dropdown_widget.notify["selected"].connect (() => {
+                Application.settings.set_enum (KEY_LIST, (int) list_dropdown_widget.selected);
             });
 
             var lists_box = new SettingsBox (
                 _("List item prefix"),
                 null,
-                list_dropdown
+                list_dropdown_widget
             );
             page.append (lists_box);
 
@@ -246,13 +261,14 @@ namespace Jots {
                 halign = Gtk.Align.END,
                 valign = Gtk.Align.CENTER
             };
+            default_font_button = default_font_btn;
             var saved_default_font = Application.settings.get_string (KEY_DEFAULT_FONT);
             var initial_default_desc = (saved_default_font.strip () != "")
                 ? saved_default_font
                 : FontController.get_system_default_font ();
             default_font_btn.font_desc = Pango.FontDescription.from_string (initial_default_desc);
 
-            default_font_btn.notify["font-desc"].connect (() => {
+            default_font_button_handler_id = default_font_btn.notify["font-desc"].connect (() => {
                 if (default_font_btn.font_desc != null) {
                     Application.settings.set_string (KEY_DEFAULT_FONT, default_font_btn.font_desc.to_string ());
                 }
@@ -284,13 +300,14 @@ namespace Jots {
                 halign = Gtk.Align.END,
                 valign = Gtk.Align.CENTER
             };
+            mono_font_button = mono_font_btn;
             var saved_mono_font = Application.settings.get_string (KEY_MONOSPACE_FONT);
             var initial_mono_desc = (saved_mono_font.strip () != "")
                 ? saved_mono_font
                 : FontController.get_system_monospace_font ();
             mono_font_btn.font_desc = Pango.FontDescription.from_string (initial_mono_desc);
 
-            mono_font_btn.notify["font-desc"].connect (() => {
+            mono_font_button_handler_id = mono_font_btn.notify["font-desc"].connect (() => {
                 if (mono_font_btn.font_desc != null) {
                     Application.settings.set_string (KEY_MONOSPACE_FONT, mono_font_btn.font_desc.to_string ());
                 }
@@ -329,14 +346,15 @@ namespace Jots {
             );
             page.append (restore_box);
 
-            var import_jorts_button = new Gtk.Button () {
+            var import_jorts_btn = new Gtk.Button () {
                 label = _("Import Notes"),
                 tooltip_text = _("Scan and import notes from an existing Jorts installation"),
                 valign = Gtk.Align.CENTER,
                 width_request = 96
             };
+            import_jorts_button = import_jorts_btn;
 
-            import_jorts_button.clicked.connect (() => {
+            import_jorts_button_handler_id = import_jorts_btn.clicked.connect (() => {
                 var count = Application.note_manager.import_from_jorts ();
                 if (count > 0) {
                     toast.title = _("Successfully imported %d notes from Jorts").printf (count);
@@ -350,7 +368,7 @@ namespace Jots {
             var import_jorts_box = new Jots.SettingsBox (
                 _("Import from Jorts"),
                 _("Copy notes from an existing Jorts installation without modifying originals"),
-                import_jorts_button
+                import_jorts_btn
             );
             page.append (import_jorts_box);
 
@@ -405,31 +423,34 @@ namespace Jots {
                 _("Every 30 min"),
                 _("Hourly")
             };
-            var cadence_dropdown = new Gtk.DropDown.from_strings (cadence_items) {
+            var cadence_dropdown_widget = new Gtk.DropDown.from_strings (cadence_items) {
                 halign = Gtk.Align.END,
                 valign = Gtk.Align.CENTER
             };
+            cadence_dropdown = cadence_dropdown_widget;
             cadence_dropdown.selected = Application.settings.get_enum (KEY_BACKUP_SYNC_CADENCE);
-            cadence_dropdown.notify["selected"].connect (() => {
-                Application.settings.set_enum (KEY_BACKUP_SYNC_CADENCE, (int) cadence_dropdown.selected);
+            cadence_dropdown_handler_id = cadence_dropdown_widget.notify["selected"].connect (() => {
+                Application.settings.set_enum (KEY_BACKUP_SYNC_CADENCE, (int) cadence_dropdown_widget.selected);
             });
-            page.append (new Jots.SettingsBox (_("Sync cadence"), _("Controls automatic remote backup checks"), cadence_dropdown));
+            page.append (new Jots.SettingsBox (_("Sync cadence"), _("Controls automatic remote backup checks"), cadence_dropdown_widget));
 
-            var sync_now_button = new Gtk.Button () {
+            var sync_now_btn = new Gtk.Button () {
                 label = _("Sync now"),
                 sensitive = false,
                 width_request = 96
             };
-            page.append (new Jots.SettingsBox (_("Immediate sync"), _("Run backup synchronization with the configured remote now"), sync_now_button));
+            sync_now_button = sync_now_btn;
+            page.append (new Jots.SettingsBox (_("Immediate sync"), _("Run backup synchronization with the configured remote now"), sync_now_btn));
 
-            var test_connection_button = new Gtk.Button () {
+            var test_connection_btn = new Gtk.Button () {
                 label = _("Test connection"),
                 sensitive = false,
                 width_request = 96
             };
-            page.append (new Jots.SettingsBox (_("Remote check"), _("Verify reachability for the configured remote repository"), test_connection_button));
+            test_connection_button = test_connection_btn;
+            page.append (new Jots.SettingsBox (_("Remote check"), _("Verify reachability for the configured remote repository"), test_connection_btn));
 
-            sync_now_button.clicked.connect (() => {
+            sync_now_button_handler_id = sync_now_btn.clicked.connect (() => {
                 if (Application.git_sync_service == null) {
                     return;
                 }
@@ -439,7 +460,7 @@ namespace Jots {
                 toast.send_notification ();
             });
 
-            test_connection_button.clicked.connect (() => {
+            test_connection_button_handler_id = test_connection_btn.clicked.connect (() => {
                 if (Application.git_sync_service == null) {
                     return;
                 }
@@ -451,6 +472,7 @@ namespace Jots {
                             ? _("Remote repository is reachable")
                             : _("Remote repository check failed");
                     } catch (Error e) {
+                        warning ("Remote repository check failed: %s", e.message);
                         toast.title = _("Remote repository check failed");
                     }
 
@@ -459,17 +481,52 @@ namespace Jots {
             });
 
             backup_enabled_handler_id = Application.settings.changed[KEY_BACKUP_SYNC_ENABLED].connect (() => {
-                update_backup_action_sensitivity (sync_now_button, test_connection_button);
+                update_backup_action_sensitivity (sync_now_btn, test_connection_btn);
             });
             backup_remote_url_handler_id = Application.settings.changed[KEY_BACKUP_SYNC_REMOTE_URL].connect (() => {
-                update_backup_action_sensitivity (sync_now_button, test_connection_button);
+                update_backup_action_sensitivity (sync_now_btn, test_connection_btn);
             });
-            update_backup_action_sensitivity (sync_now_button, test_connection_button);
+            update_backup_action_sensitivity (sync_now_btn, test_connection_btn);
 
             return wrap_page (page);
         }
 
         ~PreferencesView () {
+            if (list_dropdown != null && list_dropdown_handler_id != 0) {
+                list_dropdown.disconnect (list_dropdown_handler_id);
+                list_dropdown_handler_id = 0;
+            }
+
+            if (cadence_dropdown != null && cadence_dropdown_handler_id != 0) {
+                cadence_dropdown.disconnect (cadence_dropdown_handler_id);
+                cadence_dropdown_handler_id = 0;
+            }
+
+            if (default_font_button != null && default_font_button_handler_id != 0) {
+                default_font_button.disconnect (default_font_button_handler_id);
+                default_font_button_handler_id = 0;
+            }
+
+            if (mono_font_button != null && mono_font_button_handler_id != 0) {
+                mono_font_button.disconnect (mono_font_button_handler_id);
+                mono_font_button_handler_id = 0;
+            }
+
+            if (import_jorts_button != null && import_jorts_button_handler_id != 0) {
+                import_jorts_button.disconnect (import_jorts_button_handler_id);
+                import_jorts_button_handler_id = 0;
+            }
+
+            if (sync_now_button != null && sync_now_button_handler_id != 0) {
+                sync_now_button.disconnect (sync_now_button_handler_id);
+                sync_now_button_handler_id = 0;
+            }
+
+            if (test_connection_button != null && test_connection_button_handler_id != 0) {
+                test_connection_button.disconnect (test_connection_button_handler_id);
+                test_connection_button_handler_id = 0;
+            }
+
             if (backup_enabled_handler_id != 0) {
                 Application.settings.disconnect (backup_enabled_handler_id);
                 backup_enabled_handler_id = 0;

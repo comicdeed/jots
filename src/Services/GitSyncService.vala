@@ -71,6 +71,11 @@ namespace Jots {
         private uint debounce_timer_id = 0;
         private uint status_poll_timer_id = 0;
         private uint remote_sync_timer_id = 0;
+        private ulong note_saved_handler_id = 0;
+        private ulong note_deleted_handler_id = 0;
+        private ulong backup_enabled_changed_handler_id = 0;
+        private ulong backup_cadence_changed_handler_id = 0;
+        private ulong backup_remote_url_changed_handler_id = 0;
         private string current_status_text = "";
         private int current_status_priority = -1;
         private Gee.HashMap<string, BackupCommitIntent> pending_intents = new Gee.HashMap<string, BackupCommitIntent> ();
@@ -82,34 +87,25 @@ namespace Jots {
         }
 
         public void initialize () {
-            storage.note_saved.connect (on_note_saved);
-            storage.note_deleted.connect (on_note_deleted);
-            settings.changed[KEY_BACKUP_SYNC_ENABLED].connect (() => {
-                enabled = settings.get_boolean (KEY_BACKUP_SYNC_ENABLED);
-                execution_epoch++;
-                if (enabled) {
-                    enable_backup_async.begin (execution_epoch);
-                } else {
-                    clear_pending_intents ();
-                    stop_status_poll_timer ();
-                    stop_remote_sync_timer ();
-                    set_status (BACKUP_STATUS_DISABLED, true);
-                }
-            });
-            settings.changed[KEY_BACKUP_SYNC_CADENCE].connect (() => {
-                if (!enabled) {
-                    return;
-                }
+            if (note_saved_handler_id == 0) {
+                note_saved_handler_id = storage.note_saved.connect (on_note_saved);
+            }
 
-                refresh_remote_sync_schedule (execution_epoch);
-            });
-            settings.changed[KEY_BACKUP_SYNC_REMOTE_URL].connect (() => {
-                if (!enabled) {
-                    return;
-                }
+            if (note_deleted_handler_id == 0) {
+                note_deleted_handler_id = storage.note_deleted.connect (on_note_deleted);
+            }
 
-                refresh_remote_sync_schedule (execution_epoch);
-            });
+            if (backup_enabled_changed_handler_id == 0) {
+                backup_enabled_changed_handler_id = settings.changed[KEY_BACKUP_SYNC_ENABLED].connect (on_backup_enabled_changed);
+            }
+
+            if (backup_cadence_changed_handler_id == 0) {
+                backup_cadence_changed_handler_id = settings.changed[KEY_BACKUP_SYNC_CADENCE].connect (on_backup_cadence_changed);
+            }
+
+            if (backup_remote_url_changed_handler_id == 0) {
+                backup_remote_url_changed_handler_id = settings.changed[KEY_BACKUP_SYNC_REMOTE_URL].connect (on_backup_remote_url_changed);
+            }
 
             enabled = settings.get_boolean (KEY_BACKUP_SYNC_ENABLED);
             execution_epoch++;
@@ -124,6 +120,63 @@ namespace Jots {
             clear_pending_intents ();
             stop_status_poll_timer ();
             stop_remote_sync_timer ();
+        }
+
+        ~GitSyncService () {
+            if (note_saved_handler_id != 0) {
+                storage.disconnect (note_saved_handler_id);
+                note_saved_handler_id = 0;
+            }
+
+            if (note_deleted_handler_id != 0) {
+                storage.disconnect (note_deleted_handler_id);
+                note_deleted_handler_id = 0;
+            }
+
+            if (backup_enabled_changed_handler_id != 0) {
+                settings.disconnect (backup_enabled_changed_handler_id);
+                backup_enabled_changed_handler_id = 0;
+            }
+
+            if (backup_cadence_changed_handler_id != 0) {
+                settings.disconnect (backup_cadence_changed_handler_id);
+                backup_cadence_changed_handler_id = 0;
+            }
+
+            if (backup_remote_url_changed_handler_id != 0) {
+                settings.disconnect (backup_remote_url_changed_handler_id);
+                backup_remote_url_changed_handler_id = 0;
+            }
+        }
+
+        private void on_backup_enabled_changed () {
+            enabled = settings.get_boolean (KEY_BACKUP_SYNC_ENABLED);
+            execution_epoch++;
+            if (enabled) {
+                enable_backup_async.begin (execution_epoch);
+                return;
+            }
+
+            clear_pending_intents ();
+            stop_status_poll_timer ();
+            stop_remote_sync_timer ();
+            set_status (BACKUP_STATUS_DISABLED, true);
+        }
+
+        private void on_backup_cadence_changed () {
+            if (!enabled) {
+                return;
+            }
+
+            refresh_remote_sync_schedule (execution_epoch);
+        }
+
+        private void on_backup_remote_url_changed () {
+            if (!enabled) {
+                return;
+            }
+
+            refresh_remote_sync_schedule (execution_epoch);
         }
 
         public void request_remote_sync_now () {

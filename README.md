@@ -21,7 +21,7 @@
 * 📝 **Markdown editing + plain-file storage**: Write with live Markdown formatting (including checklists and links), with every note saved as a regular `.md` file you can back up or use in other tools.
 * 🎨 **Color themes**: Pick from 10 pastel themes that look good in both light and dark mode.
 * 🔤 **Font controls**: Choose your preferred text and code fonts to match how you like to read and write.
-* 🔒 **Scribbly privacy mode**: Hide note text with hand-drawn style masking when someone is nearby.
+* 🔒 **Privacy mode**: Hide note text when you need to protect sensitive content on screen.
 * 🔁 **Git backup sync**: Connect a Git remote, choose how often to sync, and use **Sync now** when you want an immediate backup.
 * 🤖 **AI-ready with MCP**: Connect compatible assistants (Claude Desktop, Cursor, Gemini CLI, Antigravity) to manage notes from AI tools.
 * ⚡ **Fast and lightweight**: Starts quickly and stays responsive.

@@ -6,6 +6,18 @@
 namespace Jots.Tests {
     public void register_git_sync_service_tests () {
         /**
+         * UC-80.10.05: Cadence values map to expected scheduler intervals.
+         */
+        GLib.Test.add_func ("/GitSyncService/UC_80_10_05/CadenceIntervalMapping", () => {
+            assert_cmpint ((int) Jots.GitSyncService.cadence_interval_ms_for (0), GLib.CompareOperator.EQ, 0);
+            assert_cmpint ((int) Jots.GitSyncService.cadence_interval_ms_for (1), GLib.CompareOperator.EQ, 5 * 60 * 1000);
+            assert_cmpint ((int) Jots.GitSyncService.cadence_interval_ms_for (2), GLib.CompareOperator.EQ, 15 * 60 * 1000);
+            assert_cmpint ((int) Jots.GitSyncService.cadence_interval_ms_for (3), GLib.CompareOperator.EQ, 30 * 60 * 1000);
+            assert_cmpint ((int) Jots.GitSyncService.cadence_interval_ms_for (4), GLib.CompareOperator.EQ, 60 * 60 * 1000);
+            assert_cmpint ((int) Jots.GitSyncService.cadence_interval_ms_for (99), GLib.CompareOperator.EQ, 0);
+        });
+
+        /**
          * UC-80.10.10: Upstream count parser accepts canonical tab-delimited output.
          */
         GLib.Test.add_func ("/GitSyncService/UC_80_10_10/ParseUpstreamCountsTabDelimited", () => {

@@ -45,6 +45,11 @@ namespace Jots {
 
         private const int64 COMMIT_DEBOUNCE_USEC = 120 * 1000 * 1000;
         private const uint STATUS_POLL_INTERVAL_MS = 300 * 1000;
+        private const int BACKUP_CADENCE_DISABLED = 0;
+        private const int BACKUP_CADENCE_EVERY_5_MIN = 1;
+        private const int BACKUP_CADENCE_EVERY_15_MIN = 2;
+        private const int BACKUP_CADENCE_EVERY_30_MIN = 3;
+        private const int BACKUP_CADENCE_HOURLY = 4;
         private const string GITIGNORE_CANONICAL = "*\n!.gitignore\n!*/\n!*.md\n";
 
         private Storage storage;
@@ -54,9 +59,11 @@ namespace Jots {
         private bool bootstrap_in_progress = false;
         private bool execution_in_progress = false;
         private bool status_poll_in_progress = false;
+        private bool remote_sync_in_progress = false;
         private uint64 execution_epoch = 0;
         private uint debounce_timer_id = 0;
         private uint status_poll_timer_id = 0;
+        private uint remote_sync_timer_id = 0;
         private Gee.HashMap<string, BackupCommitIntent> pending_intents = new Gee.HashMap<string, BackupCommitIntent> ();
         private Gee.ArrayList<BackupCommitIntent> execution_queue = new Gee.ArrayList<BackupCommitIntent> ();
 
@@ -76,8 +83,23 @@ namespace Jots {
                 } else {
                     clear_pending_intents ();
                     stop_status_poll_timer ();
+                    stop_remote_sync_timer ();
                     set_status (BACKUP_STATUS_DISABLED);
                 }
+            });
+            settings.changed[KEY_BACKUP_SYNC_CADENCE].connect (() => {
+                if (!enabled) {
+                    return;
+                }
+
+                refresh_remote_sync_schedule (execution_epoch);
+            });
+            settings.changed[KEY_BACKUP_SYNC_REMOTE_URL].connect (() => {
+                if (!enabled) {
+                    return;
+                }
+
+                refresh_remote_sync_schedule (execution_epoch);
             });
 
             enabled = settings.get_boolean (KEY_BACKUP_SYNC_ENABLED);
@@ -92,6 +114,7 @@ namespace Jots {
         public void shutdown () {
             clear_pending_intents ();
             stop_status_poll_timer ();
+            stop_remote_sync_timer ();
         }
 
         private async void enable_backup_async (uint64 epoch) {
@@ -134,6 +157,7 @@ namespace Jots {
             if (enabled && epoch == execution_epoch) {
                 set_status (BACKUP_STATUS_REPOSITORY_READY);
                 start_status_poll_timer (epoch);
+                refresh_remote_sync_schedule (epoch);
             }
             bootstrap_in_progress = false;
 
@@ -379,6 +403,222 @@ namespace Jots {
             if (status_poll_timer_id != 0) {
                 Source.remove (status_poll_timer_id);
                 status_poll_timer_id = 0;
+            }
+        }
+
+        private void refresh_remote_sync_schedule (uint64 epoch) {
+            stop_remote_sync_timer ();
+            if (!enabled || epoch != execution_epoch) {
+                return;
+            }
+
+            var remote_url = settings.get_string (KEY_BACKUP_SYNC_REMOTE_URL).strip ();
+            if (remote_url == "") {
+                set_status (BACKUP_STATUS_REMOTE_NOT_CONFIGURED);
+                return;
+            }
+
+            uint interval_ms = cadence_interval_ms_for (settings.get_enum (KEY_BACKUP_SYNC_CADENCE));
+            if (interval_ms == 0) {
+                return;
+            }
+
+            remote_sync_timer_id = Timeout.add (interval_ms, () => {
+                if (!enabled || epoch != execution_epoch) {
+                    return Source.REMOVE;
+                }
+
+                synchronize_remote_async.begin (epoch);
+                return Source.CONTINUE;
+            });
+        }
+
+        private void stop_remote_sync_timer () {
+            if (remote_sync_timer_id != 0) {
+                Source.remove (remote_sync_timer_id);
+                remote_sync_timer_id = 0;
+            }
+        }
+
+        private async void synchronize_remote_async (uint64 epoch) {
+            if (remote_sync_in_progress || !enabled || epoch != execution_epoch) {
+                return;
+            }
+
+            if (pending_intents.size > 0 || execution_queue.size > 0 || execution_in_progress) {
+                return;
+            }
+
+            var remote_url = settings.get_string (KEY_BACKUP_SYNC_REMOTE_URL).strip ();
+            if (remote_url == "") {
+                set_status (BACKUP_STATUS_REMOTE_NOT_CONFIGURED);
+                return;
+            }
+
+            remote_sync_in_progress = true;
+            set_status (BACKUP_STATUS_SYNCING_REMOTE);
+
+            if (!(yield ensure_repository_async ()) || !(yield ensure_git_identity_async ()) || !ensure_managed_gitignore ()) {
+                remote_sync_in_progress = false;
+                return;
+            }
+
+            if (!enabled || epoch != execution_epoch) {
+                remote_sync_in_progress = false;
+                return;
+            }
+
+            if (!(yield ensure_remote_origin_url_async (remote_url))) {
+                set_status (BACKUP_STATUS_ERROR);
+                remote_sync_in_progress = false;
+                return;
+            }
+
+            var branch_name = yield get_current_branch_async ();
+            if (!enabled || epoch != execution_epoch) {
+                remote_sync_in_progress = false;
+                return;
+            }
+
+            if (branch_name == null || branch_name.strip () == "") {
+                warning ("Unable to resolve local branch name for remote sync");
+                set_status (BACKUP_STATUS_ERROR);
+                remote_sync_in_progress = false;
+                return;
+            }
+
+            var fetch_result = yield run_git_command_async ({"fetch", "--quiet", "origin"});
+            if (!enabled || epoch != execution_epoch) {
+                remote_sync_in_progress = false;
+                return;
+            }
+
+            if (!fetch_result.success) {
+                warning ("Git fetch failed: %s", fetch_result.stderr_text);
+                set_status (BACKUP_STATUS_ERROR);
+                remote_sync_in_progress = false;
+                return;
+            }
+
+            bool remote_branch_exists = yield remote_branch_exists_async (branch_name);
+            if (!enabled || epoch != execution_epoch) {
+                remote_sync_in_progress = false;
+                return;
+            }
+
+            int behind = 0;
+            int ahead = 0;
+            if (remote_branch_exists) {
+                var counts = yield run_git_command_async ({"rev-list", "--left-right", "--count", ("origin/" + branch_name) + "...HEAD"});
+                if (!enabled || epoch != execution_epoch) {
+                    remote_sync_in_progress = false;
+                    return;
+                }
+
+                if (!counts.success || !try_parse_upstream_counts (counts.stdout_text, out behind, out ahead)) {
+                    warning ("Unable to parse remote divergence counts: %s", counts.stderr_text);
+                    set_status (BACKUP_STATUS_ERROR);
+                    remote_sync_in_progress = false;
+                    return;
+                }
+            } else {
+                ahead = 1;
+                behind = 0;
+            }
+
+            if (remote_branch_exists && behind > 0 && ahead > 0) {
+                set_status (BACKUP_STATUS_REMOTE_DIVERGED);
+                remote_sync_in_progress = false;
+                return;
+            }
+
+            if (remote_branch_exists && behind > 0) {
+                var pull_result = yield run_git_command_async ({"pull", "--rebase", "origin", branch_name});
+                if (!enabled || epoch != execution_epoch) {
+                    remote_sync_in_progress = false;
+                    return;
+                }
+
+                if (!pull_result.success) {
+                    warning ("Git pull --rebase failed: %s", pull_result.stderr_text);
+                    set_status (BACKUP_STATUS_REMOTE_DIVERGED);
+                    remote_sync_in_progress = false;
+                    return;
+                }
+            }
+
+            if (ahead > 0 || !remote_branch_exists) {
+                var push_result = yield run_git_command_async ({"push", "--quiet", "origin", ("HEAD:" + branch_name)});
+                if (!enabled || epoch != execution_epoch) {
+                    remote_sync_in_progress = false;
+                    return;
+                }
+
+                if (!push_result.success) {
+                    warning ("Git push failed: %s", push_result.stderr_text);
+                    set_status (BACKUP_STATUS_ERROR);
+                    remote_sync_in_progress = false;
+                    return;
+                }
+
+                set_last_sync_now ();
+                set_status (BACKUP_STATUS_REMOTE_SYNCED);
+                remote_sync_in_progress = false;
+                return;
+            }
+
+            set_status (BACKUP_STATUS_REPOSITORY_READY);
+            remote_sync_in_progress = false;
+        }
+
+        private async bool ensure_remote_origin_url_async (string remote_url) {
+            var current_remote = yield run_git_command_async ({"remote", "get-url", "origin"});
+            if (current_remote.success) {
+                var current = current_remote.stdout_text.strip ();
+                if (current == remote_url) {
+                    return true;
+                }
+
+                var set_url = yield run_git_command_async ({"remote", "set-url", "origin", remote_url});
+                return set_url.success;
+            }
+
+            var add_remote = yield run_git_command_async ({"remote", "add", "origin", remote_url});
+            return add_remote.success;
+        }
+
+        private async string? get_current_branch_async () {
+            var branch_result = yield run_git_command_async ({"rev-parse", "--abbrev-ref", "HEAD"});
+            if (!branch_result.success) {
+                return null;
+            }
+
+            var branch = branch_result.stdout_text.strip ();
+            if (branch == "" || branch == "HEAD") {
+                return null;
+            }
+
+            return branch;
+        }
+
+        private async bool remote_branch_exists_async (string branch_name) {
+            var show_ref = yield run_git_command_async ({"show-ref", "--verify", "--quiet", "refs/remotes/origin/" + branch_name});
+            return show_ref.success;
+        }
+
+        internal static uint cadence_interval_ms_for (int cadence_value) {
+            switch (cadence_value) {
+            case BACKUP_CADENCE_EVERY_5_MIN:
+                return 5 * 60 * 1000;
+            case BACKUP_CADENCE_EVERY_15_MIN:
+                return 15 * 60 * 1000;
+            case BACKUP_CADENCE_EVERY_30_MIN:
+                return 30 * 60 * 1000;
+            case BACKUP_CADENCE_HOURLY:
+                return 60 * 60 * 1000;
+            case BACKUP_CADENCE_DISABLED:
+            default:
+                return 0;
             }
         }
 

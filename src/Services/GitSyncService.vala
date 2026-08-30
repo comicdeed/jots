@@ -584,15 +584,14 @@ namespace Jots {
             int behind = 0;
             int ahead = 0;
             if (remote_branch_exists) {
-                var counts = yield run_git_command_async ({"rev-list", "--left-right", "--count", ("origin/" + branch_name) + "...HEAD"});
-                if (!enabled || epoch != execution_epoch) {
+                if (!(yield get_remote_divergence_counts_async (branch_name, out behind, out ahead))) {
+                    warning ("Unable to parse remote divergence counts");
+                    set_status (BACKUP_STATUS_ERROR);
                     remote_sync_in_progress = false;
                     return;
                 }
 
-                if (!counts.success || !try_parse_upstream_counts (counts.stdout_text, out behind, out ahead)) {
-                    warning ("Unable to parse remote divergence counts: %s", counts.stderr_text);
-                    set_status (BACKUP_STATUS_ERROR);
+                if (!enabled || epoch != execution_epoch) {
                     remote_sync_in_progress = false;
                     return;
                 }
@@ -634,6 +633,14 @@ namespace Jots {
                     set_status (BACKUP_STATUS_ERROR);
                     remote_sync_in_progress = false;
                     return;
+                }
+
+                if (!remote_branch_exists) {
+                    yield set_upstream_async (branch_name);
+                    if (!enabled || epoch != execution_epoch) {
+                        remote_sync_in_progress = false;
+                        return;
+                    }
                 }
 
                 set_last_sync_now ();
@@ -679,6 +686,31 @@ namespace Jots {
         private async bool remote_branch_exists_async (string branch_name) {
             var show_ref = yield run_git_command_async ({"show-ref", "--verify", "--quiet", "refs/remotes/origin/" + branch_name});
             return show_ref.success;
+        }
+
+        private async bool get_remote_divergence_counts_async (string branch_name, out int behind, out int ahead) {
+            behind = 0;
+            ahead = 0;
+
+            var upstream_counts = yield run_git_command_async ({"rev-list", "--left-right", "--count", "@{upstream}...HEAD"});
+            if (upstream_counts.success && try_parse_upstream_counts (upstream_counts.stdout_text, out behind, out ahead)) {
+                return true;
+            }
+
+            var remote_ref = "origin/" + branch_name;
+            var branch_counts = yield run_git_command_async ({"rev-list", "--left-right", "--count", remote_ref + "...HEAD"});
+            if (branch_counts.success && try_parse_upstream_counts (branch_counts.stdout_text, out behind, out ahead)) {
+                return true;
+            }
+
+            return false;
+        }
+
+        private async void set_upstream_async (string branch_name) {
+            var result = yield run_git_command_async ({"branch", "--set-upstream-to", "origin/" + branch_name, branch_name});
+            if (!result.success) {
+                warning ("Failed to set branch upstream: %s", result.stderr_text);
+            }
         }
 
         internal static uint cadence_interval_ms_for (int cadence_value) {
@@ -731,27 +763,25 @@ namespace Jots {
                 return;
             }
 
-            var upstream_result = yield run_git_command_async ({"rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{upstream}"});
+            var local_branch = yield get_current_branch_async ();
             if (!enabled || epoch != execution_epoch) {
                 status_poll_in_progress = false;
                 return;
             }
 
-            if (upstream_result.success) {
-                var counts = yield run_git_command_async ({"rev-list", "--left-right", "--count", "@{upstream}...HEAD"});
+            int behind = 0;
+            int ahead = 0;
+            if (local_branch != null && local_branch.strip () != ""
+                && (yield get_remote_divergence_counts_async (local_branch, out behind, out ahead))) {
                 if (!enabled || epoch != execution_epoch) {
                     status_poll_in_progress = false;
                     return;
                 }
 
-                int behind = 0;
-                int ahead = 0;
-                if (counts.success && try_parse_upstream_counts (counts.stdout_text, out behind, out ahead)) {
-                    if (!has_internal_work && (ahead > 0 || behind > 0)) {
-                        set_status (BACKUP_STATUS_REMOTE_DIVERGED);
-                        status_poll_in_progress = false;
-                        return;
-                    }
+                if (!has_internal_work && (ahead > 0 || behind > 0)) {
+                    set_status (BACKUP_STATUS_REMOTE_DIVERGED);
+                    status_poll_in_progress = false;
+                    return;
                 }
             }
 

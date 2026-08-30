@@ -51,6 +51,7 @@ namespace Jots {
         private const int BACKUP_CADENCE_EVERY_30_MIN = 3;
         private const int BACKUP_CADENCE_HOURLY = 4;
         private const int64 REMOTE_AUTO_RETRY_COOLDOWN_USEC = 90 * 1000 * 1000;
+        private const int64 REMOTE_AUTO_RETRY_COOLDOWN_MAX_USEC = 15 * 60 * 1000 * 1000;
         private const string GITIGNORE_CANONICAL = "*\n!.gitignore\n!*/\n!*.md\n";
 
         private Storage storage;
@@ -63,6 +64,7 @@ namespace Jots {
         private bool remote_sync_in_progress = false;
         private bool remote_sync_requested = false;
         private int64 next_remote_auto_sync_allowed_usec = 0;
+        private uint remote_auto_failure_streak = 0;
         private uint64 execution_epoch = 0;
         private uint debounce_timer_id = 0;
         private uint status_poll_timer_id = 0;
@@ -145,6 +147,7 @@ namespace Jots {
 
             remote_sync_requested = false;
             next_remote_auto_sync_allowed_usec = 0;
+            remote_auto_failure_streak = 0;
             synchronize_remote_async.begin (execution_epoch, true);
         }
 
@@ -679,12 +682,14 @@ namespace Jots {
 
                 set_last_sync_now ();
                 next_remote_auto_sync_allowed_usec = 0;
+                remote_auto_failure_streak = 0;
                 set_status (BACKUP_STATUS_REMOTE_SYNCED);
                 finish_remote_sync_attempt (epoch);
                 return;
             }
 
             next_remote_auto_sync_allowed_usec = 0;
+            remote_auto_failure_streak = 0;
             set_status (BACKUP_STATUS_REPOSITORY_READY);
             finish_remote_sync_attempt (epoch);
         }
@@ -704,11 +709,34 @@ namespace Jots {
                 return;
             }
 
-            next_remote_auto_sync_allowed_usec = GLib.get_monotonic_time () + REMOTE_AUTO_RETRY_COOLDOWN_USEC;
+            remote_auto_failure_streak++;
+            int64 cooldown_usec = compute_automatic_retry_cooldown_usec (remote_auto_failure_streak);
+            next_remote_auto_sync_allowed_usec = GLib.get_monotonic_time () + cooldown_usec;
         }
 
         internal static bool should_defer_automatic_sync (int64 now_usec, int64 next_allowed_usec) {
             return next_allowed_usec > 0 && now_usec < next_allowed_usec;
+        }
+
+        internal static int64 compute_automatic_retry_cooldown_usec (uint failure_streak) {
+            if (failure_streak == 0) {
+                return 0;
+            }
+
+            int64 cooldown = REMOTE_AUTO_RETRY_COOLDOWN_USEC;
+            for (uint i = 1; i < failure_streak; i++) {
+                if (cooldown >= REMOTE_AUTO_RETRY_COOLDOWN_MAX_USEC) {
+                    return REMOTE_AUTO_RETRY_COOLDOWN_MAX_USEC;
+                }
+
+                cooldown *= 2;
+            }
+
+            if (cooldown > REMOTE_AUTO_RETRY_COOLDOWN_MAX_USEC) {
+                return REMOTE_AUTO_RETRY_COOLDOWN_MAX_USEC;
+            }
+
+            return cooldown;
         }
 
         private async bool ensure_remote_origin_url_async (string remote_url) {

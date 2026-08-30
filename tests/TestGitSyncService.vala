@@ -6,6 +6,17 @@
 namespace Jots.Tests {
     public void register_git_sync_service_tests () {
         /**
+         * UC-80.10.03: Automatic sync retry cooldown grows exponentially and caps.
+         */
+        GLib.Test.add_func ("/GitSyncService/UC_80_10_03/AutomaticSyncCooldownBackoff", () => {
+            assert_cmpint ((int) Jots.GitSyncService.compute_automatic_retry_cooldown_usec (0), GLib.CompareOperator.EQ, 0);
+            assert_cmpint ((int) Jots.GitSyncService.compute_automatic_retry_cooldown_usec (1), GLib.CompareOperator.EQ, 90 * 1000 * 1000);
+            assert_cmpint ((int) Jots.GitSyncService.compute_automatic_retry_cooldown_usec (2), GLib.CompareOperator.EQ, 180 * 1000 * 1000);
+            assert_cmpint ((int) Jots.GitSyncService.compute_automatic_retry_cooldown_usec (3), GLib.CompareOperator.EQ, 360 * 1000 * 1000);
+            assert_cmpint ((int) Jots.GitSyncService.compute_automatic_retry_cooldown_usec (10), GLib.CompareOperator.EQ, 15 * 60 * 1000 * 1000);
+        });
+
+        /**
          * UC-80.10.04: Automatic cadence sync respects cooldown boundaries.
          */
         GLib.Test.add_func ("/GitSyncService/UC_80_10_04/AutomaticSyncCooldownGate", () => {

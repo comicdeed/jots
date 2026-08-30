@@ -23,6 +23,7 @@
 * 🔤 **Typography customization**: Custom proportional and code monospace font selection with automatic monospace catalog filtering.
 * 🔒 **Scribbly privacy mode**: Focus-driven text obfuscation with handwritten squiggles (`Redacted Script`) to protect sensitive notes from shoulder surfing.
 * 📂 **Markdown storage & interoperability**: Notes are stored as standard plain `.md` files with YAML front matter—enabling integration with external Markdown editors, knowledge bases (such as Obsidian or Logseq), `git`, and backup tools.
+* 🔁 **Automated Git backup sync**: Configure a remote Git repository (SSH/HTTPS), choose a sync cadence, run **Sync now** for immediate updates, and use **Test connection** to verify remote reachability.
 * 🤖 **Native MCP server (`jots-mcp`)**: Built-in Model Context Protocol server enabling AI assistants (Claude Desktop, Cursor, Gemini CLI, Antigravity) to manage desktop notes in real time.
 * ⚡ **Fast and lightweight**: Written in native Vala/GTK4 with sub-millisecond startup, zero heavy runtimes, and low memory usage.
 

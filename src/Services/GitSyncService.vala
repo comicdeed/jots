@@ -719,6 +719,20 @@ namespace Jots {
             return next_allowed_usec > 0 && now_usec < next_allowed_usec;
         }
 
+        internal static bool has_internal_work_for_status_poll (
+            int pending_intent_count,
+            int execution_queue_count,
+            bool execution_active,
+            bool remote_sync_active,
+            bool remote_sync_queued
+        ) {
+            return pending_intent_count > 0
+                || execution_queue_count > 0
+                || execution_active
+                || remote_sync_active
+                || remote_sync_queued;
+        }
+
         internal static int64 compute_automatic_retry_cooldown_usec (uint failure_streak) {
             if (failure_streak == 0) {
                 return 0;
@@ -841,7 +855,13 @@ namespace Jots {
                 return;
             }
 
-            bool has_internal_work = pending_intents.size > 0 || execution_queue.size > 0 || execution_in_progress;
+            bool has_internal_work = has_internal_work_for_status_poll (
+                pending_intents.size,
+                execution_queue.size,
+                execution_in_progress,
+                remote_sync_in_progress,
+                remote_sync_requested
+            );
             bool has_external_worktree_changes = status_result.stdout_text.strip () != "";
 
             if (!has_internal_work && has_external_worktree_changes) {
@@ -873,6 +893,13 @@ namespace Jots {
             }
 
             if (!has_internal_work) {
+                int64 now_usec = GLib.get_monotonic_time ();
+                if (should_defer_automatic_sync (now_usec, next_remote_auto_sync_allowed_usec)) {
+                    set_status (BACKUP_STATUS_REMOTE_RETRY_SCHEDULED);
+                    status_poll_in_progress = false;
+                    return;
+                }
+
                 set_status (BACKUP_STATUS_REPOSITORY_READY);
             }
 

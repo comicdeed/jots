@@ -6,6 +6,18 @@
 namespace Jots.Tests {
     public void register_git_sync_service_tests () {
         /**
+         * UC-80.10.02: Poll status work detector accounts for local and remote in-flight activity.
+         */
+        GLib.Test.add_func ("/GitSyncService/UC_80_10_02/StatusPollInternalWorkAggregation", () => {
+            assert_false (Jots.GitSyncService.has_internal_work_for_status_poll (0, 0, false, false, false));
+            assert_true (Jots.GitSyncService.has_internal_work_for_status_poll (1, 0, false, false, false));
+            assert_true (Jots.GitSyncService.has_internal_work_for_status_poll (0, 1, false, false, false));
+            assert_true (Jots.GitSyncService.has_internal_work_for_status_poll (0, 0, true, false, false));
+            assert_true (Jots.GitSyncService.has_internal_work_for_status_poll (0, 0, false, true, false));
+            assert_true (Jots.GitSyncService.has_internal_work_for_status_poll (0, 0, false, false, true));
+        });
+
+        /**
          * UC-80.10.03: Automatic sync retry cooldown grows exponentially and caps.
          */
         GLib.Test.add_func ("/GitSyncService/UC_80_10_03/AutomaticSyncCooldownBackoff", () => {

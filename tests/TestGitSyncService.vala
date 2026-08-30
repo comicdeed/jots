@@ -6,6 +6,16 @@
 namespace Jots.Tests {
     public void register_git_sync_service_tests () {
         /**
+         * UC-80.10.04: Automatic cadence sync respects cooldown boundaries.
+         */
+        GLib.Test.add_func ("/GitSyncService/UC_80_10_04/AutomaticSyncCooldownGate", () => {
+            assert_false (Jots.GitSyncService.should_defer_automatic_sync (1000, 0));
+            assert_false (Jots.GitSyncService.should_defer_automatic_sync (1000, 1000));
+            assert_true (Jots.GitSyncService.should_defer_automatic_sync (1000, 1001));
+            assert_false (Jots.GitSyncService.should_defer_automatic_sync (1500, 1200));
+        });
+
+        /**
          * UC-80.10.05: Cadence values map to expected scheduler intervals.
          */
         GLib.Test.add_func ("/GitSyncService/UC_80_10_05/CadenceIntervalMapping", () => {

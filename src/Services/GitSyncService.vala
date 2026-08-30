@@ -50,6 +50,7 @@ namespace Jots {
         private const int BACKUP_CADENCE_EVERY_15_MIN = 2;
         private const int BACKUP_CADENCE_EVERY_30_MIN = 3;
         private const int BACKUP_CADENCE_HOURLY = 4;
+        private const int64 REMOTE_AUTO_RETRY_COOLDOWN_USEC = 90 * 1000 * 1000;
         private const string GITIGNORE_CANONICAL = "*\n!.gitignore\n!*/\n!*.md\n";
 
         private Storage storage;
@@ -61,6 +62,7 @@ namespace Jots {
         private bool status_poll_in_progress = false;
         private bool remote_sync_in_progress = false;
         private bool remote_sync_requested = false;
+        private int64 next_remote_auto_sync_allowed_usec = 0;
         private uint64 execution_epoch = 0;
         private uint debounce_timer_id = 0;
         private uint status_poll_timer_id = 0;
@@ -142,7 +144,8 @@ namespace Jots {
             }
 
             remote_sync_requested = false;
-            synchronize_remote_async.begin (execution_epoch);
+            next_remote_auto_sync_allowed_usec = 0;
+            synchronize_remote_async.begin (execution_epoch, true);
         }
 
         public async bool test_remote_connection_async () {
@@ -338,7 +341,7 @@ namespace Jots {
             execution_in_progress = false;
             if (enabled && epoch == execution_epoch && remote_sync_requested && pending_intents.size == 0 && execution_queue.size == 0) {
                 remote_sync_requested = false;
-                synchronize_remote_async.begin (epoch);
+                synchronize_remote_async.begin (epoch, true);
                 return;
             }
 
@@ -508,9 +511,26 @@ namespace Jots {
                     return Source.REMOVE;
                 }
 
-                synchronize_remote_async.begin (epoch);
+                request_remote_sync_automatic (epoch);
                 return Source.CONTINUE;
             });
+        }
+
+        private void request_remote_sync_automatic (uint64 epoch) {
+            if (!enabled || epoch != execution_epoch || remote_sync_in_progress) {
+                return;
+            }
+
+            if (pending_intents.size > 0 || execution_queue.size > 0 || execution_in_progress) {
+                return;
+            }
+
+            int64 now_usec = GLib.get_monotonic_time ();
+            if (should_defer_automatic_sync (now_usec, next_remote_auto_sync_allowed_usec)) {
+                return;
+            }
+
+            synchronize_remote_async.begin (epoch, false);
         }
 
         private void stop_remote_sync_timer () {
@@ -520,7 +540,7 @@ namespace Jots {
             }
         }
 
-        private async void synchronize_remote_async (uint64 epoch) {
+        private async void synchronize_remote_async (uint64 epoch, bool manual_trigger) {
             if (remote_sync_in_progress || !enabled || epoch != execution_epoch) {
                 return;
             }
@@ -552,6 +572,7 @@ namespace Jots {
 
             if (!(yield ensure_remote_origin_url_async (remote_url))) {
                 set_status (BACKUP_STATUS_ERROR);
+                apply_automatic_sync_cooldown (manual_trigger);
                 finish_remote_sync_attempt (epoch);
                 return;
             }
@@ -565,6 +586,7 @@ namespace Jots {
             if (branch_name == null || branch_name.strip () == "") {
                 warning ("Unable to resolve local branch name for remote sync");
                 set_status (BACKUP_STATUS_ERROR);
+                apply_automatic_sync_cooldown (manual_trigger);
                 finish_remote_sync_attempt (epoch);
                 return;
             }
@@ -578,6 +600,7 @@ namespace Jots {
             if (!fetch_result.success) {
                 warning ("Git fetch failed: %s", fetch_result.stderr_text);
                 set_status (BACKUP_STATUS_ERROR);
+                apply_automatic_sync_cooldown (manual_trigger);
                 finish_remote_sync_attempt (epoch);
                 return;
             }
@@ -594,6 +617,7 @@ namespace Jots {
                 if (!(yield get_remote_divergence_counts_async (branch_name, out behind, out ahead))) {
                     warning ("Unable to parse remote divergence counts");
                     set_status (BACKUP_STATUS_ERROR);
+                    apply_automatic_sync_cooldown (manual_trigger);
                     finish_remote_sync_attempt (epoch);
                     return;
                 }
@@ -609,6 +633,7 @@ namespace Jots {
 
             if (remote_branch_exists && behind > 0 && ahead > 0) {
                 set_status (BACKUP_STATUS_REMOTE_DIVERGED);
+                apply_automatic_sync_cooldown (manual_trigger);
                 finish_remote_sync_attempt (epoch);
                 return;
             }
@@ -623,6 +648,7 @@ namespace Jots {
                 if (!pull_result.success) {
                     warning ("Git pull --rebase failed: %s", pull_result.stderr_text);
                     set_status (BACKUP_STATUS_REMOTE_DIVERGED);
+                    apply_automatic_sync_cooldown (manual_trigger);
                     finish_remote_sync_attempt (epoch);
                     return;
                 }
@@ -638,6 +664,7 @@ namespace Jots {
                 if (!push_result.success) {
                     warning ("Git push failed: %s", push_result.stderr_text);
                     set_status (BACKUP_STATUS_ERROR);
+                    apply_automatic_sync_cooldown (manual_trigger);
                     finish_remote_sync_attempt (epoch);
                     return;
                 }
@@ -651,11 +678,13 @@ namespace Jots {
                 }
 
                 set_last_sync_now ();
+                next_remote_auto_sync_allowed_usec = 0;
                 set_status (BACKUP_STATUS_REMOTE_SYNCED);
                 finish_remote_sync_attempt (epoch);
                 return;
             }
 
+            next_remote_auto_sync_allowed_usec = 0;
             set_status (BACKUP_STATUS_REPOSITORY_READY);
             finish_remote_sync_attempt (epoch);
         }
@@ -667,7 +696,19 @@ namespace Jots {
             }
 
             remote_sync_requested = false;
-            synchronize_remote_async.begin (epoch);
+            synchronize_remote_async.begin (epoch, true);
+        }
+
+        private void apply_automatic_sync_cooldown (bool manual_trigger) {
+            if (manual_trigger) {
+                return;
+            }
+
+            next_remote_auto_sync_allowed_usec = GLib.get_monotonic_time () + REMOTE_AUTO_RETRY_COOLDOWN_USEC;
+        }
+
+        internal static bool should_defer_automatic_sync (int64 now_usec, int64 next_allowed_usec) {
+            return next_allowed_usec > 0 && now_usec < next_allowed_usec;
         }
 
         private async bool ensure_remote_origin_url_async (string remote_url) {

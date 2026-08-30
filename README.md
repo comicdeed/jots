@@ -18,19 +18,19 @@
 
 ## Key features
 
-* 📝 **Live Markdown rendering**: Real-time syntax highlighting for headings (H1–H3), bold/italic/strikethrough emphasis, blockquotes, code spans, code fences, task lists (`- [ ]`, `- [x]`), and clickable links without modal preview toggles.
-* 🎨 **10 pastel color themes**: Thoughtfully designed color palettes that adapt to light and dark system styles.
-* 🔤 **Typography customization**: Custom proportional and code monospace font selection with automatic monospace catalog filtering.
-* 🔒 **Scribbly privacy mode**: Focus-driven text obfuscation with handwritten squiggles (`Redacted Script`) to protect sensitive notes from shoulder surfing.
-* 📂 **Markdown storage & interoperability**: Notes are stored as standard plain `.md` files with YAML front matter—enabling integration with external Markdown editors, knowledge bases (such as Obsidian or Logseq), `git`, and backup tools.
-* 🤖 **Native MCP server (`jots-mcp`)**: Built-in Model Context Protocol server enabling AI assistants (Claude Desktop, Cursor, Gemini CLI, Antigravity) to manage desktop notes in real time.
-* ⚡ **Fast and lightweight**: Written in native Vala/GTK4 with sub-millisecond startup, zero heavy runtimes, and low memory usage.
+* 📝 **Markdown editing + plain-file storage**: Write with live Markdown formatting (including checklists and links), with every note saved as a regular `.md` file you can back up or use in other tools.
+* 🎨 **Color themes**: Pick from 10 pastel themes that look good in both light and dark mode.
+* 🔤 **Font controls**: Choose your preferred text and code fonts to match how you like to read and write.
+* 🔒 **Privacy mode**: Hide note text when you need to protect sensitive content on screen.
+* 🔁 **Git backup sync**: Connect a Git remote, choose how often to sync, and use **Sync now** when you want an immediate backup.
+* 🤖 **AI-ready with MCP**: Connect compatible assistants (Claude Desktop, Cursor, Gemini CLI, Antigravity) to manage notes from AI tools.
+* ⚡ **Fast and lightweight**: Starts quickly and stays responsive.
 
 ---
 
 ## Installation and quick start
 
-Jots is currently Linux-first. AppImage and Flatpak are the supported distribution paths. Windows installers are published for early access but are currently experimental and untested.
+Jots is currently Linux-first. AppImage and Flatpak are the supported distribution paths. Windows installers are currently not published in automated releases.
 
 **Recommended (Primary Distribution):**
 
@@ -41,7 +41,7 @@ Jots is currently Linux-first. AppImage and Flatpak are the supported distributi
 * **Linux AppImage (Recommended, Click-and-Run)**: Download `Jots-<version>-<arch>.AppImage` (currently `Jots-<version>-x86_64.AppImage` or `Jots-<version>-aarch64.AppImage`) from the [latest release](https://github.com/comicdeed/jots/releases/latest), make it executable (`chmod +x Jots-*.AppImage`), and run directly on any Linux distribution without installation.
 * **Linux Flatpak (Alternative)**: Download `io.github.comicdeed.jots-<version>-x86_64.flatpak` from the [latest release](https://github.com/comicdeed/jots/releases/latest) and install with `flatpak install io.github.comicdeed.jots-*.flatpak`.
 * **Local compilation**: Refer to the [Developer Setup Guide](docs/development/setup.md) or [Building Guide](docs/development/building.md) for compilation instructions.
-* **Windows (Experimental, Untested)**: Download `Jots-<version>-Installer.exe` (x86_64 only) from the [latest release](https://github.com/comicdeed/jots/releases/latest) for early testing (see the [Windows Build Guide](docs/development/windows.md)).
+* **Windows (Manual Build Only)**: Automated release installers are currently disabled. If you want official release installers re-enabled, open a request in the [Issues tab](https://github.com/comicdeed/jots/issues) with the `feature request` label. If you need Windows now, build locally using the [Windows Build Guide](docs/development/windows.md).
 
 ---
 

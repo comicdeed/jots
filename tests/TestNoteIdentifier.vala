@@ -15,6 +15,20 @@ namespace Jots.Tests {
         });
 
         /**
+         * UC-20.15.11: Invalid existing identifier is rejected and regenerated.
+         */
+        GLib.Test.add_func ("/NoteIdentifier/UC_20_15_11/RegenerateInvalidExisting", () => {
+            var ensured = Jots.Utils.NoteIdentifier.ensure ("Roadmap", "../../bad");
+            var parts = ensured.split ("~");
+
+            assert_cmpint (parts.length, GLib.CompareOperator.EQ, 2);
+            assert_cmpstr (parts[0], GLib.CompareOperator.EQ, "roadmap");
+            assert_cmpint (parts[1].length, GLib.CompareOperator.EQ, 6);
+            assert_false (ensured.contains ("/"));
+            assert_false (ensured.contains (".."));
+        });
+
+        /**
          * UC-20.15.20: Generated identifier format is slug~token with 6 lowercase alnum chars.
          */
         GLib.Test.add_func ("/NoteIdentifier/UC_20_15_20/GeneratedFormat", () => {

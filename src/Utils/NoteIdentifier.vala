@@ -11,15 +11,36 @@ namespace Jots.Utils {
     public class NoteIdentifier : Object {
 
         private const int TOKEN_LENGTH = 6;
+        private const string SAFE_IDENTIFIER_PATTERN = "^[A-Za-z0-9._~-]+$";
 
         public static string ensure (string title, string? existing = null) {
-            if (existing != null && existing.strip () != "") {
-                return existing;
+            if (existing != null) {
+                var candidate = existing.strip ();
+                if (is_valid (candidate)) {
+                    return candidate;
+                }
             }
 
             var slug = slugify (title);
             var token = random_token (TOKEN_LENGTH);
             return "%s~%s".printf (slug, token);
+        }
+
+        public static bool is_valid (string value) {
+            if (value == null || value.strip () == "") {
+                return false;
+            }
+
+            if (value.contains ("/") || value.contains ("\\") || value.contains ("..")) {
+                return false;
+            }
+
+            try {
+                return Regex.match_simple (SAFE_IDENTIFIER_PATTERN, value);
+            } catch (RegexError e) {
+                warning ("Identifier regex error: %s", e.message);
+                return false;
+            }
         }
 
         private static string slugify (string title) {

@@ -384,7 +384,7 @@ namespace Jots {
             Application.settings.bind (KEY_BACKUP_SYNC_ENABLED,
                 enable_toggle, "active",
                 GLib.SettingsBindFlags.DEFAULT);
-            page.append (new Jots.SettingsBox (_("Enable backup and sync"), _("Creates and maintains a local Git backup repository for notes"), enable_toggle));
+            page.append (new Jots.SettingsBox (_("Enable backup and sync"), _("Prepares and manages a local Git backup repository"), enable_toggle));
 
             var remote_entry = new Gtk.Entry () {
                 placeholder_text = _("https://example.com/notes.git"),

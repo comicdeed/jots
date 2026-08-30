@@ -78,7 +78,7 @@ namespace Jots {
                     }
 
                     parse_front_matter (front_matter, note);
-                        note.id = Jots.Utils.NoteIdentifier.ensure (note.title, note.id);
+                    note.id = Jots.Utils.NoteIdentifier.ensure (note.title, note.id);
                     note.content = body;
                     return note;
                 }
@@ -97,7 +97,7 @@ namespace Jots {
                 }
             }
 
-                note.id = Jots.Utils.NoteIdentifier.ensure (note.title, note.id);
+            note.id = Jots.Utils.NoteIdentifier.ensure (note.title, note.id);
 
             return note;
         }

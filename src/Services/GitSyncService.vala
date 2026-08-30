@@ -34,7 +34,7 @@ namespace Jots {
         private const int64 COMMIT_DEBOUNCE_USEC = 120 * 1000 * 1000;
         private const string GITIGNORE_CANONICAL = "*\n!.gitignore\n!*/\n!*.md\n";
 
-        private weak Storage storage;
+        private Storage storage;
         private GLib.Settings settings;
         private bool enabled = false;
         private bool gitignore_warning_emitted = false;
@@ -85,7 +85,7 @@ namespace Jots {
                 return;
             }
 
-            set_status (BACKUP_STATUS_READY);
+            set_status (BACKUP_STATUS_REPOSITORY_READY);
         }
 
         private void on_note_saved (NoteData note, NoteData? previous_note, string note_path) {
@@ -176,7 +176,7 @@ namespace Jots {
                 return;
             }
 
-            set_status (BACKUP_STATUS_READY);
+            set_status (BACKUP_STATUS_REPOSITORY_READY);
         }
 
         private void execute_debounced_intent (BackupCommitIntent intent) {

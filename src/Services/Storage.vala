@@ -208,6 +208,7 @@ namespace Jots {
          */
         public void save_note (NoteData note) {
             ensure_directories ();
+            note.id = Jots.Utils.NoteIdentifier.ensure (note.title, note.id);
             var filename = "%s.md".printf (note.id);
             var file = notes_dir.get_child (filename);
             var previous_note = load_note_by_id (note.id);

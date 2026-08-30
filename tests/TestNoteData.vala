@@ -69,7 +69,7 @@ namespace Jots.Tests {
         });
 
         /**
-         * UC-20.10.40: UUID assignment and round-trip persistence
+         * UC-20.10.40: Slug identifier assignment and round-trip persistence
          */
         GLib.Test.add_func ("/NoteData/UC_20_10_40/UuidAssignmentAndPersistence", () => {
             var note = new Jots.NoteData ();
@@ -84,7 +84,7 @@ namespace Jots.Tests {
         });
 
         /**
-         * UC-20.10.50: Legacy JSON without UUID auto-migrates to valid UUID
+         * UC-20.10.50: Legacy JSON without id auto-generates valid slug identifier
          */
         GLib.Test.add_func ("/NoteData/UC_20_10_50/LegacyJsonUuidMigration", () => {
             var parser = new Json.Parser ();

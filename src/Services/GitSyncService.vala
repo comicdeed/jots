@@ -60,6 +60,7 @@ namespace Jots {
         private bool execution_in_progress = false;
         private bool status_poll_in_progress = false;
         private bool remote_sync_in_progress = false;
+        private bool remote_sync_requested = false;
         private uint64 execution_epoch = 0;
         private uint debounce_timer_id = 0;
         private uint status_poll_timer_id = 0;
@@ -120,6 +121,17 @@ namespace Jots {
         public void request_remote_sync_now () {
             if (!enabled) {
                 set_status (BACKUP_STATUS_DISABLED);
+                return;
+            }
+
+            remote_sync_requested = true;
+            flush_pending_intents_for_manual_sync ();
+
+            if (execution_in_progress || execution_queue.size > 0 || pending_intents.size > 0) {
+                set_status (BACKUP_STATUS_FINALIZING_LOCAL_CHANGES);
+                if (!execution_in_progress && execution_queue.size > 0) {
+                    process_execution_queue_async.begin (execution_epoch);
+                }
                 return;
             }
 
@@ -317,6 +329,12 @@ namespace Jots {
             }
 
             execution_in_progress = false;
+            if (enabled && epoch == execution_epoch && remote_sync_requested && pending_intents.size == 0 && execution_queue.size == 0) {
+                remote_sync_requested = false;
+                synchronize_remote_async.begin (epoch);
+                return;
+            }
+
             if (enabled && epoch == execution_epoch && pending_intents.size == 0) {
                 set_status (BACKUP_STATUS_REPOSITORY_READY);
             }
@@ -417,10 +435,27 @@ namespace Jots {
         private void clear_pending_intents () {
             pending_intents.clear ();
             execution_queue.clear ();
+            remote_sync_requested = false;
             if (debounce_timer_id != 0) {
                 Source.remove (debounce_timer_id);
                 debounce_timer_id = 0;
             }
+        }
+
+        private void flush_pending_intents_for_manual_sync () {
+            if (pending_intents.size == 0) {
+                return;
+            }
+
+            if (debounce_timer_id != 0) {
+                Source.remove (debounce_timer_id);
+                debounce_timer_id = 0;
+            }
+
+            foreach (var entry in pending_intents.entries) {
+                execution_queue.add (entry.value);
+            }
+            pending_intents.clear ();
         }
 
         private void start_status_poll_timer (uint64 epoch) {
@@ -482,6 +517,8 @@ namespace Jots {
             if (remote_sync_in_progress || !enabled || epoch != execution_epoch) {
                 return;
             }
+
+            remote_sync_requested = false;
 
             if (pending_intents.size > 0 || execution_queue.size > 0 || execution_in_progress) {
                 return;

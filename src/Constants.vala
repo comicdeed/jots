@@ -78,6 +78,7 @@ namespace Jots {
     const string BACKUP_STATUS_EXTERNAL_CHANGES_DETECTED = "External changes detected in notes repository";
     const string BACKUP_STATUS_REMOTE_DIVERGED = "Remote changes detected; sync update needed";
     const string BACKUP_STATUS_REMOTE_NOT_CONFIGURED = "Set a remote repository URL to enable sync";
+    const string BACKUP_STATUS_FINALIZING_LOCAL_CHANGES = "Finalizing local backup changes before remote sync";
     const string BACKUP_STATUS_SYNCING_REMOTE = "Syncing backup with remote repository";
     const string BACKUP_STATUS_REMOTE_SYNCED = "Backup synchronized with remote repository";
     const string BACKUP_STATUS_TESTING_REMOTE = "Checking remote repository connectivity";

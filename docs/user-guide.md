@@ -193,7 +193,7 @@ Jots persists every sticky note as a separate, human-readable `.md` Markdown fil
 
 ```markdown
 ---
-id: "3ba7ca8a-d40c-45b9-a9f8-94c15b853e2d"
+id: "project-ideas~a1b2c3"
 title: "Project Ideas"
 theme: "MINT"
 monospace: false

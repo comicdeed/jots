@@ -55,11 +55,11 @@ For setup, use the canonical **[MCP Integration Guide](docs/development/mcp-serv
 
 ## Markdown storage and tool interoperability
 
-All notes are stored as individual `.md` Markdown files with standardized YAML front-matter headers containing note metadata (UUID, title, theme, zoom, and window dimensions). Because notes are saved in plain text, you can read them with standard text tools, version control them with Git, or potentially integrate them into personal knowledge base directories (such as Obsidian or Logseq):
+All notes are stored as individual `.md` Markdown files with standardized YAML front-matter headers containing note metadata (note ID, title, theme, zoom, and window dimensions). Because notes are saved in plain text, you can read them with standard text tools, version control them with Git, or potentially integrate them into personal knowledge base directories (such as Obsidian or Logseq):
 
 ```markdown
 ---
-id: "3ba7ca8a-d40c-45b9-a9f8-94c15b853e2d"
+id: "project-ideas~a1b2c3"
 title: "Project Ideas"
 theme: "MINT"
 monospace: false

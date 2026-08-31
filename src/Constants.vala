@@ -109,6 +109,7 @@ namespace Jots {
 * **Shift + F12**: Toggle List
 * **Ctrl + D** / **Ctrl + Enter**: Toggle Checklist
 * **Ctrl + M**: Toggle Monospace
+* **Ctrl + T**: Toggle Action Bar Auto-Hide
 * **Ctrl + Scroll / Pinch**: Zoom Text
 * **F1**: Show / Restore this Cheat Sheet
 

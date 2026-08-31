@@ -30,6 +30,7 @@ namespace Jots {
         public SimpleActionGroup actions { get; construct; }
         public const string ACTION_PREFIX = "textview.";
         public const string ACTION_TOGGLE_LIST = "action_toggle_list";
+        public const string ACTION_TOGGLE_CHECKBOX = "action_toggle_checkbox";
         public const string ACTION_PASTE_RAW = "action_paste_raw";
         public const string ACTION_PASTE_SMART = "action_paste_smart";
 
@@ -37,6 +38,7 @@ namespace Jots {
 
         private const GLib.ActionEntry[] ACTION_ENTRIES = {
             { ACTION_TOGGLE_LIST, toggle_list },
+            { ACTION_TOGGLE_CHECKBOX, toggle_checkbox },
             { ACTION_PASTE_RAW, paste_raw },
             { ACTION_PASTE_SMART, paste_smart }
         };
@@ -61,6 +63,7 @@ namespace Jots {
             var app = GLib.Application.get_default () as Gtk.Application;
             if (app != null) {
                 app.set_accels_for_action (ACTION_PREFIX + ACTION_TOGGLE_LIST, {"<Shift>F12"});
+                app.set_accels_for_action (ACTION_PREFIX + ACTION_TOGGLE_CHECKBOX, {"<Control>d", "<Control>D", "<Control>Return", "<Control>KP_Enter"});
                 app.set_accels_for_action (ACTION_PREFIX + ACTION_PASTE_RAW, {"<Control><Shift>v", "<Control><Shift>V"});
             }
 
@@ -103,10 +106,72 @@ namespace Jots {
             section_app.append_item (menuitem_pref);
             section_app.append_item (menuitem_quit);
             extra.append_section (null, section_app);
+
             extra_menu = extra;
 
             markdown_buffer = new Jots.MarkdownBuffer ();
             buffer = (Gtk.TextBuffer) markdown_buffer;
+        }
+
+        public bool is_on_checkbox (Gtk.TextIter iter, out int char_line_offset_state, out bool is_checked) {
+            char_line_offset_state = -1;
+            is_checked = false;
+
+            int line_num = iter.get_line ();
+            Gtk.TextIter line_start, line_end;
+            buffer.get_iter_at_line_offset (out line_start, line_num, 0);
+            line_end = line_start.copy ();
+            line_end.forward_to_line_end ();
+            string line_str = buffer.get_slice (line_start, line_end, false);
+
+            try {
+                var regex = new GLib.Regex ("^(\\s*[\\*\\+-]\\s+)\\[([ xX])\\]");
+                GLib.MatchInfo info;
+                if (regex.match (line_str, 0, out info)) {
+                    int marker_start = 0, marker_end = 0;
+                    int state_start = 0, state_end = 0;
+                    if (info.fetch_pos (0, out marker_start, out marker_end) &&
+                        info.fetch_pos (2, out state_start, out state_end)) {
+
+                        int iter_offset = iter.get_line_offset ();
+                        long marker_char_end = line_str.char_count ((long) marker_end);
+                        if (iter_offset >= 0 && iter_offset <= marker_char_end) {
+                            char_line_offset_state = (int) line_str.char_count ((long) state_start);
+                            string? state_str = info.fetch (2);
+                            is_checked = (state_str == "x" || state_str == "X");
+                            return true;
+                        }
+                    }
+                }
+            } catch (GLib.Error e) {
+                debug ("Regex error in is_on_checkbox: %s", e.message);
+            }
+            return false;
+        }
+
+        public bool toggle_checkbox_at_iter (Gtk.TextIter iter) {
+            if (!editable) {
+                return false;
+            }
+
+            int state_offset;
+            bool is_checked;
+            if (is_on_checkbox (iter, out state_offset, out is_checked)) {
+                int line_num = iter.get_line ();
+                Gtk.TextIter start_iter, end_iter;
+                buffer.get_iter_at_line_offset (out start_iter, line_num, state_offset);
+                end_iter = start_iter.copy ();
+                end_iter.forward_chars (1);
+
+                buffer.begin_user_action ();
+                buffer.delete (ref start_iter, ref end_iter);
+                buffer.insert (ref start_iter, is_checked ? " " : "x", -1);
+                buffer.end_user_action ();
+
+                markdown_buffer.highlight_markdown ();
+                return true;
+            }
+            return false;
         }
 
         private void on_click_released (Gtk.GestureClick gesture, int n_press, double x, double y) {
@@ -115,6 +180,10 @@ namespace Jots {
 
             Gtk.TextIter iter;
             get_iter_at_location (out iter, bx, by);
+
+            if (toggle_checkbox_at_iter (iter)) {
+                return;
+            }
 
             foreach (var tag in iter.get_tags ()) {
                 if (tag.name != null && tag.name.has_prefix ("url:")) {
@@ -148,7 +217,11 @@ namespace Jots {
                 }
             }
 
-            set_cursor_from_name (on_link ? "pointer" : "text");
+            int state_offset;
+            bool is_checked;
+            bool on_checkbox = editable && is_on_checkbox (iter, out state_offset, out is_checked);
+
+            set_cursor_from_name ((on_link || on_checkbox) ? "pointer" : "text");
         }
 
         private void on_mouse_leave () {
@@ -190,9 +263,77 @@ namespace Jots {
             grab_focus ();
         }
 
+        public void toggle_checkbox () {
+            if (!editable) {
+                return;
+            }
+
+            Gtk.TextIter start, end;
+            buffer.get_selection_bounds (out start, out end);
+
+            var first_line = start.get_line ();
+            var last_line = end.get_line ();
+
+            try {
+                var regex_box = new GLib.Regex ("^(\\s*[\\*\\+-]\\s+)\\[([ xX])\\]");
+                var regex_bullet = new GLib.Regex ("^(\\s*[\\*\\+-]\\s+)(.*)$");
+
+                buffer.begin_user_action ();
+                for (int line = first_line; line <= last_line; line++) {
+                    Gtk.TextIter line_start, line_end;
+                    buffer.get_iter_at_line_offset (out line_start, line, 0);
+                    line_end = line_start.copy ();
+                    line_end.forward_to_line_end ();
+                    var line_str = buffer.get_slice (line_start, line_end, false);
+
+                    GLib.MatchInfo info;
+                    if (regex_box.match (line_str, 0, out info)) {
+                        int state_start = 0, state_end = 0;
+                        if (info.fetch_pos (2, out state_start, out state_end)) {
+                            int char_state_start = (int) line_str.char_count ((long) state_start);
+                            string? state_str = info.fetch (2);
+                            bool is_checked = (state_str == "x" || state_str == "X");
+
+                            Gtk.TextIter s_iter, e_iter;
+                            buffer.get_iter_at_line_offset (out s_iter, line, char_state_start);
+                            e_iter = s_iter.copy ();
+                            e_iter.forward_chars (1);
+
+                            buffer.delete (ref s_iter, ref e_iter);
+                            buffer.insert (ref s_iter, is_checked ? " " : "x", -1);
+                        }
+                    } else if (regex_bullet.match (line_str, 0, out info)) {
+                        int indent_start = 0, indent_end = 0;
+                        if (info.fetch_pos (1, out indent_start, out indent_end)) {
+                            int char_indent_end = (int) line_str.char_count ((long) indent_end);
+                            Gtk.TextIter ins_iter;
+                            buffer.get_iter_at_line_offset (out ins_iter, line, char_indent_end);
+                            buffer.insert (ref ins_iter, "[ ] ", -1);
+                        }
+                    } else {
+                        buffer.insert (ref line_start, "- [ ] ", -1);
+                    }
+                }
+                buffer.end_user_action ();
+
+                markdown_buffer.highlight_markdown ();
+                grab_focus ();
+            } catch (GLib.Error e) {
+                debug ("Regex error in toggle_checkbox: %s", e.message);
+            }
+        }
+
         private bool on_key_pressed (uint keyval, uint keycode, Gdk.ModifierType state) {
             if (!editable) {
                 return false;
+            }
+
+            if ((keyval == Gdk.Key.Return || keyval == Gdk.Key.KP_Enter) && (state & Gdk.ModifierType.CONTROL_MASK) != 0) {
+                toggle_checkbox ();
+                return true;
+            } else if ((keyval == Gdk.Key.d || keyval == Gdk.Key.D) && (state & Gdk.ModifierType.CONTROL_MASK) != 0 && (state & Gdk.ModifierType.SHIFT_MASK) == 0) {
+                toggle_checkbox ();
+                return true;
             }
 
             if (keyval == Gdk.Key.Return) {

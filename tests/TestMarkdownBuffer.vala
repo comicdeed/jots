@@ -258,6 +258,64 @@ namespace Jots.Tests {
             // Attempt paste_smart
             textview.paste_smart ();
             assert_cmpstr (textview.text, GLib.CompareOperator.EQ, "- Item 1\n- Item 2");
+
+            // Attempt toggle_checkbox
+            textview.toggle_checkbox ();
+            assert_cmpstr (textview.text, GLib.CompareOperator.EQ, "- Item 1\n- Item 2");
+
+            // Attempt toggle_checkbox_at_iter
+            Gtk.TextIter iter;
+            textview.buffer.get_iter_at_line_offset (out iter, 0, 0);
+            assert_false (textview.toggle_checkbox_at_iter (iter));
+            assert_cmpstr (textview.text, GLib.CompareOperator.EQ, "- Item 1\n- Item 2");
+        });
+
+        /**
+         * UC-30.20.120: Interactive Checklist Click and Keyboard Toggle
+         */
+        GLib.Test.add_func ("/MarkdownBuffer/UC_30_20_120/InteractiveChecklistToggle", () => {
+            var textview = new Jots.TextView ();
+            textview.text = "- [ ] Buy groceries\n* [x] Finish homework\n- Regular bullet\nPlain text line";
+            textview.editable = true;
+
+            // 1. Check detection
+            Gtk.TextIter iter_line0_bracket;
+            textview.buffer.get_iter_at_line_offset (out iter_line0_bracket, 0, 3); // on '['
+            int state_offset;
+            bool is_checked;
+            assert_true (textview.is_on_checkbox (iter_line0_bracket, out state_offset, out is_checked));
+            assert_false (is_checked);
+            assert_cmpint (state_offset, GLib.CompareOperator.EQ, 3);
+
+            // 2. Click toggle on line 0: "- [ ] Buy groceries" -> "- [x] Buy groceries"
+            assert_true (textview.toggle_checkbox_at_iter (iter_line0_bracket));
+            assert_cmpstr (textview.text, GLib.CompareOperator.EQ, "- [x] Buy groceries\n* [x] Finish homework\n- Regular bullet\nPlain text line");
+
+            // 3. Click toggle again on line 0: "- [x] Buy groceries" -> "- [ ] Buy groceries"
+            textview.buffer.get_iter_at_line_offset (out iter_line0_bracket, 0, 1);
+            assert_true (textview.toggle_checkbox_at_iter (iter_line0_bracket));
+            assert_cmpstr (textview.text, GLib.CompareOperator.EQ, "- [ ] Buy groceries\n* [x] Finish homework\n- Regular bullet\nPlain text line");
+
+            // 4. Keyboard toggle shortcut on line 1: "* [x] Finish homework" -> "* [ ] Finish homework"
+            Gtk.TextIter iter_line1;
+            textview.buffer.get_iter_at_line_offset (out iter_line1, 1, 5);
+            textview.buffer.place_cursor (iter_line1);
+            textview.toggle_checkbox ();
+            assert_cmpstr (textview.text, GLib.CompareOperator.EQ, "- [ ] Buy groceries\n* [ ] Finish homework\n- Regular bullet\nPlain text line");
+
+            // 5. Keyboard toggle on bullet line 2: "- Regular bullet" -> "- [ ] Regular bullet"
+            Gtk.TextIter iter_line2;
+            textview.buffer.get_iter_at_line_offset (out iter_line2, 2, 2);
+            textview.buffer.place_cursor (iter_line2);
+            textview.toggle_checkbox ();
+            assert_cmpstr (textview.text, GLib.CompareOperator.EQ, "- [ ] Buy groceries\n* [ ] Finish homework\n- [ ] Regular bullet\nPlain text line");
+
+            // 6. Keyboard toggle on plain text line 3: "Plain text line" -> "- [ ] Plain text line"
+            Gtk.TextIter iter_line3;
+            textview.buffer.get_iter_at_line_offset (out iter_line3, 3, 0);
+            textview.buffer.place_cursor (iter_line3);
+            textview.toggle_checkbox ();
+            assert_cmpstr (textview.text, GLib.CompareOperator.EQ, "- [ ] Buy groceries\n* [ ] Finish homework\n- [ ] Regular bullet\n- [ ] Plain text line");
         });
     }
 }

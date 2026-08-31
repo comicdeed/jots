@@ -107,6 +107,7 @@ namespace Jots {
 * **Ctrl + V**: Smart Paste (Markdown & Rich Text)
 * **Ctrl + Shift + V**: Paste Without Formatting (Raw)
 * **Shift + F12**: Toggle List
+* **Ctrl + D** / **Ctrl + Enter**: Toggle Checklist
 * **Ctrl + M**: Toggle Monospace
 * **Ctrl + Scroll / Pinch**: Zoom Text
 * **F1**: Show / Restore this Cheat Sheet

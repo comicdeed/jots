@@ -50,6 +50,22 @@ List formatting, prefix expansion on keypresses, prefix migration, and hanging i
   * Deletes prefix and removes the `list_item` tag.
   * Converts line to plain text without deleting the preceding line.
 
+### `UC-30.20.110` Read-only / lock mode mutation guardrails
+* **Trigger**: User attempts programmatic modifications (list continuation on `Enter`, paste shortcuts, emoji insertion) when `is_readonly = true`.
+* **Pre-conditions**: Note window is locked (`editable = false`).
+* **Post-conditions**:
+  * All buffer insertion and deletion operations are blocked.
+  * Buffer content remains unchanged.
+
+### `UC-30.20.120` Interactive checklist click and keyboard toggle
+* **Trigger**: User clicks directly on a checklist checkbox (`- [ ]` / `- [x]`) or presses `Ctrl + D` / `Ctrl + Enter`.
+* **Pre-conditions**: Note is editable (`editable = true`).
+* **Post-conditions**:
+  * On click on `[ ]` or `[x]`, flips state atomically (`[ ]` $\leftrightarrow$ `[x]`) and re-highlights Markdown.
+  * On keyboard shortcut (`Ctrl + D` / `Ctrl + Enter`), toggles checklist item on the active line or converts plain text/bullets to `- [ ]`.
+  * Preserves user undo history in a single atomic action.
+
+
 ---
 
 ## 30.30 Indentation and layout

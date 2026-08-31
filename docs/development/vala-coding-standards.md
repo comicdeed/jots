@@ -100,6 +100,35 @@ If a C library API demands a raw pointer, isolate it inside a dedicated binding 
 
 ---
 
+### Rule VCS-05 · Stateless Modifier Event Inspection
+
+Never track keyboard modifiers (e.g. <kbd>Ctrl</kbd>, <kbd>Shift</kbd>, <kbd>Alt</kbd>) using mutable static or instance boolean variables updated across `key-pressed` and `key-released` signals. Popover focus shifts, Alt-Tab window changes, and modal grabs can cause `key-released` signals to be dropped by the window manager, leaving modifier states permanently stuck (e.g. perpetual scroll zoom).
+
+❌ **Wrong — stateful modifier tracking across signals:**
+```vala
+private static bool is_control_pressed = false;
+
+key_controller.key_pressed.connect ((keyval) => {
+    if (keyval == Gdk.Key.Control_L) is_control_pressed = true;
+});
+key_controller.key_released.connect ((keyval) => {
+    if (keyval == Gdk.Key.Control_L) is_control_pressed = false; // often dropped!
+});
+```
+
+✅ **Correct — query event modifier state directly on demand:**
+```vala
+scroll_controller.scroll.connect ((dx, dy) => {
+    var state = scroll_controller.get_current_event_state ();
+    bool is_ctrl = (state & Gdk.ModifierType.CONTROL_MASK) != 0;
+    if (is_ctrl) {
+        // perform zoom
+    }
+});
+```
+
+---
+
 ## 2. Null Safety & Type Validation
 
 ### Rule VCS-12 · Check All Nullable Types Before Access
@@ -314,6 +343,37 @@ public override void dispose () {
 
 ---
 
+### Rule VCS-34 · Guard Custom TextBuffer Mutations in Read-Only Mode
+
+Setting `Gtk.TextView.editable = false` only disables interactive keyboard entry at the view level; the underlying in-memory `Gtk.TextBuffer` remains fully mutable to programmatic calls. Any custom handlers or shortcuts that call `buffer.insert()` or `buffer.delete()` directly (e.g. list auto-continuation on <kbd>Enter</kbd>, smart paste, formatting toggles, or emoji popover insertion) **must** check `if (!editable) return;` / `if (!textview.editable) return;` before touching the buffer.
+
+❌ **Wrong — custom handler mutates buffer directly without checking view state:**
+```vala
+private bool on_key_pressed (uint keyval, ...) {
+    if (keyval == Gdk.Key.Return) {
+        buffer.insert_at_cursor ("\n- ", -1); // bypasses textview.editable = false!
+        return true;
+    }
+    return false;
+}
+```
+
+✅ **Correct — guard all programmatic modifications:**
+```vala
+private bool on_key_pressed (uint keyval, ...) {
+    if (!editable) {
+        return false;
+    }
+    if (keyval == Gdk.Key.Return) {
+        buffer.insert_at_cursor ("\n- ", -1);
+        return true;
+    }
+    return false;
+}
+```
+
+---
+
 ## 6. Error Handling & Robustness
 
 ### Rule VCS-50 · Use `throws` with an Explicit `errordomain`
@@ -427,6 +487,7 @@ Constants live in `src/Constants.vala`. Never hard-code limits inline.
 | **VCS-02** | Every `connect()` has a matching `disconnect()` in `~Destructor` |
 | **VCS-03** | `weak` for nullable back-refs; `unowned` for non-owning borrows |
 | **VCS-04** | No raw pointers (`*`) outside C-binding layers |
+| **VCS-05** | Inspect event controller modifier states statelessly; never store mutable key booleans |
 | **VCS-12** | Check all `T?` nullable values before access |
 | **VCS-13** | Use safe `as` casting; never blind `(Type)` downcasts |
 | **VCS-14** | Public API signatures declare nullability contracts explicitly |
@@ -437,6 +498,7 @@ Constants live in `src/Constants.vala`. Never hard-code limits inline.
 | **VCS-31** | Never shadow a `Gtk.Widget` base-class property name |
 | **VCS-32** | Services must not cast to concrete window types |
 | **VCS-33** | Use `Object(...)` / `construct` for init; `dispose()` for unmanaged resources |
+| **VCS-34** | Guard custom `TextBuffer` programmatic mutations when view `editable == false` |
 | **VCS-40** | Clamp all user content to `MAX_*` constants at ingestion |
 | **VCS-41** | All file I/O routes through `Storage.vala` only |
 | **VCS-50** | `throws` with a named `errordomain` for fallible methods |

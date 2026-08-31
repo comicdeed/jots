@@ -184,28 +184,35 @@ window.background.themed {
     color: @BLUEBERRY_900;
 }
 
-window.themed undershoot.top {
-    background: linear-gradient(rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0) 50%);
-}
-
-window.themed undershoot.bottom {
-    background: linear-gradient(rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.05) 100%);
-}
-
-window.themed overshoot.top {
-    background: linear-gradient(to top, rgba(0, 0, 0, 0) 80%, rgba(0, 0, 0, 0.15) 100%);
-}
-
-window.themed overshoot.right {
-    background: linear-gradient(to right, rgba(0, 0, 0, 0) 80%, rgba(0, 0, 0, 0.15) 100%);
-}
-
-window.themed overshoot.bottom {
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 80%, rgba(0, 0, 0, 0.15) 100%); 
-}
-
+window.themed undershoot,
+window.themed undershoot.top,
+window.themed undershoot.bottom,
+window.themed overshoot,
+window.themed overshoot.top,
+window.themed overshoot.right,
+window.themed overshoot.bottom,
 window.themed overshoot.left {
-    background: linear-gradient(to left, rgba(0, 0, 0, 0) 80%, rgba(0, 0, 0, 0.15) 100%);
+    background: none;
+    background-image: none;
+    box-shadow: none;
+    border: none;
+}
+
+window.themed scrollbar {
+    background-color: transparent;
+    border: none;
+    padding: 2px;
+}
+
+window.themed scrollbar slider {
+    min-width: 5px;
+    min-height: 5px;
+    border-radius: 4px;
+    background-color: alpha(currentColor, 0.25);
+}
+
+window.themed scrollbar slider:hover {
+    background-color: alpha(currentColor, 0.45);
 }
 
 window.themed text selection {
@@ -419,12 +426,18 @@ window.themed.dark editablelabel label {
     text-shadow: none;
 }
 
-window.themed.dark undershoot.top {
-    background: linear-gradient(#1e1e24 0%, rgba(0, 0, 0, 0) 50%);
-}
-
-window.themed.dark undershoot.bottom {
-    background: linear-gradient(rgba(0, 0, 0, 0) 50%, #1e1e24 100%);
+window.themed.dark undershoot,
+window.themed.dark undershoot.top,
+window.themed.dark undershoot.bottom,
+window.themed.dark overshoot,
+window.themed.dark overshoot.top,
+window.themed.dark overshoot.right,
+window.themed.dark overshoot.bottom,
+window.themed.dark overshoot.left {
+    background: none;
+    background-image: none;
+    box-shadow: none;
+    border: none;
 }
 
 window.themed.dark text selection {

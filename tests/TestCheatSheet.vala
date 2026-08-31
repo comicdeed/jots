@@ -25,6 +25,7 @@ namespace Jots.Tests {
             assert_true (note.content.contains ("Ctrl + H"));
             assert_true (note.content.contains ("Ctrl + V"));
             assert_true (note.content.contains ("Ctrl + Shift + V"));
+            assert_true (note.content.contains ("Ctrl + T"));
             assert_true (note.content.contains ("F1"));
         });
 

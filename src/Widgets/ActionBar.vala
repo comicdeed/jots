@@ -96,9 +96,9 @@ public class Jots.ActionBar : Jots.Bin {
 
         /* **** Widget **** */
         actionbar = new Gtk.ActionBar () {
-            hexpand = true
+            hexpand = true,
+            revealed = true
         };
-        actionbar.revealed = false;
         actionbar.pack_start (new_item);
         actionbar.pack_start (delete_item);
         actionbar.pack_end (menu_button);
@@ -114,16 +114,6 @@ public class Jots.ActionBar : Jots.Bin {
         // Hide the list button if user has specified no list item symbol
         on_prefix_changed ();
         Application.settings.changed[KEY_LIST].connect (on_prefix_changed);
-    }
-
-    /**
-    * Allow control of when to respect the hide-bar setting
-    * StickyNoteWindow will decide itself whether to show immediately or not
-    */
-    public void reveal_bind () {
-        Application.settings.bind (KEY_HIDEBAR,
-            actionbar, "revealed",
-            SettingsBindFlags.INVERT_BOOLEAN);
     }
 
     /**

@@ -188,8 +188,8 @@ namespace Jots {
                 GLib.SettingsBindFlags.DEFAULT);
 
             var hidebar_box = new Jots.SettingsBox (
-                _("Hide bottom bar (Ctrl+T)"),
-                null,
+                _("Auto-hide bottom bar (Ctrl+T)"),
+                _("Smoothly hide toolbar when notes lose focus; reveal on hover or click"),
                 hidebar_toggle
             );
             page.append (hidebar_box);

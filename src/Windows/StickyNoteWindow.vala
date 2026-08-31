@@ -20,6 +20,7 @@ public class Jots.StickyNoteWindow : Gtk.ApplicationWindow {
     public Popover popover;
     public TextView textview;
 
+    public Jots.ChromeController chrome_controller;
     private Jots.ColorController color_controller;
     public Jots.ZoomController zoom_controller;
     private Jots.ScribblyController scribbly_controller;
@@ -97,6 +98,8 @@ public class Jots.StickyNoteWindow : Gtk.ApplicationWindow {
         search_popover = new Jots.SearchPopover (Application.note_manager);
         search_popover.set_parent (view.headerbar);
 
+        chrome_controller = new Jots.ChromeController (this, view.actionbar.actionbar, view);
+
 #if DEVEL
         add_css_class (STYLE_DEVEL);
 #endif
@@ -111,8 +114,6 @@ public class Jots.StickyNoteWindow : Gtk.ApplicationWindow {
         scroll_controller.scroll.connect ((dx, dy) => zoom_controller.on_scroll (scroll_controller, dx, dy));
         gesturezoom_controller.scale_changed.connect (zoom_controller.on_pinch);
 
-
-
         debug ("Built UI. Lets do connects and binds");
 
         // Save when title or text have changed
@@ -122,51 +123,12 @@ public class Jots.StickyNoteWindow : Gtk.ApplicationWindow {
         popover.readonly_toggled.connect (on_popover_readonly_toggled);
         popover.always_visible_toggled.connect (on_popover_always_visible_toggled);
 
-        // Respect animation settings for showing ui elements
-        if (Application.gtk_settings.gtk_enable_animations && (!Application.settings.get_boolean (KEY_HIDEBAR))) {
-            show.connect_after (delayed_show);
-
-        } else {
-            bind_hidebar ();
-        }
+        view.menu_button.notify["active"].connect (on_menu_button_toggled);
+        view.emoji_button.notify["active"].connect (on_emoji_button_toggled);
+        popover.closed.connect (on_menu_popover_closed);
+        search_popover.closed.connect (on_search_popover_closed);
 
         sync_dark_mode ();
-    }
-
-        /********************************************/
-        /*                  METHODS                 */
-        /********************************************/
-
-    public void sync_dark_mode () {
-        if (Application.gtk_settings.gtk_application_prefer_dark_theme) {
-            add_css_class ("dark");
-        } else {
-            remove_css_class ("dark");
-        }
-        queue_draw ();
-    }
-
-    private uint delayed_show_timeout_id = 0;
-
-    /**
-    * Show Actionbar shortly after the window is shown
-    * This is more for the Aesthetic
-    */
-    private void delayed_show () {
-        delayed_show_timeout_id = Timeout.add (250, () => {
-            delayed_show_timeout_id = 0;
-            bind_hidebar ();
-            return Source.REMOVE;
-        });
-        show.disconnect (delayed_show);
-    }
-
-    private void bind_hidebar () {
-        Application.settings.bind (
-            KEY_HIDEBAR,
-            view.actionbar.actionbar,
-            "revealed",
-            SettingsBindFlags.INVERT_BOOLEAN);
     }
 
     /**
@@ -326,9 +288,45 @@ public class Jots.StickyNoteWindow : Gtk.ApplicationWindow {
         Application.note_manager.delete_note (this);
     }
 
+    public void sync_dark_mode () {
+        if (Application.gtk_settings.gtk_application_prefer_dark_theme) {
+            add_css_class ("dark");
+        } else {
+            remove_css_class ("dark");
+        }
+        queue_draw ();
+    }
+
     private void action_show_search () {
+        if (chrome_controller != null) {
+            chrome_controller.set_popover_active (true);
+        }
         search_popover.popup ();
         search_popover.focus_and_select ();
+    }
+
+    private void on_menu_button_toggled () {
+        if (chrome_controller != null) {
+            chrome_controller.set_popover_active (view.menu_button.active);
+        }
+    }
+
+    private void on_emoji_button_toggled () {
+        if (chrome_controller != null) {
+            chrome_controller.set_popover_active (view.emoji_button.active);
+        }
+    }
+
+    private void on_menu_popover_closed () {
+        if (chrome_controller != null) {
+            chrome_controller.set_popover_active (false);
+        }
+    }
+
+    private void on_search_popover_closed () {
+        if (chrome_controller != null) {
+            chrome_controller.set_popover_active (false);
+        }
     }
 
     private void on_popover_readonly_toggled (bool active) {
@@ -349,9 +347,9 @@ public class Jots.StickyNoteWindow : Gtk.ApplicationWindow {
             search_popover = null;
         }
 
-        if (delayed_show_timeout_id != 0) {
-            Source.remove (delayed_show_timeout_id);
-            delayed_show_timeout_id = 0;
+        if (chrome_controller != null) {
+            chrome_controller.dispose ();
+            chrome_controller = null;
         }
 
         base.dispose ();

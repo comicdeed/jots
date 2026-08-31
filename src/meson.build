@@ -43,6 +43,7 @@ sources = files (
     'Services' / 'NoteService.vala',
     'Services' / 'ZoomController.vala',
     'Services' / 'ScribblyController.vala',
+    'Services' / 'ChromeController.vala',
     'Services' / 'ColorController.vala',
     'Services' / 'FontController.vala',
 

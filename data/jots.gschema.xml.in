@@ -23,9 +23,9 @@
 			<description>Whether to change font to an illegible one for unfocused sticky notes, for privacy</description>
 		</key>
 		<key name="hide-bar" type="b">
-			<default>false</default>
-			<summary>Hide actionbar</summary>
-			<description>Whether to hide the actionbar and its buttons</description>
+			<default>true</default>
+			<summary>Auto-hide actionbar</summary>
+			<description>Whether to auto-hide the actionbar on unfocused sticky notes</description>
 		</key>
 		<key enum="@APP_ID@.list-prefix" name="list-prefix">
       		<default>'bullet'</default>

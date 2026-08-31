@@ -179,6 +179,7 @@ window.background.themed.LATTE,
 
 window.themed,
 window.background.themed {
+    border-radius: 12px;
     background-color: @BLUEBERRY_100;
     color: @BLUEBERRY_900;
 }
@@ -223,6 +224,31 @@ window.themed .themedbutton > button > box > image,
 window.themed .themedbutton > image,
 window.themed {
     color: inherit;
+}
+
+window.themed headerbar,
+window.themed headerbar.flat,
+window.themed .headertitle {
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+window.themed actionbar,
+window.themed actionbar > revealer > box {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+window.themed scrolledwindow,
+window.themed textview,
+window.themed textview.view,
+window.themed textview text {
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
 }
 
 window.themed titlebar,

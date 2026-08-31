@@ -55,7 +55,7 @@ Welcome to Jots! Jots is a lightweight, distraction-free sticky notes applicatio
 | **`Ctrl + V`** | **Smart Paste** | Context-aware paste: converts rich-text/HTML and normalizes loose Markdown bullets/tasks outside code blocks; pastes verbatim inside code blocks. |
 | **`Ctrl + Shift + V`** | **Paste Without Formatting** | Pastes exact literal clipboard text without any Markdown normalization or transformation. |
 | **`Ctrl + M`** | **Toggle Monospace** | Switches between proportional and fixed-width monospace font. |
-| **`Ctrl + T`** | **Toggle Action Bar** | Hides or reveals the bottom formatting and color toolbar. |
+| **`Ctrl + T`** | **Toggle Action Bar Auto-Hide** | Toggles whether the bottom formatting toolbar auto-hides on unfocused notes. |
 | **`Ctrl + H`** | **Toggle Scribbly Effect** | Toggles the handwritten blur/scribble privacy effect on unfocused notes. |
 | **`Ctrl + .`** | **Insert Emoji** | Opens the native emoji picker popup. |
 | **`Ctrl + G`** / **`Ctrl + O`** | **Note Preferences** | Opens the theme color palette and monospace font popover. |
@@ -127,6 +127,11 @@ Jots comes with 10 carefully designed pastel color palettes that adapt seamlessl
 
 ### Monospace Code Mode (`Ctrl + M`)
 * Press **`Ctrl + M`** to instantly toggle the entire note between proportional and fixed-width **Monospace font**.
+
+### Minimal Canvas & Floating Scrollbars
+* **Uncluttered Canvas**: Overshoot and undershoot gradient overlays are removed so text remains crisp and flush against window edges at all scroll positions.
+* **Subtle Floating Scrollbars**: Scrollbars float discreetly over the background without shifting text layout, fading in smoothly when scrolling long notes.
+* **Uniform 12px Rounded Corners**: All four window corners are uniformly contoured across light and dark modes.
 
 ---
 

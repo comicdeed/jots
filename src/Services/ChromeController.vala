@@ -54,12 +54,16 @@ namespace Jots {
             update_visibility ();
         }
 
+        public bool is_hover_timer_pending {
+            get { return hover_timeout_id != 0; }
+        }
+
         private void init_settings () {
             if (GLib.SettingsSchemaSource.get_default () != null) {
                 var schema_source = GLib.SettingsSchemaSource.get_default ();
                 if (schema_source != null && schema_source.lookup (APP_ID, true) != null) {
                     var settings = new GLib.Settings (APP_ID);
-                    settings.bind (KEY_HIDEBAR, this, "autohide", SettingsBindFlags.INVERT_BOOLEAN);
+                    settings.bind (KEY_HIDEBAR, this, "autohide", SettingsBindFlags.DEFAULT);
                 }
             }
         }
@@ -69,7 +73,7 @@ namespace Jots {
             update_visibility ();
         }
 
-        private void on_mouse_enter (double x, double y) {
+        public void on_mouse_enter (double x, double y) {
             _is_hovered = true;
             if (window == null || window.is_active || !_autohide || _popover_active) {
                 return;
@@ -80,7 +84,7 @@ namespace Jots {
             hover_timeout_id = GLib.Timeout.add (HOVER_REVEAL_DELAY_MS, on_hover_timer_fired);
         }
 
-        private bool on_hover_timer_fired () {
+        public bool on_hover_timer_fired () {
             hover_timeout_id = 0;
             if (_is_hovered) {
                 set_actionbar_revealed (true);
@@ -88,7 +92,7 @@ namespace Jots {
             return GLib.Source.REMOVE;
         }
 
-        private void on_mouse_leave () {
+        public void on_mouse_leave () {
             _is_hovered = false;
             cancel_hover_timer ();
 
@@ -131,6 +135,10 @@ namespace Jots {
 
         public override void dispose () {
             cancel_hover_timer ();
+            if (root_widget != null && motion_controller != null) {
+                root_widget.remove_controller (motion_controller);
+                motion_controller = null;
+            }
             base.dispose ();
         }
 

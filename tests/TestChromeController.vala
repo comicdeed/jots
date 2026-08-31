@@ -61,7 +61,7 @@ namespace Jots.Tests {
         });
 
         /**
-         * UC-50.30.30: Hover delay cancellation on mouse exit
+         * UC-50.30.30: Hover delay debounce and cancellation on mouse exit
          */
         GLib.Test.add_func ("/ChromeController/UC_50_30_30/HoverCancellation", () => {
             var window = new Gtk.Window ();
@@ -74,7 +74,27 @@ namespace Jots.Tests {
             controller.autohide = true;
 
             assert_false (controller.is_chrome_revealed);
-            controller.update_visibility ();
+            assert_false (controller.is_hover_timer_pending);
+
+            // 1. Mouse enters -> timer is scheduled, bar is not yet revealed
+            controller.on_mouse_enter (10, 10);
+            assert_true (controller.is_hover_timer_pending);
+            assert_false (controller.is_chrome_revealed);
+
+            // 2. Mouse leaves before timer expires -> timer cancelled, bar remains hidden
+            controller.on_mouse_leave ();
+            assert_false (controller.is_hover_timer_pending);
+            assert_false (controller.is_chrome_revealed);
+
+            // 3. Mouse enters and stays -> timer fires -> bar revealed
+            controller.on_mouse_enter (10, 10);
+            assert_true (controller.is_hover_timer_pending);
+            controller.on_hover_timer_fired ();
+            assert_false (controller.is_hover_timer_pending);
+            assert_true (controller.is_chrome_revealed);
+
+            // 4. Mouse leaves after reveal -> bar hidden
+            controller.on_mouse_leave ();
             assert_false (controller.is_chrome_revealed);
 
             controller.dispose ();

@@ -51,7 +51,7 @@ Welcome to Jots! Jots is a lightweight, distraction-free sticky notes applicatio
 | **`Ctrl + W`** | **Delete Note** | Deletes and closes the currently focused note window. |
 | **`Ctrl + R`** | **Restore Note** | Undoes the last deletion and reopens the deleted note. |
 | **`Shift + F12`** | **Toggle List** | Toggles list item prefix on the current line or selection. |
-| **`Ctrl + V`** | **Smart Paste** | Context-aware paste: normalizes loose Markdown bullets/tasks outside code blocks; pastes verbatim inside code blocks. |
+| **`Ctrl + V`** | **Smart Paste** | Context-aware paste: converts rich-text/HTML and normalizes loose Markdown bullets/tasks outside code blocks; pastes verbatim inside code blocks. |
 | **`Ctrl + Shift + V`** | **Paste Without Formatting** | Pastes exact literal clipboard text without any Markdown normalization or transformation. |
 | **`Ctrl + M`** | **Toggle Monospace** | Switches between proportional and fixed-width monospace font. |
 | **`Ctrl + T`** | **Toggle Action Bar** | Hides or reveals the bottom formatting and color toolbar. |

@@ -224,5 +224,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git fetch origin main:main
-          git merge -X theirs --no-edit main
+          git merge -X theirs -m "chore(release): sync main back into develop [skip ci]" main
           git push origin develop

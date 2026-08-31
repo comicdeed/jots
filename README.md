@@ -35,7 +35,7 @@ Jots is currently Linux-first. AppImage and Flatpak are the supported distributi
 **Recommended (Primary Distribution):**
 
 <a href="https://github.com/comicdeed/jots/releases/latest">
-  <img src="data/badges/download-appimage.svg" alt="Download AppImage" width="280" />
+  <img src="data/badges/download-appimage.svg" alt="Download AppImage" width="180" />
 </a>
 
 * **Linux AppImage (Recommended, Click-and-Run)**: Download `Jots-<version>-<arch>.AppImage` (currently `Jots-<version>-x86_64.AppImage` or `Jots-<version>-aarch64.AppImage`) from the [latest release](https://github.com/comicdeed/jots/releases/latest), make it executable (`chmod +x Jots-*.AppImage`), and run directly on any Linux distribution without installation.

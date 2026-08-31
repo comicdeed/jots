@@ -86,19 +86,19 @@
     </screenshots>
 
     <releases>
-        <release version="1.3.0-beta.8" type="development" date="2026-08-31">
+        <release version="1.3.0" date="2026-08-31">
             <description>
                 <p>Jots 1.3.0 introduces automated Git backup &amp; remote sync, resilient smart clipboard paste, interactive checklists, and refined desktop note ergonomics.</p>
-                <p>Highlights (✨ indicates new in this beta):</p>
+                <p>Highlights:</p>
                 <ul>
-                    <li>✨ Action bar auto-hides automatically on unfocused or idle notes for a clean, minimal canvas, revealing smoothly on hover (toggle with Ctrl+T).</li>
-                    <li>✨ Checklists are interactive: click directly on checkboxes to complete tasks, or toggle items quickly with Ctrl+D or Ctrl+Enter.</li>
-                    <li>✨ Read-only notes are fully protected against accidental typing, paste, and list changes.</li>
-                    <li>✨ Note titles feel cleaner to edit with pill-shaped focus highlights, crisp dark mode text, and click-to-dismiss header areas.</li>
-                    <li>✨ Note canvas edges remain clear and uncluttered when scrolling, paired with subtle floating scrollbars.</li>
-                    <li>✨ Window corners are uniformly rounded across all pastel themes.</li>
-                    <li>✨ Scroll-wheel zooming stays synchronized without getting stuck.</li>
-                    <li>✨ Ephemeral tutorial Cheat Sheets stay local and never pollute remote Git backups.</li>
+                    <li>Action bar auto-hides automatically on unfocused or idle notes for a clean, minimal canvas, revealing smoothly on hover (toggle with Ctrl+T).</li>
+                    <li>Checklists are interactive: click directly on checkboxes to complete tasks, or toggle items quickly with Ctrl+D or Ctrl+Enter.</li>
+                    <li>Read-only notes are fully protected against accidental typing, paste, and list changes.</li>
+                    <li>Note titles feel cleaner to edit with pill-shaped focus highlights, crisp dark mode text, and click-to-dismiss header areas.</li>
+                    <li>Note canvas edges remain clear and uncluttered when scrolling, paired with subtle floating scrollbars.</li>
+                    <li>Window corners are uniformly rounded across all pastel themes.</li>
+                    <li>Scroll-wheel zooming stays synchronized without getting stuck.</li>
+                    <li>Ephemeral tutorial Cheat Sheets stay local and never pollute remote Git backups.</li>
                     <li>Smart Paste automatically converts rich text and HTML from browsers and documents into clean Markdown.</li>
                     <li>Loose Markdown normalization automatically aligns messy indentation, nested lists, and Unicode checkbox glyphs.</li>
                     <li>Code blocks protect snippets so pasted code remains completely untouched.</li>
@@ -110,119 +110,12 @@
                 </ul>
                 <p>Technical Notes:</p>
                 <ul>
-                    <li>✨ Guarded programmatic TextBuffer mutations against read-only lock bypass (Rule VCS-34).</li>
-                    <li>✨ Switched to stateless EventController modifier state querying to eliminate stuck key release states (Rule VCS-05).</li>
+                    <li>Guarded programmatic TextBuffer mutations against read-only lock bypass (Rule VCS-34).</li>
+                    <li>Switched to stateless EventController modifier state querying to eliminate stuck key release states (Rule VCS-05).</li>
                     <li>Production Flatpak and AppImage packages are leaner with test suites excluded from stable builds.</li>
                     <li>Production binaries include full debug symbol tables for actionable crash backtraces.</li>
                     <li>Pure, zero-dependency tokenized HtmlToMarkdown parser and stateless MarkdownNormalizer engines.</li>
                     <li>Non-blocking asynchronous clipboard stream reading prevents main UI thread stalls.</li>
-                </ul>
-            </description>
-        </release>
-        <release version="1.3.0-beta.7" type="development" date="2026-08-31">
-            <description>
-                <p>Jots 1.3.0 introduces automated Git backup &amp; remote sync, resilient smart clipboard paste, leaner production packages, and actionable crash diagnostics.</p>
-                <p>Highlights:</p>
-                <ul>
-                    <li>Production Flatpak and AppImage packages are leaner with test suites excluded from stable builds.</li>
-                    <li>Production binaries include full debug symbol tables for actionable crash logs and backtraces.</li>
-                    <li>Smart Paste automatically converts rich text and HTML from browsers and documents into clean Markdown.</li>
-                    <li>Loose Markdown normalization automatically aligns messy indentation, nested lists, and Unicode checkbox glyphs.</li>
-                    <li>Context-aware code protection ensures code snippets pasted inside backticks remain 100% untouched.</li>
-                    <li>Transient feedback banner notifies you when pasted text was formatted, with single-stroke Ctrl+Z undo and Ctrl+Shift+V raw paste bypass.</li>
-                    <li>Updated built-in Cheat Sheet (F1) with all modern keyboard shortcuts.</li>
-                    <li>Automated Git backup and sync keeps notes mirrored to remote repositories with background debouncing.</li>
-                    <li>Redesigned Preferences dialog with dedicated General, Theme &amp; Fonts, and Backup &amp; Sync tabs.</li>
-                    <li>Universal desktop autostart with packaging-aware execution detection across AppImage and Flatpak.</li>
-                    <li>Window destruction and note closing are hardened against lifecycle crashes.</li>
-                    <li>Desktop dark mode and light mode transitions sync reliably across all open sticky notes.</li>
-                </ul>
-                <p>Technical Notes:</p>
-                <ul>
-                    <li>Switched release packaging build type to debugoptimized (-O2 -g) across Flatpak and AppImage.</li>
-                    <li>Gated test executable installation to development builds (-Ddevelopment=true).</li>
-                    <li>Pure, zero-dependency tokenized HtmlToMarkdown parser and stateless MarkdownNormalizer engines.</li>
-                    <li>Non-blocking asynchronous clipboard stream reading prevents main UI thread stalls.</li>
-                    <li>Direct GitHub Release asset uploads and automated multi-arch build pipelines.</li>
-                </ul>
-            </description>
-        </release>
-        <release version="1.3.0-beta.6" type="development" date="2026-08-31">
-            <description>
-                <p>Jots 1.3.0 introduces automated Git backup &amp; remote sync, resilient smart clipboard paste, redesigned preferences, and window lifecycle stability.</p>
-                <p>Highlights (✨ indicates new in this beta):</p>
-                <ul>
-                    <li>✨ Smart Paste automatically converts rich text and HTML from browsers and documents into clean Markdown.</li>
-                    <li>✨ Loose Markdown normalization automatically aligns messy indentation, nested lists, and Unicode checkbox glyphs.</li>
-                    <li>✨ Context-aware code protection ensures code snippets pasted inside backticks remain 100% untouched.</li>
-                    <li>✨ Transient feedback banner notifies you when pasted text was formatted, with single-stroke Ctrl+Z undo and Ctrl+Shift+V raw paste bypass.</li>
-                    <li>✨ Updated built-in Cheat Sheet (F1) with all modern keyboard shortcuts.</li>
-                    <li>Automated Git backup and sync keeps notes mirrored to remote repositories with background debouncing.</li>
-                    <li>Redesigned Preferences dialog with dedicated General, Theme &amp; Fonts, and Backup &amp; Sync tabs.</li>
-                    <li>Universal desktop autostart with packaging-aware execution detection across AppImage and Flatpak.</li>
-                    <li>Window destruction and note closing are hardened against lifecycle crashes.</li>
-                    <li>Desktop dark mode and light mode transitions sync reliably across all open sticky notes.</li>
-                </ul>
-                <p>Technical Notes:</p>
-                <ul>
-                    <li>✨ Pure, zero-dependency tokenized HtmlToMarkdown parser and stateless MarkdownNormalizer engines.</li>
-                    <li>✨ Non-blocking asynchronous clipboard stream reading prevents main UI thread stalls.</li>
-                    <li>Direct GitHub Release asset uploads and automated multi-arch build pipelines.</li>
-                </ul>
-            </description>
-        </release>
-        <release version="1.3.0-beta.5" type="development" date="2026-08-31">
-            <description>
-                <p>This beta introduces automated Git backup and remote sync alongside major window lifecycle stability improvements.</p>
-                <p>Changes in this beta:</p>
-                <ul>
-                    <li>Automated Git backup and sync keeps notes safely mirrored to remote repositories with background debouncing.</li>
-                    <li>Added a dedicated Backup &amp; Sync tab in Preferences with connection testing and manual sync triggers.</li>
-                    <li>Window destruction and note closing are significantly more stable without crash hazards.</li>
-                    <li>Desktop dark mode and light mode transitions now sync reliably across all open sticky notes.</li>
-                    <li>The Preferences dialog now closes smoothly with Escape or Ctrl+W.</li>
-                    <li>Markdown front matter parsing is more robust against unexpected or non-numeric metadata values.</li>
-                </ul>
-                <p>Technical Notes:</p>
-                <ul>
-                    <li>Release automation directly uploads distribution packages to GitHub Releases, bypassing intermediate storage quotas.</li>
-                    <li>Popovers attached to header bars are cleanly unparented during container disposal, preventing GTK finalization warnings.</li>
-                    <li>Streamlined Vala signal lifecycle management to rely on automatic GObject weak binding semantics.</li>
-                    <li>Added automated test coverage for non-numeric front matter fallback and strengthened integer boundary parsing.</li>
-                </ul>
-            </description>
-        </release>
-        <release version="1.3.0-beta.2" type="development" date="2026-08-30">
-            <description>
-                <p>This beta strengthens backup and sync behavior for first-time remote setup and branch-name edge cases.</p>
-                <p>Changes in this beta:</p>
-                <ul>
-                    <li>Backup setup now handles empty local history more safely when the remote already contains notes history.</li>
-                    <li>Remote content detection now recognizes common branch conventions such as main and master.</li>
-                    <li>Backup and Sync preference ordering is clearer, with setup inputs and actions shown before status details.</li>
-                    <li>Manual sync, retry, and status transitions are more consistent under active backup operations.</li>
-                </ul>
-                <p>Technical Notes:</p>
-                <ul>
-                    <li>Resolved Vala lint violations in branch divergence parsing and note identifier tests.</li>
-                    <li>Expanded Git sync coverage for branch-name sanitization and remote head detection behavior.</li>
-                </ul>
-            </description>
-        </release>
-        <release version="1.3.0-beta.1" type="development" date="2026-08-30">
-            <description>
-                <p>This beta makes backup and sync setup more reliable and easier to understand in day-to-day use.</p>
-                <p>Changes in this beta:</p>
-                <ul>
-                    <li>Backup and Sync now handles first-time remote setup more safely, including empty repositories and remotes that already have content.</li>
-                    <li>Sync actions in Preferences are clearer, with controls shown first and status details shown after configuration inputs.</li>
-                    <li>Remote status reporting is more consistent during retries, queueing, and active synchronization.</li>
-                    <li>Connection checks and manual sync triggers are wired directly in Preferences for faster setup validation.</li>
-                </ul>
-                <p>Technical Notes:</p>
-                <ul>
-                    <li>Hardened GitSyncService branch resolution and empty-history handling for branch-name conventions like main and master.</li>
-                    <li>Improved signal lifecycle cleanup and async state arbitration in backup orchestration paths.</li>
                 </ul>
             </description>
         </release>

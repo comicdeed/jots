@@ -77,18 +77,25 @@ Execute the project release notes skill (`.agents/skills/release-notes/SKILL.md`
    <releases>
        <release version="1.3.0-beta.6" type="development" date="2026-08-31">
            <description>
-               <p>This beta introduces resilient Smart Paste and rich-text conversion as part of the 1.3.0 release series (which brings automated Git backup &amp; sync and redesigned preferences).</p>
-               <p>In this beta release:</p>
+               <p>Jots 1.3.0 introduces automated Git backup &amp; remote sync, resilient smart clipboard paste, redesigned preferences, and window lifecycle stability.</p>
+               <p>Highlights (✨ indicates new in this beta):</p>
                <ul>
-                   <li>Smart Paste automatically converts rich-text and HTML from web pages into clean Markdown.</li>
-                   <li>Loose Markdown normalization cleans up messy pasted indentation, non-standard bullets, and checkbox glyphs.</li>
-                   <li>Context-aware editor protects code blocks with single-stroke Ctrl+Z undo and Ctrl+Shift+V raw paste bypass.</li>
-                   <li>Updated built-in Cheat Sheet template with all modern keyboard shortcuts.</li>
+                   <li>✨ Smart Paste automatically converts rich text and HTML from browsers and documents into clean Markdown.</li>
+                   <li>✨ Loose Markdown normalization automatically aligns messy indentation, nested lists, and Unicode checkbox glyphs.</li>
+                   <li>✨ Context-aware code protection ensures code snippets pasted inside backticks remain 100% untouched.</li>
+                   <li>✨ Transient feedback banner notifies you when pasted text was formatted, with single-stroke Ctrl+Z undo and Ctrl+Shift+V raw paste bypass.</li>
+                   <li>✨ Updated built-in Cheat Sheet (F1) with all modern keyboard shortcuts.</li>
+                   <li>Automated Git backup and sync keeps notes mirrored to remote repositories with background debouncing.</li>
+                   <li>Redesigned Preferences dialog with dedicated General, Theme &amp; Fonts, and Backup &amp; Sync tabs.</li>
+                   <li>Universal desktop autostart with packaging-aware execution detection across AppImage and Flatpak.</li>
+                   <li>Window destruction and note closing are hardened against lifecycle crashes.</li>
+                   <li>Desktop dark mode and light mode transitions sync reliably across all open sticky notes.</li>
                </ul>
                <p>Technical Notes:</p>
                <ul>
-                   <li>Zero-dependency tokenized HtmlToMarkdown converter and pure stateless MarkdownNormalizer engines.</li>
-                   <li>Non-blocking asynchronous clipboard stream reading prevents UI hangs.</li>
+                   <li>✨ Pure, zero-dependency tokenized HtmlToMarkdown parser and stateless MarkdownNormalizer engines.</li>
+                   <li>✨ Non-blocking asynchronous clipboard stream reading prevents main UI thread stalls.</li>
+                   <li>Direct GitHub Release asset uploads and automated multi-arch build pipelines.</li>
                </ul>
            </description>
        </release>

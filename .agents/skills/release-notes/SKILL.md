@@ -25,17 +25,17 @@ This skill defines the standard procedure for analyzing git commits, filtering d
 * Mention keyboard shortcuts only when they improve discoverability.
 * Only include technical depth when it materially affects trust, reliability, privacy, compatibility, or integrations.
 
-### Required Section Order
+### Required Section Order & Living Draft Model
+
+Jots uses a **Living Draft** release notes model: beta release notes serve as the evolving draft of the final target milestone release. Both Beta and Stable notes share the identical structural framework and narrative flow.
 
 #### For Beta Releases (`X.Y.Z-beta.N`)
-1. **Overview**: High-level summary of the milestone goals.
-2. **Major updates in this release cycle (since last major release)**: Cumulative milestones and key capabilities introduced throughout this release series.
-3. **In this beta release**: Focused list of specific incremental features, improvements, and fixes delivered in this current beta.
-4. **Technical Notes**: Low-level architectural, I/O safety, packaging, or performance changes.
+* **Milestone Summary**: 1 sentence summarizing the milestone's primary focus across the entire cycle since the last major release.
+* **Highlights (with `✨` for new additions)**: The full milestone feature list where new additions delivered in the current beta build are prefixed with `✨` (e.g. `<li>✨ Smart Paste converts...</li>`).
+* **Technical Notes (with `✨` for new additions)**: Architecture, safety, or build changes (items new to this build prefixed with `✨`).
 
 #### For Stable Releases (`X.Y.Z`)
-1. **Changes in this release**: Comprehensive, user-focused summary of all capabilities and polish across the completed cycle.
-2. **Technical Notes**: Key architectural and runtime integration notes.
+* **"Oven Ready" Finalization**: The accumulated beta draft is finalized by removing the `✨` indicator icons and transitioning to the formal milestone release summary.
 
 ---
 
@@ -45,27 +45,20 @@ This skill operates as **Step 3** of the official Jots release process. Always c
 * **Release Workflow Guide**: [`docs/development/release-workflow.md`](../../../docs/development/release-workflow.md)
 * **Agent Development Guidelines**: [`AGENTS.md`](../../../AGENTS.md)
 
-### Release Branch Execution Flow
-1. **Cut Branch**: `git checkout -b release/X.Y.Z[-beta.N] develop`
-2. **Bump Version**: Update `version: 'X.Y.Z[-beta.N]'` in `meson.build`.
-3. **Generate Notes (This Skill)**: Add curated `<release>` entry to `data/jots.metainfo.xml.in.in`.
-4. **Sync Docs**: Update [`docs/user-guide.md`](../../../docs/user-guide.md) if user-facing shortcuts or UI features changed.
-5. **Commit & PR**: Commit `chore(release): prepare X.Y.Z[-beta.N] release` and open PR to `main`.
-6. **Automated Release**: Merging into `main` automatically triggers GitHub Actions to create the tag, build multi-arch AppImages/Flatpaks, publish the GitHub Release, and back-merge `main` into `develop`.
-
 ---
 
 ## 🔍 Diff Scope Rules
 
 ### 1. For Beta Releases (`X.Y.Z-beta.N`)
-* **Range**: `git log <last-tag>..HEAD` (with `git log <last-stable-tag>..HEAD` for cycle context)
+* **Cumulative Milestone Range**: `git log <last-stable-tag>..HEAD` *(e.g. `git log 1.2.0..HEAD`)* $\rightarrow$ Inspects full cycle to maintain the cumulative draft.
+* **Incremental Delta Range**: `git log <last-tag>..HEAD` *(e.g. `git log 1.3.0-beta.5..HEAD`)* $\rightarrow$ Identifies new items to tag with `✨`.
 * **Type**: `type="development"` in AppStream XML.
-* **Objective**: Summarize the milestone context in a sentence, then list the specific changes delivered in this beta.
+* **Objective**: Maintains a living draft of the full milestone notes, with new items in this beta tagged with `✨`.
 
 ### 2. For Stable Releases (`X.Y.Z`)
 * **Range**: `git log <last-stable-tag>..HEAD` *(e.g. `git log 1.2.0..HEAD`)*
 * **Type**: Standard `<release version="X.Y.Z" date="YYYY-MM-DD">`.
-* **Objective**: Compiles the cumulative milestone changelog across all intermediate betas.
+* **Objective**: Finalizes the cumulative milestone changelog by stripping intermediate `✨` markers.
 
 ---
 

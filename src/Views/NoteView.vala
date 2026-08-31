@@ -85,6 +85,17 @@
         editablelabel = new Jots.EditableLabel ();
         headerbar.set_title_widget (editablelabel);
 
+        var header_click = new Gtk.GestureClick ();
+        header_click.pressed.connect ((n_press, x, y) => {
+            if (editablelabel.editing) {
+                var picked = headerbar.pick (x, y, Gtk.PickFlags.DEFAULT);
+                if (picked == null || (picked != editablelabel && !picked.is_ancestor (editablelabel))) {
+                    editablelabel.editing = false;
+                }
+            }
+        });
+        headerbar.add_controller (header_click);
+
         textview = new Jots.TextView ();
         scrolled = new Gtk.ScrolledWindow () {
             child = textview,

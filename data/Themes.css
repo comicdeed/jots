@@ -235,11 +235,16 @@ window.themed textview.view,
 window.themed textview text,
 window.themed textview > text,
 window.themed editablelabel,
-window.themed editablelabel.editing {
+window.themed editablelabel.editing,
+window.themed editablelabel text,
+window.themed editablelabel entry,
+window.themed editablelabel stack,
+window.themed editablelabel label {
     background: transparent;
     background-color: transparent;
     border-bottom-color: transparent;
     box-shadow: none;
+    outline: none;
     color: inherit;
 }
 
@@ -251,15 +256,20 @@ window.themed entry {
 window.themed editablelabel {
     color: inherit;
     border: 1px solid transparent;
+    border-radius: 6px;
+    padding: 2px 8px;
+    transition: background-color 150ms ease-in-out;
 }
 
 window.themed editablelabel:hover,
 window.themed editablelabel:focus {
-    border-color: rgba(0, 0, 0, 0.25);
+    background-color: rgba(0, 0, 0, 0.08);
+    border-color: transparent;
 }
 
 window.themed editablelabel.editing {
-    border-color: rgba(0, 0, 0, 0.4);
+    background-color: rgba(0, 0, 0, 0.12);
+    border-color: transparent;
 }
 
 window.themed:backdrop editablelabel {
@@ -369,12 +379,18 @@ window.themed.dark textview.view,
 window.themed.dark textview text,
 window.themed.dark textview > text,
 window.themed.dark editablelabel,
-window.themed.dark editablelabel.editing {
+window.themed.dark editablelabel.editing,
+window.themed.dark editablelabel text,
+window.themed.dark editablelabel entry,
+window.themed.dark editablelabel stack,
+window.themed.dark editablelabel label {
     background: transparent;
     background-color: transparent;
     border-bottom-color: transparent;
     box-shadow: none;
+    outline: none;
     color: #f0f0f4;
+    text-shadow: none;
 }
 
 window.themed.dark undershoot.top {
@@ -397,16 +413,22 @@ window.themed.dark entry {
 
 window.themed.dark editablelabel {
     color: #f0f0f4;
+    text-shadow: none;
     border: 1px solid transparent;
+    border-radius: 6px;
+    padding: 2px 8px;
+    transition: background-color 150ms ease-in-out;
 }
 
 window.themed.dark editablelabel:hover,
 window.themed.dark editablelabel:focus {
-    border-color: rgba(255, 255, 255, 0.25);
+    background-color: rgba(255, 255, 255, 0.10);
+    border-color: transparent;
 }
 
 window.themed.dark editablelabel.editing {
-    border-color: rgba(255, 255, 255, 0.4);
+    background-color: rgba(255, 255, 255, 0.16);
+    border-color: transparent;
 }
 
 window.themed.dark:backdrop editablelabel {

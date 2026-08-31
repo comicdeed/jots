@@ -87,7 +87,6 @@ height: 320
 * **[Product Roadmap](docs/roadmap.md)**: Graded backlog and development initiatives.
 * **[MCP Integration Guide](docs/development/mcp-server.md)**: Setup instructions for AI assistant clients.
 * **[Contributing and PR Guidelines](docs/development/pull-request-guidelines.md)**: Contribution checklist and pull request standards.
-* **[Credits and Acknowledgements](docs/thanks.md)**: Upstream lineage, original authors, and contributors.
 
 ---
 

@@ -197,7 +197,8 @@ height: 320
 ---
 # Architecture Overview
 - [x] Switch to Markdown storage
-- [ ] Implement full-text search popover
+- [x] Native MCP AI assistant integration
+- [ ] Central Note Organizer library
 ```
 
 ### Storage Locations

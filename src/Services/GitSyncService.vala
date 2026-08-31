@@ -54,7 +54,7 @@ namespace Jots {
         private const int64 REMOTE_AUTO_RETRY_COOLDOWN_MAX_USEC = 15 * 60 * 1000 * 1000;
         private const uint GIT_COMMAND_TIMEOUT_SECONDS = 30;
         private const int MAX_STATUS_DETAIL_CHARS = 120;
-        private const string GITIGNORE_CANONICAL = "*\n!.gitignore\n!*/\n!*.md\n";
+        public const string GITIGNORE_CANONICAL = "*\n!.gitignore\n!*/\n!*.md\njots-cheatsheet.md\n";
 
         private Storage storage;
         private GLib.Settings settings;
@@ -286,8 +286,12 @@ namespace Jots {
             }
         }
 
+        public static bool should_sync_note (string note_id) {
+            return note_id != CHEATSHEET_NOTE_ID;
+        }
+
         private void on_note_saved (NoteData note, NoteData? previous_note, string note_path) {
-            if (!enabled) {
+            if (!enabled || !should_sync_note (note.id)) {
                 return;
             }
 
@@ -297,7 +301,7 @@ namespace Jots {
         }
 
         private void on_note_deleted (string note_id, string note_path) {
-            if (!enabled) {
+            if (!enabled || !should_sync_note (note_id)) {
                 return;
             }
 

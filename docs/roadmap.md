@@ -31,6 +31,7 @@ A curated backlog of architectural enhancements, capabilities, and feature candi
     - [6.4 Local Full-Text Search \& Interactive Popover](#64-local-full-text-search--interactive-popover)
     - [6.5 Daily Routine Adoption \& Presence](#65-daily-routine-adoption--presence)
     - [6.6 Automated Git Backup and Remote Synchronization](#66-automated-git-backup-and-remote-synchronization)
+    - [6.7 Focus-Aware Minimalist Desktop Chrome](#67-focus-aware-minimalist-desktop-chrome)
 
 ---
 
@@ -42,7 +43,6 @@ The score matrix is curated to include only non-completed roadmap candidates (ac
 | :--- | :---: | :---: | :---: | :---: | :---: |
 | **Note Organizer & Management Interface** | 4.4 | 4.6 | 4.2 | **4.42** | 🟢 Tier 1 (Active Priority) |
 | **List & Checklist Ergonomics & Typography** | 4.2 | 4.5 | 4.0 | **4.26** | 🟢 Tier 1 (Active Priority) |
-| **Focus-Aware Minimalist Desktop Chrome** | 3.6 | 4.2 | 4.2 | **3.96** | 🟢 Tier 1 (Active Priority) |
 | **Free-Form In-Text Tagging (`#tag`)** | 4.0 | 4.0 | 3.8 | **3.95** | 🟢 Tier 1 (Active Priority) |
 | **Intelligent Deletion Safety & Trash Lifecycle** | 4.0 | 4.0 | 3.8 | **3.95** | 🟢 Tier 1 (Active Priority) |
 | **Retire List Item Prefix Preference** | 3.4 | 4.5 | 4.6 | **4.09** | 🟡 Tier 2 (Planned Backlog) |
@@ -108,14 +108,7 @@ Targeted, self-contained fixes and ergonomics refinements to address active fric
   * **Git Sync Unsaved Check**: When Git Backup is active, check local Git repository status and warn explicitly if deleting notes with uncommitted changes.
   * **Soft-Delete Archive (`.trash/`)**: Move deleted `.md` files to a `.trash/` subfolder rather than instant permanent deletion, enabling easy recovery from the Note Organizer.
 
-### 4.2 Focus-Aware Minimalist Desktop Chrome
-* **Score**: `3.96` (Tier 1 / Tier 2)
-* **Goal**: Present a pure, minimal post-it note aesthetic on the desktop by fading out header controls and action bars when notes are unfocused.
-* **Implementation Strategy**:
-  * Dim or hide header controls, close buttons, and action buttons when a sticky note window is unfocused and unhovered.
-  * Smoothly restore full controls on window focus (`is-active`) or cursor entry (`Gtk.EventControllerMotion`).
-
-### 4.3 Retire List Item Prefix Preference
+### 4.2 Retire List Item Prefix Preference
 * **Score**: `4.09` (Tier 2: Planned Backlog)
 * **Goal**: Reduce preference-surface complexity by removing the list item prefix selector and standardizing newly inserted Markdown unordered list markers.
 * **Background**: Markdown unordered list markers (`-`, `*`, `+`) are semantically equivalent for parsing and rendering. With Markdown-native storage now canonical, prefix selection is mostly a style choice and no longer a core functional setting.
@@ -125,14 +118,14 @@ Targeted, self-contained fixes and ergonomics refinements to address active fric
   * **Compatibility-first parsing**: Keep list detection and rendering behavior marker-agnostic so historical notes remain unchanged and require no migration.
   * **Config cleanup**: Remove the `list-prefix` GSettings key and related constants only after behavior and test updates are complete.
 
-### 4.4 Bidirectional Note Linking (`[[Note Title]]`)
+### 4.3 Bidirectional Note Linking (`[[Note Title]]`)
 * **Score**: `3.63` (Tier 2: Planned Backlog)
 * **Goal**: Inter-note navigation using wiki-style `[[Note Title]]` links that open or focus target sticky notes on click.
 * **Implementation Strategy**:
   * Recognize `[[...]]` patterns in `MarkdownBuffer` and render as clickable note links.
   * Resolve target note by UUID or Title in `NoteManager`.
 
-### 4.5 AppImage Provenance and Signature Verification
+### 4.4 AppImage Provenance and Signature Verification
 * **Score**: `3.92` (Tier 2: Planned Backlog)
 * **Goal**: Improve release trust and provenance by cryptographically signing shipped AppImages and publishing verification material.
 * **Implementation Strategy**:
@@ -140,7 +133,7 @@ Targeted, self-contained fixes and ergonomics refinements to address active fric
   * Enable AppImage signing in `packaging/appimage/build-appimage.sh` for both `x86_64` and `aarch64` outputs.
   * Attach signature verification instructions (`VERIFY.md`) to GitHub releases.
 
-### 4.6 AppImage Update Information Embedding
+### 4.5 AppImage Update Information Embedding
 * **Score**: `3.72` (Tier 2: Planned Backlog)
 * **Goal**: Embed AppImage update information into released binaries for efficient delta auto-updates via `AppImageUpdate` / `zsyncmake`.
 * **Implementation Strategy**:
@@ -193,3 +186,8 @@ Targeted, self-contained fixes and ergonomics refinements to address active fric
 * **Status**: ✅ **Completed** (v1.3.0)
 * **Summary**: Integrated non-blocking background Git backup and remote synchronization service (`Jots.GitSyncService`). Features include debounced auto-commits on note edit/deletion, configurable periodic push intervals, on-demand "Sync now" trigger, remote reachability connectivity tests, automatic allowlist-based `.gitignore` policy enforcement, and asynchronous `GLib.Subprocess` execution without UI thread blocking.
 * **Documentation**: See [`docs/architecture.md`](architecture.md#35-backup-remote-state-matrix-gitsyncservice) and [`docs/user-guide.md`](user-guide.md#5-preferences-and-customization).
+
+### 6.7 Focus-Aware Minimalist Desktop Chrome
+* **Status**: ✅ **Completed** (v1.3.0)
+* **Summary**: Added dynamic focus-aware auto-hiding for sticky note toolbars via `Jots.ChromeController`. Unfocused notes smoothly hide their bottom action bar to present a pure post-it note aesthetic while keeping note titles visible. Hovering over unfocused notes triggers a 250ms debounced reveal to prevent mouse-sweep flicker, and active popovers lock the toolbar in view.
+* **Documentation**: See [`docs/use-cases/50-theming-appearance.md`](use-cases/50-theming-appearance.md#5030-focus-aware-minimalist-desktop-chrome) and [`docs/user-guide.md`](user-guide.md#6-preferences-privacy--note-protection).

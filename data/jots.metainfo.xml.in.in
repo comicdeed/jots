@@ -86,13 +86,43 @@
     </screenshots>
 
     <releases>
+        <release version="1.3.0-beta.8" type="development" date="2026-08-31">
+            <description>
+                <p>Jots 1.3.0 introduces interactive checklists, read-only note protections, refined title editing, and cleaner canvas aesthetics.</p>
+                <p>Highlights (✨ indicates new in this beta):</p>
+                <ul>
+                    <li>✨ Interactive checklist toggling: click directly on checkboxes or press Ctrl+D / Ctrl+Enter to flip task states with instant strikethrough styling.</li>
+                    <li>✨ Read-only / lock mode protection: locked notes guard against list continuation, paste, and emoji mutations.</li>
+                    <li>✨ Refined title editing: subtle pill-shaped active state, crisp dark mode typography, and empty headerbar click dismissal.</li>
+                    <li>✨ Scrolled window clean canvas: removed heavy gradient overlays for clean text edges, paired with minimal floating scrollbars.</li>
+                    <li>✨ Uniform 12px window corner rounding across light and dark themes.</li>
+                    <li>✨ Scroll zoom modifier synchronization: stateless event inspection prevents zoom from getting stuck.</li>
+                    <li>✨ Git backup excludes ephemeral Cheat Sheet tutorial notes from remote commits and repositories.</li>
+                    <li>Smart Paste automatically converts rich text and HTML from browsers and documents into clean Markdown.</li>
+                    <li>Loose Markdown normalization automatically aligns messy indentation, nested lists, and Unicode checkbox glyphs.</li>
+                    <li>Context-aware code protection ensures code snippets pasted inside backticks remain 100% untouched.</li>
+                    <li>Transient feedback banner notifies you when pasted text was formatted, with single-stroke Ctrl+Z undo and Ctrl+Shift+V raw paste bypass.</li>
+                    <li>Updated built-in Cheat Sheet (F1) with modern keyboard shortcuts.</li>
+                    <li>Automated Git backup and sync keeps notes mirrored to remote repositories with background debouncing.</li>
+                    <li>Redesigned Preferences dialog with dedicated General, Theme &amp; Fonts, and Backup &amp; Sync tabs.</li>
+                </ul>
+                <p>Technical Notes:</p>
+                <ul>
+                    <li>✨ Enforced TextBuffer programmatic mutation guards when TextView.editable is false (Rule VCS-34).</li>
+                    <li>✨ Enforced stateless EventController modifier state querying (Rule VCS-05).</li>
+                    <li>Production Flatpak and AppImage packages are leaner with test suites excluded from stable builds.</li>
+                    <li>Production binaries include full debug symbol tables for actionable crash logs and backtraces.</li>
+                    <li>Pure, zero-dependency tokenized HtmlToMarkdown parser and stateless MarkdownNormalizer engines.</li>
+                </ul>
+            </description>
+        </release>
         <release version="1.3.0-beta.7" type="development" date="2026-08-31">
             <description>
                 <p>Jots 1.3.0 introduces automated Git backup &amp; remote sync, resilient smart clipboard paste, leaner production packages, and actionable crash diagnostics.</p>
-                <p>Highlights (✨ indicates new in this beta):</p>
+                <p>Highlights:</p>
                 <ul>
-                    <li>✨ Production Flatpak and AppImage packages are leaner with test suites excluded from stable builds.</li>
-                    <li>✨ Production binaries include full debug symbol tables for actionable crash logs and backtraces.</li>
+                    <li>Production Flatpak and AppImage packages are leaner with test suites excluded from stable builds.</li>
+                    <li>Production binaries include full debug symbol tables for actionable crash logs and backtraces.</li>
                     <li>Smart Paste automatically converts rich text and HTML from browsers and documents into clean Markdown.</li>
                     <li>Loose Markdown normalization automatically aligns messy indentation, nested lists, and Unicode checkbox glyphs.</li>
                     <li>Context-aware code protection ensures code snippets pasted inside backticks remain 100% untouched.</li>
@@ -106,8 +136,8 @@
                 </ul>
                 <p>Technical Notes:</p>
                 <ul>
-                    <li>✨ Switched release packaging build type to debugoptimized (-O2 -g) across Flatpak and AppImage.</li>
-                    <li>✨ Gated test executable installation to development builds (-Ddevelopment=true).</li>
+                    <li>Switched release packaging build type to debugoptimized (-O2 -g) across Flatpak and AppImage.</li>
+                    <li>Gated test executable installation to development builds (-Ddevelopment=true).</li>
                     <li>Pure, zero-dependency tokenized HtmlToMarkdown parser and stateless MarkdownNormalizer engines.</li>
                     <li>Non-blocking asynchronous clipboard stream reading prevents main UI thread stalls.</li>
                     <li>Direct GitHub Release asset uploads and automated multi-arch build pipelines.</li>

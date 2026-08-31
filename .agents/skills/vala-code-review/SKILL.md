@@ -60,7 +60,7 @@ Use this skill when the task is code-review driven rather than implementation dr
 
 ### 1. Memory Management & Signal Lifecycles
 * [ ] **VCS-01 — No Lambda Cycles**: Signal connections use named instance methods, never lambdas that capture `this` or any instance field.
-* [ ] **VCS-02 — Destructor Disconnects**: Every `signal.connect()` has a matching `signal.disconnect()` in `~ClassName ()`. Also checks: GLib sources removed, popovers unparented, sub-controllers disposed.
+* [ ] **VCS-02 — Signal & Resource Lifecycle**: GObject instance method connections rely on Vala's automatic `g_signal_connect_object` cleanup. Never manually disconnect child widget or controller signals in `~Destructor ()`. Active GLib sources (`Timeout.add`, `Idle.add`) must be tracked and cancelled via `Source.remove()`.
 * [ ] **VCS-03 — weak vs unowned**: Back-references from child objects use `weak` (nullable, tracked). Short-lived borrows use `unowned` (non-owning, non-nullable).
 * [ ] **VCS-04 — No Raw Pointers**: No `void*`, `uint8*`, or raw pointer casts in application code. Isolate all C-interop in `[CCode]` binding files.
 
@@ -80,7 +80,7 @@ Use this skill when the task is code-review driven rather than implementation dr
 * [ ] **VCS-30 — GObject Property Syntax**: Properties use Vala `get; set;` syntax rather than ad-hoc getter/setter methods.
 * [ ] **VCS-31 — No Base-Class Property Shadowing**: Custom property names do not collide with `Gtk.Widget` / `Gtk.Box` / `Gtk.Window` inherited properties.
 * [ ] **VCS-32 — Service/UI Decoupling**: Services and controllers operate through `weak Gtk.Window` references and public properties — never by casting to concrete window subclasses.
-* [ ] **VCS-33 — construct Blocks & dispose()**: Object properties are set via `Object (...)` or `construct`. Classes holding unmanaged resources (GLib sources, file handles) override `dispose ()` and call `base.dispose ()`.
+* [ ] **VCS-33 — construct Blocks, Popover Unparenting & dispose()**: Object properties are set via `Object (...)` or `construct`. Popovers attached via `set_parent` are unparented via `.unparent()` in `dispose ()`. Classes holding unmanaged resources (GLib sources, file handles) override `dispose ()` and call `base.dispose ()`.
 
 ### 6. Error Handling & Robustness
 * [ ] **VCS-50 — throws with errordomain**: Fallible methods declare `throws` with a named `errordomain`. No silent `bool` return codes for failure conditions.

@@ -203,11 +203,12 @@ public class Jots.NoteManager : Object, Jots.ActiveNotesProvider {
         last_deleted = note.packaged ();
 
         var action_restore = application.lookup_action (Application.ACTION_RESTORE_LAST);
-        ((SimpleAction)action_restore).set_enabled (true);
+        var simple_restore = action_restore as SimpleAction;
+        if (simple_restore != null) {
+            simple_restore.set_enabled (true);
+        }
 
         open_notes.remove (note);
-        application.remove_window ((Gtk.Window)note);
-
         storage.delete_note (note.note_id);
         note.close ();
     }

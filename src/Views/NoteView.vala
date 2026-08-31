@@ -96,7 +96,10 @@
         emojichooser_popover = actionbar.emojichooser_popover;
 
         menu_button = actionbar.menu_button;
-        popover = (Jots.Popover)menu_button.popover;
+        var pop = menu_button.popover as Jots.Popover;
+        if (pop != null) {
+            popover = pop;
+        }
 
         append (headerbar);
         append (scrolled);

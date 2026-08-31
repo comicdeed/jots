@@ -89,7 +89,7 @@ Every finding must be assigned strictly to one of the following four tiers:
 
 ### 1. Memory Management & Signal Lifecycles
 * [ ] **VCS-01 — No Lambda Cycles**: Instance signal handlers use named methods, never lambdas capturing `this`.
-* [ ] **VCS-02 — Destructor Disconnects**: Every connected signal has a verified disconnect in `~ClassName ()` or `dispose ()`. GLib sources (`Timeout.add`, `Idle.add`) are tracked and removed (`Source.remove`).
+* [ ] **VCS-02 — Signal & Resource Lifecycle**: GObject instance method connections rely on Vala's automatic `g_signal_connect_object` cleanup. Never manually disconnect child widget or controller signals in `~Destructor ()`. Active GLib sources (`Timeout.add`, `Idle.add`) must be tracked and cancelled via `Source.remove()`.
 * [ ] **VCS-03 — weak vs unowned**: Parent/child back-references use `weak`. Ephemeral borrowed references use `unowned`.
 * [ ] **VCS-04 — No Raw Pointers**: No raw pointers (`void*`, `uint8*`) in high-level application code.
 
@@ -107,7 +107,7 @@ Every finding must be assigned strictly to one of the following four tiers:
 * [ ] **VCS-30 — GObject Property Syntax**: Standard `get; set;` property usage.
 * [ ] **VCS-31 — No Property Shadowing**: No collision with inherited GTK widget/window properties.
 * [ ] **VCS-32 — Subsystem Decoupling**: Services interact via `weak Gtk.Window` references, never by downcasting to concrete window subclasses.
-* [ ] **VCS-33 — construct & dispose Chains**: Proper constructor initialization and resource release in `dispose ()` calling `base.dispose ()`.
+* [ ] **VCS-33 — construct, Popover Unparenting & dispose Chains**: Proper constructor initialization. Floating popovers attached via `set_parent` are unparented via `.unparent()` in `dispose ()`. Unmanaged resources (GLib sources, file handles) override `dispose ()` and call `base.dispose ()`.
 
 ### 5. Threading, I/O & Performance
 * [ ] **Non-Blocking Main Loop**: No synchronous file I/O or CPU-heavy parsing in main-thread callbacks.

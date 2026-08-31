@@ -82,5 +82,19 @@ namespace Jots.Tests {
             assert_cmpstr (restored.title, GLib.CompareOperator.EQ, "Notes with \"quotes\" & Emoji 🚀✨");
             assert_cmpstr (restored.content, GLib.CompareOperator.EQ, "Multi-line unicode content: 🌟\n- Line with \"double\" and 'single' quotes.");
         });
+
+        /**
+         * UC-20.20.50: Non-numeric front matter values safely fall back to defaults
+         */
+        GLib.Test.add_func ("/MarkdownStorage/UC_20_20_50/NonNumericFrontMatterValues", () => {
+            var malformed = "---\nid: \"non-numeric-test\"\nzoom: invalid_zoom\nwidth: invalid_width\nheight: -50\ncolor: invalid_color\n---\nValid body text";
+            var note = new Jots.NoteData.from_markdown (malformed);
+
+            assert_cmpstr (note.id, GLib.CompareOperator.EQ, "non-numeric-test");
+            assert_cmpint (note.zoom, GLib.CompareOperator.EQ, Jots.DEFAULT_ZOOM);
+            assert_cmpint (note.width, GLib.CompareOperator.EQ, Jots.DEFAULT_WIDTH);
+            assert_cmpint (note.height, GLib.CompareOperator.EQ, Jots.DEFAULT_HEIGHT);
+            assert_cmpstr (note.content, GLib.CompareOperator.EQ, "Valid body text");
+        });
     }
 }

@@ -202,18 +202,28 @@ height: 320
 
 ### Storage Locations
 
-* **Flatpak Sandbox (Development Build)**:
-  ```text
-  ~/.var/app/io.github.comicdeed.jots.devel/data/io.github.comicdeed.jots.devel/notes/
-  ```
 * **Flatpak Sandbox (Release Build)**:
   ```text
   ~/.var/app/io.github.comicdeed.jots/data/io.github.comicdeed.jots/notes/
   ```
-* **Native / System Package**:
+* **Flatpak Sandbox (Development Build)**:
+  ```text
+  ~/.var/app/io.github.comicdeed.jots.devel/data/io.github.comicdeed.jots.devel/notes/
+  ```
+* **Native & AppImage Packages (Release Build)**:
   ```text
   ~/.local/share/io.github.comicdeed.jots/notes/
   ```
+* **Native & AppImage Packages (Development Build)**:
+  ```text
+  ~/.local/share/io.github.comicdeed.jots.devel/notes/
+  ```
+
+### Single-Instance & Cross-Format Execution
+
+* **Unified Identity Model**: Jots maintains a strict binary identity model: **Stable** (`io.github.comicdeed.jots`) and **Development** (`io.github.comicdeed.jots.devel`). Packaging formats (Native, AppImage, Flatpak) share these exact Application IDs rather than fragmenting into format-specific sub-identities.
+* **Mutual Exclusion**: Jots permits only one running instance per application profile at a time. If you launch an AppImage while a Native or Flatpak instance of the same profile is already running (or vice-versa), the secondary process automatically requests the active primary instance to present its windows to the front and then safely exits immediately. This prevents concurrent file access conflicts and note corruption.
+* **Concurrent Testing**: You can safely run a **Development** build (`io.github.comicdeed.jots.devel`) concurrently with your everyday **Stable** release without interference or data collision because their storage spaces, GSettings configurations, and D-Bus bus names are completely isolated.
 
 ### External Markdown Tools & Interoperability
 Because notes are saved directly as plain `.md` files with standard YAML front-matter headers:

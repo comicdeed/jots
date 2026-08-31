@@ -77,12 +77,16 @@ graph TD
 
 ## 3. Core Lifecycles & Sequence Flows
 
-### 3.1 Application Initialization
-1. `Application.vala` initializes `Gtk` settings, XDG Desktop Portal theme detection, and registers bundled GResource symbolic icon paths.
-2. `NoteManager` and `NoteService` instances are initialized.
-3. During D-Bus registration, `NoteService` binds to `/io/github/comicdeed/jots/Notes` and `/io/github/comicdeed/jots`.
-4. On activation (or first D-Bus method call via `ensure_initialized()`), `NoteManager.init()` loads stored state from `Storage.vala`.
-5. If no storage file exists, a default Blueberry note is spawned. Otherwise, saved notes are deserialized and presented.
+### 3.1 Application Initialization & Unified Identity Model
+1. **Unified Identity Model**: Jots enforces a strict two-profile identity system: **Stable** (`io.github.comicdeed.jots`) and **Devel** (`io.github.comicdeed.jots.devel`). Packaging formats (Native, AppImage, Flatpak) share these exact Application IDs.
+2. **Single-Instance Enforcement**: `Application.vala` inherits `Gtk.Application` without `NON_UNIQUE`. When launched, the process connects to the D-Bus session bus:
+   - If the name is unowned, it acquires primary instance ownership, initializes services, and registers the `io.github.comicdeed.jots.Notes` interface.
+   - If the name is already owned (e.g. an AppImage launched while a Native/Flatpak build is running), `GApplication` automatically sends a remote `Activate` D-Bus signal to present existing windows and terminates the secondary process cleanly with exit code 0.
+3. `Application.vala` initializes `Gtk` settings, XDG Desktop Portal theme detection, and registers bundled GResource symbolic icon paths.
+4. `NoteManager` and `NoteService` instances are initialized.
+5. During D-Bus registration, `NoteService` binds to `/io/github/comicdeed/jots/Notes` and `/io/github/comicdeed/jots`.
+6. On activation (or first D-Bus method call via `ensure_initialized()`), `NoteManager.init()` loads stored state from `Storage.vala`.
+7. If no storage file exists, a default Blueberry note is spawned. Otherwise, saved notes are deserialized and presented.
 
 ### 3.2 Real-Time Mutation via D-Bus / MCP
 ```mermaid

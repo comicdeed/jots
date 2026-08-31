@@ -18,6 +18,8 @@
     public Gtk.MenuButton menu_button;
 
     public Gtk.ScrolledWindow scrolled;
+    public Gtk.Overlay overlay;
+    public Jots.ToastBanner toast;
 
     public string title {
         owned get { return editablelabel.text;}
@@ -62,14 +64,13 @@
         actions.add_action_entries (ACTION_ENTRIES, this);
 
         // Translation view
-        unowned var app = ((Gtk.Application) GLib.Application.get_default ());
-        app.set_accels_for_action (ACTION_PREFIX + ACTION_FOCUS_TITLE, {"<Control>L"});
-        app.set_accels_for_action (ACTION_PREFIX + ACTION_SHOW_EMOJI, {"<Control>period"});
-        app.set_accels_for_action (ACTION_PREFIX + ACTION_SHOW_MENU, {"<Control>G", "<Control>O"});
-        app.set_accels_for_action (ACTION_PREFIX + ACTION_TOGGLE_MONO, {"<Control>m"});
-
-
-
+        var app = GLib.Application.get_default () as Gtk.Application;
+        if (app != null) {
+            app.set_accels_for_action (ACTION_PREFIX + ACTION_FOCUS_TITLE, {"<Control>L"});
+            app.set_accels_for_action (ACTION_PREFIX + ACTION_SHOW_EMOJI, {"<Control>period"});
+            app.set_accels_for_action (ACTION_PREFIX + ACTION_SHOW_MENU, {"<Control>G", "<Control>O"});
+            app.set_accels_for_action (ACTION_PREFIX + ACTION_TOGGLE_MONO, {"<Control>m"});
+        }
 
         orientation = VERTICAL;
         spacing = 0;
@@ -90,6 +91,15 @@
             hscrollbar_policy = Gtk.PolicyType.NEVER
         };
 
+        overlay = new Gtk.Overlay () {
+            child = scrolled,
+            vexpand = true,
+            hexpand = true
+        };
+
+        toast = new Jots.ToastBanner ();
+        overlay.add_overlay (toast);
+
         actionbar = new Jots.ActionBar ();
 
         emoji_button = actionbar.emoji_button;
@@ -102,15 +112,24 @@
         }
 
         append (headerbar);
-        append (scrolled);
+        append (overlay);
         append (actionbar);
-
 
         /***************************************************/
         /*              CONNECTS AND BINDS                 */
         /***************************************************/
 
         emojichooser_popover.emoji_picked.connect (on_emoji_picked);
+        textview.paste_normalized.connect (on_paste_normalized);
+    }
+
+    private void on_paste_normalized (string message) {
+        show_toast (message);
+    }
+
+    public void show_toast (string message, uint duration_ms = 3000) {
+        toast.title = message;
+        toast.send_notification (duration_ms);
     }
 
     private void on_emoji_picked (string emoji) {

@@ -22,6 +22,8 @@ public static int main (string[] args) {
     Jots.Tests.register_migration_helper_tests ();
     Jots.Tests.register_cheatsheet_tests ();
     Jots.Tests.register_autostart_tests ();
+    Jots.Tests.register_markdown_normalizer_tests ();
+    Jots.Tests.register_html_to_markdown_tests ();
 
     return GLib.Test.run ();
 }

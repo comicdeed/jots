@@ -94,18 +94,22 @@ jobs:
           tree = ET.parse('data/jots.metainfo.xml.in.in')
           root = tree.getroot()
           latest = root.find('.//releases/release')
-          notes = []
+          blocks = []
           if latest is not None:
               desc = latest.find('description')
               if desc is not None:
                   for elem in desc:
                       if elem.tag == 'p' and elem.text:
-                          notes.append(elem.text.strip() + '\n')
+                          text = elem.text.strip()
+                          if text.endswith(':'):
+                              blocks.append(f'### {text}')
+                          else:
+                              blocks.append(text)
                       elif elem.tag == 'ul':
-                          for li in elem.findall('li'):
-                              if li.text:
-                                  notes.append(f'* {li.text.strip()}')
-          content = '\n'.join(notes).strip()
+                          lis = [f'* {li.text.strip()}' for li in elem.findall('li') if li.text]
+                          if lis:
+                              blocks.append('\n'.join(lis))
+          content = '\n\n'.join(blocks).strip()
           with open('release_notes.md', 'w') as f:
               f.write(content + '\n' if content else '')
           "
@@ -202,6 +206,7 @@ jobs:
       - name: 'Publish release'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
         run: |
           TAG="${{ needs.init-release.outputs.tag_name }}"
           gh release edit "$TAG" --draft=false
@@ -223,5 +228,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git fetch origin main:main
-          git merge -X theirs --no-edit main
+          git merge -X theirs -m "chore(release): sync main back into develop [skip ci]" main
           git push origin develop

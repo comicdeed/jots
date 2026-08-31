@@ -98,7 +98,11 @@ namespace Jots {
 * **Ctrl + N**: New Sticky Note
 * **Ctrl + F**: Search Notes
 * **Ctrl + W**: Close Note
-* **Ctrl + Shift + Z**: Scribbly (Privacy) Mode
+* **Ctrl + H**: Scribbly (Privacy) Mode
+* **Ctrl + V**: Smart Paste (Markdown & Rich Text)
+* **Ctrl + Shift + V**: Paste Without Formatting (Raw)
+* **Shift + F12**: Toggle List
+* **Ctrl + M**: Toggle Monospace
 * **Ctrl + Scroll / Pinch**: Zoom Text
 * **F1**: Show / Restore this Cheat Sheet
 
@@ -106,8 +110,10 @@ namespace Jots {
 * `# H1`, `## H2`, `### H3`
 * `**Bold**`, `*Italic*`, `~~Strikethrough~~`
 * `- [ ] Task`, `- [x] Completed`
+* `- List Item` (Smart Lists)
 * `> Blockquote`
 * ` `code` ` or ``` code blocks ```
+* `[Title](https://...)` Links
 
 ### 🤖 AI Automation
 * Connect Claude, Cursor, or Gemini CLI via `jots-mcp`.

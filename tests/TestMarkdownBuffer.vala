@@ -6,17 +6,19 @@
 namespace Jots.Tests {
     public void register_markdown_buffer_tests () {
         /**
-         * UC-30.20.10: Markdown list prefix detection
+         * UC-30.20.10: Markdown list prefix detection (top-level and indented)
          */
         GLib.Test.add_func ("/MarkdownBuffer/UC_30_20_10/ListPrefixDetection", () => {
             var buffer = new Jots.MarkdownBuffer ();
-            buffer.text = "- Standard item\n* Star item\n- [ ] Todo item\n- [x] Done item\nNot a list item";
+            buffer.text = "- Standard item\n* Star item\n- [ ] Todo item\n- [x] Done item\n  - Indented item\n  - [ ] Indented todo\nNot a list item";
 
             assert_cmpstr (buffer.get_list_prefix (0), GLib.CompareOperator.EQ, "- ");
             assert_cmpstr (buffer.get_list_prefix (1), GLib.CompareOperator.EQ, "* ");
             assert_cmpstr (buffer.get_list_prefix (2), GLib.CompareOperator.EQ, "- [ ] ");
             assert_cmpstr (buffer.get_list_prefix (3), GLib.CompareOperator.EQ, "- [ ] ");
-            assert_null (buffer.get_list_prefix (4));
+            assert_cmpstr (buffer.get_list_prefix (4), GLib.CompareOperator.EQ, "  - ");
+            assert_cmpstr (buffer.get_list_prefix (5), GLib.CompareOperator.EQ, "  - [ ] ");
+            assert_null (buffer.get_list_prefix (6));
         });
 
         /**

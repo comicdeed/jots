@@ -66,23 +66,36 @@ Execute the project release notes skill (`.agents/skills/release-notes/SKILL.md`
 1. **Review commits**:
    ```bash
    # For beta:
-   git log $(git describe --tags --abbrev=0)..HEAD --oneline --no-merges
-   
+   git log $(git describe --tags --abbrev=0)..HEAD --oneline --no-merges # incremental delta
+   git log $(git tag --sort=-creatordate | grep -v -E '(beta|alpha|rc)' | head -n 1)..HEAD --oneline --no-merges # cumulative since last major
+
    # For stable:
-   git log $(git tag --list --sort=-v:refname | grep -v -E '(beta|alpha|rc)' | head -n 1)..HEAD --oneline --no-merges
+   git log $(git tag --sort=-creatordate | grep -v -E '(beta|alpha|rc)' | head -n 1)..HEAD --oneline --no-merges
    ```
 2. **Add `<release>` block** to `data/jots.metainfo.xml.in.in`:
    ```xml
    <releases>
-       <release version="1.0.0-beta.1" type="development" date="2026-08-26">
+       <release version="1.3.0-beta.6" type="development" date="2026-08-31">
            <description>
-               <p>Inaugural Beta release of Jots featuring AppImage and standalone Flatpak distribution.</p>
-               <p>Major Highlights:</p>
+               <p>Jots 1.3.0 introduces automated Git backup &amp; remote sync, resilient smart clipboard paste, redesigned preferences, and window lifecycle stability.</p>
+               <p>Highlights (✨ indicates new in this beta):</p>
                <ul>
-                   <li>AppImage &amp; Standalone Flatpak: Portable click-and-run AppImages with dual-entrypoint AI MCP server support</li>
-                   <li>Full-Text Search: Real-time search popover querying live text buffers (Ctrl+F)</li>
-                   <li>Markdown Storage &amp; Rendering: Plaintext .md persistence with inline markdown syntax highlighting</li>
-                   <li>Model Context Protocol: Standalone native binary (jots-mcp) over stdio JSON-RPC</li>
+                   <li>✨ Smart Paste automatically converts rich text and HTML from browsers and documents into clean Markdown.</li>
+                   <li>✨ Loose Markdown normalization automatically aligns messy indentation, nested lists, and Unicode checkbox glyphs.</li>
+                   <li>✨ Context-aware code protection ensures code snippets pasted inside backticks remain 100% untouched.</li>
+                   <li>✨ Transient feedback banner notifies you when pasted text was formatted, with single-stroke Ctrl+Z undo and Ctrl+Shift+V raw paste bypass.</li>
+                   <li>✨ Updated built-in Cheat Sheet (F1) with all modern keyboard shortcuts.</li>
+                   <li>Automated Git backup and sync keeps notes mirrored to remote repositories with background debouncing.</li>
+                   <li>Redesigned Preferences dialog with dedicated General, Theme &amp; Fonts, and Backup &amp; Sync tabs.</li>
+                   <li>Universal desktop autostart with packaging-aware execution detection across AppImage and Flatpak.</li>
+                   <li>Window destruction and note closing are hardened against lifecycle crashes.</li>
+                   <li>Desktop dark mode and light mode transitions sync reliably across all open sticky notes.</li>
+               </ul>
+               <p>Technical Notes:</p>
+               <ul>
+                   <li>✨ Pure, zero-dependency tokenized HtmlToMarkdown parser and stateless MarkdownNormalizer engines.</li>
+                   <li>✨ Non-blocking asynchronous clipboard stream reading prevents main UI thread stalls.</li>
+                   <li>Direct GitHub Release asset uploads and automated multi-arch build pipelines.</li>
                </ul>
            </description>
        </release>

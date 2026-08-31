@@ -199,5 +199,15 @@ namespace Jots.Tests {
             assert_false (Jots.GitSyncService.try_parse_upstream_counts ("abc\t3", out behind, out ahead));
             assert_false (Jots.GitSyncService.try_parse_upstream_counts ("-1\t2", out behind, out ahead));
         });
+
+        /**
+         * UC-80.10.40: Ephemeral cheat sheet is excluded from sync and ignored in gitignore.
+         */
+        GLib.Test.add_func ("/GitSyncService/UC_80_10_40/CheatSheetExclusion", () => {
+            assert_false (Jots.GitSyncService.should_sync_note (Jots.CHEATSHEET_NOTE_ID));
+            assert_true (Jots.GitSyncService.should_sync_note ("3ba7ca8a-d40c-45b9-a9f8-94c15b853e2d"));
+            assert_true (Jots.GitSyncService.should_sync_note ("custom-note-uuid"));
+            assert_true (Jots.GitSyncService.GITIGNORE_CANONICAL.contains ("jots-cheatsheet.md"));
+        });
     }
 }

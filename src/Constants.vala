@@ -58,6 +58,11 @@ namespace Jots {
     const string KEY_SCRIBBLY           = "scribbly-mode-active";
     const string KEY_HIDEBAR            = "hide-bar";
     const string KEY_LIST               = "list-prefix";
+
+    // Application actions
+    public const string ACTION_APP_PREFIX        = "app.";
+    public const string ACTION_SHOW_PREFERENCES  = "show_preferences";
+    public const string ACTION_QUIT              = "quit";
     const string KEY_AUTOSTART          = "autostart";
     const string KEY_CUSTOM_FONTS       = "use-custom-fonts";
     const string KEY_DEFAULT_FONT       = "default-font";
@@ -102,6 +107,7 @@ namespace Jots {
 * **Ctrl + V**: Smart Paste (Markdown & Rich Text)
 * **Ctrl + Shift + V**: Paste Without Formatting (Raw)
 * **Shift + F12**: Toggle List
+* **Ctrl + D** / **Ctrl + Enter**: Toggle Checklist
 * **Ctrl + M**: Toggle Monospace
 * **Ctrl + Scroll / Pinch**: Zoom Text
 * **F1**: Show / Restore this Cheat Sheet

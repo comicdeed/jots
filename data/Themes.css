@@ -179,32 +179,40 @@ window.background.themed.LATTE,
 
 window.themed,
 window.background.themed {
+    border-radius: 12px;
     background-color: @BLUEBERRY_100;
     color: @BLUEBERRY_900;
 }
 
-window.themed undershoot.top {
-    background: linear-gradient(rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0) 50%);
-}
-
-window.themed undershoot.bottom {
-    background: linear-gradient(rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.05) 100%);
-}
-
-window.themed overshoot.top {
-    background: linear-gradient(to top, rgba(0, 0, 0, 0) 80%, rgba(0, 0, 0, 0.15) 100%);
-}
-
-window.themed overshoot.right {
-    background: linear-gradient(to right, rgba(0, 0, 0, 0) 80%, rgba(0, 0, 0, 0.15) 100%);
-}
-
-window.themed overshoot.bottom {
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 80%, rgba(0, 0, 0, 0.15) 100%); 
-}
-
+window.themed undershoot,
+window.themed undershoot.top,
+window.themed undershoot.bottom,
+window.themed overshoot,
+window.themed overshoot.top,
+window.themed overshoot.right,
+window.themed overshoot.bottom,
 window.themed overshoot.left {
-    background: linear-gradient(to left, rgba(0, 0, 0, 0) 80%, rgba(0, 0, 0, 0.15) 100%);
+    background: none;
+    background-image: none;
+    box-shadow: none;
+    border: none;
+}
+
+window.themed scrollbar {
+    background-color: transparent;
+    border: none;
+    padding: 2px;
+}
+
+window.themed scrollbar slider {
+    min-width: 5px;
+    min-height: 5px;
+    border-radius: 4px;
+    background-color: alpha(currentColor, 0.25);
+}
+
+window.themed scrollbar slider:hover {
+    background-color: alpha(currentColor, 0.45);
 }
 
 window.themed text selection {
@@ -225,6 +233,31 @@ window.themed {
     color: inherit;
 }
 
+window.themed headerbar,
+window.themed headerbar.flat,
+window.themed .headertitle {
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+window.themed actionbar,
+window.themed actionbar > revealer > box {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+window.themed scrolledwindow,
+window.themed textview,
+window.themed textview.view,
+window.themed textview text {
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
 window.themed titlebar,
 window.themed headerbar,
 window.themed headerbar.flat,
@@ -235,11 +268,16 @@ window.themed textview.view,
 window.themed textview text,
 window.themed textview > text,
 window.themed editablelabel,
-window.themed editablelabel.editing {
+window.themed editablelabel.editing,
+window.themed editablelabel text,
+window.themed editablelabel entry,
+window.themed editablelabel stack,
+window.themed editablelabel label {
     background: transparent;
     background-color: transparent;
     border-bottom-color: transparent;
     box-shadow: none;
+    outline: none;
     color: inherit;
 }
 
@@ -251,15 +289,20 @@ window.themed entry {
 window.themed editablelabel {
     color: inherit;
     border: 1px solid transparent;
+    border-radius: 6px;
+    padding: 2px 8px;
+    transition: background-color 150ms ease-in-out;
 }
 
 window.themed editablelabel:hover,
 window.themed editablelabel:focus {
-    border-color: rgba(0, 0, 0, 0.25);
+    background-color: rgba(0, 0, 0, 0.08);
+    border-color: transparent;
 }
 
 window.themed editablelabel.editing {
-    border-color: rgba(0, 0, 0, 0.4);
+    background-color: rgba(0, 0, 0, 0.12);
+    border-color: transparent;
 }
 
 window.themed:backdrop editablelabel {
@@ -369,20 +412,32 @@ window.themed.dark textview.view,
 window.themed.dark textview text,
 window.themed.dark textview > text,
 window.themed.dark editablelabel,
-window.themed.dark editablelabel.editing {
+window.themed.dark editablelabel.editing,
+window.themed.dark editablelabel text,
+window.themed.dark editablelabel entry,
+window.themed.dark editablelabel stack,
+window.themed.dark editablelabel label {
     background: transparent;
     background-color: transparent;
     border-bottom-color: transparent;
     box-shadow: none;
+    outline: none;
     color: #f0f0f4;
+    text-shadow: none;
 }
 
-window.themed.dark undershoot.top {
-    background: linear-gradient(#1e1e24 0%, rgba(0, 0, 0, 0) 50%);
-}
-
-window.themed.dark undershoot.bottom {
-    background: linear-gradient(rgba(0, 0, 0, 0) 50%, #1e1e24 100%);
+window.themed.dark undershoot,
+window.themed.dark undershoot.top,
+window.themed.dark undershoot.bottom,
+window.themed.dark overshoot,
+window.themed.dark overshoot.top,
+window.themed.dark overshoot.right,
+window.themed.dark overshoot.bottom,
+window.themed.dark overshoot.left {
+    background: none;
+    background-image: none;
+    box-shadow: none;
+    border: none;
 }
 
 window.themed.dark text selection {
@@ -397,16 +452,22 @@ window.themed.dark entry {
 
 window.themed.dark editablelabel {
     color: #f0f0f4;
+    text-shadow: none;
     border: 1px solid transparent;
+    border-radius: 6px;
+    padding: 2px 8px;
+    transition: background-color 150ms ease-in-out;
 }
 
 window.themed.dark editablelabel:hover,
 window.themed.dark editablelabel:focus {
-    border-color: rgba(255, 255, 255, 0.25);
+    background-color: rgba(255, 255, 255, 0.10);
+    border-color: transparent;
 }
 
 window.themed.dark editablelabel.editing {
-    border-color: rgba(255, 255, 255, 0.4);
+    background-color: rgba(255, 255, 255, 0.16);
+    border-color: transparent;
 }
 
 window.themed.dark:backdrop editablelabel {

@@ -14,7 +14,6 @@
 */
 public class Jots.ZoomController : Object {
 
-    private static bool is_control_key_pressed = false;
     private weak Jots.StickyNoteWindow window {get; set;}
 
     // Avoid setting this unless it is to restore a specific value, do_set_zoom does not check input
@@ -121,32 +120,14 @@ public class Jots.ZoomController : Object {
         window.has_changed ();
     }
 
-    public bool on_key_press_event (uint keyval, uint keycode, Gdk.ModifierType state) {
-        if (keyval == Gdk.Key.Control_L || keyval == Gdk.Key.Control_R) {
-            debug ("Press!");
-            is_control_key_pressed = true;
-        }
-
-        return Gdk.EVENT_PROPAGATE;
-    }
-
-    public void on_key_release_event (uint keyval, uint keycode, Gdk.ModifierType state) {
-        if (keyval == Gdk.Key.Control_L || keyval == Gdk.Key.Control_R) {
-            debug ("Release!");
-            is_control_key_pressed = false;
-        }
-    }
-
-    public bool on_scroll (double dx, double dy) {
-        debug ("Scroll + Ctrl!");
-
-        if (!is_control_key_pressed) {
+    public bool on_scroll (Gtk.EventControllerScroll controller, double dx, double dy) {
+        var state = controller.get_current_event_state ();
+        if ((state & Gdk.ModifierType.CONTROL_MASK) == 0) {
             return Gdk.EVENT_PROPAGATE;
         }
 
+        debug ("Scroll + Ctrl zoom!");
         zoom_changed (ZoomType.from_delta (dy));
-        debug ("Go! Zoooommmmm");
-
         return Gdk.EVENT_STOP;
     }
 

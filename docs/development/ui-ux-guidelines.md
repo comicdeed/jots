@@ -73,3 +73,17 @@ For any PR that changes UI behavior or information architecture:
 1. Verify this guide still applies or update it minimally.
 2. Update the user guide when user-visible behavior changes.
 3. Include concise before/after screenshots or equivalent behavior notes.
+
+---
+
+## 8. Canvas and Chrome Styling Standards
+
+### Scrolled Window Canvas Edges & Overflow Overlays
+* **Zero Fog Overlays**: In GTK4, `GtkScrolledWindow` allocates a default ~40px bounding box for `undershoot` gadgets regardless of CSS `min-height`, which causes background gradients to render as heavy, unnatural bands over text. Sticky note canvases must set `undershoot` and `overshoot` elements to `background: none; border: none;`, relying on clean transparent floating scrollbars.
+* **Minimal Floating Scrollbars**: Scrollbar sliders must be thin (4-5px), transparent when idle, and subtly tinted to `alpha(currentColor, 0.25)` so they float cleanly over any theme color without visual clutter.
+
+### Header Bar & Window Title Interactions
+* **Respect Native Window Gestures**: Never replace `Gtk.HeaderBar` with custom drag controllers (`begin_move_drag`) to suppress window manager double-click maximization. Custom window drag grabs interfere with child focus and cursor placement in `Gtk.EditableLabel`.
+* **Header Dismissal**: When the title is in active edit mode, intercepting clicks on the empty header background via `headerbar.pick (x, y)` allows dismissing the edit mode cleanly (`editing = false`) without capturing or distorting standard titlebar double-click gestures.
+* **Pill-Shaped Title Focus**: Active title editing should use subtle rounded pill backgrounds (`border-radius: 6px`) rather than harsh rectangular bounding boxes, and override text shadows in dark mode (`text-shadow: none`) to keep title text crisp.
+

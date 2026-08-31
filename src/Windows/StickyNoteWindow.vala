@@ -23,7 +23,6 @@ public class Jots.StickyNoteWindow : Gtk.ApplicationWindow {
     private Jots.ColorController color_controller;
     public Jots.ZoomController zoom_controller;
     private Jots.ScribblyController scribbly_controller;
-    private Gtk.EventControllerKey keypress_controller;
     private Gtk.EventControllerScroll scroll_controller;
     private Gtk.GestureZoom gesturezoom_controller;
 
@@ -67,15 +66,12 @@ public class Jots.StickyNoteWindow : Gtk.ApplicationWindow {
         zoom_controller = new Jots.ZoomController (this);
         scribbly_controller = new Jots.ScribblyController (this);
 
-        keypress_controller = new Gtk.EventControllerKey ();
         scroll_controller = new Gtk.EventControllerScroll (VERTICAL) {
             propagation_phase = Gtk.PropagationPhase.CAPTURE
         };
 
         gesturezoom_controller = new Gtk.GestureZoom ();
 
-
-        ((Gtk.Widget)this).add_controller (keypress_controller);
         ((Gtk.Widget)this).add_controller (scroll_controller);
         ((Gtk.Widget)this).add_controller (gesturezoom_controller);
 
@@ -88,11 +84,9 @@ public class Jots.StickyNoteWindow : Gtk.ApplicationWindow {
         insert_action_group ("textview", textview.actions);
         insert_action_group ("zoom_controller", zoom_controller.actions);
 
-        // Have shortcuts keep working  this.destroy ()with the popover open.
+        // Have shortcuts keep working with the popover open.
         popover = view.popover;
-        view.popover.scroll_controller.scroll.connect (zoom_controller.on_scroll);
-        view.popover.keypress_controller.key_pressed.connect (zoom_controller.on_key_press_event);
-        view.popover.keypress_controller.key_released.connect (zoom_controller.on_key_release_event);
+        view.popover.scroll_controller.scroll.connect ((dx, dy) => zoom_controller.on_scroll (view.popover.scroll_controller, dx, dy));
 
         //zoom_controller.notify["zoom"].connect_after (textview.refresh_indentation);
 
@@ -113,10 +107,8 @@ public class Jots.StickyNoteWindow : Gtk.ApplicationWindow {
         /*              CONNECTS AND BINDS                 */
         /***************************************************/
 
-        // We need this for Ctr + Scroll. We delegate everything to zoomcontroller
-        keypress_controller.key_pressed.connect (zoom_controller.on_key_press_event);
-        keypress_controller.key_released.connect (zoom_controller.on_key_release_event);
-        scroll_controller.scroll.connect (zoom_controller.on_scroll);
+        // Zoom via Ctrl + Scroll or Pinch gesture
+        scroll_controller.scroll.connect ((dx, dy) => zoom_controller.on_scroll (scroll_controller, dx, dy));
         gesturezoom_controller.scale_changed.connect (zoom_controller.on_pinch);
 
 
@@ -203,6 +195,7 @@ public class Jots.StickyNoteWindow : Gtk.ApplicationWindow {
             _readonly = value;
             textview.editable = !value;
             view.editablelabel.sensitive = !value;
+            view.emoji_button.sensitive = !value;
             popover.is_readonly = value;
             has_changed ();
         }
@@ -264,6 +257,7 @@ public class Jots.StickyNoteWindow : Gtk.ApplicationWindow {
         _readonly = data.readonly;
         textview.editable = !_readonly;
         view.editablelabel.sensitive = !_readonly;
+        view.emoji_button.sensitive = !_readonly;
         popover.is_readonly = _readonly;
 
         _always_visible = data.always_visible;

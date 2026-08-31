@@ -35,7 +35,7 @@ Jots is currently Linux-first. AppImage and Flatpak are the supported distributi
 **Recommended (Primary Distribution):**
 
 <a href="https://github.com/comicdeed/jots/releases/latest">
-  <img src="data/badges/download-appimage.svg" alt="Download AppImage" width="280" />
+  <img src="data/badges/download-appimage.svg" alt="Download AppImage" width="180" />
 </a>
 
 * **Linux AppImage (Recommended, Click-and-Run)**: Download `Jots-<version>-<arch>.AppImage` (currently `Jots-<version>-x86_64.AppImage` or `Jots-<version>-aarch64.AppImage`) from the [latest release](https://github.com/comicdeed/jots/releases/latest), make it executable (`chmod +x Jots-*.AppImage`), and run directly on any Linux distribution without installation.
@@ -69,7 +69,8 @@ height: 320
 ---
 # Architecture Overview
 - [x] Switch to Markdown storage
-- [ ] Implement full-text search popover
+- [x] Native MCP AI assistant integration
+- [ ] Central Note Organizer library
 ```
 
 ### Storage paths
@@ -87,6 +88,14 @@ height: 320
 * **[Product Roadmap](docs/roadmap.md)**: Graded backlog and development initiatives.
 * **[MCP Integration Guide](docs/development/mcp-server.md)**: Setup instructions for AI assistant clients.
 * **[Contributing and PR Guidelines](docs/development/pull-request-guidelines.md)**: Contribution checklist and pull request standards.
+
+---
+
+## Lineage and acknowledgements
+
+Jots is an independent fork and modern evolution of [Jorts](https://github.com/elly-code/jorts) (originally [Notejot](https://github.com/lainsce/notejot) by [Lains](https://github.com/lainsce)).
+
+We are deeply grateful to the original authors, upstream maintainers, and community contributors whose foundational work made Jots possible. For complete credits, see [Project Credits & Acknowledgements](docs/thanks.md).
 
 ---
 

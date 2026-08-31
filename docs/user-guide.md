@@ -51,6 +51,7 @@ Welcome to Jots! Jots is a lightweight, distraction-free sticky notes applicatio
 | **`Ctrl + W`** | **Delete Note** | Deletes and closes the currently focused note window. |
 | **`Ctrl + R`** | **Restore Note** | Undoes the last deletion and reopens the deleted note. |
 | **`Shift + F12`** | **Toggle List** | Toggles list item prefix on the current line or selection. |
+| **`Ctrl + D`** / **`Ctrl + Enter`** | **Toggle Checklist** | Toggles `- [ ]` $\leftrightarrow$ `- [x]` checklist state, or converts bullet/text into a checklist item. |
 | **`Ctrl + V`** | **Smart Paste** | Context-aware paste: converts rich-text/HTML and normalizes loose Markdown bullets/tasks outside code blocks; pastes verbatim inside code blocks. |
 | **`Ctrl + Shift + V`** | **Paste Without Formatting** | Pastes exact literal clipboard text without any Markdown normalization or transformation. |
 | **`Ctrl + M`** | **Toggle Monospace** | Switches between proportional and fixed-width monospace font. |
@@ -88,7 +89,7 @@ Jots features a native, real-time Markdown rendering buffer (`MarkdownBuffer`) t
 | **Bold & Strong** | `**bold text**` | Styled with heavy font weight. |
 | **Italic & Emphasis** | `*italic text*` | Styled with slanted font style. |
 | **Strikethrough** | `~~deleted text~~` | Rendered with a horizontal strikethrough line. |
-| **Task Lists** | `- [ ] Pending item`<br>`- [x] Completed task` | Formatted with hanging list indent; typing `[x]` automatically applies strikethrough and muted tones to completed tasks. |
+| **Task Lists** | `- [ ] Pending item`<br>`- [x] Completed task` | Formatted with hanging list indent; click directly on checkboxes to toggle state, or press **`Ctrl + D`** / **`Ctrl + Enter`**. Checking a box automatically applies strikethrough styling to completed tasks. |
 | **Smart Lists** | `• Item`<br>`- Item` | Automatic hanging indentation, Enter continuation, and Backspace list exiting. |
 | **Blockquotes** | `> Important quote` | Italicized with a muted blockquote tone. |
 | **Inline Code** | `` `const x = 42;` `` | Styled with a rounded highlight pill and dedicated monospace font. |
@@ -197,7 +198,8 @@ height: 320
 ---
 # Architecture Overview
 - [x] Switch to Markdown storage
-- [ ] Implement full-text search popover
+- [x] Native MCP AI assistant integration
+- [ ] Central Note Organizer library
 ```
 
 ### Storage Locations

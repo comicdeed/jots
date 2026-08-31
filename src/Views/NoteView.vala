@@ -85,6 +85,17 @@
         editablelabel = new Jots.EditableLabel ();
         headerbar.set_title_widget (editablelabel);
 
+        var header_click = new Gtk.GestureClick ();
+        header_click.pressed.connect ((n_press, x, y) => {
+            if (editablelabel.editing) {
+                var picked = headerbar.pick (x, y, Gtk.PickFlags.DEFAULT);
+                if (picked == null || (picked != editablelabel && !picked.is_ancestor (editablelabel))) {
+                    editablelabel.editing = false;
+                }
+            }
+        });
+        headerbar.add_controller (header_click);
+
         textview = new Jots.TextView ();
         scrolled = new Gtk.ScrolledWindow () {
             child = textview,
@@ -133,6 +144,9 @@
     }
 
     private void on_emoji_picked (string emoji) {
+        if (!textview.editable) {
+            return;
+        }
         debug ("Emote picked!");
         textview.buffer.insert_at_cursor (emoji, -1);
         set_focus_child (textview);
@@ -145,8 +159,17 @@
         NoteData.latest_mono = if_mono;
     }
 
-    private void action_focus_title () {editablelabel.editing = true;}
-    private void action_show_emoji () {emoji_button.activate ();}
+    private void action_focus_title () {
+        if (textview.editable) {
+            editablelabel.editing = true;
+        }
+    }
+
+    private void action_show_emoji () {
+        if (textview.editable) {
+            emoji_button.activate ();
+        }
+    }
     private void action_show_menu () {menu_button.activate ();}
     private void action_toggle_mono () {monospace = !monospace;}
 

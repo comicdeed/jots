@@ -18,7 +18,7 @@
 
 ## Key features
 
-* 📝 **Markdown editing + plain-file storage**: Write with live Markdown formatting (including checklists and links), with every note saved as a regular `.md` file you can back up or use in other tools.
+* 📝 **Markdown editing + plain-file storage**: Write with live Markdown formatting, checklists, clickable links, and resilient smart clipboard paste that converts rich-text/HTML and normalizes loose Markdown while protecting code snippets. Notes are saved as standard `.md` files you can back up or use in other tools.
 * 🎨 **Color themes**: Pick from 10 pastel themes that look good in both light and dark mode.
 * 🔤 **Font controls**: Choose your preferred text and code fonts to match how you like to read and write.
 * 🔒 **Privacy mode**: Hide note text when you need to protect sensitive content on screen.

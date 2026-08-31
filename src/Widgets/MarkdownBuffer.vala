@@ -179,9 +179,9 @@ namespace Jots {
                 regex_code = new GLib.Regex ("(`)([^`\n]+?)(`)");
                 regex_code_block = new GLib.Regex ("(```[a-zA-Z0-9_-]*\\n?)([\\s\\S]*?)(```)", GLib.RegexCompileFlags.DOTALL);
                 regex_quote = new GLib.Regex ("^(>)\\s+(.+)$", GLib.RegexCompileFlags.MULTILINE);
-                regex_task_done = new GLib.Regex ("^([\\*\\+-]\\s+\\[[xX]\\]\\s+)(.+)$", GLib.RegexCompileFlags.MULTILINE);
-                regex_task_todo = new GLib.Regex ("^([\\*\\+-]\\s+\\[ \\]\\s+)(.+)$", GLib.RegexCompileFlags.MULTILINE);
-                regex_list = new GLib.Regex ("^([\\*\\+-](?!\\s+\\[[ xX]\\])|\\d+\\.)\\s+(.+)$", GLib.RegexCompileFlags.MULTILINE);
+                regex_task_done = new GLib.Regex ("^(\\s*[\\*\\+-]\\s+\\[[xX]\\]\\s+)(.+)$", GLib.RegexCompileFlags.MULTILINE);
+                regex_task_todo = new GLib.Regex ("^(\\s*[\\*\\+-]\\s+\\[ \\]\\s+)(.+)$", GLib.RegexCompileFlags.MULTILINE);
+                regex_list = new GLib.Regex ("^(\\s*(?:[\\*\\+-](?!\\s+\\[[ xX]\\])|\\d+\\.)\\s+)(.+)$", GLib.RegexCompileFlags.MULTILINE);
                 regex_link = new GLib.Regex ("\\[([^\\]]+)\\]\\(([^\\)]+)\\)");
             } catch (GLib.Error e) {
                 warning ("Failed to compile Markdown regex: %s", e.message);
@@ -480,7 +480,7 @@ namespace Jots {
         }
 
         /**
-         * Helper to check if a line has a markdown list prefix.
+         * Helper to check if a line has a markdown list prefix, preserving any leading indentation.
          */
         public string? get_list_prefix (int line_number) {
             Gtk.TextIter start, end;
@@ -490,15 +490,84 @@ namespace Jots {
 
             var line_text = get_slice (start, end, false);
 
-            if (line_text.has_prefix ("- [ ] ")) return "- [ ] ";
-            if (line_text.has_prefix ("- [x] ")) return "- [ ] ";
-            if (line_text.has_prefix ("* [ ] ")) return "* [ ] ";
-            if (line_text.has_prefix ("* [x] ")) return "* [ ] ";
-            if (line_text.has_prefix ("- ")) return "- ";
-            if (line_text.has_prefix ("* ")) return "* ";
-            if (line_text.has_prefix ("+ ")) return "+ ";
+            int i = 0;
+            while (i < line_text.length && (line_text[i] == ' ' || line_text[i] == '\t')) {
+                i++;
+            }
+            var indent = line_text.substring (0, i);
+            var rest = line_text.substring (i);
+
+            if (rest.has_prefix ("- [ ] ")) return indent + "- [ ] ";
+            if (rest.has_prefix ("- [x] ")) return indent + "- [ ] ";
+            if (rest.has_prefix ("* [ ] ")) return indent + "* [ ] ";
+            if (rest.has_prefix ("* [x] ")) return indent + "* [ ] ";
+            if (rest.has_prefix ("- ")) return indent + "- ";
+            if (rest.has_prefix ("* ")) return indent + "* ";
+            if (rest.has_prefix ("+ ")) return indent + "+ ";
 
             return null;
+        }
+
+        /**
+         * Determines if the given iter is located inside an inline or multiline code block.
+         */
+        public bool is_code_context (Gtk.TextIter iter) {
+            var tag_code = tag_table.lookup (TAG_CODE);
+            var tag_code_block = tag_table.lookup (TAG_CODE_BLOCK);
+
+            if (tag_code != null && iter.has_tag (tag_code)) {
+                return true;
+            }
+            if (tag_code_block != null && iter.has_tag (tag_code_block)) {
+                return true;
+            }
+
+            // Fallback fence parity check in case debounce highlight has not run
+            int target_line = iter.get_line ();
+            int fence_count = 0;
+            for (int line = 0; line < target_line; line++) {
+                Gtk.TextIter line_start, line_end;
+                get_iter_at_line_offset (out line_start, line, 0);
+                line_end = line_start.copy ();
+                line_end.forward_to_line_end ();
+                var line_text = get_slice (line_start, line_end, false).strip ();
+                if (line_text.has_prefix ("```")) {
+                    fence_count++;
+                }
+            }
+
+            if (fence_count % 2 != 0) {
+                return true;
+            }
+
+            // Check current line for inline backtick parity before cursor
+            Gtk.TextIter curr_line_start;
+            get_iter_at_line_offset (out curr_line_start, target_line, 0);
+            var text_before_iter = get_slice (curr_line_start, iter, false);
+            int backtick_count = 0;
+            for (int i = 0; i < text_before_iter.length; i++) {
+                if (text_before_iter[i] == '`') {
+                    backtick_count++;
+                }
+            }
+            if (backtick_count % 2 != 0) {
+                return true;
+            }
+
+            return false;
+        }
+
+        public override void dispose () {
+            if (highlight_timeout_id != 0) {
+                GLib.Source.remove (highlight_timeout_id);
+                highlight_timeout_id = 0;
+            }
+            if (settings != null) {
+                settings.changed[KEY_CUSTOM_FONTS].disconnect (refresh_code_tag_fonts);
+                settings.changed[KEY_MONOSPACE_FONT].disconnect (refresh_code_tag_fonts);
+                settings = null;
+            }
+            base.dispose ();
         }
 
         ~MarkdownBuffer () {

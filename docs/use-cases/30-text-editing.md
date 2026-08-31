@@ -65,3 +65,39 @@ List formatting, prefix expansion on keypresses, prefix migration, and hanging i
 * **Pre-conditions**: Buffer state reverts.
 * **Post-conditions**:
   * Rescans lines and re-applies `list_item` tags to all bulleted lines via `restore_list_item_indentation()`.
+
+---
+
+## 30.40 Resilient clipboard and smart paste
+
+### `UC-30.40.10` Unicode bullet and task normalization
+* **Trigger**: User presses `Ctrl+V` to paste text containing non-standard bullet characters (`•`, `◦`, `▪`, etc.) or loose checkbox notations (`[X]`, `[v]`, `☐`, `☑`, `✅`).
+* **Pre-conditions**: Caret is in standard Markdown text outside of code fences or inline backticks.
+* **Post-conditions**:
+  * Normalizes bullet characters to `- ` and tasks to `- [ ] ` or `- [x] `.
+  * Emits `paste_normalized` signal displaying a transient toast feedback banner.
+  * Wraps insertion in an atomic user action so a single `Ctrl+Z` undo reverts the paste completely.
+
+### `UC-30.40.20` Code block paste protection
+* **Trigger**: User presses `Ctrl+V` with the caret inside a code block (`TAG_CODE_BLOCK`, `TAG_CODE`, or active backtick fence).
+* **Pre-conditions**: Caret is within code context.
+* **Post-conditions**:
+  * Bypasses all Markdown normalizations and HTML transformations.
+  * Pastes literal clipboard text directly into the buffer.
+  * Suppresses toast feedback.
+
+### `UC-30.40.30` Raw paste bypass (Ctrl+Shift+V)
+* **Trigger**: User presses `Ctrl+Shift+V` or selects "Paste Without Formatting" from the context menu.
+* **Pre-conditions**: Clipboard contains text.
+* **Post-conditions**:
+  * Pastes raw literal text directly without running `MarkdownNormalizer` or `HtmlToMarkdown`.
+  * Suppresses toast feedback.
+
+### `UC-30.40.40` Rich text and HTML conversion
+* **Trigger**: User presses `Ctrl+V` to paste content copied from a web browser, word processor, or rich-text source.
+* **Pre-conditions**: Clipboard contains `text/html` payload and caret is outside of code context.
+* **Post-conditions**:
+  * Converts HTML structure (headings, formatting, links, lists, code spans, tables, blockquotes) to standard Markdown.
+  * Sanitizes `<style>`, `<script>`, comments, and non-formatting markup.
+  * Displays transient feedback toast informing the user that rich text was converted with `Ctrl+Shift+V` bypass available.
+

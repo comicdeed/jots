@@ -32,6 +32,8 @@ sources = files (
     'Utils' / 'Markup.vala',
     'Utils' / 'PackagingContext.vala',
     'Utils' / 'NoteIdentifier.vala',
+    'Utils' / 'MarkdownNormalizer.vala',
+    'Utils' / 'HtmlToMarkdown.vala',
 
     'Services' / 'MarkdownSerializer.vala',
     'Services' / 'Storage.vala',
@@ -45,6 +47,7 @@ sources = files (
     'Services' / 'FontController.vala',
 
     'Widgets' / 'Bin.vala',
+    'Widgets' / 'ToastBanner.vala',
     'Widgets' / 'EditableLabel.vala',
     'Widgets' / 'TextView.vala',
     'Widgets' / 'ActionBar.vala',

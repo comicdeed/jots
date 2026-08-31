@@ -51,6 +51,8 @@ Welcome to Jots! Jots is a lightweight, distraction-free sticky notes applicatio
 | **`Ctrl + W`** | **Delete Note** | Deletes and closes the currently focused note window. |
 | **`Ctrl + R`** | **Restore Note** | Undoes the last deletion and reopens the deleted note. |
 | **`Shift + F12`** | **Toggle List** | Toggles list item prefix on the current line or selection. |
+| **`Ctrl + V`** | **Smart Paste** | Context-aware paste: normalizes loose Markdown bullets/tasks outside code blocks; pastes verbatim inside code blocks. |
+| **`Ctrl + Shift + V`** | **Paste Without Formatting** | Pastes exact literal clipboard text without any Markdown normalization or transformation. |
 | **`Ctrl + M`** | **Toggle Monospace** | Switches between proportional and fixed-width monospace font. |
 | **`Ctrl + T`** | **Toggle Action Bar** | Hides or reveals the bottom formatting and color toolbar. |
 | **`Ctrl + H`** | **Toggle Scribbly Effect** | Toggles the handwritten blur/scribble privacy effect on unfocused notes. |
@@ -92,6 +94,12 @@ Jots features a native, real-time Markdown rendering buffer (`MarkdownBuffer`) t
 | **Inline Code** | `` `const x = 42;` `` | Styled with a rounded highlight pill and dedicated monospace font. |
 | **Code Fences** | ```` ```sh ````<br>`echo "Hello"`<br>```` ``` ```` | Multi-line code container rendered with monospace font and subtle background tint. |
 | **Clickable Links** | `https://example.com`<br>`[Title](https://...)` | Detected and styled as links. **`Ctrl + Click`** opens the URL in your default browser. |
+
+### Resilient Clipboard & Smart Paste
+* **Context-Aware Smart Paste (`Ctrl + V`)**: When pasting into normal text, Jots automatically converts rich-text/HTML clipboard payloads (from web browsers, office documents, or chat apps) into clean Markdown, and normalizes imprecise bullets (such as `•`, `◦`, `▪`), malformed checklists (e.g. `[X]`, `☐`, `☑`), loose headings (`#Heading`), and HTML entities.
+* **Code Block Protection**: If the cursor is inside an inline backtick or multiline code block (```` ``` ````), smart formatting and HTML conversion are automatically bypassed so code snippets are pasted literally without alteration.
+* **Transient User Feedback**: Whenever pasted content is normalized or converted from rich text, Jots displays a subtle, transient toast notification (*"Formatted as Markdown (Ctrl+Shift+V for raw)"*).
+* **Instant Undo & Raw Paste Bypass (`Ctrl + Shift + V`)**: Press **`Ctrl + Z`** to revert the paste in a single step, or use **`Ctrl + Shift + V`** (or right-click $\rightarrow$ *Paste Without Formatting*) to paste the raw, unformatted clipboard text directly.
 
 ---
 

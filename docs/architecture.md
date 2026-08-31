@@ -57,6 +57,8 @@ graph TD
 * **`SearchService.vala`**: Provides in-memory plus storage-backed note search with relevance scoring and JSON-oriented result shaping used by `NoteManager` and D-Bus query paths.
 * **`Storage.vala`**: Encapsulates disk persistence of individual Markdown files with YAML front matter (`~/.local/share/io.github.comicdeed.jots/notes/<id>.md`) and handles automatic legacy JSON migration. Completely insulated from external consumers by the D-Bus service boundary.
 * **`MarkdownSerializer.vala`**: Lightweight YAML front matter parser and Markdown serializer for `NoteData`.
+* **`MarkdownNormalizer.vala`**: Pure, stateless normalization pipeline for loose Markdown bullets, checklist glyphs, line endings, dedenting, and level-based marker harmonization.
+* **`HtmlToMarkdown.vala`**: Pure, zero-dependency stream/token-based HTML to Markdown converter for rich-text clipboard payloads.
 * **`GitSyncService.vala`**: Handles local Git backup commit orchestration, remote synchronization cadence, divergence detection, and sync status reporting through GSettings-backed state.
 * **`ColorController.vala`**: Manages CSS theme class assignment on note windows.
 * **`ZoomController.vala`**: Handles pinch gestures, `Ctrl` + scroll wheel, and zoom step key bindings.

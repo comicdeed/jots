@@ -27,7 +27,7 @@ concurrency:
 
 jobs:
   init-release:
-    name: "Initialize Release & Resolve Tag"
+    name: "Initialize Release & Create Draft"
     # Run if: manual dispatch, pushed tag, or merged PR from a release/* branch
     if: >-
       github.event_name == 'workflow_dispatch' ||
@@ -45,6 +45,8 @@ jobs:
 
       - name: 'Resolve Version and Create Git Tag if Merged'
         id: resolve_tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ inputs.tag_name }}" ]; then
             TAG="${{ inputs.tag_name }}"
@@ -69,11 +71,11 @@ jobs:
           echo "tag_name=$TAG" >> "$GITHUB_OUTPUT"
           
           # Check if tag is prerelease
+          IS_PRE="false"
           if [[ "$TAG" =~ (beta|alpha|rc) ]]; then
-            echo "is_prerelease=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "is_prerelease=false" >> "$GITHUB_OUTPUT"
+            IS_PRE="true"
           fi
+          echo "is_prerelease=$IS_PRE" >> "$GITHUB_OUTPUT"
 
           # If triggered by PR merge to main, tag the merge commit
           if [ "${{ github.event_name }}" = "pull_request" ] && [ "${{ github.event.pull_request.merged }}" = "true" ]; then
@@ -84,6 +86,40 @@ jobs:
               git tag -a "$TAG" -m "Release $TAG"
               git push origin "$TAG"
             fi
+          fi
+
+          # Extract Release Notes from Metainfo
+          python3 -c "
+          import xml.etree.ElementTree as ET
+          tree = ET.parse('data/jots.metainfo.xml.in.in')
+          root = tree.getroot()
+          latest = root.find('.//releases/release')
+          notes = []
+          if latest is not None:
+              desc = latest.find('description')
+              if desc is not None:
+                  for elem in desc:
+                      if elem.tag == 'p' and elem.text:
+                          notes.append(elem.text.strip() + '\n')
+                      elif elem.tag == 'ul':
+                          for li in elem.findall('li'):
+                              if li.text:
+                                  notes.append(f'* {li.text.strip()}')
+          content = '\n'.join(notes).strip()
+          with open('release_notes.md', 'w') as f:
+              f.write(content + '\n' if content else '')
+          "
+
+          EXTRA_FLAGS=()
+          if [ "$IS_PRE" = "true" ]; then
+            EXTRA_FLAGS+=("--prerelease")
+          fi
+
+          # Create or update draft release on GitHub
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release edit "$TAG" --title "Jots $TAG" --notes-file release_notes.md --draft "${EXTRA_FLAGS[@]}"
+          else
+            gh release create "$TAG" --title "Jots $TAG" --notes-file release_notes.md --draft "${EXTRA_FLAGS[@]}"
           fi
 
   build-linux-appimage:
@@ -122,12 +158,11 @@ jobs:
           export VERSION="${{ needs.init-release.outputs.tag_name }}"
           ./packaging/appimage/build-appimage.sh
 
-      - name: 'Upload AppImage Artifact'
-        uses: actions/upload-artifact@v5
-        with:
-          name: Jots-${{ matrix.arch }}-AppImage
-          path: dist/*
-          retention-days: 2
+      - name: 'Upload AppImage directly to Release'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload "${{ needs.init-release.outputs.tag_name }}" dist/* --clobber
 
   build-flatpak-bundle:
     name: "Build Flatpak Bundle (x86_64)"
@@ -153,72 +188,27 @@ jobs:
           flatpak build-bundle repo "dist/io.github.comicdeed.jots-${VERSION}.flatpak" io.github.comicdeed.jots
           cd dist && sha256sum "io.github.comicdeed.jots-${VERSION}.flatpak" > "io.github.comicdeed.jots-${VERSION}.flatpak.sha256"
 
-      - name: 'Upload Flatpak Bundle Artifact'
-        uses: actions/upload-artifact@v5
-        with:
-          name: io.github.comicdeed.jots-Flatpak
-          path: dist/*
-          retention-days: 2
+      - name: 'Upload Flatpak directly to Release'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload "${{ needs.init-release.outputs.tag_name }}" dist/* --clobber
 
-  github-release:
+  finalize-release:
     name: "Publish Consolidated GitHub Release"
     needs: [init-release, build-linux-appimage, build-flatpak-bundle]
     runs-on: ubuntu-latest
     steps:
-      - name: 'Checkout sources'
-        uses: actions/checkout@v5
-
-      - name: 'Download all artifacts'
-        uses: actions/download-artifact@v5
-        with:
-          path: ./dist-artifacts
-
-      - name: 'Consolidate release distribution assets'
-        run: |
-          mkdir -p ./release-dist
-          find ./dist-artifacts -type f -exec cp {} ./release-dist/ \;
-          cd ./release-dist
-          sha256sum * | grep -v '\.sha256$' | grep -v 'SHA256SUMS' > SHA256SUMS.txt || true
-
-      - name: 'Extract Release Notes from Metainfo'
-        id: extract_notes
-        run: |
-          python3 -c "
-          import xml.etree.ElementTree as ET
-          tree = ET.parse('data/jots.metainfo.xml.in.in')
-          root = tree.getroot()
-          latest = root.find('.//releases/release')
-          notes = []
-          if latest is not None:
-              desc = latest.find('description')
-              if desc is not None:
-                  for elem in desc:
-                      if elem.tag == 'p' and elem.text:
-                          notes.append(elem.text.strip() + '\n')
-                      elif elem.tag == 'ul':
-                          for li in elem.findall('li'):
-                              if li.text:
-                                  notes.append(f'* {li.text.strip()}')
-          content = '\n'.join(notes).strip()
-          with open('release_notes.md', 'w') as f:
-              f.write(content + '\n' if content else '')
-          "
-
-      - name: 'Create GitHub Release'
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ needs.init-release.outputs.tag_name }}
-          name: "Jots ${{ needs.init-release.outputs.tag_name }}"
-          body_path: release_notes.md
-          generate_release_notes: true
-          prerelease: ${{ needs.init-release.outputs.is_prerelease == 'true' }}
-          files: ./release-dist/*
+      - name: 'Publish release'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ needs.init-release.outputs.tag_name }}"
+          gh release edit "$TAG" --draft=false
 
   sync-develop:
     name: "Sync Release back to Develop"
-    needs: [github-release]
+    needs: [finalize-release]
     if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:

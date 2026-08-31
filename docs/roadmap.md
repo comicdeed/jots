@@ -9,50 +9,68 @@ A curated backlog of architectural enhancements, capabilities, and feature candi
 - [Product Roadmap and Feature Candidates](#product-roadmap-and-feature-candidates)
   - [Table of Contents](#table-of-contents)
   - [1. Evaluation Summary \& Score Matrix](#1-evaluation-summary--score-matrix)
-  - [2. High-Priority Initiatives (Tier 1)](#2-high-priority-initiatives-tier-1)
-    - [2.1 Note Organizer and Management Interface](#21-note-organizer-and-management-interface)
-    - [2.2 Free-Form In-Text Tagging with Autocompletion](#22-free-form-in-text-tagging-with-autocompletion)
-  - [3. Planned Backlog (Tier 2)](#3-planned-backlog-tier-2)
-    - [3.1 Daily Routine Adoption \& Presence (Moved to Completed Initiatives)](#31-daily-routine-adoption--presence-moved-to-completed-initiatives)
-    - [3.2 Bidirectional Note Linking (`[[Note Title]]`)](#32-bidirectional-note-linking-note-title)
-    - [3.3 Note Archiving and Trash Bin Lifecycle](#33-note-archiving-and-trash-bin-lifecycle)
-    - [3.4 AppImage Update Information Embedding](#34-appimage-update-information-embedding)
-    - [3.5 AppImage Provenance and Signature Verification](#35-appimage-provenance-and-signature-verification)
-    - [3.6 Retire List Item Prefix Preference](#36-retire-list-item-prefix-preference)
-  - [4. Deferred / Incubating Concepts (Tier 4)](#4-deferred--incubating-concepts-tier-4)
-    - [4.1 Google Keep Backend Synchronization](#41-google-keep-backend-synchronization)
-    - [4.2 Windows Backup and Sync Compatibility Hardening](#42-windows-backup-and-sync-compatibility-hardening)
-  - [5. Completed Initiatives](#5-completed-initiatives)
-    - [5.1 Native Model Context Protocol (MCP) Server](#51-native-model-context-protocol-mcp-server)
-    - [5.2 Markdown Storage with YAML Front Matter \& Live Rendering](#52-markdown-storage-with-yaml-front-matter--live-rendering)
-    - [5.3 Typography Customization \& Obfuscated Scribbly Mode](#53-typography-customization--obfuscated-scribbly-mode)
-    - [5.4 Local Full-Text Search \& Interactive Popover](#54-local-full-text-search--interactive-popover)
-    - [5.5 Daily Routine Adoption \& Presence](#55-daily-routine-adoption--presence)
-    - [5.6 Automated Git Backup and Remote Synchronization](#56-automated-git-backup-and-remote-synchronization)
+  - [2. Fast-Track Quality \& Bug Polish (v1.3.x Target)](#2-fast-track-quality--bug-polish-v13x-target)
+  - [3. High-Priority Initiatives (Tier 1)](#3-high-priority-initiatives-tier-1)
+    - [3.1 Note Organizer and Management Interface](#31-note-organizer-and-management-interface)
+    - [3.2 List & Checklist Typography & Keyboard Ergonomics](#32-list--checklist-typography--keyboard-ergonomics)
+    - [3.3 Free-Form In-Text Tagging with Autocompletion](#33-free-form-in-text-tagging-with-autocompletion)
+  - [4. Planned Backlog (Tier 2)](#4-planned-backlog-tier-2)
+    - [4.1 Intelligent Note Deletion Safety & Trash Lifecycle](#41-intelligent-note-deletion-safety--trash-lifecycle)
+    - [4.2 Focus-Aware Minimalist Desktop Chrome](#42-focus-aware-minimalist-desktop-chrome)
+    - [4.3 Retire List Item Prefix Preference](#43-retire-list-item-prefix-preference)
+    - [4.4 Bidirectional Note Linking (`[[Note Title]]`)](#44-bidirectional-note-linking-note-title)
+    - [4.5 AppImage Provenance and Signature Verification](#45-appimage-provenance-and-signature-verification)
+    - [4.6 AppImage Update Information Embedding](#46-appimage-update-information-embedding)
+  - [5. Deferred / Incubating Concepts (Tier 4)](#5-deferred--incubating-concepts-tier-4)
+    - [5.1 Google Keep Backend Synchronization](#51-google-keep-backend-synchronization)
+    - [5.2 Windows Backup and Sync Compatibility Hardening](#52-windows-backup-and-sync-compatibility-hardening)
+  - [6. Completed Initiatives](#6-completed-initiatives)
+    - [6.1 Native Model Context Protocol (MCP) Server](#61-native-model-context-protocol-mcp-server)
+    - [6.2 Markdown Storage with YAML Front Matter \& Live Rendering](#62-markdown-storage-with-yaml-front-matter--live-rendering)
+    - [6.3 Typography Customization \& Obfuscated Scribbly Mode](#63-typography-customization--obfuscated-scribbly-mode)
+    - [6.4 Local Full-Text Search \& Interactive Popover](#64-local-full-text-search--interactive-popover)
+    - [6.5 Daily Routine Adoption \& Presence](#65-daily-routine-adoption--presence)
+    - [6.6 Automated Git Backup and Remote Synchronization](#66-automated-git-backup-and-remote-synchronization)
 
 ---
 
 ## 1. Evaluation Summary & Score Matrix
 
-The score matrix is curated to include only non-completed roadmap candidates (active, planned, deferred, or incubating). Once an initiative ships, remove it from this matrix and keep its historical record in [Section 5: Completed Initiatives](#5-completed-initiatives).
+The score matrix is curated to include only non-completed roadmap candidates (active, planned, deferred, or incubating). Once an initiative ships, remove it from this matrix and keep its historical record in [Section 6: Completed Initiatives](#6-completed-initiatives).
 
 | Feature Concept | Impact (40%) | Alignment (35%) | Feasibility (25%) | Composite Score | Tier / Status |
 | :--- | :---: | :---: | :---: | :---: | :---: |
 | **Note Organizer & Management Interface** | 4.4 | 4.6 | 4.2 | **4.42** | 🟢 Tier 1 (Active Priority) |
+| **List & Checklist Ergonomics & Typography** | 4.2 | 4.5 | 4.0 | **4.26** | 🟢 Tier 1 (Active Priority) |
+| **Focus-Aware Minimalist Desktop Chrome** | 3.6 | 4.2 | 4.2 | **3.96** | 🟢 Tier 1 (Active Priority) |
 | **Free-Form In-Text Tagging (`#tag`)** | 4.0 | 4.0 | 3.8 | **3.95** | 🟢 Tier 1 (Active Priority) |
-| **Bidirectional Note Linking (`[[Note]]`)** | 3.8 | 3.6 | 3.4 | **3.63** | 🟡 Tier 2 (Planned Backlog) |
-| **Note Archiving & Trash Lifecycle** | 3.4 | 3.8 | 4.2 | **3.74** | 🟡 Tier 2 (Planned Backlog) |
+| **Intelligent Deletion Safety & Trash Lifecycle** | 4.0 | 4.0 | 3.8 | **3.95** | 🟢 Tier 1 (Active Priority) |
 | **Retire List Item Prefix Preference** | 3.4 | 4.5 | 4.6 | **4.09** | 🟡 Tier 2 (Planned Backlog) |
-| **AppImage Update Info Embedding** | 3.0 | 4.2 | 4.5 | **3.72** | 🟡 Tier 2 (Planned Backlog) |
 | **AppImage Provenance & Signatures** | 3.2 | 4.4 | 4.0 | **3.92** | 🟡 Tier 2 (Planned Backlog) |
+| **AppImage Update Info Embedding** | 3.0 | 4.2 | 4.5 | **3.72** | 🟡 Tier 2 (Planned Backlog) |
+| **Bidirectional Note Linking (`[[Note]]`)** | 3.8 | 3.6 | 3.4 | **3.63** | 🟡 Tier 2 (Planned Backlog) |
 | **Google Keep Backend Sync** | 3.0 | 1.8 | 1.2 | **2.13** | 🔴 Tier 4 (Deferred) |
 | **Windows Backup & Sync Compatibility Hardening** | 1.9 | 2.0 | 1.4 | **1.79** | 🔴 Tier 4 (Deferred, Lowest Priority) |
 
 ---
 
-## 2. High-Priority Initiatives (Tier 1)
+## 2. Fast-Track Quality & Bug Polish (v1.3.x Target)
 
-### 2.1 Note Organizer and Management Interface
+Targeted, self-contained fixes and ergonomics refinements to address active friction points without requiring full architectural refactors:
+
+* 🔍 **Scroll Zoom Modifier Desynchronization**: Fix intermittent triggering of zoom/unzoom when scrolling notes without Ctrl held down (replace fragile static key-tracking boolean with direct `event.get_modifier_state()` / `CONTROL_MASK` inspection on scroll events).
+* 🛡️ **Git Backup Cheat Sheet Exclusion**: Explicitly exclude the built-in ephemeral cheat sheet note (`CHEAT_SHEET_ID`) in `GitSyncService.should_sync_note()` and `.gitignore` so tutorial notes never create Git commits or pollute remote repositories.
+* 🪟 **Window Maximization Guardrail**: Set explicit window sizing constraints or unmap header double-click maximize behavior in `StickyNoteWindow` so double-clicking the title bar does not stretch floating sticky notes full-screen.
+* 🌓 **Title Editing Dark Mode Artifacts**: Clean up CSS background and border styling for the active state in `EditableLabel` to prevent contrast clipping or box bleed in dark mode.
+* 📐 **Uniform 4-Corner Window Rounding**: Harmonize `border-radius` across all four window corners and bottom edges in `Application.css` to eliminate visual discrepancies between the header and note canvas.
+* 🔒 **Read-Only / Lock Mode Guardrails**: Prevent checklist clicking (`- [ ]`), formatting shortcuts, and emoji mutations when a note is locked or set to read-only mode.
+* 📜 **Scroll Area Overflow & Shadows**: Refine `Gtk.ScrolledWindow` overshoot/undershoot styling and scrollbar behavior to keep note edges visually clean.
+
+---
+
+## 3. High-Priority Initiatives (Tier 1)
+
+### 3.1 Note Organizer and Management Interface
 * **Score**: `4.42` (Tier 1: Active Priority)
 * **Goal**: Provide an optional central manager interface (`Jots.LibraryWindow`) to organize, filter, hide/close, and restore notes without cluttering the desktop canvas.
 * **Implementation Strategy**:
@@ -61,7 +79,17 @@ The score matrix is curated to include only non-completed roadmap candidates (ac
   * **Card Grid & List View**: Visual note cards with theme color accents, titles, modification dates, and search snippets.
   * **Trash & Recovery**: Integrate soft-deletion and safe restoration.
 
-### 2.2 Free-Form In-Text Tagging with Autocompletion
+### 3.2 List & Checklist Typography & Keyboard Ergonomics
+* **Score**: `4.26` (Tier 1: Active Priority)
+* **Goal**: Elevate list and task ergonomics with hanging indents for wrapped items, real-time prefix dimming, multi-line edit stability, and dedicated checklist toggle shortcuts.
+* **Implementation Strategy**:
+  * **Hanging Indentation**: Configure `GtkTextTag` `left_margin` and negative `indent` in `MarkdownBuffer` so multi-line list entries wrap flush with text rather than falling beneath `- [ ]` or `* `.
+  * **Unified Prefix Dimming**: Extend subtle subdued styling to all list markers (`-`, `*`, `+`, `1.`), harmonizing bullet styling with checkbox prefixes.
+  * **Real-Time Prefix Tagging**: Apply prefix styling immediately upon typing `- [ ] ` or `* ` rather than waiting for post-solidification or focus change.
+  * **Buffer Edit Stability**: Harden tag re-application boundaries so modifying lines in the middle of a note preserves correct indentation and dimming for following lines.
+  * **Keyboard Toggle**: Implement a keyboard shortcut (<kbd>Ctrl</kbd>+<kbd>Enter</kbd> or <kbd>Ctrl</kbd>+<kbd>D</kbd>) to toggle `- [ ]` $\leftrightarrow$ `- [x]` on the current line or active selection.
+
+### 3.3 Free-Form In-Text Tagging with Autocompletion
 * **Score**: `3.95` (Tier 1: Active Priority)
 * **Goal**: Allow free-form `#tag` definitions anywhere in note bodies with dynamic tag indexing, autocompletion popups, and sidebar filter synergy.
 * **Implementation Strategy**:
@@ -70,49 +98,25 @@ The score matrix is curated to include only non-completed roadmap candidates (ac
 
 ---
 
-## 3. Planned Backlog (Tier 2)
+## 4. Planned Backlog (Tier 2)
 
-### 3.1 Daily Routine Adoption & Presence (Moved to Completed Initiatives)
-* **Status**: Moved to [Section 5.5: Daily Routine Adoption & Presence](#55-daily-routine-adoption--presence).
-* **Note**: The remaining manual-quit suppression/cooldown hardening is tracked as feedback-driven follow-up work and is intentionally deferred until a real user issue is reported.
-
-### 3.2 Bidirectional Note Linking (`[[Note Title]]`)
-* **Score**: `3.63` (Tier 2: Planned Backlog)
-* **Goal**: Inter-note navigation using wiki-style `[[Note Title]]` links that open or focus target sticky notes on click.
+### 4.1 Intelligent Note Deletion Safety & Trash Lifecycle
+* **Score**: `3.95` (Tier 1 / Tier 2)
+* **Goal**: Prevent accidental loss of substantive notes while streamlining single-click dismissal for blank/ephemeral notes, combined with soft-delete archiving and Git sync safety checks.
 * **Implementation Strategy**:
-  * Recognize `[[...]]` patterns in `MarkdownBuffer` and render as clickable note links.
-  * Resolve target note by UUID or Title in `NoteManager`.
+  * **Empty Note Fast-Discard**: Newly created notes with empty or zero content dismiss instantly without confirmation alerts.
+  * **Content-Aware Confirmation**: Scale confirmation prompts based on note size (standard alert for short notes; title typing or elevated warning for notes with > X words).
+  * **Git Sync Unsaved Check**: When Git Backup is active, check local Git repository status and warn explicitly if deleting notes with uncommitted changes.
+  * **Soft-Delete Archive (`.trash/`)**: Move deleted `.md` files to a `.trash/` subfolder rather than instant permanent deletion, enabling easy recovery from the Note Organizer.
 
-### 3.3 Note Archiving and Trash Bin Lifecycle
-* **Score**: `3.74` (Tier 2: Planned Backlog)
-* **Goal**: Provide a lightweight trash/archive directory instead of immediate file deletion, allowing easy recovery of accidentally discarded notes.
-
-### 3.4 AppImage Update Information Embedding
-* **Score**: `3.72` (Tier 2: Planned Backlog)
-* **Goal**: Embed [AppImage update information](https://github.com/AppImage/AppImageSpec/blob/master/draft.md#update-information) into released AppImage binaries so that tools such as `AppImageUpdate` and `appimageupdatetool` can perform efficient delta auto-updates without requiring users to re-download the full binary.
-* **Background**: The [AppImage Type 2 spec](https://github.com/AppImage/AppImageSpec/blob/master/draft.md#type-2-image-format) defines an optional `.upd-info` ELF section (a 512-byte field inside the runtime). When populated, it describes the transport mechanism and location of a `.zsync` control file. The `zsync` algorithm downloads only the changed binary blocks, making incremental upgrades fast even over metered connections.
+### 4.2 Focus-Aware Minimalist Desktop Chrome
+* **Score**: `3.96` (Tier 1 / Tier 2)
+* **Goal**: Present a pure, minimal post-it note aesthetic on the desktop by fading out header controls and action bars when notes are unfocused.
 * **Implementation Strategy**:
-  * **Transport string**: Use the `gh-releases-zsync` format to point at the GitHub Releases page:
-    ```
-    gh-releases-zsync|comicdeed|jots|latest|Jots-*-x86_64.AppImage.zsync
-    ```
-  * **Build-time injection**: Pass the `-u` flag to `appimagetool` during `packaging/appimage/build-appimage.sh` so the string is written into the `.upd-info` section of each produced AppImage.
-  * **CI artifact generation**: Extend `.github/workflows/release.yml` to run `zsyncmake` on the packaged `x86_64` and `aarch64` AppImages, producing a matching `.zsync` sidecar file per architecture, and upload both artifacts to the GitHub Release.
-  * **Packaging guardrail**: Assert in `build-appimage.sh` that the `.upd-info` section is non-empty after build (e.g., `readelf -S Jots.AppImage | grep upd_info`) to prevent silent regressions.
-  * **Architecture parity (Docker / CI)**: Per the zero-dependency-drift rule, add `zsync` / `zsyncmake` to both `packaging/appimage/Dockerfile` and the runner `apt` install step in `CI.yml` / `release.yml` simultaneously.
+  * Dim or hide header controls, close buttons, and action buttons when a sticky note window is unfocused and unhovered.
+  * Smoothly restore full controls on window focus (`is-active`) or cursor entry (`Gtk.EventControllerMotion`).
 
-### 3.5 AppImage Provenance and Signature Verification
-* **Score**: `3.92` (Tier 2: Planned Backlog)
-* **Goal**: Improve release trust and provenance by cryptographically signing shipped AppImages and publishing verification material, following the AppImage signature guidance: [Embedding a signature in an AppImage](https://docs.appimage.org/packaging-guide/optional/signatures.html).
-* **Background**: Unsigned binaries require users to trust the distribution channel alone. Embedded signatures and public verification keys allow users, downstream packagers, and automated pipelines to validate artifact origin and integrity after download.
-* **Implementation Strategy**:
-  * **Release key management**: Create a dedicated Jots release-signing GPG key, store private key material as encrypted CI secrets, and publish the armored public key in the repository and release assets.
-  * **Build-time signing**: Enable AppImage signing in `packaging/appimage/build-appimage.sh` for both `x86_64` and `aarch64` outputs so each produced artifact contains an embedded signature section.
-  * **Verification artifacts**: Attach the public key and a concise `VERIFY.md` snippet to each GitHub Release, including exact commands to validate signatures with AppImage tooling and GPG.
-  * **CI provenance checks**: Add a post-build verification stage in `.github/workflows/release.yml` that fails the release if signature extraction or signature verification fails for any architecture.
-  * **Operational hardening**: Define key rotation cadence, revocation certificate storage, and incident response steps for compromised signing keys in `docs/development/release-workflow.md`.
-
-### 3.6 Retire List Item Prefix Preference
+### 4.3 Retire List Item Prefix Preference
 * **Score**: `4.09` (Tier 2: Planned Backlog)
 * **Goal**: Reduce preference-surface complexity by removing the list item prefix selector and standardizing newly inserted Markdown unordered list markers.
 * **Background**: Markdown unordered list markers (`-`, `*`, `+`) are semantically equivalent for parsing and rendering. With Markdown-native storage now canonical, prefix selection is mostly a style choice and no longer a core functional setting.
@@ -121,62 +125,72 @@ The score matrix is curated to include only non-completed roadmap candidates (ac
   * **Preferences simplification**: Remove the list prefix control from Preferences and associated user-facing explanatory copy.
   * **Compatibility-first parsing**: Keep list detection and rendering behavior marker-agnostic so historical notes remain unchanged and require no migration.
   * **Config cleanup**: Remove the `list-prefix` GSettings key and related constants only after behavior and test updates are complete.
-  * **Test and docs alignment**: Update use-case references, unit tests, and user guide sections to reflect one insertion default and multi-marker compatibility.
-* **Acceptance Criteria**:
-  * Existing notes using `-`, `*`, or `+` still render and behave correctly.
-  * Pressing Enter on unordered list items continues with the standardized default marker.
-  * Preferences no longer expose list prefix configuration.
-  * No data migration is required.
+
+### 4.4 Bidirectional Note Linking (`[[Note Title]]`)
+* **Score**: `3.63` (Tier 2: Planned Backlog)
+* **Goal**: Inter-note navigation using wiki-style `[[Note Title]]` links that open or focus target sticky notes on click.
+* **Implementation Strategy**:
+  * Recognize `[[...]]` patterns in `MarkdownBuffer` and render as clickable note links.
+  * Resolve target note by UUID or Title in `NoteManager`.
+
+### 4.5 AppImage Provenance and Signature Verification
+* **Score**: `3.92` (Tier 2: Planned Backlog)
+* **Goal**: Improve release trust and provenance by cryptographically signing shipped AppImages and publishing verification material.
+* **Implementation Strategy**:
+  * Create a dedicated Jots release-signing GPG key and publish the armored public key.
+  * Enable AppImage signing in `packaging/appimage/build-appimage.sh` for both `x86_64` and `aarch64` outputs.
+  * Attach signature verification instructions (`VERIFY.md`) to GitHub releases.
+
+### 4.6 AppImage Update Information Embedding
+* **Score**: `3.72` (Tier 2: Planned Backlog)
+* **Goal**: Embed AppImage update information into released binaries for efficient delta auto-updates via `AppImageUpdate` / `zsyncmake`.
+* **Implementation Strategy**:
+  * Use the `gh-releases-zsync` format pointing to the GitHub Releases page.
+  * Inject `.upd-info` ELF section via `appimagetool -u` in `build-appimage.sh`.
+  * Extend `.github/workflows/release.yml` to generate and upload matching `.zsync` sidecar files.
 
 ---
 
-## 4. Deferred / Incubating Concepts (Tier 4)
+## 5. Deferred / Incubating Concepts (Tier 4)
 
-### 4.1 Google Keep Backend Synchronization
+### 5.1 Google Keep Backend Synchronization
 * **Score**: `2.13` (Tier 4: Deferred)
-* **Rationale**: While an official [Google Keep REST API](https://developers.google.com/workspace/keep/api/reference/rest) exists, Google restricts it strictly to **Google Workspace Enterprise domains** with domain-wide delegation for security auditing/CASB. It is unavailable for standard personal (consumer) `@gmail.com` Google accounts. Supporting personal accounts would require reverse-engineered web-scraping libraries (such as `gkeepapi`), which frequently break on authentication and 2FA changes. Introducing cloud synchronization dependencies also compromises Jots' core mission of robust, offline-first local simplicity.
+* **Rationale**: Google restricts the official Keep REST API strictly to Google Workspace Enterprise domains. Consumer accounts require unofficial scraping libraries which are fragile and break offline-first principles.
 
-### 4.2 Windows Backup and Sync Compatibility Hardening
+### 5.2 Windows Backup and Sync Compatibility Hardening
 * **Score**: `1.79` (Tier 4: Deferred, Lowest Priority)
 * **Goal**: Improve out-of-the-box reliability for Backup & Sync on Windows builds by reducing host-environment assumptions around Git availability and credential setup.
-* **Rationale**: Jots currently targets Linux-first distribution and the Windows path remains explicitly experimental. Backup and sync logic is cross-platform at the subprocess layer, but Windows installer/deployment flows do not currently guarantee Git presence or first-run credential ergonomics. This is quality hardening rather than a core product-direction change, and therefore intentionally sits below active Linux-centric roadmap priorities.
-* **Implementation Strategy**:
-  * Add explicit Windows prerequisites and troubleshooting steps for Git installation and authentication in `docs/development/windows.md` and `docs/user-guide.md`.
-  * Add startup/runtime capability detection (for example `git --version`) and expose clear status messaging when Git is unavailable.
-  * Improve error/status copy for non-interactive authentication failures so users can distinguish connectivity issues from credential setup requirements.
-  * Evaluate packaging-level options for bundling or bootstrapping Git in the Windows installer workflow, including update and security maintenance implications.
 
 ---
 
-## 5. Completed Initiatives
+## 6. Completed Initiatives
 
-### 5.1 Native Model Context Protocol (MCP) Server
+### 6.1 Native Model Context Protocol (MCP) Server
 * **Status**: ✅ **Completed** (v1.0.0)
 * **Summary**: Implemented standalone native Vala `jots-mcp` executable (`src/Mcp/`) and D-Bus IPC service (`io.github.comicdeed.jots.Notes`), providing line-delimited JSON-RPC 2.0 stdio communication for AI assistants (Claude Desktop, Cursor, Antigravity, Gemini CLI) with zero external Python dependencies.
 * **Documentation**: See [`docs/development/mcp-server.md`](development/mcp-server.md) and [`docs/user-guide.md`](user-guide.md#6-ai-assistant--mcp-integration).
 
-### 5.2 Markdown Storage with YAML Front Matter & Live Rendering
+### 6.2 Markdown Storage with YAML Front Matter & Live Rendering
 * **Status**: ✅ **Completed** (v1.0.0, enhanced in v1.3.0)
 * **Summary**: Replaced monolithic JSON storage with human-readable `.md` files containing YAML front-matter headers. Implemented live native `MarkdownBuffer` supporting real-time syntax highlighting for headings (`#`, `##`, `###`), bold/italic formatting, checklists (`- [ ]`, `- [x]`), blockquotes (`>`), code spans, code fences, and clickable links. Enhanced in v1.3.0 with resilient clipboard paste normalization that converts rich-text/HTML and normalizes loose Markdown while protecting code fences.
 * **Documentation**: See [`docs/architecture.md`](architecture.md#32-markdown-storage-and-serialization) and [`docs/user-guide.md`](user-guide.md#4-markdown-formatting--live-rendering).
 
-### 5.3 Typography Customization & Obfuscated Scribbly Mode
+### 6.3 Typography Customization & Obfuscated Scribbly Mode
 * **Status**: ✅ **Completed** (v1.0.0)
 * **Summary**: Added global font family and font size preferences via `Gtk.FontDialog` with strict monospace filtering for code fonts, coupled with unfocused privacy obfuscation using `Redacted Script` scribbles.
 * **Documentation**: See [`docs/user-guide.md`](user-guide.md#3-typography-customization).
 
-### 5.4 Local Full-Text Search & Interactive Popover
+### 6.4 Local Full-Text Search & Interactive Popover
 * **Status**: ✅ **Completed** (v1.0.0)
 * **Summary**: Implemented hybrid in-memory and disk full-text search engine (`Jots.SearchService`) and interactive desktop popover (`Jots.SearchPopover`) with relevance scoring, snippet extraction, and keyboard navigation (`Ctrl + F` / `Ctrl + Shift + F`).
 * **Documentation**: See [`docs/user-guide.md`](user-guide.md#searching-notes).
 
-### 5.5 Daily Routine Adoption & Presence
+### 6.5 Daily Routine Adoption & Presence
 * **Status**: ✅ **Completed**
-* **Summary**: Delivered packaging-aware launch guidance for disconnected MCP requests and explicit autostart control with runtime-aware command resolution. `jots-mcp` now returns actionable launch commands based on runtime packaging context (Flatpak/AppImage/Native), enabling assistant-driven recovery by launching the app and retrying. Autostart controls are synchronized to on-disk registration state to keep user intent and actual startup behavior aligned.
-* **Deferred hardening (intentional)**: Manual-quit suppression/cooldown behavior remains deferred and will be implemented only if validated user feedback indicates relaunch-loop friction.
-* **Documentation**: See [`docs/development/mcp-server.md`](development/mcp-server.md#5-application-disconnected-handling), [`docs/user-guide.md`](user-guide.md#5-preferences-and-customization), and [`docs/user-guide.md`](user-guide.md#6-ai-assistant--mcp-integration).
+* **Summary**: Delivered packaging-aware launch guidance for disconnected MCP requests and explicit autostart control with runtime-aware command resolution. `jots-mcp` now returns actionable launch commands based on runtime packaging context (Flatpak/AppImage/Native).
+* **Documentation**: See [`docs/development/mcp-server.md`](development/mcp-server.md#5-application-disconnected-handling) and [`docs/user-guide.md`](user-guide.md#5-preferences-and-customization).
 
-### 5.6 Automated Git Backup and Remote Synchronization
+### 6.6 Automated Git Backup and Remote Synchronization
 * **Status**: ✅ **Completed** (v1.3.0)
 * **Summary**: Integrated non-blocking background Git backup and remote synchronization service (`Jots.GitSyncService`). Features include debounced auto-commits on note edit/deletion, configurable periodic push intervals, on-demand "Sync now" trigger, remote reachability connectivity tests, automatic allowlist-based `.gitignore` policy enforcement, and asynchronous `GLib.Subprocess` execution without UI thread blocking.
 * **Documentation**: See [`docs/architecture.md`](architecture.md#35-backup-remote-state-matrix-gitsyncservice) and [`docs/user-guide.md`](user-guide.md#5-preferences-and-customization).

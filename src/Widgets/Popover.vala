@@ -12,7 +12,6 @@
 */
 public class Jots.Popover : Gtk.Popover {
 
-    public Gtk.EventControllerKey keypress_controller;
     public Gtk.EventControllerScroll scroll_controller;
 
     private Jots.ColorBox color_box;
@@ -103,12 +102,10 @@ public class Jots.Popover : Gtk.Popover {
         child = view;
 
         // Allow scrolling shenanigans from popover
-        keypress_controller = new Gtk.EventControllerKey ();
         scroll_controller = new Gtk.EventControllerScroll (VERTICAL) {
             propagation_phase = Gtk.PropagationPhase.CAPTURE
         };
 
-        ((Gtk.Widget)this).add_controller (keypress_controller);
         ((Gtk.Widget)this).add_controller (scroll_controller);
 
         // Propagate settings changes to the higher level

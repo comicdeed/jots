@@ -91,6 +91,7 @@
                 <p>Jots 1.3.0 introduces automated Git backup &amp; remote sync, resilient smart clipboard paste, interactive checklists, and refined desktop note ergonomics.</p>
                 <p>Highlights (✨ indicates new in this beta):</p>
                 <ul>
+                    <li>✨ Action bar auto-hides automatically on unfocused or idle notes for a clean, minimal canvas, revealing smoothly on hover (toggle with Ctrl+T).</li>
                     <li>✨ Checklists are interactive: click directly on checkboxes to complete tasks, or toggle items quickly with Ctrl+D or Ctrl+Enter.</li>
                     <li>✨ Read-only notes are fully protected against accidental typing, paste, and list changes.</li>
                     <li>✨ Note titles feel cleaner to edit with pill-shaped focus highlights, crisp dark mode text, and click-to-dismiss header areas.</li>

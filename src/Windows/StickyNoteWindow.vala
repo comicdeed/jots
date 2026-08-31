@@ -154,12 +154,18 @@ public class Jots.StickyNoteWindow : Gtk.ApplicationWindow {
         queue_draw ();
     }
 
+    private uint delayed_show_timeout_id = 0;
+
     /**
     * Show Actionbar shortly after the window is shown
     * This is more for the Aesthetic
     */
     private void delayed_show () {
-        Timeout.add_once (250, bind_hidebar);
+        delayed_show_timeout_id = Timeout.add (250, () => {
+            delayed_show_timeout_id = 0;
+            bind_hidebar ();
+            return Source.REMOVE;
+        });
         show.disconnect (delayed_show);
     }
 
@@ -343,24 +349,21 @@ public class Jots.StickyNoteWindow : Gtk.ApplicationWindow {
         }
     }
 
+    public override void dispose () {
+        if (search_popover != null) {
+            search_popover.unparent ();
+            search_popover = null;
+        }
+
+        if (delayed_show_timeout_id != 0) {
+            Source.remove (delayed_show_timeout_id);
+            delayed_show_timeout_id = 0;
+        }
+
+        base.dispose ();
+    }
+
     ~StickyNoteWindow () {
         debug ("Destroying %s", view.title);
-
-        search_popover.unparent ();
-
-        keypress_controller.key_pressed.disconnect (zoom_controller.on_key_press_event);
-        keypress_controller.key_released.disconnect (zoom_controller.on_key_release_event);
-        scroll_controller.scroll.disconnect (zoom_controller.on_scroll);
-        gesturezoom_controller.scale_changed.disconnect (zoom_controller.on_pinch);
-
-        view.editablelabel.changed.disconnect (on_editable_changed);
-        view.textview.buffer.changed.disconnect (has_changed);
-        popover.theme_changed.disconnect (color_controller.on_color_changed);
-        popover.readonly_toggled.disconnect (on_popover_readonly_toggled);
-        popover.always_visible_toggled.disconnect (on_popover_always_visible_toggled);
-
-        color_controller.dispose ();
-        zoom_controller.dispose ();
-        scribbly_controller.dispose ();
     }
 }

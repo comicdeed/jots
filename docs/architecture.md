@@ -6,15 +6,24 @@ This document provides a comprehensive technical reference for the internal arch
 
 ## 1. System Overview & Component Hierarchy
 
-Jots is a lightweight sticky notes application built for Linux desktops (GNOME, elementary OS, KDE Plasma, XFCE). It is written in **Vala** and uses pure **GTK 4** with bundled GResource symbolic assets.
+Jots is a lightweight sticky notes application written in **Vala** with pure **GTK 4** and bundled GResource symbolic assets. Runtime behavior and packaging are Linux-first (GNOME, elementary OS, KDE Plasma, XFCE), with an experimental Windows build path.
 
 ```mermaid
 graph TD
     App[Application.vala] --> NM[NoteManager.vala]
     App --> NS[NoteService.vala]
+    App --> GSS[GitSyncService.vala]
+    App --> FC[FontController.vala]
+    App --> PW[PreferenceWindow.vala]
+
     NS -->|Invokes Operations| NM
-    NM -->|Load/Save State| Store[Storage.vala]
+    PW --> PV[PreferencesView.vala]
+    PV -->|Triggers Manual Sync/Test| GSS
+
+    NM -->|Load/Save Notes| Store[Storage.vala]
+    NM -->|Search Index + Queries| SS[SearchService.vala]
     NM -->|Manages| SNW[StickyNoteWindow.vala]
+
     SNW -->|Houses| NV[NoteView.vala]
     SNW -->|Owns| CC[ColorController.vala]
     SNW -->|Owns| ZC[ZoomController.vala]
@@ -45,8 +54,10 @@ graph TD
 ### 2.3 Services & Coordination (`src/Services/`)
 * **`NoteManager.vala`**: The central coordinator. Manages the active window registry (`open_notes`), creates and destroys windows, coordinates debounced auto-saving, and enforces active note ceilings (`MAX_ACTIVE_NOTES = 50`).
 * **`NoteService.vala`**: Native D-Bus service exposing the `io.github.comicdeed.jots.Notes` interface on the session bus. Allows external processes (CLI, desktop scripts, MCP adapters) to query, create, edit, search, and delete notes live on the desktop.
+* **`SearchService.vala`**: Provides in-memory plus storage-backed note search with relevance scoring and JSON-oriented result shaping used by `NoteManager` and D-Bus query paths.
 * **`Storage.vala`**: Encapsulates disk persistence of individual Markdown files with YAML front matter (`~/.local/share/io.github.comicdeed.jots/notes/<id>.md`) and handles automatic legacy JSON migration. Completely insulated from external consumers by the D-Bus service boundary.
 * **`MarkdownSerializer.vala`**: Lightweight YAML front matter parser and Markdown serializer for `NoteData`.
+* **`GitSyncService.vala`**: Handles local Git backup commit orchestration, remote synchronization cadence, divergence detection, and sync status reporting through GSettings-backed state.
 * **`ColorController.vala`**: Manages CSS theme class assignment on note windows.
 * **`ZoomController.vala`**: Handles pinch gestures, `Ctrl` + scroll wheel, and zoom step key bindings.
 * **`ScribblyController.vala`**: Controls the background text scribble aesthetic effect on unfocused notes.
@@ -91,7 +102,7 @@ sequenceDiagram
 ### 3.3 Debounced Auto-Saving (Typing Flow)
 1. Keystrokes in `TextView` or edits in `EditableLabel` trigger `has_changed()`.
 2. `NoteManager.save_all()` is called, resetting the debounce timer (`DEBOUNCE = 900ms`).
-3. When the debounce timer elapses, `immediately_save()` packages all active `StickyNoteWindow`s into a JSON array and writes to disk atomically.
+3. When the debounce timer elapses, `immediately_save()` persists each active `StickyNoteWindow` individually via `Storage.save_note()` as Markdown with YAML front matter.
 
 ### 3.4 Deletion and Undo Recovery
 1. User invokes `Ctrl+W` or clicks delete (or external tool calls `DeleteNote(id)`).
@@ -105,19 +116,20 @@ sequenceDiagram
 
 | Scenario | Local Has Commits | Remote Has Commits | Branch Relation | Expected Status Outcome |
 | :--- | :---: | :---: | :--- | :--- |
-| A | No | No | Same branch | `ready-no-local-commit` |
-| B | No | Yes | Same branch | `remote-diverged-no-local-commit` |
-| C | No | Yes | Different branch name | `remote-diverged-no-local-commit` (remote content detected via any `origin/*` head) |
-| D | Yes | No | Same branch | `remote-synced` |
-| E | Yes | Yes | Same branch, local ahead | `remote-synced` |
-| F | Yes | Yes | Same branch, local behind only | `ready` (after pull/rebase path) |
-| G | Yes | Yes | Same branch, histories diverged | `remote-diverged` |
+| A | No | No | Same branch | `Backup repository ready` |
+| B | No | Yes | Same branch | `Remote changes detected; sync update needed` |
+| C | No | Yes | Different branch name | `Remote changes detected; sync update needed` (remote content detected via any `origin/*` head) |
+| D | Yes | No | Same branch | `Backup synchronized with remote repository` |
+| E | Yes | Yes | Same branch, local ahead | `Backup synchronized with remote repository` |
+| F | Yes | Yes | Same branch, local behind only | `Backup repository ready` (after pull/rebase path) |
+| G | Yes | Yes | Same branch, histories diverged | `Remote changes detected; sync update needed` |
 
 Implementation notes:
 
 * Branch resolution first attempts `rev-parse --abbrev-ref HEAD`, then falls back to `symbolic-ref --short HEAD` for unborn branch states.
 * When local history is empty, remote presence is detected from any fetched `origin/*` branch head (excluding `origin/HEAD`) to support both `main` and `master` conventions.
 * Divergence remains a guarded state and does not auto-force merge conflicting histories.
+* Git command execution assumes `git` is available on `PATH`; Windows builds currently rely on host-level Git installation for backup/sync.
 
 ---
 

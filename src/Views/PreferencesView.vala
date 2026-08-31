@@ -488,41 +488,6 @@ namespace Jots {
         }
 
         ~PreferencesView () {
-            if (list_dropdown != null && list_dropdown_handler_id != 0) {
-                list_dropdown.disconnect (list_dropdown_handler_id);
-                list_dropdown_handler_id = 0;
-            }
-
-            if (cadence_dropdown != null && cadence_dropdown_handler_id != 0) {
-                cadence_dropdown.disconnect (cadence_dropdown_handler_id);
-                cadence_dropdown_handler_id = 0;
-            }
-
-            if (default_font_button != null && default_font_button_handler_id != 0) {
-                default_font_button.disconnect (default_font_button_handler_id);
-                default_font_button_handler_id = 0;
-            }
-
-            if (mono_font_button != null && mono_font_button_handler_id != 0) {
-                mono_font_button.disconnect (mono_font_button_handler_id);
-                mono_font_button_handler_id = 0;
-            }
-
-            if (import_jorts_button != null && import_jorts_button_handler_id != 0) {
-                import_jorts_button.disconnect (import_jorts_button_handler_id);
-                import_jorts_button_handler_id = 0;
-            }
-
-            if (sync_now_button != null && sync_now_button_handler_id != 0) {
-                sync_now_button.disconnect (sync_now_button_handler_id);
-                sync_now_button_handler_id = 0;
-            }
-
-            if (test_connection_button != null && test_connection_button_handler_id != 0) {
-                test_connection_button.disconnect (test_connection_button_handler_id);
-                test_connection_button_handler_id = 0;
-            }
-
             if (backup_enabled_handler_id != 0) {
                 Application.settings.disconnect (backup_enabled_handler_id);
                 backup_enabled_handler_id = 0;

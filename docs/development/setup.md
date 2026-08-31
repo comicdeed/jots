@@ -147,7 +147,41 @@ Targeted package-mode tests require full packaged runtime setup. Use devel AppIm
 
 ---
 
-## 5. Next Steps
+## 5. Runtime & Debugging Environment Variables
+
+Jots recognizes several environment variables for diagnostic logging, appearance testing, headless automation, and sync configuration:
+
+| Variable | Scope / Subsystem | Description & Usage |
+|---|---|---|
+| `G_MESSAGES_DEBUG=all` | GLib Logging | Enables verbose `debug ()` log output for all Jots components (storage, window lifecycle, MCP, D-Bus, portal events). |
+| `G_DEBUG=fatal-criticals` | GLib Diagnostics | Forces immediate abort/core dump on any `GLib-CRITICAL` or `Gtk-WARNING`, ideal when running under `gdb`. |
+| `FORCE_DARK=1` | Appearance / Theming | Forces dark mode palette and rich-tinted sticky note styling regardless of desktop portal settings. |
+| `FORCE_LIGHT=1` | Appearance / Theming | Forces light mode palette and pastel sticky note styling regardless of desktop portal settings. |
+| `GTK_THEME=<ThemeName>` | GTK4 Theming | Overrides the active GTK theme (e.g., `GTK_THEME=Adwaita:dark`). |
+| `GSK_RENDERER=cairo` | GTK4 Rendering | Forces Cairo software rendering instead of Vulkan/GL (used for headless Xvfb / CI testing). |
+| `GTK_A11Y=none` | GTK4 Accessibility | Disables accessibility bus lookup in headless and automated unit test environments. |
+| `JOTS_GIT_COMMAND_TIMEOUT_SECONDS` | Git Backup & Sync | Overrides the default timeout (in seconds) for background Git CLI subprocess invocations. |
+
+### Quick Examples
+
+Run Jots with full debug output:
+```bash
+G_MESSAGES_DEBUG=all ./dist/Jots-devel-1.3.0-beta.3-x86_64.AppImage
+```
+
+Test dark appearance independently of desktop environment settings:
+```bash
+FORCE_DARK=1 ./dist/Jots-devel-1.3.0-beta.3-x86_64.AppImage
+```
+
+Debug critical warnings with GDB:
+```bash
+gdb -ex "set env G_DEBUG=fatal-criticals" -ex r --args ./dist/Jots-devel-1.3.0-beta.3-x86_64.AppImage
+```
+
+---
+
+## 6. Next Steps
 * **System Architecture**: Read [`docs/architecture.md`](../architecture.md) for subsystem boundaries and D-Bus interfaces.
 * **Use-Case Library**: Browse [`docs/use-cases/`](../use-cases/) for behavioral test specifications.
 * **Pull Request Guidelines**: Review [`docs/development/pull-request-guidelines.md`](pull-request-guidelines.md) before submitting contributions.

@@ -163,8 +163,10 @@ public class Jots.Application : Gtk.Application {
         // GSettings tracks user intent; the .desktop file on disk is ground truth.
         sync_autostart_state ();
 #endif
-        var action_restore = lookup_action (Application.ACTION_RESTORE_LAST);
-        ((SimpleAction)action_restore).set_enabled (false);
+        var action_restore = lookup_action (Application.ACTION_RESTORE_LAST) as SimpleAction;
+        if (action_restore != null) {
+            action_restore.set_enabled (false);
+        }
 
         // Set default icon theme
         gtk_settings = Gtk.Settings.get_default ();
@@ -173,16 +175,6 @@ public class Jots.Application : Gtk.Application {
         }
 
         init_color_scheme_sync ();
-
-        print ("""
-🎉✨ ACTIVATING: SUPER COOL JOTS 😎🔥❗🎶🤌
-Your Notes are all belong to us!
-      _       _
-    (\o/)   (\o/)    <--- Tiny electric angels working in the background
-     /_\     /_\
-
-Please wait while the app remembers all the things…
-""");
 
         /* Quit if all sticky notes are closed and preferences arent shown */
         window_removed.connect (check_if_quit);
@@ -391,10 +383,9 @@ Please wait while the app remembers all the things…
                 debug ("XDG Portal SettingChanged received color-scheme: %u", scheme);
                 if (scheme == 1) {
                     gtk_settings.gtk_application_prefer_dark_theme = true;
-                } else if (scheme == 2) {
-                    gtk_settings.gtk_application_prefer_dark_theme = false;
                 } else {
-                    gtk_settings.gtk_application_prefer_dark_theme = (gtk_settings.gtk_theme_name != null && gtk_settings.gtk_theme_name.down ().contains ("dark"));
+                    // FreeDesktop Portal: 2 = prefer-light, 0 = default / no-preference (light)
+                    gtk_settings.gtk_application_prefer_dark_theme = false;
                 }
                 update_all_windows_dark_mode ();
             }
@@ -439,12 +430,10 @@ Please wait while the app remembers all the things…
                 debug ("XDG Portal Read color-scheme: %u", scheme);
                 if (scheme == 1) { // 1 = prefer-dark
                     is_dark = true;
-                    portal_resolved = true;
-                } else if (scheme == 2) { // 2 = prefer-light
+                } else { // 2 = prefer-light, 0 = default / no-preference
                     is_dark = false;
-                    portal_resolved = true;
                 }
-                // scheme == 0 is "No preference" (do not mark resolved, check theme name)
+                portal_resolved = true;
             }
         } catch (GLib.Error e) {
             debug ("XDG Portal Settings.Read fallback: %s", e.message);
@@ -463,6 +452,11 @@ Please wait while the app remembers all the things…
     }
 
     public void update_all_windows_dark_mode () {
+        if (note_manager != null) {
+            foreach (var note in note_manager.open_notes) {
+                note.sync_dark_mode ();
+            }
+        }
         foreach (var win in get_windows ()) {
             if (win is StickyNoteWindow) {
                 ((StickyNoteWindow)win).sync_dark_mode ();

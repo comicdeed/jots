@@ -75,6 +75,16 @@ public class Jots.PreferenceWindow : Gtk.Window {
 
         this.child = handle;
 
+        var key_controller = new Gtk.EventControllerKey ();
+        key_controller.key_pressed.connect ((keyval, keycode, state) => {
+            if (keyval == Gdk.Key.Escape || ((state & Gdk.ModifierType.CONTROL_MASK) != 0 && (keyval == Gdk.Key.w || keyval == Gdk.Key.W))) {
+                this.close ();
+                return true;
+            }
+            return false;
+        });
+        ((Gtk.Widget)this).add_controller (key_controller);
+
         set_focus (prefview.close_button);
     }
 }

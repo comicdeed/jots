@@ -34,39 +34,30 @@ private void on_switch_active_changed () {
 
 ---
 
-### Rule VCS-02 · Always Disconnect Signals in the Destructor
+### Rule VCS-02 · Vala Signal Lifecycles & GTK4 Widget Ownership
 
-Every signal connected in a constructor or `construct` block **must** have a matching `disconnect` call in `~ClassName ()`.
+Understand how `valac` and GTK4 manage signal connections to avoid both memory leaks and fatal double-disconnection crashes:
 
-❌ **Wrong — signal connected, never disconnected:**
-```vala
-construct {
-    popover.readonly_toggled.connect (on_readonly_toggled);
-}
+1. **Automatic Lifetime Management (`g_signal_connect_object`)**:
+   When connecting an instance method of a target GObject to a signal (e.g. `source.signal.connect (this.on_signal)` or `source.signal.connect (controller.on_event)`), the Vala compiler generates:
+   ```c
+   g_signal_connect_object (source, "signal-name", (GCallback) on_signal, self, 0);
+   ```
+   `g_signal_connect_object` tracks `self` via a weak reference and **automatically unhooks the signal handler the moment `self` is finalized**.
+   - ❌ **Do NOT manually call `disconnect ()` in `~Destructor ()` for standard instance methods on child widgets or GObjects.** Calling `disconnect` in `finalize` attempts to remove an already-cleared handler ID, emitting `GLib-GObject-CRITICAL **: instance ... has no handler with id` and corrupting GObject's internal signal handler table.
 
-~StickyNoteWindow () {
-    // Missing disconnect → window leaks
-}
-```
+2. **GTK4 Widget & EventController Ownership**:
+   - In GTK4, container widgets own their child widgets and attached `Gtk.EventController`s (`GestureClick`, `EventControllerKey`, `EventControllerScroll`, etc.).
+   - When a parent widget or window is destroyed/disposed, GTK4 recursively destroys and disconnects all attached controllers. Never add manual `.disconnect ()` calls for internal child widgets or controllers in `~Destructor ()`.
 
-✅ **Correct:**
-```vala
-construct {
-    popover.readonly_toggled.connect (on_readonly_toggled);
-    popover.always_visible_toggled.connect (on_always_visible_toggled);
-}
+3. **When Explicit Disconnection IS Required**:
+   - **GLib Event Loop Sources**: Raw timers and idles (`Timeout.add`, `Idle.add`) return raw `uint source_id`s managed by `GMainContext`, not GObject. Store them (`private uint timeout_id = 0;`) and always cancel them (`if (timeout_id != 0) { Source.remove (timeout_id); timeout_id = 0; }`) in `dispose ()` or `~Destructor ()`.
+   - **External Long-Lived Objects with Dynamic Lifecycles**: If a widget needs to disconnect from a long-lived service or static singleton *before* the widget itself is destroyed, retain the `ulong handler_id` and disconnect explicitly.
 
-~StickyNoteWindow () {
-    popover.readonly_toggled.disconnect (on_readonly_toggled);
-    popover.always_visible_toggled.disconnect (on_always_visible_toggled);
-}
-```
-
-**Destructor Checklist for every widget/window:**
-- [ ] All `signal.connect()` calls have a matching `signal.disconnect()`.
-- [ ] All `GLib.Timeout.add()` / `GLib.Idle.add()` timers are cancelled with `GLib.Source.remove()`.
-- [ ] Floating/popover widgets are `unparent()`-ed.
-- [ ] Any owned sub-controllers call `dispose()`.
+**Teardown Checklist for Widgets & Windows:**
+- [ ] Active `GLib.Timeout.add()` / `GLib.Idle.add()` source IDs are cancelled with `GLib.Source.remove()`.
+- [ ] Popovers attached via `popover.set_parent (widget)` are unparented via `popover.unparent()` inside `public override void dispose ()` (see `VCS-33`).
+- [ ] No redundant `.disconnect()` calls in `~Destructor ()` on child widgets or controllers owned by the container.
 
 ---
 
@@ -300,10 +291,15 @@ public ToggleRow (string label_text) {
 }
 ```
 
-**Unmanaged resource cleanup:** Override `dispose ()` (not just the destructor) when the class holds resources that GObject's finaliser cannot automatically release — file handles, GLib sources, or external C objects.
+**Unmanaged resource cleanup & GtkPopover Unparenting:** Override `dispose ()` when the widget manages popovers or timer sources. In GTK4, floating popovers attached via `popover.set_parent (widget)` must be unparented during `dispose ()` *before* the container widget finalizes.
 
 ```vala
 public override void dispose () {
+    if (search_popover != null) {
+        search_popover.unparent ();
+        search_popover = null;
+    }
+
     if (timeout_id != 0) {
         GLib.Source.remove (timeout_id);
         timeout_id = 0;
@@ -312,7 +308,9 @@ public override void dispose () {
 }
 ```
 
-Use the destructor `~ClassName ()` for signal disconnects and `unparent()` calls (Vala-level cleanup). Use `dispose ()` for GLib/C-level unmanaged resource release. Both may coexist.
+**`dispose ()` vs `~ClassName ()` Lifecycle:**
+- Use `public override void dispose ()` for GTK4 widget teardown (e.g. `popover.unparent ()`) and canceling active GLib timer sources while the widget hierarchy is still intact.
+- Use `~ClassName ()` only for lightweight logging or resetting unmanaged non-GObject native memory. Never call `unparent ()` or `.disconnect ()` on child GObjects in `~ClassName ()`.
 
 ---
 

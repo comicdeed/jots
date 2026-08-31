@@ -22,6 +22,7 @@ A curated backlog of architectural enhancements, capabilities, and feature candi
     - [3.6 Retire List Item Prefix Preference](#36-retire-list-item-prefix-preference)
   - [4. Deferred / Incubating Concepts (Tier 4)](#4-deferred--incubating-concepts-tier-4)
     - [4.1 Google Keep Backend Synchronization](#41-google-keep-backend-synchronization)
+    - [4.2 Windows Backup and Sync Compatibility Hardening](#42-windows-backup-and-sync-compatibility-hardening)
   - [5. Completed Initiatives](#5-completed-initiatives)
     - [5.1 Native Model Context Protocol (MCP) Server](#51-native-model-context-protocol-mcp-server)
     - [5.2 Markdown Storage with YAML Front Matter \& Live Rendering](#52-markdown-storage-with-yaml-front-matter--live-rendering)
@@ -46,6 +47,7 @@ The score matrix is curated to include only non-completed roadmap candidates (ac
 | **AppImage Update Info Embedding** | 3.0 | 4.2 | 4.5 | **3.72** | 🟡 Tier 2 (Planned Backlog) |
 | **AppImage Provenance & Signatures** | 3.2 | 4.4 | 4.0 | **3.92** | 🟡 Tier 2 (Planned Backlog) |
 | **Google Keep Backend Sync** | 3.0 | 1.8 | 1.2 | **2.13** | 🔴 Tier 4 (Deferred) |
+| **Windows Backup & Sync Compatibility Hardening** | 1.9 | 2.0 | 1.4 | **1.79** | 🔴 Tier 4 (Deferred, Lowest Priority) |
 
 ---
 
@@ -154,6 +156,16 @@ The score matrix is curated to include only non-completed roadmap candidates (ac
 ### 4.1 Google Keep Backend Synchronization
 * **Score**: `2.13` (Tier 4: Deferred)
 * **Rationale**: While an official [Google Keep REST API](https://developers.google.com/workspace/keep/api/reference/rest) exists, Google restricts it strictly to **Google Workspace Enterprise domains** with domain-wide delegation for security auditing/CASB. It is unavailable for standard personal (consumer) `@gmail.com` Google accounts. Supporting personal accounts would require reverse-engineered web-scraping libraries (such as `gkeepapi`), which frequently break on authentication and 2FA changes. Introducing cloud synchronization dependencies also compromises Jots' core mission of robust, offline-first local simplicity.
+
+### 4.2 Windows Backup and Sync Compatibility Hardening
+* **Score**: `1.79` (Tier 4: Deferred, Lowest Priority)
+* **Goal**: Improve out-of-the-box reliability for Backup & Sync on Windows builds by reducing host-environment assumptions around Git availability and credential setup.
+* **Rationale**: Jots currently targets Linux-first distribution and the Windows path remains explicitly experimental. Backup and sync logic is cross-platform at the subprocess layer, but Windows installer/deployment flows do not currently guarantee Git presence or first-run credential ergonomics. This is quality hardening rather than a core product-direction change, and therefore intentionally sits below active Linux-centric roadmap priorities.
+* **Implementation Strategy**:
+  * Add explicit Windows prerequisites and troubleshooting steps for Git installation and authentication in `docs/development/windows.md` and `docs/user-guide.md`.
+  * Add startup/runtime capability detection (for example `git --version`) and expose clear status messaging when Git is unavailable.
+  * Improve error/status copy for non-interactive authentication failures so users can distinguish connectivity issues from credential setup requirements.
+  * Evaluate packaging-level options for bundling or bootstrapping Git in the Windows installer workflow, including update and security maintenance implications.
 
 ---
 

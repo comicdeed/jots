@@ -131,9 +131,11 @@ namespace Jots {
                         note.title = val;
                         break;
                     case "color":
-                        int color_int = int.parse (val);
-                        if (color_int >= 0 && color_int < 10) {
-                            note.theme = (Themes) color_int;
+                        int color_int;
+                        if (int.try_parse (val, out color_int)) {
+                            if (color_int >= 0 && color_int < Themes.all ().length) {
+                                note.theme = (Themes) color_int;
+                            }
                         }
                         break;
                     case "theme":
@@ -143,23 +145,25 @@ namespace Jots {
                         note.monospace = (val.down () == "true" || val == "1");
                         break;
                     case "zoom":
-                        int zoom_val = int.parse (val);
-                        if (zoom_val < ZOOM_MIN) {
-                            zoom_val = ZOOM_MIN;
-                        } else if (zoom_val > ZOOM_MAX) {
-                            zoom_val = ZOOM_MAX;
+                        int zoom_val;
+                        if (int.try_parse (val, out zoom_val)) {
+                            if (zoom_val < ZOOM_MIN) {
+                                zoom_val = ZOOM_MIN;
+                            } else if (zoom_val > ZOOM_MAX) {
+                                zoom_val = ZOOM_MAX;
+                            }
+                            note.zoom = zoom_val;
                         }
-                        note.zoom = zoom_val;
                         break;
                     case "width":
-                        int w = int.parse (val);
-                        if (w > 50) {
+                        int w;
+                        if (int.try_parse (val, out w) && w >= 50) {
                             note.width = w;
                         }
                         break;
                     case "height":
-                        int h = int.parse (val);
-                        if (h > 50) {
+                        int h;
+                        if (int.try_parse (val, out h) && h >= 50) {
                             note.height = h;
                         }
                         break;

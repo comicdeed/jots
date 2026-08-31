@@ -2,7 +2,8 @@
 name: vala-code-review
 description: >-
    Comprehensive code-review skill for Vala and GTK4 desktop applications.
-   Use when asked to review a Vala change, PR, or diff, or to run a safety/quality audit before merge.
+   Use when asked to review a Vala change, PR, or diff, or to run a safety/quality audit before merge,
+   or to conduct a full repository health and tech-debt audit.
    Trigger on requests such as "review this Vala PR", "audit signal lifecycle", "check null and cast safety",
    "verify GTK4 memory cleanup", "do a senior GNOME review", or "validate tests and edge cases".
    Audits memory management (reference cycles, weak references, GLib source removal), null safety,
@@ -30,6 +31,7 @@ Use this skill when the task is code-review driven rather than implementation dr
 1. **Diff Scope Analysis**:
    - Inspect the complete changeset between the target base branch (`develop` or `main`) and `HEAD` (`git diff <base>...HEAD`).
    - Catalog all modified, added, and removed files.
+   - For full codebase audits: Traverse the `src/` directory and map out module boundaries, global state, and system-wide patterns rather than focusing on a diff.
 
 2. **Systematic Checklist Auditing**:
    - Cross-examine the changes against each category in the [Audit Checklist](#-audit-checklist).
@@ -46,7 +48,7 @@ Use this skill when the task is code-review driven rather than implementation dr
    Produce a structured report with:
    - **Executive Summary**
    - **Strengths & Architecture Highlights**
-   - **Detailed Findings & Recommendations** (Ranked by severity: 🔴 High, 🟡 Medium, 🟢 Low / Nit) with exact file/line references and concrete code fixes.
+   - **Detailed Findings & Recommendations** (Ranked by priority: P1 (Critical/High Impact), P2 (Moderate/Tech Debt), P3 (Low/Quick Wins), P4 (Nitpicks)) with exact file/line references and concrete code fixes.
    - **Verdict / Sign-off Recommendation** (`APPROVED`, `REQUEST CHANGES`, or `BLOCKED`).
 
 ---
@@ -58,7 +60,7 @@ Use this skill when the task is code-review driven rather than implementation dr
 
 ### 1. Memory Management & Signal Lifecycles
 * [ ] **VCS-01 — No Lambda Cycles**: Signal connections use named instance methods, never lambdas that capture `this` or any instance field.
-* [ ] **VCS-02 — Destructor Disconnects**: Every `signal.connect()` has a matching `signal.disconnect()` in `~ClassName ()`. Also checks: GLib sources removed, popovers unparented, sub-controllers disposed.
+* [ ] **VCS-02 — Signal & Resource Lifecycle**: GObject instance method connections rely on Vala's automatic `g_signal_connect_object` cleanup. Never manually disconnect child widget or controller signals in `~Destructor ()`. Active GLib sources (`Timeout.add`, `Idle.add`) must be tracked and cancelled via `Source.remove()`.
 * [ ] **VCS-03 — weak vs unowned**: Back-references from child objects use `weak` (nullable, tracked). Short-lived borrows use `unowned` (non-owning, non-nullable).
 * [ ] **VCS-04 — No Raw Pointers**: No `void*`, `uint8*`, or raw pointer casts in application code. Isolate all C-interop in `[CCode]` binding files.
 
@@ -78,7 +80,7 @@ Use this skill when the task is code-review driven rather than implementation dr
 * [ ] **VCS-30 — GObject Property Syntax**: Properties use Vala `get; set;` syntax rather than ad-hoc getter/setter methods.
 * [ ] **VCS-31 — No Base-Class Property Shadowing**: Custom property names do not collide with `Gtk.Widget` / `Gtk.Box` / `Gtk.Window` inherited properties.
 * [ ] **VCS-32 — Service/UI Decoupling**: Services and controllers operate through `weak Gtk.Window` references and public properties — never by casting to concrete window subclasses.
-* [ ] **VCS-33 — construct Blocks & dispose()**: Object properties are set via `Object (...)` or `construct`. Classes holding unmanaged resources (GLib sources, file handles) override `dispose ()` and call `base.dispose ()`.
+* [ ] **VCS-33 — construct Blocks, Popover Unparenting & dispose()**: Object properties are set via `Object (...)` or `construct`. Popovers attached via `set_parent` are unparented via `.unparent()` in `dispose ()`. Classes holding unmanaged resources (GLib sources, file handles) override `dispose ()` and call `base.dispose ()`.
 
 ### 6. Error Handling & Robustness
 * [ ] **VCS-50 — throws with errordomain**: Fallible methods declare `throws` with a named `errordomain`. No silent `bool` return codes for failure conditions.
@@ -89,3 +91,7 @@ Use this skill when the task is code-review driven rather than implementation dr
 * [ ] **Boundary Conditions**: Tests cover empty strings, whitespace-only inputs, max-length limits, and special regex characters (`- [ ]`, `*`, `+`, `()`).
 * [ ] **Identifier Uniqueness**: Use-case identifiers follow domain numbering without collisions (e.g., `/SearchService/UC_80_10_...`).
 * [ ] **Null & Error Paths**: Tests exercise `null` inputs and error-path branches, not only happy paths.
+
+### 8. Architectural Boundaries & System Health
+* [ ] **State Management**: Global state is minimized. UI components do not hold authoritative business logic state.
+* [ ] **System-Wide Performance**: No heavy synchronous I/O or blocking operations on the main GTK thread across module boundaries.

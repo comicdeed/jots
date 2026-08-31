@@ -85,12 +85,12 @@ namespace Jots {
 
             var menuitem_pref = new GLib.MenuItem (
                 _("Show Preferences"),
-                Application.ACTION_PREFIX + Application.ACTION_SHOW_PREFERENCES
+                ACTION_APP_PREFIX + ACTION_SHOW_PREFERENCES
             );
 
             var menuitem_quit = new GLib.MenuItem (
                 _("Quit Jots"),
-                Application.ACTION_PREFIX + Application.ACTION_QUIT
+                ACTION_APP_PREFIX + ACTION_QUIT
             );
 
             var extra = new GLib.Menu ();
@@ -156,6 +156,10 @@ namespace Jots {
         }
 
         public void toggle_list () {
+            if (!editable) {
+                return;
+            }
+
             Gtk.TextIter start, end;
             buffer.get_selection_bounds (out start, out end);
 
@@ -187,6 +191,10 @@ namespace Jots {
         }
 
         private bool on_key_pressed (uint keyval, uint keycode, Gdk.ModifierType state) {
+            if (!editable) {
+                return false;
+            }
+
             if (keyval == Gdk.Key.Return) {
                 Gtk.TextIter cursor;
                 var insert_mark = buffer.get_insert ();
@@ -252,6 +260,10 @@ namespace Jots {
          * and notifies user if altered.
          */
         public void paste_smart () {
+            if (!editable) {
+                return;
+            }
+
             Gtk.TextIter cursor;
             var insert_mark = buffer.get_insert ();
             buffer.get_iter_at_mark (out cursor, insert_mark);
@@ -336,6 +348,10 @@ namespace Jots {
          * Raw paste: bypasses all normalizations and inserts literal clipboard text.
          */
         public void paste_raw () {
+            if (!editable) {
+                return;
+            }
+
             var clipboard = get_clipboard ();
             clipboard.read_text_async.begin (null, (obj, res) => {
                 try {
@@ -353,6 +369,10 @@ namespace Jots {
          * Inserts text atomically within a single undo/redo transaction.
          */
         public void insert_text_atomic (string text) {
+            if (!editable) {
+                return;
+            }
+
             buffer.begin_user_action ();
             if (buffer.get_has_selection ()) {
                 buffer.delete_selection (true, true);

@@ -75,6 +75,7 @@ test_sources = files(
     meson.project_source_root() / 'src' / 'Objects' / 'ListPrefix.vala',
     meson.project_source_root() / 'src' / 'Widgets' / 'TextBuffer.vala',
     meson.project_source_root() / 'src' / 'Widgets' / 'MarkdownBuffer.vala',
+    meson.project_source_root() / 'src' / 'Widgets' / 'TextView.vala',
     meson.project_source_root () / 'src' / 'Utils' / 'Random.vala',
     meson.project_source_root () / 'src' / 'Utils' / 'NoteIdentifier.vala',
     meson.project_source_root () / 'src' / 'Utils' / 'Markup.vala',

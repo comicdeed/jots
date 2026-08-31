@@ -234,5 +234,30 @@ namespace Jots.Tests {
             buffer.get_iter_at_line_offset (out local_iter, 3, 8); // start of "Local"
             assert_true (local_iter.has_tag (buffer.tag_table.lookup (Jots.MarkdownBuffer.TAG_BOLD)));
         });
+
+        /**
+         * UC-30.20.110: ReadOnly TextView Mutation Protection
+         */
+        GLib.Test.add_func ("/MarkdownBuffer/UC_30_20_110/ReadOnlyProtection", () => {
+            var textview = new Jots.TextView ();
+            textview.text = "- Item 1\n- Item 2";
+            textview.editable = false;
+
+            // Attempt toggle_list
+            textview.toggle_list ();
+            assert_cmpstr (textview.text, GLib.CompareOperator.EQ, "- Item 1\n- Item 2");
+
+            // Attempt insert_text_atomic
+            textview.insert_text_atomic ("New Text");
+            assert_cmpstr (textview.text, GLib.CompareOperator.EQ, "- Item 1\n- Item 2");
+
+            // Attempt paste_raw
+            textview.paste_raw ();
+            assert_cmpstr (textview.text, GLib.CompareOperator.EQ, "- Item 1\n- Item 2");
+
+            // Attempt paste_smart
+            textview.paste_smart ();
+            assert_cmpstr (textview.text, GLib.CompareOperator.EQ, "- Item 1\n- Item 2");
+        });
     }
 }

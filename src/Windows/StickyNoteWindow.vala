@@ -195,6 +195,7 @@ public class Jots.StickyNoteWindow : Gtk.ApplicationWindow {
             _readonly = value;
             textview.editable = !value;
             view.editablelabel.sensitive = !value;
+            view.emoji_button.sensitive = !value;
             popover.is_readonly = value;
             has_changed ();
         }
@@ -256,6 +257,7 @@ public class Jots.StickyNoteWindow : Gtk.ApplicationWindow {
         _readonly = data.readonly;
         textview.editable = !_readonly;
         view.editablelabel.sensitive = !_readonly;
+        view.emoji_button.sensitive = !_readonly;
         popover.is_readonly = _readonly;
 
         _always_visible = data.always_visible;

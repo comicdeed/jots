@@ -87,6 +87,15 @@ height: 320
 * **[Product Roadmap](docs/roadmap.md)**: Graded backlog and development initiatives.
 * **[MCP Integration Guide](docs/development/mcp-server.md)**: Setup instructions for AI assistant clients.
 * **[Contributing and PR Guidelines](docs/development/pull-request-guidelines.md)**: Contribution checklist and pull request standards.
+* **[Credits and Acknowledgements](docs/thanks.md)**: Upstream lineage, original authors, and contributors.
+
+---
+
+## Lineage and acknowledgements
+
+Jots is an independent fork and modern evolution of [Jorts](https://github.com/elly-code/jorts) (originally [Notejot](https://github.com/lainsce/notejot) by [Lains](https://github.com/lainsce)).
+
+We are deeply grateful to the original authors, upstream maintainers, and community contributors whose foundational work made Jots possible. For complete credits, see [Project Credits & Acknowledgements](docs/thanks.md).
 
 ---
 

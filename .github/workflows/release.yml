@@ -202,6 +202,7 @@ jobs:
       - name: 'Publish release'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
         run: |
           TAG="${{ needs.init-release.outputs.tag_name }}"
           gh release edit "$TAG" --draft=false

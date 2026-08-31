@@ -26,8 +26,16 @@ This skill defines the standard procedure for analyzing git commits, filtering d
 * Only include technical depth when it materially affects trust, reliability, privacy, compatibility, or integrations.
 
 ### Required Section Order
-1. **Changes in this release** (default section; always present)
-2. **Technical Notes** (optional, but required when significant technical changes are included)
+
+#### For Beta Releases (`X.Y.Z-beta.N`)
+1. **Overview**: High-level summary of the milestone goals.
+2. **Major updates in this release cycle (since last major release)**: Cumulative milestones and key capabilities introduced throughout this release series.
+3. **In this beta release**: Focused list of specific incremental features, improvements, and fixes delivered in this current beta.
+4. **Technical Notes**: Low-level architectural, I/O safety, packaging, or performance changes.
+
+#### For Stable Releases (`X.Y.Z`)
+1. **Changes in this release**: Comprehensive, user-focused summary of all capabilities and polish across the completed cycle.
+2. **Technical Notes**: Key architectural and runtime integration notes.
 
 ---
 
@@ -50,14 +58,14 @@ This skill operates as **Step 3** of the official Jots release process. Always c
 ## 🔍 Diff Scope Rules
 
 ### 1. For Beta Releases (`X.Y.Z-beta.N`)
-* **Range**: `git log <last-tag>..HEAD`
+* **Range**: `git log <last-tag>..HEAD` (with `git log <last-stable-tag>..HEAD` for cycle context)
 * **Type**: `type="development"` in AppStream XML.
-* **Objective**: Documents the **incremental delta** and fixes introduced since the previous beta or preceding release.
+* **Objective**: Summarize the milestone context in a sentence, then list the specific changes delivered in this beta.
 
 ### 2. For Stable Releases (`X.Y.Z`)
-* **Range**: `git log <last-stable-tag>..HEAD` *(e.g. `git log 0.9.0..HEAD` or `git log 1.0.0..HEAD`)*
+* **Range**: `git log <last-stable-tag>..HEAD` *(e.g. `git log 1.2.0..HEAD`)*
 * **Type**: Standard `<release version="X.Y.Z" date="YYYY-MM-DD">`.
-* **Objective**: Compiles the **cumulative milestone changelog**, aggregating all features, improvements, and fixes built across all intermediate betas throughout the release cycle.
+* **Objective**: Compiles the cumulative milestone changelog across all intermediate betas.
 
 ---
 

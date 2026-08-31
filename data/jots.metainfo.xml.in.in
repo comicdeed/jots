@@ -86,6 +86,27 @@
     </screenshots>
 
     <releases>
+        <release version="1.3.0-beta.5" type="development" date="2026-08-31">
+            <description>
+                <p>This beta introduces automated Git backup and remote sync alongside major window lifecycle stability improvements.</p>
+                <p>Changes in this beta:</p>
+                <ul>
+                    <li>Automated Git backup and sync keeps notes safely mirrored to remote repositories with background debouncing.</li>
+                    <li>Added a dedicated Backup &amp; Sync tab in Preferences with connection testing and manual sync triggers.</li>
+                    <li>Window destruction and note closing are significantly more stable without crash hazards.</li>
+                    <li>Desktop dark mode and light mode transitions now sync reliably across all open sticky notes.</li>
+                    <li>The Preferences dialog now closes smoothly with Escape or Ctrl+W.</li>
+                    <li>Markdown front matter parsing is more robust against unexpected or non-numeric metadata values.</li>
+                </ul>
+                <p>Technical Notes:</p>
+                <ul>
+                    <li>Release automation directly uploads distribution packages to GitHub Releases, bypassing intermediate storage quotas.</li>
+                    <li>Popovers attached to header bars are cleanly unparented during container disposal, preventing GTK finalization warnings.</li>
+                    <li>Streamlined Vala signal lifecycle management to rely on automatic GObject weak binding semantics.</li>
+                    <li>Added automated test coverage for non-numeric front matter fallback and strengthened integer boundary parsing.</li>
+                </ul>
+            </description>
+        </release>
         <release version="1.3.0-beta.2" type="development" date="2026-08-30">
             <description>
                 <p>This beta strengthens backup and sync behavior for first-time remote setup and branch-name edge cases.</p>

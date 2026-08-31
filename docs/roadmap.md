@@ -56,15 +56,14 @@ The score matrix is curated to include only non-completed roadmap candidates (ac
 
 ## 2. Fast-Track Quality & Bug Polish (v1.3.x Target)
 
-Targeted, self-contained fixes and ergonomics refinements to address active friction points without requiring full architectural refactors:
+Targeted, self-contained fixes and ergonomics refinements to address active friction points:
 
-* 🔍 **Scroll Zoom Modifier Desynchronization**: Fix intermittent triggering of zoom/unzoom when scrolling notes without Ctrl held down (replace fragile static key-tracking boolean with direct `event.get_modifier_state()` / `CONTROL_MASK` inspection on scroll events).
-* 🛡️ **Git Backup Cheat Sheet Exclusion**: Explicitly exclude the built-in ephemeral cheat sheet note (`CHEAT_SHEET_ID`) in `GitSyncService.should_sync_note()` and `.gitignore` so tutorial notes never create Git commits or pollute remote repositories.
-* 🪟 **Window Maximization Guardrail**: Set explicit window sizing constraints or unmap header double-click maximize behavior in `StickyNoteWindow` so double-clicking the title bar does not stretch floating sticky notes full-screen.
-* 🌓 **Title Editing Dark Mode Artifacts**: Clean up CSS background and border styling for the active state in `EditableLabel` to prevent contrast clipping or box bleed in dark mode.
-* 📐 **Uniform 4-Corner Window Rounding**: Harmonize `border-radius` across all four window corners and bottom edges in `Application.css` to eliminate visual discrepancies between the header and note canvas.
-* 🔒 **Read-Only / Lock Mode Guardrails**: Prevent checklist clicking (`- [ ]`), formatting shortcuts, and emoji mutations when a note is locked or set to read-only mode.
-* 📜 **Scroll Area Overflow & Shadows**: Refine `Gtk.ScrolledWindow` overshoot/undershoot styling and scrollbar behavior to keep note edges visually clean.
+* ✅ **Scroll Zoom Modifier Desynchronization**: Inspect `scroll_controller.get_current_event_state()` and `CONTROL_MASK` directly on scroll events, eliminating stuck zoom triggers caused by dropped key release events (`45e899a`).
+* ✅ **Git Backup Cheat Sheet Exclusion**: Explicitly exclude ephemeral cheat sheet notes (`Constants.CHEATSHEET_NOTE_ID`) in `GitSyncService.should_sync_note()` and `.gitignore` so tutorial notes never create Git commits or pollute remote repositories (`60837e0`).
+* ✅ **Title Editing Dark Mode Pill & Dismiss**: Converted title focus styling to rounded background pills (`border-radius: 6px`), disabled dark mode text-shadow emboss, and added header margin click dismissal via `headerbar.pick (x, y)` (`081c612`).
+* ✅ **Uniform 4-Corner Window Rounding**: Harmonized `border-radius: 12px` across all four window corners and top/bottom child widgets in `Themes.css` (`d0deeba`).
+* ✅ **Read-Only / Lock Mode Mutation Guards**: Blocked programmatic buffer modifications (auto-list continuation on <kbd>Enter</kbd>, paste on <kbd>Ctrl+V</kbd>, emoji insertion) when notes are locked (`5efc27b`).
+* ✅ **Scrolled Window Clean Canvas & Floating Scrollbars**: Completely disabled obscuring `undershoot` / `overshoot` gradient overlays in favor of clean canvas edges and minimal floating scrollbars (`e3a4967`).
 
 ---
 

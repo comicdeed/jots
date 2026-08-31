@@ -127,11 +127,10 @@ Direct Flatpak devel test reruns with selectors:
 flatpak run --command=jots-unit-tests io.github.comicdeed.jots.devel
 flatpak run --command=jots-unit-tests io.github.comicdeed.jots.devel -p /McpProtocol/UC_70_10_10/InitializeHandshake
 ```
-Stable build + run + unit tests:
+Stable build + run:
 ```bash
 flatpak run org.flatpak.Builder --force-clean --sandbox --user --install --install-deps-from=flathub --ccache builddir io.github.comicdeed.jots.yml
 flatpak run io.github.comicdeed.jots
-flatpak run --command=jots-unit-tests io.github.comicdeed.jots
 ```
 Flatpak MCP server (devel):
 ```bash

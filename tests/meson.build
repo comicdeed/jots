@@ -95,7 +95,7 @@ test_executable = executable(
     config_file,
     dependencies: dependencies,
     c_args: ['-w'],
-    install: true
+    install: development
 )
 
 test_env = environment()

@@ -12,6 +12,7 @@ finish-args:
   - --device=dri
 
 cleanup:
+  - /bin/jots-unit-tests
   - /include
   - /lib/girepository-1.0
   - /lib/pkgconfig
@@ -38,7 +39,7 @@ modules:
   - name: jots
     buildsystem: meson
     config-opts:
-      - --buildtype=release
+      - --buildtype=debugoptimized
       - -Dicon_variant=default
     sources:
       - type: dir

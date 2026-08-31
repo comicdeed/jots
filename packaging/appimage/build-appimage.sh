@@ -28,7 +28,7 @@ if [ "$DEVEL" = "1" ]; then
 else
     APP_ID="io.github.comicdeed.jots"
     MESON_DEVELOPMENT=false
-    BUILDTYPE=release
+    BUILDTYPE=debugoptimized
     STRIP_FLAG="--strip"
     OUTPUT_SUFFIX=""
     echo "==> Building Jots AppImage ${VERSION} for ${ARCH}..."

@@ -1,6 +1,6 @@
 # Jots MCP Server Development & Integration Guide
 
-The Model Context Protocol (MCP) server for Jots enables direct, native integration between desktop sticky notes and AI coding assistants (Claude Desktop, Cursor, Gemini CLI, Antigravity, Windsurf, and custom agents).
+The Model Context Protocol (MCP) server for Jots enables direct, native integration between desktop sticky notes and AI coding assistants ([Claude Desktop](https://claude.ai/download), [Cursor](https://cursor.com), [Devin Desktop](https://devin.ai/desktop), [Claude Code](https://code.claude.com/docs/en/overview), Antigravity, and custom agents).
 
 ---
 
@@ -10,8 +10,8 @@ The Model Context Protocol (MCP) server for Jots enables direct, native integrat
 graph LR
     subgraph AI Client
         Claude[Claude Code / Desktop]
-        Cursor[Cursor / Windsurf]
-        Gemini[Antigravity / Gemini CLI]
+        Cursor[Cursor / Devin Desktop]
+        AGY[Antigravity CLI]
     end
 
     subgraph MCP Transport Layer
@@ -26,7 +26,7 @@ graph LR
 
     Claude <-->|stdio JSON-RPC| Stdio
     Cursor <-->|stdio JSON-RPC| Stdio
-    Gemini <-->|stdio JSON-RPC| Stdio
+    AGY <-->|stdio JSON-RPC| Stdio
 
     Stdio <-->|io.github.comicdeed.jots.Notes| DBus
     DBus <--> JotsApp
@@ -75,8 +75,8 @@ Add to `~/.config/Claude/claude_desktop_config.json` (Linux):
 }
 ```
 
-### Cursor & Windsurf
-Add to `.cursor/mcp.json` or `~/.codeium/windsurf/mcp_config.json`:
+### Cursor & Devin Desktop
+Add to `.cursor/mcp.json` (Cursor) or `~/.codeium/windsurf/mcp_config.json` (Devin Desktop / Windsurf):
 ```json
 {
   "mcpServers": {
@@ -167,7 +167,7 @@ Antigravity uses an orchestrator-subagent model. To enable Jots MCP:
 | `jots://notes` | Live text dump of all open desktop sticky notes. |
 
 ### AI Companion Skill Guide
-For AI agents (Cursor, Antigravity, Claude Code, Gemini CLI, Windsurf), install the universal companion skill:
+For AI agents (Cursor, Devin Desktop, Antigravity, Claude Code), install the universal companion skill:
 ```text
 Install the jots-companion skill as a personal skill for yourself from https://raw.githubusercontent.com/comicdeed/jots/main/docs/mcp-skill.md
 ```
@@ -192,7 +192,7 @@ Install the jots-companion skill as a personal skill for yourself from https://r
 
 ```mermaid
 sequenceDiagram
-    participant LLM as AI Client (Claude/Gemini)
+    participant LLM as AI Client (Claude/Antigravity/Cursor)
     participant MCP as jots-mcp (stdio)
     participant Bus as D-Bus Session Bus
     participant GUI as Jots GTK4 GUI

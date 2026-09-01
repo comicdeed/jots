@@ -74,7 +74,7 @@ AI assistants SHOULD periodically inspect `jots://instructions` over MCP to refr
 
 ## 📥 Installation & Setup
 
-To install or refresh this skill in your AI assistant (Claude Code, Antigravity, Cursor, Windsurf):
+To install or refresh this skill in your AI assistant (Claude Code, Antigravity, Cursor, Devin Desktop):
 
 Simply instruct your assistant:
 > *"Install the jots-companion skill as a personal skill for yourself from https://raw.githubusercontent.com/comicdeed/jots/main/docs/mcp-skill.md"*

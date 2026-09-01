@@ -91,7 +91,7 @@
                 <p>Jots 1.4.0-beta.1 introduces on-demand Model Context Protocol (MCP) auto-spawning, leveled logging with request tracing, and AI assistant companion skill integration.</p>
                 <p>Highlights:</p>
                 <ul>
-                    <li>✨ AI coding assistants (Claude Code, Cursor, Windsurf, Antigravity) connect seamlessly to Jots with instant cold-start background auto-launching.</li>
+                    <li>✨ AI coding assistants (Claude Code, Cursor, Devin Desktop, Antigravity) connect seamlessly to Jots with instant cold-start background auto-launching.</li>
                     <li>✨ Universal AI companion skill enables intelligent note search, automated scratchpads, and live checklist updates without manual window management.</li>
                     <li>✨ MCP requests and tool calls feature real-time latency tracing and robust leveled logging with automatic file rotation.</li>
                 </ul>

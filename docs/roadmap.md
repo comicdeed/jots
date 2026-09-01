@@ -159,7 +159,7 @@ Targeted, self-contained fixes and ergonomics refinements to address active fric
 
 ### 6.1 Native Model Context Protocol (MCP) Server
 * **Status**: ✅ **Completed** (v1.0.0)
-* **Summary**: Implemented standalone native Vala `jots-mcp` executable (`src/Mcp/`) and D-Bus IPC service (`io.github.comicdeed.jots.Notes`), providing line-delimited JSON-RPC 2.0 stdio communication for AI assistants (Claude Desktop, Cursor, Antigravity, Gemini CLI) with zero external Python dependencies.
+* **Summary**: Implemented standalone native Vala `jots-mcp` executable (`src/Mcp/`) and D-Bus IPC service (`io.github.comicdeed.jots.Notes`), providing line-delimited JSON-RPC 2.0 stdio communication for AI assistants (Claude Desktop, Cursor, Devin Desktop, Antigravity) with zero external Python dependencies.
 * **Documentation**: See [`docs/development/mcp-server.md`](development/mcp-server.md) and [`docs/user-guide.md`](user-guide.md#6-ai-assistant--mcp-integration).
 
 ### 6.2 Markdown Storage with YAML Front Matter & Live Rendering

@@ -123,7 +123,7 @@ namespace Jots {
 * `[Title](https://...)` Links
 
 ### 🤖 AI Automation
-* Connect Claude, Cursor, or Gemini CLI via `jots-mcp`.
+* Connect Claude, Cursor, Devin, or Antigravity via `jots-mcp`.
 
 """;
 

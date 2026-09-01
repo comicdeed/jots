@@ -126,7 +126,7 @@ For local Windows packaging, follow `docs/development/windows.md` in an MSYS2 UC
 
 * **UI/UX Aesthetic Constraints**: Jots is minimal by design. Avoid adding heavy components.
 * **Encapsulation & Boundaries**: Keep storage mechanics encapsulated in `Storage.vala`. External tools interact strictly via `NoteService` D-Bus IPC.
-* **Compilation Warnings**: The build uses `-w` in `meson.build` to suppress Vala-generated C compiler noise.
+* **Test Skipping for Non-Built Changes**: Do NOT run local test suites (`docker compose run --rm meson-test`, native `meson test`, AppImage/Flatpak test runners) when only documentation or non-built text assets (`*.md`, `docs/**`, `README.md`, `CONTRIBUTING.md`) are modified. Reserve test suite execution for changes affecting executable code, build configurations, metadata, or packaging scripts.
 * **CI Skip Token for Non-Built Changes**: For docs-only or other non-built changes (for example Markdown/text updates), append `[skip ci]` to the commit subject to avoid unnecessary GitHub Actions runs.
   - **Safe scope**: Documentation/content-only paths such as `*.md`, `docs/**`, `README.md`, `CONTRIBUTING.md`, and similar non-executable text assets.
   - **Do NOT skip CI** when any build/runtime/test/release path changes, including `src/**`, `tests/**`, `data/**`, `po/**`, `meson.build`, `meson.options`, `compose.yaml`, `io.github.comicdeed.jots*.yml`, `packaging/**`, `.github/workflows/**`, or scripts.

@@ -52,6 +52,46 @@ namespace Jots {
                     return app_id;
             }
         }
+
+        /**
+         * Returns true if a graphical display server (Wayland or X11) is active.
+         */
+        public static bool is_gui_available () {
+            var wayland = GLib.Environment.get_variable ("WAYLAND_DISPLAY");
+            if (wayland != null && wayland.strip () != "") {
+                return true;
+            }
+            var display = GLib.Environment.get_variable ("DISPLAY");
+            return (display != null && display.strip () != "");
+        }
+
+        /**
+         * Checks if the active packaging context supports background process auto-spawning.
+         * Flatpak containers should not spawn ephemeral GUI processes internally.
+         */
+        public bool can_auto_spawn () {
+            if (!is_gui_available ()) {
+                return false;
+            }
+            return this != FLATPAK;
+        }
+
+        /**
+         * Returns the executable string to launch the app process directly in the background.
+         */
+        public string? get_spawn_command (string app_id) {
+            switch (this) {
+                case FLATPAK:
+                    // Flatpak containers do not spawn internal GUI processes
+                    return null;
+                case APPIMAGE:
+                    var appimage_path = GLib.Environment.get_variable ("APPIMAGE");
+                    return (appimage_path != null && appimage_path.strip () != "") ? appimage_path : app_id;
+                case NATIVE:
+                default:
+                    return app_id;
+            }
+        }
     }
 
     /**

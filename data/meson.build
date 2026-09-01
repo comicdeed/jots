@@ -93,3 +93,22 @@ appstream_file = i18n.merge_file(
     install_dir: datadir / 'metainfo',
 )
 
+
+#========================
+# DBUS SERVICE
+# Install D-Bus activation service file for auto-activation across desktop systems and Flatpak
+
+service_file_in = configure_file(
+    input: app_name + '.service.in.in',
+    output: app_id + '.service.in',
+    configuration: config_data,
+)
+
+service_file = configure_file(
+    input: service_file_in,
+    output: app_id + '.service',
+    configuration: config_data,
+    install: true,
+    install_dir: datadir / 'dbus-1' / 'services',
+)
+

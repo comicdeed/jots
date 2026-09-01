@@ -28,6 +28,7 @@ sources = files (
     'Objects' / 'SearchResult.vala',
     'Objects' / 'ListPrefix.vala',
 
+    'Utils' / 'Logger.vala',
     'Utils' / 'Random.vala',
     'Utils' / 'Markup.vala',
     'Utils' / 'PackagingContext.vala',
@@ -120,6 +121,7 @@ executable(
 # Native MCP Server Executable (jots-mcp)
 
 mcp_sources = files(
+    'Utils' / 'Logger.vala',
     'Mcp/NotesDbusProxy.vala',
     'Mcp/McpProtocol.vala',
     'Mcp/Main.vala',

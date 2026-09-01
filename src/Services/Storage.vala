@@ -190,7 +190,7 @@ namespace Jots {
             var parsed = parse_legacy_json_file (legacy_savefile_path);
             if (parsed.size > 0) {
                 import_notes (parsed);
-                print ("\nSuccessfully migrated %d notes from saved_state.json to Markdown files.\n", parsed.size);
+                debug ("Successfully migrated %d notes from saved_state.json to Markdown files.", parsed.size);
             }
 
             // Rename direct legacy file to .migrated to preserve safe backup

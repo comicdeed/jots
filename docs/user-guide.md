@@ -159,30 +159,45 @@ When you connect a remote repository for backup, these are the expected outcomes
 
 ---
 
-## 7. AI Assistant & MCP Integration
+## 7. AI Assistant & MCP Integration (Beta)
 
-Jots includes a native [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server (`jots-mcp`) allowing AI assistants (Claude Desktop, Cursor, Gemini CLI, and Antigravity) to read, create, search, and update your sticky notes in real time.
+Jots includes a native [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server (`jots-mcp`) allowing AI coding assistants (Claude Code, Cursor, Windsurf, Claude Desktop) to read, create, search, and update your sticky notes in real time.
 
-For full setup and protocol reference, use the canonical guide: [docs/development/mcp-server.md](docs/development/mcp-server.md).
+### Supported Agent Tiers
+* **Tier 1 — Recommended & Fully Supported (Direct MCP)**:
+  * **Claude Code CLI**, **Cursor**, **Windsurf**, and **Claude Desktop**.
+  * Executes tool operations directly on the root agent with sub-second latency and seamless permissions.
+* **Tier 2 — Experimental (Multi-Agent Subagent Frameworks)**:
+  * **Antigravity CLI** and similar subagent frameworks. Supported via plugin, but subagent orchestration and interactive permissions introduce additional steps.
 
-### TL;DR
+For full setup and protocol reference, see the canonical guide: [docs/development/mcp-server.md](development/mcp-server.md).
 
-Use one of the following launch modes in your MCP client:
+### Quick Setup
+
+Use one of the following launch configurations in your MCP client:
 
 * **AppImage (recommended)**: `command: /path/to/Jots-<version>-<arch>.AppImage`, `args: ["--mcp"]`
 * **Flatpak**: `command: flatpak`, `args: ["run", "--command=jots-mcp", "io.github.comicdeed.jots"]`
 * **Native host install**: `command: jots-mcp`
 
-> **Tip**: If your AI client invokes an MCP tool while the Jots desktop application is closed, `jots-mcp` automatically detects your packaging environment and returns the exact command needed to launch the app so you or your assistant can start it immediately.
+> **Proactive Auto-Launch**: When using AppImage or Native packages, `jots-mcp` automatically starts the Jots desktop application in the background when an action tool is called if the UI is not already running. On Flatpak, D-Bus service auto-activation or clear launch commands are provided.
+
+### 🧠 Equipping AI Assistants (Companion Skill)
+
+To teach any AI agent how to manage Jots notes instinctively (using deduplication, lossless updates, `- [ ]` checklists, and pastel colors), simply prompt your assistant:
+
+> *"Install the jots-companion skill as a personal skill for yourself from https://raw.githubusercontent.com/comicdeed/jots/main/docs/mcp-skill.md"*
+
+MCP clients can also read the embedded [`jots://instructions`](docs/mcp-skill.md) resource directly at any time.
 
 ### Available AI Capabilities
 Your MCP client can:
 
-* List and search notes.
-* Read note content and metadata.
-* Create new notes.
-* Update existing notes.
-* Delete notes.
+* **List & Search**: Discover open notes and search note text case-insensitively.
+* **Read Content**: Read full Markdown text, headers, and metadata.
+* **Create Notes**: Spawn new colored sticky notes live on your desktop.
+* **Update Notes**: Append, modify, or retitle notes in real time.
+* **Delete Notes**: Dismiss and delete notes by UUID.
 
 ---
 

@@ -100,7 +100,8 @@ config_data = configuration_data(
         'APP_NUMERIC_VERSION': app_numeric_version,
         'NICENAME': nicename,
         'PUBLISHER': publisher,
-        'LOCALEDIR': prefix / get_option('localedir')
+        'LOCALEDIR': prefix / get_option('localedir'),
+        'BINDIR': prefix / get_option('bindir')
     }
 )
 

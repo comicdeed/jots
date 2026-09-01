@@ -39,7 +39,7 @@ namespace Jots {
         /**
          * Create a new note with given properties
          */
-        public string create_note (string? title, string? content, string? theme) throws GLib.Error {
+        public string create_note (string title, string content, string theme) throws GLib.Error {
             debug ("NoteService: create_note called");
             var note = note_manager.create_note_with_properties (title, content, theme);
             return note.to_json_string ();
@@ -48,7 +48,7 @@ namespace Jots {
         /**
          * Update an existing note with new properties
          */
-        public string update_note (string id, string? title, string? content, string? theme) throws GLib.Error {
+        public string update_note (string id, string title, string content, string theme) throws GLib.Error {
             debug ("NoteService: update_note called for '%s'", id);
             var note = note_manager.update_note_by_id (id, title, content, theme);
             return note.to_json_string ();

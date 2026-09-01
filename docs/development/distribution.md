@@ -86,7 +86,7 @@ After building a devel AppImage, direct invocation is preferred for repeated pac
 Flatpak maintained devel/test path:
 
 ```bash
-flatpak run org.flatpak.Builder --force-clean --sandbox --user --install --install-deps-from=flathub --ccache builddir io.github.comicdeed.jots.devel.yml
+flatpak run org.flatpak.Builder --force-clean --sandbox --user --install --install-deps-from=flathub --ccache builddir packaging/flatpak/io.github.comicdeed.jots.devel.yml
 flatpak run --command=jots-unit-tests io.github.comicdeed.jots.devel
 ```
 

@@ -187,7 +187,7 @@ jobs:
       - name: 'Build and Export Flatpak Bundle'
         run: |
           VERSION="${{ needs.init-release.outputs.tag_name }}"
-          flatpak-builder --user --force-clean --repo=repo --install-deps-from=flathub builddir io.github.comicdeed.jots.yml
+          flatpak-builder --user --force-clean --repo=repo --install-deps-from=flathub builddir packaging/flatpak/io.github.comicdeed.jots.yml
           mkdir -p dist
           flatpak build-bundle repo "dist/io.github.comicdeed.jots-${VERSION}.flatpak" io.github.comicdeed.jots
           cd dist && sha256sum "io.github.comicdeed.jots-${VERSION}.flatpak" > "io.github.comicdeed.jots-${VERSION}.flatpak.sha256"

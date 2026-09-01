@@ -110,7 +110,7 @@ subdir('data')
 subdir('src')
 
 if windows
-    subdir('windows')
+    subdir('packaging/windows')
 endif
 
 subdir('tests')

@@ -118,7 +118,7 @@ Note: Local developer commands in this guide use `flatpak run org.flatpak.Builde
 
 Devel build + run + unit tests:
 ```bash
-flatpak run org.flatpak.Builder --force-clean --sandbox --user --install --install-deps-from=flathub --ccache builddir io.github.comicdeed.jots.devel.yml
+flatpak run org.flatpak.Builder --force-clean --sandbox --user --install --install-deps-from=flathub --ccache builddir packaging/flatpak/io.github.comicdeed.jots.devel.yml
 flatpak run io.github.comicdeed.jots.devel
 flatpak run --command=jots-unit-tests io.github.comicdeed.jots.devel
 ```
@@ -129,7 +129,7 @@ flatpak run --command=jots-unit-tests io.github.comicdeed.jots.devel -p /McpProt
 ```
 Stable build + run:
 ```bash
-flatpak run org.flatpak.Builder --force-clean --sandbox --user --install --install-deps-from=flathub --ccache builddir io.github.comicdeed.jots.yml
+flatpak run org.flatpak.Builder --force-clean --sandbox --user --install --install-deps-from=flathub --ccache builddir packaging/flatpak/io.github.comicdeed.jots.yml
 flatpak run io.github.comicdeed.jots
 ```
 Flatpak MCP server (devel):

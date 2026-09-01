@@ -90,7 +90,7 @@ Direct script fallback only when Compose is unavailable:
 3. **Flatpak mode (maintained parity with AppImage)**
 Devel build + run + tests:
 ```bash
-flatpak run org.flatpak.Builder --force-clean --sandbox --user --install --install-deps-from=flathub --ccache builddir io.github.comicdeed.jots.devel.yml
+flatpak run org.flatpak.Builder --force-clean --sandbox --user --install --install-deps-from=flathub --ccache builddir packaging/flatpak/io.github.comicdeed.jots.devel.yml
 flatpak run io.github.comicdeed.jots.devel
 flatpak run --command=jots-unit-tests io.github.comicdeed.jots.devel
 ```
@@ -101,7 +101,7 @@ flatpak run --command=jots-unit-tests io.github.comicdeed.jots.devel -p /McpProt
 ```
 Stable build + run:
 ```bash
-flatpak run org.flatpak.Builder --force-clean --sandbox --user --install --install-deps-from=flathub --ccache builddir io.github.comicdeed.jots.yml
+flatpak run org.flatpak.Builder --force-clean --sandbox --user --install --install-deps-from=flathub --ccache builddir packaging/flatpak/io.github.comicdeed.jots.yml
 flatpak run io.github.comicdeed.jots
 ```
 Flatpak MCP server (devel):
@@ -129,7 +129,7 @@ For local Windows packaging, follow `docs/development/windows.md` in an MSYS2 UC
 * **Test Skipping for Non-Built Changes**: Do NOT run local test suites (`docker compose run --rm meson-test`, native `meson test`, AppImage/Flatpak test runners) when only documentation or non-built text assets (`*.md`, `docs/**`, `README.md`, `CONTRIBUTING.md`) are modified. Reserve test suite execution for changes affecting executable code, build configurations, metadata, or packaging scripts.
 * **CI Skip Token for Non-Built Changes**: For docs-only or other non-built changes (for example Markdown/text updates), append `[skip ci]` to the commit subject to avoid unnecessary GitHub Actions runs.
   - **Safe scope**: Documentation/content-only paths such as `*.md`, `docs/**`, `README.md`, `CONTRIBUTING.md`, and similar non-executable text assets.
-  - **Do NOT skip CI** when any build/runtime/test/release path changes, including `src/**`, `tests/**`, `data/**`, `po/**`, `meson.build`, `meson.options`, `compose.yaml`, `io.github.comicdeed.jots*.yml`, `packaging/**`, `.github/workflows/**`, or scripts.
+  - **Do NOT skip CI** when any build/runtime/test/release path changes, including `src/**`, `tests/**`, `data/**`, `po/**`, `meson.build`, `meson_options.txt`, `compose.yaml`, `packaging/**`, `.github/workflows/**`, or scripts.
 * **Docker & CI Packaging Parity (Crucial Rule)**:
   - **Zero Dependency Drift**: Whenever adding or updating build packages, libraries, or asset engines (e.g., `librsvg2-dev`, `librsvg2-common`, `libportal`, font rendering engines) in `packaging/appimage/Dockerfile` or `compose.yaml`, you **MUST simultaneously update the runner dependencies in `.github/workflows/CI.yml` and `.github/workflows/release.yml`**.
   - **Hard Packaging Guardrails**: Packaging scripts like `packaging/appimage/build-appimage.sh` must include strict assertions (e.g., checking that `libpixbufloader-svg.so` and runtime libraries exist in `AppDir`) so that missing dependencies fail fast in CI instead of producing broken packages.

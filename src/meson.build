@@ -95,7 +95,7 @@ endif
 
 if windows
     dependencies += dependency('gio-windows-2.0')
-    ico_src = import('windows').compile_resources('../windows/icons/ico.rc')
+    ico_src = import('windows').compile_resources('../packaging/windows/icons/ico.rc')
     sources += ico_src
 
 else

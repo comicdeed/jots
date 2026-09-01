@@ -32,9 +32,9 @@ graph TD
     NV -->|Contains| EL[EditableLabel.vala]
     NV -->|Contains| AB[ActionBar.vala]
 
-    subgraph External IPC & Automation
-        MCP[jots-mcp Adapter] -->|D-Bus Session Bus| NS
-        CLI[Command Line / Scripts] -->|D-Bus Session Bus| NS
+    subgraph External_IPC ["External IPC & Automation"]
+        MCP["jots-mcp Adapter"] -->|D-Bus Session Bus| NS
+        CLI["Command Line / Scripts"] -->|D-Bus Session Bus| NS
     end
 ```
 

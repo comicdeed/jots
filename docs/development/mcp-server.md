@@ -8,20 +8,20 @@ The Model Context Protocol (MCP) server for Jots enables direct, native integrat
 
 ```mermaid
 graph LR
-    subgraph AI Client
-        Claude[Claude Code / Desktop]
-        Cursor[Cursor / Devin Desktop]
-        AGY[Antigravity CLI]
+    subgraph AI_Client ["AI Client"]
+        Claude["Claude Code / Desktop"]
+        Cursor["Cursor / Devin Desktop"]
+        AGY["Antigravity CLI"]
     end
 
-    subgraph MCP Transport Layer
-        Stdio[jots-mcp (stdio JSON-RPC 2.0)]
+    subgraph MCP_Transport ["MCP Transport Layer"]
+        Stdio["jots-mcp (stdio JSON-RPC 2.0)"]
     end
 
-    subgraph Desktop Session
-        DBus[(D-Bus Session Bus)]
-        JotsApp[Jots GTK4 Application]
-        Storage[(Local Markdown Files)]
+    subgraph Desktop_Session ["Desktop Session"]
+        DBus[("D-Bus Session Bus")]
+        JotsApp["Jots GTK4 Application"]
+        Storage[("Local Markdown Files")]
     end
 
     Claude <-->|stdio JSON-RPC| Stdio

@@ -43,4 +43,4 @@ modules:
       - -Dicon_variant=default
     sources:
       - type: dir
-        path: .
+        path: ../..

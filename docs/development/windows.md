@@ -41,12 +41,12 @@ pacman -S --noconfirm \
 
 Run the Windows deployment script to compile the application and bundle it with its dependencies:
 ```bash
-./windows/deploy.sh
+./packaging/windows/deploy.sh
 ```
 
 This script will:
 1. Configure and build the application via Meson/Ninja (skipping Linux-only dependencies like `libportal`).
-2. Collect the compiled binaries and necessary DLL libraries into the `./windows/deploy` directory.
+2. Collect the compiled binaries and necessary DLL libraries into the `./packaging/windows/deploy` directory.
 3. Generate an installer setup using NSIS.
 
 Once completed successfully, a standalone installer `.exe` will be created. The installer is configured to run without administrative privileges.

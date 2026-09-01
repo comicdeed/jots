@@ -86,12 +86,32 @@
     </screenshots>
 
     <releases>
+        <release version="1.4.0-beta.2" date="2026-09-01" type="development">
+            <description>
+                <p>Jots 1.4.0-beta.2 introduces unified packaging consolidation under packaging/, automated sliding-window pre-release management, and expanded AI assistant integration guides.</p>
+                <p>Highlights:</p>
+                <ul>
+                    <li>✨ Expanded companion setup guides for Devin Desktop alongside Claude Code, Cursor, and Antigravity.</li>
+                    <li>AI coding assistants connect seamlessly to Jots with instant cold-start background auto-launching.</li>
+                    <li>Universal AI companion skill enables intelligent note search, automated scratchpads, and live checklist updates without manual window management.</li>
+                    <li>MCP requests and tool calls feature real-time latency tracing and robust leveled logging with automatic file rotation.</li>
+                </ul>
+                <p>Technical Notes:</p>
+                <ul>
+                    <li>✨ Consolidated all platform packaging manifests, scripts, and assets under structured packaging/ subdirectories (appimage/, flatpak/, windows/).</li>
+                    <li>✨ Automated sliding-window retention for pre-releases in the release pipeline, keeping GitHub release assets trimmed while preserving git history.</li>
+                    <li>Implemented zero-GTK leveled logging subsystem (Jots.Logger) with pure stderr stream isolation and 4-generation cascading file rotation.</li>
+                    <li>Hardened D-Bus signatures and parameter unmarshalling against wire-level null pointer exceptions.</li>
+                    <li>Added display server detection to gracefully report headless session constraints.</li>
+                </ul>
+            </description>
+        </release>
         <release version="1.4.0-beta.1" date="2026-09-01" type="development">
             <description>
                 <p>Jots 1.4.0-beta.1 introduces on-demand Model Context Protocol (MCP) auto-spawning, leveled logging with request tracing, and AI assistant companion skill integration.</p>
                 <p>Highlights:</p>
                 <ul>
-                    <li>✨ AI coding assistants (Claude Code, Cursor, Windsurf, Antigravity) connect seamlessly to Jots with instant cold-start background auto-launching.</li>
+                    <li>✨ AI coding assistants (Claude Code, Cursor, Devin Desktop, Antigravity) connect seamlessly to Jots with instant cold-start background auto-launching.</li>
                     <li>✨ Universal AI companion skill enables intelligent note search, automated scratchpads, and live checklist updates without manual window management.</li>
                     <li>✨ MCP requests and tool calls feature real-time latency tracing and robust leveled logging with automatic file rotation.</li>
                 </ul>

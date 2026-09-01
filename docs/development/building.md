@@ -75,7 +75,7 @@ Depending on your target environment, build Jots using one of the manifests belo
 #### A. Development Version (Recommended for testing)
 Uses the Flathub runtime and GNOME SDK:
 ```bash
-flatpak run org.flatpak.Builder --force-clean --sandbox --user --install --install-deps-from=flathub --ccache builddir io.github.comicdeed.jots.devel.yml
+flatpak run org.flatpak.Builder --force-clean --sandbox --user --install --install-deps-from=flathub --ccache builddir packaging/flatpak/io.github.comicdeed.jots.devel.yml
 ```
 Run the development build:
 ```bash
@@ -95,7 +95,7 @@ These tests should be used for targeted package-mode verification when behavior 
 #### B. Stable Flathub Release
 Builds the standard production release using Flathub dependencies:
 ```bash
-flatpak run org.flatpak.Builder --force-clean --sandbox --user --install --install-deps-from=flathub --ccache builddir io.github.comicdeed.jots.yml
+flatpak run org.flatpak.Builder --force-clean --sandbox --user --install --install-deps-from=flathub --ccache builddir packaging/flatpak/io.github.comicdeed.jots.yml
 ```
 Run the stable Flathub build:
 ```bash

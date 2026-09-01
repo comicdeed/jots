@@ -35,7 +35,7 @@ mkdir -p "${deploy_dir}/etc"
 mkdir -p "${deploy_dir}/share"
 mkdir -p "${deploy_dir}/lib"
 mkdir -p "${deploy_dir}/include"
-cp -vnr "windows/icons" "${deploy_dir}"
+cp -vnr "packaging/windows/icons" "${deploy_dir}"
 
 cp -vnr "${build_dir}/src/${app_id}.exe" "${deploy_dir}/bin"
 

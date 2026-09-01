@@ -23,7 +23,7 @@
 * 🔤 **Font controls**: Choose your preferred text and code fonts to match how you like to read and write.
 * 🔒 **Privacy mode**: Hide note text when you need to protect sensitive content on screen.
 * 🔁 **Git backup sync**: Connect a Git remote, choose how often to sync, and use **Sync now** when you want an immediate backup.
-* 🤖 **AI-ready with MCP (Beta)**: Connect compatible assistants (Claude Code, Cursor, Windsurf, Claude Desktop) to create, search, and manage notes directly from your AI workflows.
+* 🤖 **AI-ready with MCP (Beta)**: Connect compatible assistants (Claude Code, Cursor, Devin Desktop, Claude Desktop) to create, search, and manage notes directly from your AI workflows.
 * ⚡ **Fast and lightweight**: Starts quickly and stays responsive.
 
 ---
@@ -51,7 +51,7 @@ Jots includes a native [Model Context Protocol (MCP)](https://modelcontextprotoc
 
 ### Supported Agent Tiers
 * **Tier 1 — Recommended & Fully Supported (Direct MCP)**:
-  * **[Claude Code CLI](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code)**, **[Cursor](https://cursor.com)**, **[Windsurf](https://codeium.com/windsurf)**, and **[Claude Desktop](https://claude.ai/download)**.
+  * **[Claude Code CLI](https://code.claude.com/docs/en/overview)**, **[Cursor](https://cursor.com)**, **[Devin Desktop](https://devin.ai/desktop)**, and **[Claude Desktop](https://claude.ai/download)**.
   * Direct tool binding into the root agent with sub-second execution (<1s) and zero subagent friction.
 * **Tier 2 — Experimental (Multi-Agent Subagent Frameworks)**:
   * **Antigravity CLI** and similar orchestrator-subagent frameworks. Supported via plugin, though multi-agent indirection and permission prompts introduce additional reasoning steps.

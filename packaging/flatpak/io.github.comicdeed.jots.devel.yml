@@ -1,23 +1,25 @@
-id: io.github.comicdeed.jots
+#
+# This is danger
+#
+id: io.github.comicdeed.jots.devel
 runtime: org.gnome.Platform
 runtime-version: '50'
 sdk: org.gnome.Sdk
-command: io.github.comicdeed.jots
+command: io.github.comicdeed.jots.devel
+
+tags: ['devel']
+desktop-file-name-suffix: ' (Development)'
 
 finish-args:
-  - --socket=wayland
-  - --socket=fallback-x11
-  - --share=ipc
-  - --socket=session-bus
-  - --device=dri
-
-cleanup:
-  - /bin/jots-unit-tests
-  - /include
-  - /lib/girepository-1.0
-  - /lib/pkgconfig
-  - /share/gir-1.0
-  - /share/vala
+  - '--socket=wayland'
+  - '--socket=fallback-x11'
+  - '--share=ipc'
+  - '--socket=session-bus'
+  - '--own-name=io.github.comicdeed.jots.devel'
+  - '--own-name=io.github.comicdeed.jots'
+  - '--filesystem=xdg-data/io.github.elly_code.jorts:ro'
+  - '--filesystem=~/.var/app/io.github.elly_code.jorts:ro'
+  - '--device=dri'
 
 modules:
   - name: libportal
@@ -39,8 +41,9 @@ modules:
   - name: jots
     buildsystem: meson
     config-opts:
-      - --buildtype=debugoptimized
+      - --buildtype=debug
+      - -Ddevelopment=true
       - -Dicon_variant=default
     sources:
       - type: dir
-        path: .
+        path: ../..

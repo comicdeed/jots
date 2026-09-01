@@ -161,11 +161,11 @@ When you connect a remote repository for backup, these are the expected outcomes
 
 ## 7. AI Assistant & MCP Integration (Beta)
 
-Jots includes a native [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server (`jots-mcp`) allowing AI coding assistants (Claude Code, Cursor, Windsurf, Claude Desktop) to read, create, search, and update your sticky notes in real time.
+Jots includes a native [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server (`jots-mcp`) allowing AI coding assistants (Claude Code, Cursor, Devin Desktop, Claude Desktop) to read, create, search, and update your sticky notes in real time.
 
 ### Supported Agent Tiers
 * **Tier 1 — Recommended & Fully Supported (Direct MCP)**:
-  * **Claude Code CLI**, **Cursor**, **Windsurf**, and **Claude Desktop**.
+  * **[Claude Code CLI](https://code.claude.com/docs/en/overview)**, **[Cursor](https://cursor.com)**, **[Devin Desktop](https://devin.ai/desktop)**, and **[Claude Desktop](https://claude.ai/download)**.
   * Executes tool operations directly on the root agent with sub-second latency and seamless permissions.
 * **Tier 2 — Experimental (Multi-Agent Subagent Frameworks)**:
   * **Antigravity CLI** and similar subagent frameworks. Supported via plugin, but subagent orchestration and interactive permissions introduce additional steps.

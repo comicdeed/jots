@@ -95,7 +95,7 @@ namespace Jots.Utils {
         // ONE IN THOUSAND
         if (random_in_range == 1) {
 
-            print ("🔥🔥🔥GOLDEN STICKY🔥🔥🔥");
+            debug ("🔥🔥🔥GOLDEN STICKY🔥🔥🔥");
             //TRANSLATORS: This is for an easter egg, most users may not see this, so this is optional
             // You can skip if too much, but i would prefer addressing people in their native language
             blank_slate.title = _("🔥WOW Congratulations!🔥");

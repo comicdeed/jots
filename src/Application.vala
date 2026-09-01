@@ -153,7 +153,9 @@ public class Jots.Application : Gtk.Application {
         set_accels_for_action (ACTION_PREFIX + ACTION_RESTORE_LAST, {"<Control>R"});
         set_accels_for_action (ACTION_PREFIX + ACTION_SHOW_CHEATSHEET, {"F1"});
 
-        note_manager = new Jots.NoteManager (this);
+        if (note_manager == null) {
+            note_manager = new Jots.NoteManager (this);
+        }
         git_sync_service = new Jots.GitSyncService (note_manager.storage, settings);
         git_sync_service.initialize ();
         font_controller = new Jots.FontController ();

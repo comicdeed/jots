@@ -2,7 +2,7 @@ project(
     'jots',
     ['c', 'vala'],        # The floor is vala
     license: 'GPL-3.0-or-later',
-    version: '1.3.0',
+    version: '1.4.0-beta.1',
     meson_version: '>= 0.59.0'
 )
 
@@ -100,7 +100,8 @@ config_data = configuration_data(
         'APP_NUMERIC_VERSION': app_numeric_version,
         'NICENAME': nicename,
         'PUBLISHER': publisher,
-        'LOCALEDIR': prefix / get_option('localedir')
+        'LOCALEDIR': prefix / get_option('localedir'),
+        'BINDIR': prefix / get_option('bindir')
     }
 )
 

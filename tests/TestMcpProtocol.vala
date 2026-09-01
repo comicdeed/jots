@@ -26,15 +26,15 @@ namespace Jots.Tests {
             return "{\"id\":\"" + id + "\",\"title\":\"Mock Note\",\"content\":\"Hello World\",\"theme\":\"mint\",\"monospace\":false,\"zoom\":100,\"width\":300,\"height\":300}";
         }
 
-        public string create_note (string? title, string? content, string? theme) throws GLib.Error {
-            this.last_created_title = title ?? "";
-            this.last_created_content = content ?? "";
-            this.last_created_theme = theme ?? "blueberry";
+        public string create_note (string title, string content, string theme) throws GLib.Error {
+            this.last_created_title = title;
+            this.last_created_content = content;
+            this.last_created_theme = theme;
 
             return "{\"id\":\"new-mock-uuid\",\"title\":\"" + last_created_title + "\",\"content\":\"" + last_created_content + "\",\"theme\":\"" + last_created_theme + "\",\"monospace\":false,\"zoom\":100,\"width\":300,\"height\":300}";
         }
 
-        public string update_note (string id, string? title, string? content, string? theme) throws GLib.Error {
+        public string update_note (string id, string title, string content, string theme) throws GLib.Error {
             if (id == "nonexistent") {
                 throw new GLib.IOError.NOT_FOUND ("Note with ID '%s' was not found.", id);
             }
@@ -73,7 +73,7 @@ namespace Jots.Tests {
             assert_true (resp.contains ("\"jsonrpc\":\"2.0\""));
             assert_true (resp.contains ("\"protocolVersion\":\"2024-11-05\""));
             assert_true (resp.contains ("\"name\":\"jots\""));
-            assert_true (resp.contains ("\"version\":\"4.3.0\""));
+            assert_true (resp.contains ("\"version\":\"" + APP_VERSION + "\""));
             assert_true (resp.contains ("\"tools\""));
             assert_true (resp.contains ("\"resources\""));
             assert_true (resp.contains ("\"prompts\""));
@@ -293,7 +293,14 @@ namespace Jots.Tests {
             // resources/list
             var resp_res_list = protocol.process_message ("{\"jsonrpc\":\"2.0\",\"id\":\"1\",\"method\":\"resources/list\"}");
             assert_true (resp_res_list.contains ("jots://notes"));
+            assert_true (resp_res_list.contains ("jots://instructions"));
             assert_true (resp_res_list.contains ("jots://formatting-guide"));
+
+            // resources/read for jots://instructions
+            var resp_inst_read = protocol.process_message ("{\"jsonrpc\":\"2.0\",\"id\":\"inst-1\",\"method\":\"resources/read\",\"params\":{\"uri\":\"jots://instructions\"}}");
+            assert_true (resp_inst_read.contains ("# Jots AI Agent Companion Playbook & Instructions"));
+            assert_true (resp_inst_read.contains ("Creating Notes & Todo Lists (Deduplication)"));
+            assert_true (resp_inst_read.contains ("Semantic Theme Palette"));
 
             // resources/read for jots://notes
             var resp_res_read = protocol.process_message ("{\"jsonrpc\":\"2.0\",\"id\":\"2\",\"method\":\"resources/read\",\"params\":{\"uri\":\"jots://notes\"}}");
@@ -323,6 +330,11 @@ namespace Jots.Tests {
 
             var saved_flatpak = GLib.Environment.get_variable ("FLATPAK_ID");
             var saved_appimage = GLib.Environment.get_variable ("APPIMAGE");
+            var saved_display = GLib.Environment.get_variable ("DISPLAY");
+            var saved_wayland = GLib.Environment.get_variable ("WAYLAND_DISPLAY");
+
+            // Ensure GUI display is set for GUI packaging tests
+            GLib.Environment.set_variable ("DISPLAY", ":0", true);
 
             // 1. Flatpak environment
             GLib.Environment.unset_variable ("APPIMAGE");
@@ -343,17 +355,30 @@ namespace Jots.Tests {
             assert_true (resp_appimage.contains ("\"isError\":true"));
             assert_true (resp_appimage.contains (custom_appimage));
 
-            // 3. Native environment
+            // 3. Native environment with last_error_detail
             GLib.Environment.unset_variable ("FLATPAK_ID");
             GLib.Environment.unset_variable ("APPIMAGE");
+            protocol.set_last_error_detail ("Auto-spawned application via 'jots', but D-Bus service was not ready within 2.5s.");
 
             var resp_native = protocol.process_message ("{\"jsonrpc\":\"2.0\",\"id\":\"3\",\"method\":\"tools/call\",\"params\":{\"name\":\"list_notes\",\"arguments\":{}}}");
             assert_true (resp_native != null);
             assert_true (resp_native.contains ("\"isError\":true"));
+            assert_true (resp_native.contains ("was not ready within 2.5s"));
             assert_true (resp_native.contains (APP_ID));
 
-            // 4. Resource read when proxy is disconnected
-            var resp_res_read = protocol.process_message ("{\"jsonrpc\":\"2.0\",\"id\":\"4\",\"method\":\"resources/read\",\"params\":{\"uri\":\"jots://notes\"}}");
+            // 4. Headless environment (DISPLAY and WAYLAND_DISPLAY unset)
+            GLib.Environment.unset_variable ("DISPLAY");
+            GLib.Environment.unset_variable ("WAYLAND_DISPLAY");
+            protocol.set_last_error_detail (null);
+
+            var resp_headless = protocol.process_message ("{\"jsonrpc\":\"2.0\",\"id\":\"4\",\"method\":\"tools/call\",\"params\":{\"name\":\"list_notes\",\"arguments\":{}}}");
+            assert_true (resp_headless != null);
+            assert_true (resp_headless.contains ("\"isError\":true"));
+            assert_true (resp_headless.contains ("Headless environment detected"));
+
+            // 5. Resource read when proxy is disconnected
+            GLib.Environment.set_variable ("DISPLAY", ":0", true);
+            var resp_res_read = protocol.process_message ("{\"jsonrpc\":\"2.0\",\"id\":\"5\",\"method\":\"resources/read\",\"params\":{\"uri\":\"jots://notes\"}}");
             assert_true (resp_res_read != null);
             assert_true (resp_res_read.contains ("\"code\":-32603"));
             assert_true (resp_res_read.contains (APP_ID));
@@ -368,6 +393,60 @@ namespace Jots.Tests {
                 GLib.Environment.set_variable ("APPIMAGE", saved_appimage, true);
             } else {
                 GLib.Environment.unset_variable ("APPIMAGE");
+            }
+            if (saved_display != null) {
+                GLib.Environment.set_variable ("DISPLAY", saved_display, true);
+            } else {
+                GLib.Environment.unset_variable ("DISPLAY");
+            }
+            if (saved_wayland != null) {
+                GLib.Environment.set_variable ("WAYLAND_DISPLAY", saved_wayland, true);
+            } else {
+                GLib.Environment.unset_variable ("WAYLAND_DISPLAY");
+            }
+        });
+
+        /**
+         * UC-70.30.10: Logger log level parsing, filtering, and file output
+         */
+        GLib.Test.add_func ("/Logger/UC_70_30_10/LogLevelsAndFileLogging", () => {
+            // 1. Parsing tests
+            assert_true (Jots.LogLevel.from_string ("error") == Jots.LogLevel.ERROR);
+            assert_true (Jots.LogLevel.from_string ("ERROR") == Jots.LogLevel.ERROR);
+            assert_true (Jots.LogLevel.from_string ("warn") == Jots.LogLevel.WARN);
+            assert_true (Jots.LogLevel.from_string ("warning") == Jots.LogLevel.WARN);
+            assert_true (Jots.LogLevel.from_string ("info") == Jots.LogLevel.INFO);
+            assert_true (Jots.LogLevel.from_string ("debug") == Jots.LogLevel.DEBUG);
+            assert_true (Jots.LogLevel.from_string ("trace") == Jots.LogLevel.TRACE);
+            assert_true (Jots.LogLevel.from_string ("unknown_fallback") == Jots.LogLevel.INFO);
+
+            // 2. String conversions
+            assert_true (Jots.LogLevel.ERROR.to_string () == "ERROR");
+            assert_true (Jots.LogLevel.WARN.to_string () == "WARN");
+            assert_true (Jots.LogLevel.INFO.to_string () == "INFO");
+            assert_true (Jots.LogLevel.DEBUG.to_string () == "DEBUG");
+            assert_true (Jots.LogLevel.TRACE.to_string () == "TRACE");
+
+            // 3. File logging verification
+            var tmp_log = "/tmp/jots-test-mcp-" + GLib.Uuid.string_random () + ".log";
+            Jots.Logger.init (Jots.LogLevel.DEBUG, tmp_log, "jots-mcp");
+
+            Jots.Logger.info ("Test info message");
+            Jots.Logger.debug ("Test debug message");
+            Jots.Logger.trace ("Test trace message that should be filtered");
+
+            assert_true (GLib.FileUtils.test (tmp_log, GLib.FileTest.EXISTS));
+
+            string content;
+            try {
+                GLib.FileUtils.get_contents (tmp_log, out content);
+                assert_true (content.contains ("[INFO] [jots-mcp] Test info message"));
+                assert_true (content.contains ("[DEBUG] [jots-mcp] Test debug message"));
+                assert_false (content.contains ("Test trace message that should be filtered"));
+            } catch (GLib.Error e) {
+                assert_not_reached ();
+            } finally {
+                GLib.FileUtils.unlink (tmp_log);
             }
         });
     }

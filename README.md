@@ -23,7 +23,7 @@
 * 🔤 **Font controls**: Choose your preferred text and code fonts to match how you like to read and write.
 * 🔒 **Privacy mode**: Hide note text when you need to protect sensitive content on screen.
 * 🔁 **Git backup sync**: Connect a Git remote, choose how often to sync, and use **Sync now** when you want an immediate backup.
-* 🤖 **AI-ready with MCP**: Connect compatible assistants (Claude Desktop, Cursor, Gemini CLI, Antigravity) to manage notes from AI tools.
+* 🤖 **AI-ready with MCP (Beta)**: Connect compatible assistants (Claude Code, Cursor, Windsurf, Claude Desktop) to create, search, and manage notes directly from your AI workflows.
 * ⚡ **Fast and lightweight**: Starts quickly and stays responsive.
 
 ---
@@ -45,21 +45,31 @@ Jots is currently Linux-first. AppImage and Flatpak are the supported distributi
 
 ---
 
-## AI assistant and MCP automation
+## AI assistant and MCP automation (Beta)
 
-Jots includes a native [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server (`jots-mcp`) allowing AI assistants (Claude Desktop, Cursor, Gemini CLI, and Antigravity) to query, create, edit, search, and delete sticky notes live on the desktop.
+Jots includes a native [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server (`jots-mcp`) allowing AI coding assistants to read, create, edit, search, and delete sticky notes live on the desktop.
 
-For setup, use the canonical **[MCP Integration Guide](docs/development/mcp-server.md#2-client-configuration-examples)**.
+### Supported Agent Tiers
+* **Tier 1 — Recommended & Fully Supported (Direct MCP)**:
+  * **[Claude Code CLI](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code)**, **[Cursor](https://cursor.com)**, **[Windsurf](https://codeium.com/windsurf)**, and **[Claude Desktop](https://claude.ai/download)**.
+  * Direct tool binding into the root agent with sub-second execution (<1s) and zero subagent friction.
+* **Tier 2 — Experimental (Multi-Agent Subagent Frameworks)**:
+  * **Antigravity CLI** and similar orchestrator-subagent frameworks. Supported via plugin, though multi-agent indirection and permission prompts introduce additional reasoning steps.
+
+* **Setup Guide**: See the **[MCP Integration Guide](docs/development/mcp-server.md#2-setup--client-configuration)**.
+* **AI Companion Skill**: To give any AI assistant full intuition for Jots (deduplication, lossless editing, checklists, and pastel colors), tell your assistant:
+  > *"Install the jots-companion skill as a personal skill for yourself from https://raw.githubusercontent.com/comicdeed/jots/main/docs/mcp-skill.md"*
+  > *(Or read the [`jots://instructions`](docs/mcp-skill.md) resource directly over MCP)*
 
 ---
 
 ## Markdown storage and tool interoperability
 
-All notes are stored as individual `.md` Markdown files with standardized YAML front-matter headers containing note metadata (UUID, title, theme, zoom, and window dimensions). Because notes are saved in plain text, you can read them with standard text tools, version control them with Git, or potentially integrate them into personal knowledge base directories (such as Obsidian or Logseq):
+All notes are stored as individual `.md` Markdown files with standardized YAML front-matter headers containing note metadata (note ID, title, theme, zoom, and window dimensions). Because notes are saved in plain text, you can read them with standard text tools, version control them with Git, or potentially integrate them into personal knowledge base directories (such as Obsidian or Logseq):
 
 ```markdown
 ---
-id: "3ba7ca8a-d40c-45b9-a9f8-94c15b853e2d"
+id: "project-ideas~a1b2c3"
 title: "Project Ideas"
 theme: "MINT"
 monospace: false

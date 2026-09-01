@@ -128,6 +128,86 @@ namespace Jots.Tests {
             }
         });
 
+        // ── PackagingContext.get_spawn_command() & can_auto_spawn() ────────
+
+        /**
+         * UC-60.20.28: APPIMAGE context → get_spawn_command() returns AppImage binary
+         */
+        GLib.Test.add_func ("/Autostart/PackagingContext/UC_60_20_28/SpawnCommandAppImage", () => {
+            var appimage_path = "/home/user/Applications/jots.appimage";
+            var saved = GLib.Environment.get_variable ("APPIMAGE");
+            GLib.Environment.set_variable ("APPIMAGE", appimage_path, true);
+
+            var cmd = PackagingContext.APPIMAGE.get_spawn_command ("io.github.comicdeed.jots");
+            assert_cmpstr (cmd, GLib.CompareOperator.EQ, appimage_path);
+
+            if (saved == null) {
+                GLib.Environment.unset_variable ("APPIMAGE");
+            } else {
+                GLib.Environment.set_variable ("APPIMAGE", saved, true);
+            }
+        });
+
+        /**
+         * UC-60.20.29: NATIVE context → get_spawn_command() returns app-id
+         */
+        GLib.Test.add_func ("/Autostart/PackagingContext/UC_60_20_29/SpawnCommandNative", () => {
+            var cmd = PackagingContext.NATIVE.get_spawn_command ("io.github.comicdeed.jots");
+            assert_cmpstr (cmd, GLib.CompareOperator.EQ, "io.github.comicdeed.jots");
+        });
+
+        /**
+         * UC-60.20.30: FLATPAK context → get_spawn_command() returns null (sandbox boundary)
+         */
+        GLib.Test.add_func ("/Autostart/PackagingContext/UC_60_20_30/SpawnCommandFlatpak", () => {
+            var cmd = PackagingContext.FLATPAK.get_spawn_command ("io.github.comicdeed.jots");
+            assert_null (cmd);
+        });
+
+        /**
+         * UC-60.20.31: GUI availability & can_auto_spawn() under Wayland, X11, and Headless
+         */
+        GLib.Test.add_func ("/Autostart/PackagingContext/UC_60_20_31/GuiAvailabilityAndAutoSpawn", () => {
+            var saved_wayland = GLib.Environment.get_variable ("WAYLAND_DISPLAY");
+            var saved_display = GLib.Environment.get_variable ("DISPLAY");
+
+            // 1. Wayland active
+            GLib.Environment.set_variable ("WAYLAND_DISPLAY", "wayland-0", true);
+            GLib.Environment.unset_variable ("DISPLAY");
+            assert_true (PackagingContext.is_gui_available ());
+            assert_true (PackagingContext.APPIMAGE.can_auto_spawn ());
+            assert_true (PackagingContext.NATIVE.can_auto_spawn ());
+            assert_false (PackagingContext.FLATPAK.can_auto_spawn ());
+
+            // 2. X11 active
+            GLib.Environment.unset_variable ("WAYLAND_DISPLAY");
+            GLib.Environment.set_variable ("DISPLAY", ":0", true);
+            assert_true (PackagingContext.is_gui_available ());
+            assert_true (PackagingContext.APPIMAGE.can_auto_spawn ());
+            assert_true (PackagingContext.NATIVE.can_auto_spawn ());
+            assert_false (PackagingContext.FLATPAK.can_auto_spawn ());
+
+            // 3. Headless (both unset)
+            GLib.Environment.unset_variable ("WAYLAND_DISPLAY");
+            GLib.Environment.unset_variable ("DISPLAY");
+            assert_false (PackagingContext.is_gui_available ());
+            assert_false (PackagingContext.APPIMAGE.can_auto_spawn ());
+            assert_false (PackagingContext.NATIVE.can_auto_spawn ());
+            assert_false (PackagingContext.FLATPAK.can_auto_spawn ());
+
+            // Restore
+            if (saved_wayland != null) {
+                GLib.Environment.set_variable ("WAYLAND_DISPLAY", saved_wayland, true);
+            } else {
+                GLib.Environment.unset_variable ("WAYLAND_DISPLAY");
+            }
+            if (saved_display != null) {
+                GLib.Environment.set_variable ("DISPLAY", saved_display, true);
+            } else {
+                GLib.Environment.unset_variable ("DISPLAY");
+            }
+        });
+
         // ── autostart_desktop_path() / filesystem ground truth ────────────
 
         /**

@@ -10,9 +10,10 @@ namespace Jots {
     public class McpProtocol : GLib.Object {
         public const string PROTOCOL_VERSION = "2024-11-05";
         public const string SERVER_NAME = "jots";
-        public const string SERVER_VERSION = "4.3.0";
+        public const string SERVER_VERSION = APP_VERSION;
 
         private NotesProxy? proxy;
+        private string? last_error_detail = null;
 
         public McpProtocol (NotesProxy? dbus_proxy = null) {
             this.proxy = dbus_proxy;
@@ -20,6 +21,10 @@ namespace Jots {
 
         public void set_proxy (NotesProxy? dbus_proxy) {
             this.proxy = dbus_proxy;
+        }
+
+        public void set_last_error_detail (string? detail) {
+            this.last_error_detail = detail;
         }
 
         /**
@@ -362,14 +367,21 @@ namespace Jots {
             var args_obj = (args_node != null && args_node.get_node_type () == Json.NodeType.OBJECT) ? args_node.get_object () : new Json.Object ();
 
             if (proxy == null) {
+                Logger.warn ("tools/call '%s' rejected: D-Bus service is not running".printf (tool_name));
                 return format_tool_error (id_node, get_not_running_error_message ());
             }
 
+            var timer = new GLib.Timer ();
+            timer.start ();
+            Logger.info ("-> tools/call: %s".printf (tool_name));
+
             try {
+                string response;
                 switch (tool_name) {
                     case "list_notes": {
                         var raw_json = proxy.list_notes ();
-                        return format_tool_success (id_node, raw_json);
+                        response = format_tool_success (id_node, raw_json);
+                        break;
                     }
 
                     case "read_note": {
@@ -378,7 +390,8 @@ namespace Jots {
                             return format_error (id_node, -32602, "Invalid params: 'id' is required");
                         }
                         var raw_json = proxy.get_note (note_id);
-                        return format_tool_success (id_node, raw_json);
+                        response = format_tool_success (id_node, raw_json);
+                        break;
                     }
 
                     case "create_note": {
@@ -394,7 +407,8 @@ namespace Jots {
                         }
 
                         var raw_json = proxy.create_note (title, content, theme);
-                        return format_tool_success (id_node, raw_json);
+                        response = format_tool_success (id_node, raw_json);
+                        break;
                     }
 
                     case "update_note": {
@@ -402,19 +416,20 @@ namespace Jots {
                         if (note_id == "") {
                             return format_error (id_node, -32602, "Invalid params: 'id' is required");
                         }
-                        string? title = args_obj.has_member ("title") ? args_obj.get_string_member ("title") : null;
-                        string? content = args_obj.has_member ("content") ? args_obj.get_string_member ("content") : null;
-                        string? theme = args_obj.has_member ("theme") ? args_obj.get_string_member ("theme") : null;
+                        var title = args_obj.has_member ("title") ? args_obj.get_string_member ("title") : "";
+                        var content = args_obj.has_member ("content") ? args_obj.get_string_member ("content") : "";
+                        var theme = args_obj.has_member ("theme") ? args_obj.get_string_member ("theme") : "";
 
-                        if (content != null && content.length > MAX_NOTE_CONTENT_LENGTH) {
+                        if (content.length > MAX_NOTE_CONTENT_LENGTH) {
                             return format_tool_error (id_node, "Content exceeds maximum length of %d characters.".printf (MAX_NOTE_CONTENT_LENGTH));
                         }
-                        if (title != null && title.length > MAX_NOTE_TITLE_LENGTH) {
+                        if (title.length > MAX_NOTE_TITLE_LENGTH) {
                             return format_tool_error (id_node, "Title exceeds maximum length of %d characters.".printf (MAX_NOTE_TITLE_LENGTH));
                         }
 
                         var raw_json = proxy.update_note (note_id, title, content, theme);
-                        return format_tool_success (id_node, raw_json);
+                        response = format_tool_success (id_node, raw_json);
+                        break;
                     }
 
                     case "delete_note": {
@@ -423,7 +438,8 @@ namespace Jots {
                             return format_error (id_node, -32602, "Invalid params: 'id' is required");
                         }
                         bool ok = proxy.delete_note (note_id);
-                        return format_tool_success (id_node, ok ? "true" : "false");
+                        response = format_tool_success (id_node, ok ? "true" : "false");
+                        break;
                     }
 
                     case "search_notes": {
@@ -432,13 +448,21 @@ namespace Jots {
                             return format_tool_error (id_node, "Search query exceeds maximum length of %d characters.".printf (MAX_NOTE_TITLE_LENGTH));
                         }
                         var raw_json = proxy.search_notes (query);
-                        return format_tool_success (id_node, raw_json);
+                        response = format_tool_success (id_node, raw_json);
+                        break;
                     }
 
                     default:
                         return format_error (id_node, -32601, "Unknown tool: " + tool_name);
                 }
+                timer.stop ();
+                var elapsed_ms = (int)(timer.elapsed () * 1000);
+                Logger.info ("<- tools/call: %s OK (%dms)".printf (tool_name, elapsed_ms));
+                return response;
             } catch (GLib.Error e) {
+                timer.stop ();
+                var elapsed_ms = (int)(timer.elapsed () * 1000);
+                Logger.warn ("<- tools/call: %s FAILED (%dms): %s".printf (tool_name, elapsed_ms, e.message));
                 return format_tool_error (id_node, e.message);
             }
         }
@@ -466,6 +490,17 @@ namespace Jots {
 
             builder.begin_object ();
             builder.set_member_name ("uri");
+            builder.add_string_value ("jots://instructions");
+            builder.set_member_name ("name");
+            builder.add_string_value ("Jots AI Agent Companion Playbook & Instructions");
+            builder.set_member_name ("description");
+            builder.add_string_value ("Comprehensive behavioral guide and workflow recipes for AI agents managing desktop sticky notes via Jots. MUST BE READ when interacting with Jots or managing notes, reminders, checklists, or scratchpads to ensure proper deduplication, lossless updates, checklist typography, and pastel theme selection.");
+            builder.set_member_name ("mimeType");
+            builder.add_string_value ("text/markdown");
+            builder.end_object ();
+
+            builder.begin_object ();
+            builder.set_member_name ("uri");
             builder.add_string_value ("jots://formatting-guide");
             builder.set_member_name ("name");
             builder.add_string_value ("Jots Markdown Formatting Guide");
@@ -487,6 +522,73 @@ namespace Jots {
             var uri = params_obj.get_string_member_with_default ("uri", "");
             if (uri == "") {
                 return format_error (id_node, -32602, "Invalid params: 'uri' is required");
+            }
+
+            if (uri == "jots://instructions") {
+                string instructions_content = "# Jots AI Agent Companion Playbook & Instructions\n\n"
+                    + "## 1. Available Tools\n"
+                    + "Use your connected Jots MCP tools to manage notes live on the desktop:\n"
+                    + "- `create_note`: Creates a new sticky note window\n"
+                    + "- `search_notes`: Searches existing notes by keyword\n"
+                    + "- `read_note`: Reads full markdown content of a note\n"
+                    + "- `update_note`: Updates note title, content, or theme\n"
+                    + "- `list_notes`: Lists all open desktop notes\n"
+                    + "- `delete_note`: Deletes a note window\n\n"
+                    + "## 2. When to Use Jots (Intent Triggers)\n"
+                    + "You SHOULD activate Jots workflows whenever the user asks to:\n"
+                    + "- \"Jot down\", \"take a note\", \"remember this\", or \"remind me\"\n"
+                    + "- \"Put this on my desktop / screen\" or \"stick this on my desktop\"\n"
+                    + "- Create or track actionable todos, task lists, or scratchpads\n"
+                    + "- Keep reference snippets, API keys, commands, or meeting notes in plain view\n\n"
+                    + "## 3. Workflow Requirements\n\n"
+                    + "### A. Creating Notes & Todo Lists (Deduplication)\n"
+                    + "- You MUST call `search_notes(query)` or `list_notes()` before creating a new note to prevent duplicate windows.\n"
+                    + "- If a relevant note already exists, you MUST update it using Workflow B below instead of creating a duplicate.\n"
+                    + "- If no matching note exists, you MUST call `create_note(title, content, theme)`.\n\n"
+                    + "### B. Updating Existing Notes (Lossless Mutation)\n"
+                    + "- You MUST call `read_note(id)` first to retrieve the current full body Markdown.\n"
+                    + "- You MUST merge your changes cleanly into the retrieved text.\n"
+                    + "- You MUST call `update_note(id, title, content, theme)` with the full merged text. You MUST NOT send only the delta snippet.\n\n"
+                    + "### C. Typography & Checklists\n"
+                    + "- You SHOULD format actionable todo items with standard Markdown checklists: `- [ ] Pending item` and `- [x] Completed item`.\n"
+                    + "- You SHOULD use `# Heading 1` and `## Heading 2` to structure note sections.\n"
+                    + "- You MAY use `#tag` pills anywhere in the body for in-text visual badges.\n\n"
+                    + "## 4. Semantic Theme Palette\n"
+                    + "You SHOULD choose the pastel theme matching the note's intent:\n"
+                    + "- `mint` or `lime`: Action items, todo lists, checklists, active sprint todos (RECOMMENDED for todos)\n"
+                    + "- `banana` or `orange`: Reminders, alerts, schedules, deadlines\n"
+                    + "- `strawberry` or `bubblegum`: Urgent items, bugs, blockers, critical alerts\n"
+                    + "- `grape`: Architecture designs, ideas, brainstorming concepts\n"
+                    + "- `blueberry` or `slate`: General scratchpad, meeting summaries, code snippets (DEFAULT)\n"
+                    + "- `cocoa` or `latte`: Long-form reading, documentation notes\n\n"
+                    + "## 5. Self-Update Directive\n"
+                    + "AI assistants SHOULD periodically re-read `jots://instructions` over MCP to refresh knowledge of new capabilities, schema additions, and theme options.\n";
+
+                var builder = new Json.Builder ();
+                builder.begin_object ();
+                builder.set_member_name ("jsonrpc");
+                builder.add_string_value ("2.0");
+                add_id_to_builder (builder, id_node);
+
+                builder.set_member_name ("result");
+                builder.begin_object ();
+                builder.set_member_name ("contents");
+                builder.begin_array ();
+
+                builder.begin_object ();
+                builder.set_member_name ("uri");
+                builder.add_string_value (uri);
+                builder.set_member_name ("mimeType");
+                builder.add_string_value ("text/markdown");
+                builder.set_member_name ("text");
+                builder.add_string_value (instructions_content);
+                builder.end_object ();
+
+                builder.end_array ();
+                builder.end_object ();
+                builder.end_object ();
+
+                return generator_to_string (builder);
             }
 
             if (uri == "jots://formatting-guide") {
@@ -757,9 +859,29 @@ namespace Jots {
             return generator_to_string (builder);
         }
 
-        public static string get_not_running_error_message () {
+        public string get_not_running_error_message () {
             var ctx = PackagingContext.detect ();
             var exec_cmd = ctx.get_exec_command (APP_ID) ?? APP_ID;
+
+            if (!PackagingContext.is_gui_available ()) {
+                return "Could not connect to Jots D-Bus service. Headless environment detected (neither WAYLAND_DISPLAY nor DISPLAY is set).\n\n"
+                     + "A graphical display session is required to run the Jots desktop application.\n"
+                     + "Please launch Jots within an active desktop session before executing MCP tools.";
+            }
+
+            if (ctx == PackagingContext.FLATPAK) {
+                return "Could not connect to Jots D-Bus service from Flatpak sandbox.\n\n"
+                     + "To start Jots on this system, run:\n"
+                     + "  " + exec_cmd + "\n\n"
+                     + "Once the application is running, please retry this operation.";
+            }
+
+            if (last_error_detail != null && last_error_detail.strip () != "") {
+                return "Could not connect to Jots D-Bus service. " + last_error_detail + "\n\n"
+                     + "To start Jots manually, run:\n"
+                     + "  " + exec_cmd + "\n\n"
+                     + "Once the application is running, please retry this operation.";
+            }
 
             return "Could not connect to Jots D-Bus service. The Jots desktop application is not running.\n\n"
                  + "To start Jots on this system, run:\n"

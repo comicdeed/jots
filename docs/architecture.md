@@ -73,6 +73,13 @@ graph TD
 ### 2.5 Native MCP Server Binary (`src/Mcp/`)
 * **`jots-mcp`**: Standalone CLI executable compiled alongside Jots in `meson.build`. Links only against `glib-2.0`, `gio-2.0`, and `json-glib-1.0` (zero GTK/display overhead, ~50 KB footprint, `< 2ms` startup). Implements line-delimited JSON-RPC 2.0 over `stdio` according to MCP specification `2024-11-05` and connects directly to `io.github.comicdeed.jots.Notes` on D-Bus. Bundled inside Flatpak at `/app/bin/jots-mcp`.
 
+### 2.6 Shared Utilities (`src/Utils/`)
+* **`Logger.vala`**: Thread-safe, zero-GTK leveled logger (`ERROR`, `WARN`, `INFO`, `DEBUG`, `TRACE`). Provides strict `stderr` stream isolation for CLI/MCP binaries, real-time request latency tracing, 4-tier cascading file rotation (`mcp.log` $\rightarrow$ `.1` $\rightarrow$ `.2` $\rightarrow$ `.3` at 5 MB), and runtime path configuration via `JOTS_LOG_LEVEL` and `JOTS_LOG_FILE`.
+* **`PackagingContext.vala`**: Detection engine for packaging formats (AppImage, Flatpak, Native) and graphical display availability (`is_gui_available`).
+* **`NoteIdentifier.vala`**: Canonical UUID validation and slug normalization.
+* **`Autostart.vala`**: XDG and Portal autostart management.
+* **`Random.vala`**: Cryptographically secure pseudorandom token and UUID generators.
+
 ---
 
 ## 3. Core Lifecycles & Sequence Flows
@@ -136,6 +143,15 @@ Implementation notes:
 * When local history is empty, remote presence is detected from any fetched `origin/*` branch head (excluding `origin/HEAD`) to support both `main` and `master` conventions.
 * Divergence remains a guarded state and does not auto-force merge conflicting histories.
 * Git command execution assumes `git` is available on `PATH`; Windows builds currently rely on host-level Git installation for backup/sync.
+
+### 3.6 MCP Server Lifecycle & Process-Isolated Auto-Spawn
+1. **Stateless Operations**: `initialize`, `ping`, `tools/list`, `prompts/list`, and static resources (`jots://instructions`, `jots://formatting-guide`) run completely statelessly without querying D-Bus or touching display dependencies.
+2. **On-Demand Auto-Spawn**: When `jots-mcp` receives an action tool call (`tools/call`) or live state query while the desktop application is closed:
+   - Probes D-Bus with `DO_NOT_AUTO_START` (0ms).
+   - If unowned, invokes `Process.spawn_async` with `STDOUT_TO_DEV_NULL | STDERR_TO_DEV_NULL` to launch the background GUI without polluting JSON-RPC stdout.
+   - Polls session bus registration asynchronously at 25ms intervals (connecting within ~150ms).
+   - Intentionally bypasses system D-Bus activation (`try_connect_dbus(true)`) to prevent 25-second activation timeout penalties on portable AppImage environments.
+3. **Flatpak Sandbox Isolation**: In Flatpak environments, `can_auto_spawn()` respects container boundaries by connecting to the session bus directly or returning clear manual launch instructions.
 
 ---
 

@@ -86,6 +86,23 @@
     </screenshots>
 
     <releases>
+        <release version="1.4.0-beta.1" date="2026-09-01" type="development">
+            <description>
+                <p>Jots 1.4.0-beta.1 introduces on-demand Model Context Protocol (MCP) auto-spawning, leveled logging with request tracing, and AI assistant companion skill integration.</p>
+                <p>Highlights:</p>
+                <ul>
+                    <li>✨ AI coding assistants (Claude Code, Cursor, Windsurf, Antigravity) connect seamlessly to Jots with instant cold-start background auto-launching.</li>
+                    <li>✨ Universal AI companion skill enables intelligent note search, automated scratchpads, and live checklist updates without manual window management.</li>
+                    <li>✨ MCP requests and tool calls feature real-time latency tracing and robust leveled logging with automatic file rotation.</li>
+                </ul>
+                <p>Technical Notes:</p>
+                <ul>
+                    <li>✨ Implemented zero-GTK leveled logging subsystem (Jots.Logger) with pure stderr stream isolation and 4-generation cascading file rotation.</li>
+                    <li>✨ Hardened D-Bus signatures and parameter unmarshalling against wire-level null pointer exceptions.</li>
+                    <li>✨ Added display server detection to gracefully report headless session constraints.</li>
+                </ul>
+            </description>
+        </release>
         <release version="1.3.0" date="2026-08-31">
             <description>
                 <p>Jots 1.3.0 introduces automated Git backup &amp; remote sync, resilient smart clipboard paste, interactive checklists, and refined desktop note ergonomics.</p>

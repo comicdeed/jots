@@ -8,6 +8,7 @@ Icon=@APP_ID@
 Exec=@APP_ID@
 StartupWMClass=@APP_ID@
 Terminal=false
+DBusActivatable=true
 Actions=NewNote;Preferences;
 Categories=Office;GTK;
 Keywords=text;plain;plaintext;notepad;notes;sticky;post-it;

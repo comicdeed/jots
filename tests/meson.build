@@ -87,6 +87,7 @@ test_sources = files(
     meson.project_source_root () / 'src' / 'Widgets' / 'Bin.vala',
     meson.project_source_root () / 'src' / 'Widgets' / 'ToastBanner.vala',
     meson.project_source_root () / 'src' / 'Constants.vala',
+    meson.project_source_root () / 'src' / 'Utils' / 'Logger.vala',
     meson.project_source_root () / 'src' / 'Mcp' / 'NotesDbusProxy.vala',
     meson.project_source_root () / 'src' / 'Mcp' / 'McpProtocol.vala',
 )

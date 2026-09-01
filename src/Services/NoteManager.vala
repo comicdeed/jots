@@ -87,7 +87,7 @@ public class Jots.NoteManager : Object, Jots.ActiveNotesProvider {
 
         } else {
             foreach (var note_data in loaded_notes) {
-                print ("\nLoaded: " + note_data.title);
+                debug ("Loaded: %s", note_data.title);
                 create_note (note_data);
             }
         }
@@ -380,27 +380,27 @@ public class Jots.NoteManager : Object, Jots.ActiveNotesProvider {
     /**
     * Update an existing note's properties, enforcing length guardrails and triggering UI update
     */
-    public NoteData update_note_by_id (string id, string? title, string? content, string? theme_name) throws GLib.Error {
+    public NoteData update_note_by_id (string id, string title = "", string content = "", string theme_name = "") throws GLib.Error {
         var win = get_window_by_id (id);
         if (win == null) {
             throw new GLib.IOError.NOT_FOUND ("Note with ID '%s' was not found.", id);
         }
 
-        if (content != null && content.length > MAX_NOTE_CONTENT_LENGTH) {
+        if (content.length > MAX_NOTE_CONTENT_LENGTH) {
             throw new GLib.IOError.INVALID_ARGUMENT ("Content exceeds maximum length of %d characters.", MAX_NOTE_CONTENT_LENGTH);
         }
 
-        if (title != null && title.length > MAX_NOTE_TITLE_LENGTH) {
+        if (title.length > MAX_NOTE_TITLE_LENGTH) {
             throw new GLib.IOError.INVALID_ARGUMENT ("Title exceeds maximum length of %d characters.", MAX_NOTE_TITLE_LENGTH);
         }
 
-        if (title != null) {
+        if (title != "") {
             win.update_title (title);
         }
-        if (content != null) {
+        if (content != "") {
             win.update_content (content);
         }
-        if (theme_name != null && theme_name.strip () != "") {
+        if (theme_name.strip () != "") {
             win.update_theme (Themes.from_string (theme_name, win.popover.color));
         }
 

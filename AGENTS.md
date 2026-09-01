@@ -170,5 +170,6 @@ For local Windows packaging, follow `docs/development/windows.md` in an MSYS2 UC
     1. Extracts the version and automatically creates & pushes git tag `X.Y.Z[-beta.N]` to `main`.
     2. Builds multi-architecture AppImages (`x86_64`, `aarch64`), Flatpak standalone bundles, and Windows installers.
     3. Extracts release notes directly from `data/jots.metainfo.xml.in.in` and creates the GitHub Release with all compiled assets attached.
-    4. Automatically merges `main` back into `develop` to keep version bumps and metadata synchronized.
+    4. Automatically prunes older historical pre-releases on GitHub (retaining a sliding window of the 3 most recent) while leaving git tags intact.
+    5. Automatically merges `main` back into `develop` to keep version bumps and metadata synchronized.
 

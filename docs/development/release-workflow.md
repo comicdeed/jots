@@ -143,5 +143,9 @@ When the Pull Request is merged into `main`, [`.github/workflows/release.yml`](.
    - Extracts AppStream release notes directly into release body markdown.
    - Attaches all compiled binaries and checksums.
    - Flags release as **Pre-release** if version contains `beta`, `alpha`, or `rc`.
-5. **Develop Branch Synchronization**:
+5. **Pre-release Sliding Window Retention**:
+   - Maintains a sliding window of the **3 most recent pre-releases** on GitHub Releases. Older pre-release entries and their binary downloads are automatically pruned (`gh release delete`) to prevent release page clutter and storage bloat.
+   - Underlying git tags remain immutable and intact in the repository.
+   - Stable releases (`X.Y.Z`) are permanent and never pruned.
+6. **Develop Branch Synchronization**:
    - Automatically merges `main` back into `develop` to keep version numbers and release logs synchronized.

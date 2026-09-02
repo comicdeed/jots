@@ -69,5 +69,43 @@ namespace Jots.Tests {
             assert_cmpint (parts.length, GLib.CompareOperator.EQ, 2);
             assert_cmpstr (parts[0], GLib.CompareOperator.EQ, "note");
         });
+
+        /**
+         * UC-20.15.50: Update slug updates title slug while preserving existing token.
+         */
+        GLib.Test.add_func ("/NoteIdentifier/UC_20_15_50/UpdateSlugPreservesToken", () => {
+            var updated = Jots.Utils.NoteIdentifier.update_slug ("Sprint Roadmap", "meeting-notes~ab12cd");
+            assert_cmpstr (updated, GLib.CompareOperator.EQ, "sprint-roadmap~ab12cd");
+        });
+
+        /**
+         * UC-20.15.51: Update slug on cheatsheet identifier is exempted.
+         */
+        GLib.Test.add_func ("/NoteIdentifier/UC_20_15_51/UpdateSlugCheatsheetExempt", () => {
+            var updated = Jots.Utils.NoteIdentifier.update_slug ("New Cheatsheet Title", Jots.CHEATSHEET_NOTE_ID);
+            assert_cmpstr (updated, GLib.CompareOperator.EQ, Jots.CHEATSHEET_NOTE_ID);
+        });
+
+        /**
+         * UC-20.15.52: Update slug on custom identifier without tilde preserves existing identifier.
+         */
+        GLib.Test.add_func ("/NoteIdentifier/UC_20_15_52/UpdateSlugWithoutTildePreservesCustomId", () => {
+            var updated = Jots.Utils.NoteIdentifier.update_slug ("Sprint Roadmap", "legacy-uuid-12345");
+            assert_cmpstr (updated, GLib.CompareOperator.EQ, "legacy-uuid-12345");
+        });
+
+        /**
+         * UC-20.15.60: Slug length is capped at 50 chars and trimmed at word boundary.
+         */
+        GLib.Test.add_func ("/NoteIdentifier/UC_20_15_60/SlugLengthCap", () => {
+            var long_title = "Discussion with Backend Team Regarding Database Migration & Backup Policies";
+            var ensured = Jots.Utils.NoteIdentifier.ensure (long_title);
+            var parts = ensured.split ("~");
+
+            assert_cmpint (parts.length, GLib.CompareOperator.EQ, 2);
+            assert_true (parts[0].length <= 50);
+            assert_cmpstr (parts[0], GLib.CompareOperator.EQ, "discussion-with-backend-team-regarding-database");
+            assert_cmpint (parts[1].length, GLib.CompareOperator.EQ, 6);
+        });
     }
 }

@@ -248,7 +248,7 @@ namespace Jots {
             builder.set_member_name ("name");
             builder.add_string_value ("update_note");
             builder.set_member_name ("description");
-            builder.add_string_value ("Update the Markdown content, title, or theme color of an existing sticky note in real time. To append text to an existing note, call read_note first to fetch current content, then call update_note with the updated full body text.");
+            builder.add_string_value ("Update the Markdown content, title, or theme color of an existing sticky note in real time. If title is modified, the note identifier slug prefix updates to match the new title (preserving the ~token suffix); always capture the updated id from the tool response for subsequent calls. To append text to an existing note, call read_note first to fetch current content, then call update_note with the updated full body text.");
             builder.set_member_name ("inputSchema");
             builder.begin_object ();
             builder.set_member_name ("type");
@@ -261,7 +261,7 @@ namespace Jots {
             builder.set_member_name ("type");
             builder.add_string_value ("string");
             builder.set_member_name ("description");
-            builder.add_string_value ("The UUID of the note to update");
+            builder.add_string_value ("The identifier/UUID of the note to update");
             builder.end_object ();
 
             builder.set_member_name ("title");
@@ -548,7 +548,8 @@ namespace Jots {
                     + "### B. Updating Existing Notes (Lossless Mutation)\n"
                     + "- You MUST call `read_note(id)` first to retrieve the current full body Markdown.\n"
                     + "- You MUST merge your changes cleanly into the retrieved text.\n"
-                    + "- You MUST call `update_note(id, title, content, theme)` with the full merged text. You MUST NOT send only the delta snippet.\n\n"
+                    + "- You MUST call `update_note(id, title, content, theme)` with the full merged text. You MUST NOT send only the delta snippet.\n"
+                    + "- Note Re-titling: If you update a note's `title`, the note identifier's slug prefix updates (`<new-slug>~<token>`). Always capture the updated `id` from the `update_note` response for subsequent operations.\n\n"
                     + "### C. Typography & Checklists\n"
                     + "- You SHOULD format actionable todo items with standard Markdown checklists: `- [ ] Pending item` and `- [x] Completed item`.\n"
                     + "- You SHOULD use `# Heading 1` and `## Heading 2` to structure note sections.\n"

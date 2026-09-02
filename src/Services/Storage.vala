@@ -22,6 +22,7 @@ namespace Jots {
 
         public signal void note_saved (NoteData note, NoteData? previous_note, string note_path);
         public signal void note_deleted (string note_id, string note_path);
+        public signal void note_renamed (string old_id, string new_id, string old_path, string new_path);
 
         construct {
             var path_data = GLib.Path.build_path (Path.DIR_SEPARATOR_S, Environment.get_user_data_dir (), APP_ID);
@@ -208,7 +209,38 @@ namespace Jots {
          */
         public void save_note (NoteData note) {
             ensure_directories ();
-            note.id = Jots.Utils.NoteIdentifier.ensure (note.title, note.id);
+            var original_id = note.id;
+            var updated_id = Jots.Utils.NoteIdentifier.update_slug (note.title, note.id);
+
+            if (original_id != null && original_id != "" && original_id != updated_id) {
+                var old_filename = "%s.md".printf (original_id);
+                var old_file = notes_dir.get_child (old_filename);
+                var new_filename = "%s.md".printf (updated_id);
+                var new_file = notes_dir.get_child (new_filename);
+
+                if (old_file.query_exists ()) {
+                    note.id = updated_id;
+                    var md_content = note.to_markdown ();
+
+                    try {
+                        new_file.replace_contents (
+                            md_content.data,
+                            null,
+                            false,
+                            FileCreateFlags.REPLACE_DESTINATION,
+                            null
+                        );
+                        old_file.delete ();
+                        debug ("Renamed note from %s to %s", original_id, updated_id);
+                        note_renamed (original_id, updated_id, old_file.get_path (), new_file.get_path ());
+                        return;
+                    } catch (Error e) {
+                        warning ("Failed to rename note file from %s to %s: %s", original_id, updated_id, e.message);
+                    }
+                }
+            }
+
+            note.id = updated_id;
             var filename = "%s.md".printf (note.id);
             var file = notes_dir.get_child (filename);
             var previous_note = load_note_by_id (note.id);

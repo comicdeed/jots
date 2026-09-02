@@ -46,6 +46,7 @@ Do **not** use Jots for long-form project code files or repository documentation
 - You MUST call `read_note(id)` first to retrieve the current full body Markdown.
 - You MUST merge your changes cleanly into the retrieved text.
 - You MUST call `update_note(id, title, content, theme)` with the full merged text. You MUST NOT send only the delta snippet.
+- **Note Re-titling**: When modifying `title`, the note identifier's slug prefix will update (`<new-slug>~<token>`). Always capture and use the updated `id` from the `update_note` response for subsequent operations.
 
 ### 3. Typography & Checklists
 - You SHOULD format actionable todo items with standard Markdown checklists: `- [ ] Pending item` and `- [x] Completed item`.

@@ -47,24 +47,28 @@ Jots is a lightweight, distraction-free sticky notes application for Linux. It k
 | Shortcut | Action | Description |
 | :--- | :--- | :--- |
 | **`Ctrl + N`** | **New note** | Opens a new sticky note with a random pastel color. |
-| **`Ctrl + F`** | **Search** | Opens full-text search across all active and saved notes. |
+| **`Ctrl + F`** / **`Ctrl + Shift + F`** | **Search** | Opens full-text search across active and saved notes. |
+| **`Ctrl + L`** | **Edit title** | Focuses the note title for editing (`Enter` to confirm). |
 | **`Ctrl + W`** | **Delete note** | Deletes and closes the focused note window. |
-| **`Ctrl + R`** | **Restore note** | Restores the last deleted note. |
+| **`Ctrl + R`** | **Restore note** | Restores the last deleted note with its content and position. |
+| **`Ctrl + S`** | **Save now** | Immediately commits all pending note changes to disk. |
 | **`Shift + F12`** | **Toggle bullet list** | Adds or removes list bullets on the current line or selection. |
 | **`Ctrl + D`** / **`Ctrl + Enter`** | **Toggle checklist** | Toggles `- [ ]` and `- [x]`, or converts text into a task item. |
 | **`Ctrl + V`** | **Smart paste** | Pastes text and converts rich web formatting into clean Markdown. |
 | **`Ctrl + Shift + V`** | **Raw paste** | Pastes exact clipboard text without formatting changes. |
 | **`Ctrl + M`** | **Toggle monospace** | Switches the note to fixed-width monospace font. |
-| **`Ctrl + H`** | **Scribbly privacy** | Toggles text obfuscation on unfocused notes. |
-| **`Ctrl + T`** | **Toggle toolbar auto-hide** | Controls whether the bottom toolbar hides when unfocused. |
 | **`Ctrl + G`** / **`Ctrl + O`** | **Note menu** | Opens the color palette and note settings popover. |
 | **`Ctrl + .`** | **Emoji picker** | Opens the system emoji picker. |
-| **`Ctrl + +`** / **`Ctrl + =`** | **Zoom in** | Increases note text size. |
+| **`Ctrl + H`** | **Scribbly privacy** | Toggles text obfuscation on unfocused notes. |
+| **`Ctrl + T`** | **Toggle toolbar auto-hide** | Controls whether the bottom toolbar hides when unfocused. |
+| **`Ctrl + P`** | **Preferences** | Opens the global Preferences window. |
+| **`Ctrl + +`** | **Zoom in** | Increases note text size. |
 | **`Ctrl + -`** | **Zoom out** | Decreases note text size. |
-| **`Ctrl + 0`** | **Reset zoom** | Resets text zoom to 100%. |
+| **`Ctrl + 0`** / **`Ctrl + =`** | **Reset zoom** | Resets text zoom to 100%. |
 | **`Ctrl + Scroll`** | **Smooth zoom** | Scales text dynamically with your mouse wheel or touchpad. |
 | **`Ctrl + Click`** | **Open link** | Opens a link or email address in your default application. |
 | **`F1`** | **Cheat sheet** | Opens the built-in reference note with shortcuts and tips. |
+| **`Ctrl + Q`** | **Quit** | Exits Jots. |
 
 ---
 

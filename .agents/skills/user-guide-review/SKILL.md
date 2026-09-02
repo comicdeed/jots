@@ -54,6 +54,17 @@ Adhere strictly to the [GNOME Developer Documentation Style Guidelines](https://
 
 ---
 
+## 🔍 Codebase Accelerator & Shortcut Audit Step
+
+When authoring or updating shortcut references, **never rely on assumptions or secondary documentation**. Perform an exhaustive audit directly against the source code:
+
+1. **GAction Accelerators**: Grep for `set_accels_for_action` across `src/` to extract all primary and secondary key bindings (e.g. in `Application.vala`, `StickyNoteWindow.vala`, `NoteView.vala`, `TextView.vala`, and `ZoomController.vala`).
+2. **Key & Gesture Controllers**: Search for `EventControllerKey`, `EventControllerScroll`, `GestureZoom`, and `GestureClick` handlers to identify non-action shortcuts (such as Smart Paste key traps, list navigation, zoom pinching, or checkbox clicking).
+3. **Exact Keycode Verification**: Verify accelerator aliases and modifiers precisely (e.g. `<Control>equal` is bound to *Reset Zoom*, not *Zoom In*; `<Control>KP_Enter` and `<Control>Return` both trigger *Toggle Checklist*).
+4. **Tooltips & Menu Items**: Ensure all button tooltips constructed via `markup_accel_tooltip()` match the canonical documentation table.
+
+---
+
 ## ✅ Quality Gate & Review Checklist
 
 Before finalizing any changes to end-user documentation, verify the following:
@@ -62,5 +73,6 @@ Before finalizing any changes to end-user documentation, verify the following:
 - [ ] **Heading Casing**: Are all section headings (level 2 and below) formatted in sentence case?
 - [ ] **Table of Contents Synchronization**: Do all table-of-contents links accurately match the section anchor IDs?
 - [ ] **Relative Links**: Do all markdown links to other docs (e.g. `[MCP Server Guide](development/mcp-server.md)`) resolve to existing files?
+- [ ] **Codebase Accelerator Fidelity**: Have all keyboard shortcuts and aliases been cross-checked against `set_accels_for_action` and event controller implementations in `src/`?
 - [ ] **Action-Oriented Shortcuts**: Does the shortcut table describe practical user actions rather than implementation details?
 - [ ] **Directive Header Present**: Is the machine-scannable HTML guideline comment present at the top of the file?

@@ -337,7 +337,7 @@ window.themed.dark editablelabel label,
 window.themed.dark titlebar image,
 window.themed.dark .themedbutton > button > box > image,
 window.themed.dark .themedbutton > image {
-    color: #f0f0f4;
+    color: inherit;
 }
 
 window.themed.dark titlebar,
@@ -360,7 +360,7 @@ window.themed.dark editablelabel label {
     border-bottom-color: transparent;
     box-shadow: none;
     outline: none;
-    color: #f0f0f4;
+    color: inherit;
     text-shadow: none;
 }
 
@@ -389,7 +389,7 @@ window.themed.dark entry {
 }
 
 window.themed.dark editablelabel {
-    color: #f0f0f4;
+    color: inherit;
     text-shadow: none;
     border: 1px solid transparent;
     border-radius: 6px;

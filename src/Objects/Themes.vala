@@ -13,63 +13,70 @@
 * A register of all themes we have
 */
 public enum Jots.Themes {
-    BLUEBERRY,
-    MINT,
-    LIME,
     BANANA,
-    ORANGE,
-    STRAWBERRY,
+    TANGERINE,
+    PEACH,
+    WATERMELON,
     BUBBLEGUM,
-    GRAPE,
-    COCOA,
-    SLATE,
-    LATTE,
+    LAVENDER,
+    OCEAN,
+    SEA_GLASS,
+    MINT,
+    PEAR,
+    PEBBLE,
+    GRAPHITE,
     IDK;
 
     /*************************************************/
     /**
-    * for use in CSS. Ex: @BLUEBERRY_500
+    * for use in CSS. Ex: @BANANA_500
     */
     public string to_string () {
         switch (this) {
-            case BLUEBERRY:     return "BLUEBERRY";
-            case MINT:          return "MINT";
-            case LIME:          return "LIME";
             case BANANA:        return "BANANA";
-            case ORANGE:        return "ORANGE";
-            case STRAWBERRY:    return "STRAWBERRY";
+            case TANGERINE:     return "TANGERINE";
+            case PEACH:         return "PEACH";
+            case WATERMELON:    return "WATERMELON";
             case BUBBLEGUM:     return "BUBBLEGUM";
-            case GRAPE:         return "GRAPE";
-            case COCOA:         return "COCOA";
-            case SLATE:         return "SLATE";
-            case LATTE:         return "LATTE";
+            case LAVENDER:      return "LAVENDER";
+            case OCEAN:         return "OCEAN";
+            case SEA_GLASS:     return "SEA_GLASS";
+            case MINT:          return "MINT";
+            case PEAR:          return "PEAR";
+            case PEBBLE:        return "PEBBLE";
+            case GRAPHITE:      return "GRAPHITE";
             case IDK:           return (Jots.Themes.random_theme (NoteData.latest_theme)).to_string ();
-            default: return "BLUEBERRY";
+            default: return "PEBBLE";
         }
     }
 
     /*************************************************/
     /**
-    * for use to pinpoint to the correct elementary stylesheet
+    * for use to pinpoint to the correct CSS class
     */
     public string to_css_class () {
         return this.to_string ().ascii_down ();
     }
 
+    /*************************************************/
+    /**
+    * vivid picker chip color, for selection controls/swatches only (not text or backgrounds)
+    */
     public string to_hex_color () {
         switch (this) {
-            case BLUEBERRY:     return "#4285f4";
-            case MINT:          return "#2ecc71";
-            case LIME:          return "#87d322";
-            case BANANA:        return "#f6d32d";
-            case ORANGE:        return "#ff7800";
-            case STRAWBERRY:    return "#ed333b";
-            case BUBBLEGUM:     return "#e0569a";
-            case GRAPE:         return "#9141ac";
-            case COCOA:         return "#865e3c";
-            case SLATE:         return "#606f7b";
-            case LATTE:         return "#bfa07a";
-            default:            return "#4285f4";
+            case BANANA:        return "#FFB300";
+            case TANGERINE:     return "#FF6D00";
+            case PEACH:         return "#FF5252";
+            case WATERMELON:    return "#D50000";
+            case BUBBLEGUM:     return "#F50057";
+            case LAVENDER:      return "#AA00FF";
+            case OCEAN:         return "#2979FF";
+            case SEA_GLASS:     return "#00BFA5";
+            case MINT:          return "#00C853";
+            case PEAR:          return "#AEEA00";
+            case PEBBLE:        return "#9E9E9E";
+            case GRAPHITE:      return "#546E7A";
+            default:            return "#9E9E9E";
         }
     }
 
@@ -79,21 +86,22 @@ public enum Jots.Themes {
     */
     public string to_nicename () {
         switch (this) {
-            //TRANSLATORS: These are the names of the elementary OS colours: https://elementary.io/brand
+            //TRANSLATORS: These are the names of the Jots sticky note color palette
             // They are shown in a tooltip when the user hovers over a little colored pillbutton
-            case BLUEBERRY:     return _("Blueberry");
-            case MINT:          return _("Mint");
-            case LIME:          return _("Lime");
             case BANANA:        return _("Banana");
-            case ORANGE:        return _("Orange");
-            case STRAWBERRY:    return _("Strawberry");
+            case TANGERINE:     return _("Tangerine");
+            case PEACH:         return _("Peach");
+            case WATERMELON:    return _("Watermelon");
             case BUBBLEGUM:     return _("Bubblegum");
-            case GRAPE:         return _("Grape");
-            case COCOA:         return _("Cocoa");
-            case SLATE:         return _("Slate");
-            case LATTE:         return _("Latte");
+            case LAVENDER:      return _("Lavender");
+            case OCEAN:         return _("Ocean");
+            case SEA_GLASS:     return _("Sea Glass");
+            case MINT:          return _("Mint");
+            case PEAR:          return _("Pear");
+            case PEBBLE:        return _("Pebble");
+            case GRAPHITE:      return _("Graphite");
             case IDK:           return _("No preference, random each time");
-            default:            return _("Blueberry");
+            default:            return _("Pebble");
         }
     }
 
@@ -102,11 +110,7 @@ public enum Jots.Themes {
     * convenient list of all supported themes
     */
     public static Themes[] all () {
-#if LATTE
-        return {BLUEBERRY, MINT, LIME, BANANA, ORANGE, STRAWBERRY, BUBBLEGUM, GRAPE, COCOA, SLATE, LATTE};
-#else
-        return {BLUEBERRY, MINT, LIME, BANANA, ORANGE, STRAWBERRY, BUBBLEGUM, GRAPE, COCOA, SLATE};
-#endif
+        return {BANANA, TANGERINE, PEACH, WATERMELON, BUBBLEGUM, LAVENDER, OCEAN, SEA_GLASS, MINT, PEAR, PEBBLE, GRAPHITE};
     }
 
     /*************************************************/
@@ -114,11 +118,7 @@ public enum Jots.Themes {
     * convenient list of all supported themes
     */
     public static string[] all_string () {
-#if LATTE
-        return {"BLUEBERRY", "MINT", "LIME", "BANANA", "ORANGE", "STRAWBERRY", "BUBBLEGUM", "GRAPE", "COCOA", "SLATE", "LATTE"};
-#else
-        return {"BLUEBERRY", "MINT", "LIME", "BANANA", "ORANGE", "STRAWBERRY", "BUBBLEGUM", "GRAPE", "COCOA", "SLATE"};
-#endif
+        return {"BANANA", "TANGERINE", "PEACH", "WATERMELON", "BUBBLEGUM", "LAVENDER", "OCEAN", "SEA_GLASS", "MINT", "PEAR", "PEBBLE", "GRAPHITE"};
     }
 
     /*************************************************/
@@ -140,26 +140,62 @@ public enum Jots.Themes {
 
     /*************************************************/
     /**
-    * Parse theme from string case-insensitively
+    * Parse theme from string case-insensitively.
+    * Also accepts the pre-1.x palette names as deprecated aliases for old MCP clients and notes.
     */
-    public static Themes from_string (string? name, Themes fallback = Themes.BLUEBERRY) {
+    public static Themes from_string (string? name, Themes fallback = Themes.PEBBLE) {
         if (name == null) {
             return fallback;
         }
         var lower = name.strip ().ascii_down ();
         switch (lower) {
-            case "blueberry":  return Themes.BLUEBERRY;
-            case "mint":       return Themes.MINT;
-            case "lime":       return Themes.LIME;
-            case "banana":     return Themes.BANANA;
-            case "orange":     return Themes.ORANGE;
-            case "strawberry": return Themes.STRAWBERRY;
-            case "bubblegum":  return Themes.BUBBLEGUM;
-            case "grape":      return Themes.GRAPE;
-            case "cocoa":      return Themes.COCOA;
-            case "slate":      return Themes.SLATE;
-            case "latte":      return Themes.LATTE;
-            default:           return fallback;
+            case "banana":      return Themes.BANANA;
+            case "tangerine":   return Themes.TANGERINE;
+            case "peach":       return Themes.PEACH;
+            case "watermelon":  return Themes.WATERMELON;
+            case "bubblegum":   return Themes.BUBBLEGUM;
+            case "lavender":    return Themes.LAVENDER;
+            case "ocean":       return Themes.OCEAN;
+            case "sea glass":
+            case "sea_glass":
+            case "seaglass":    return Themes.SEA_GLASS;
+            case "mint":        return Themes.MINT;
+            case "pear":        return Themes.PEAR;
+            case "pebble":      return Themes.PEBBLE;
+            case "graphite":    return Themes.GRAPHITE;
+            // Deprecated pre-1.x palette aliases
+            case "blueberry":   return Themes.OCEAN;
+            case "lime":        return Themes.PEAR;
+            case "orange":      return Themes.TANGERINE;
+            case "strawberry":  return Themes.WATERMELON;
+            case "grape":       return Themes.LAVENDER;
+            case "cocoa":       return Themes.GRAPHITE;
+            case "slate":       return Themes.PEBBLE;
+            case "latte":       return Themes.PEACH;
+            default:            return fallback;
+        }
+    }
+
+    /*************************************************/
+    /**
+    * Resolves the pre-1.x numeric `color:` ordinal (0=Blueberry .. 10=Latte) to its new
+    * equivalent. Fixed lookup independent of the current enum's ordinal, so old notes and
+    * legacy Jorts JSON imports keep their original visual color after the palette migration.
+    */
+    public static Themes from_legacy_ordinal (int ordinal, Themes fallback = Themes.PEBBLE) {
+        switch (ordinal) {
+            case 0:  return Themes.OCEAN;      // Blueberry
+            case 1:  return Themes.MINT;       // Mint
+            case 2:  return Themes.PEAR;       // Lime
+            case 3:  return Themes.BANANA;     // Banana
+            case 4:  return Themes.TANGERINE;  // Orange
+            case 5:  return Themes.WATERMELON; // Strawberry
+            case 6:  return Themes.BUBBLEGUM;  // Bubblegum
+            case 7:  return Themes.LAVENDER;   // Grape
+            case 8:  return Themes.GRAPHITE;   // Cocoa
+            case 9:  return Themes.PEBBLE;     // Slate
+            case 10: return Themes.PEACH;      // Latte
+            default: return fallback;
         }
     }
 }

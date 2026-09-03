@@ -238,6 +238,7 @@ public class Jots.NoteManager : Object, Jots.ActiveNotesProvider {
         foreach (Jots.StickyNoteWindow note in open_notes) {
             var data = note.packaged ();
             storage.save_note (data);
+            note.note_id = data.id;
         }
     }
 

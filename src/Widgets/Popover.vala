@@ -111,7 +111,7 @@ public class Jots.Popover : Gtk.Popover {
         ((Gtk.Widget)this).add_controller (scroll_controller);
 
         // Propagate settings changes to the higher level
-        color_box.theme_changed.connect ((theme) => {theme_changed (theme);});
+        color_box.theme_changed.connect (on_theme_changed);
     }
 
     private void on_readonly_toggled (bool active) {
@@ -120,6 +120,10 @@ public class Jots.Popover : Gtk.Popover {
 
     private void on_always_visible_toggled (bool active) {
         always_visible_toggled (active);
+    }
+
+    private void on_theme_changed (Jots.Themes selected) {
+        theme_changed (selected);
     }
 
     /**
@@ -135,5 +139,6 @@ public class Jots.Popover : Gtk.Popover {
         debug ("Destroyed");
         readonly_row.toggled.disconnect (on_readonly_toggled);
         always_visible_row.toggled.disconnect (on_always_visible_toggled);
+        color_box.theme_changed.disconnect (on_theme_changed);
     }
 }

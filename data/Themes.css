@@ -17,160 +17,92 @@
 * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 */
 
-/*
- * Elementary Brand Palette Definitions (Self-Contained for all Desktop Environments)
- */
-@define-color BLUEBERRY_100 #cbe3fb;
-/* ======================================================== */
-/* Elementary Color Palette Definitions                     */
-/* Embedded directly for standalone AppImage & Flatpak      */
-/* ======================================================== */
-
-@define-color BLUEBERRY_100 #dce7f5;
-@define-color BLUEBERRY_300 #8ab4f8;
-@define-color BLUEBERRY_500 #4285f4;
-@define-color BLUEBERRY_700 #1a73e8;
-@define-color BLUEBERRY_900 #0d47a1;
-
-@define-color MINT_100 #daf3e6;
-@define-color MINT_300 #80e0a7;
-@define-color MINT_500 #2ecc71;
-@define-color MINT_700 #27ae60;
-@define-color MINT_900 #1b7a43;
-
-@define-color LIME_100 #ecf7d0;
-@define-color LIME_300 #b8e968;
-@define-color LIME_500 #87d322;
-@define-color LIME_700 #6bb315;
-@define-color LIME_900 #4b7f0e;
-
-@define-color BANANA_100 #fff8d6;
-@define-color BANANA_300 #ffea75;
-@define-color BANANA_500 #f6d32d;
-@define-color BANANA_700 #e5a50a;
-@define-color BANANA_900 #a27204;
-
-@define-color ORANGE_100 #ffe8d6;
-@define-color ORANGE_300 #ffb375;
-@define-color ORANGE_500 #ff7800;
-@define-color ORANGE_700 #e66100;
-@define-color ORANGE_900 #a04400;
-
-@define-color STRAWBERRY_100 #fde2e2;
-@define-color STRAWBERRY_300 #f89b9b;
-@define-color STRAWBERRY_500 #ed333b;
-@define-color STRAWBERRY_700 #c01c28;
-@define-color STRAWBERRY_900 #8a131c;
-
-@define-color BUBBLEGUM_100 #fbe4f0;
-@define-color BUBBLEGUM_300 #f29bc9;
-@define-color BUBBLEGUM_500 #e0569a;
-@define-color BUBBLEGUM_700 #b83675;
-@define-color BUBBLEGUM_900 #802251;
-
-@define-color GRAPE_100 #f0e6f8;
-@define-color GRAPE_300 #cba6e8;
-@define-color GRAPE_500 #9141ac;
-@define-color GRAPE_700 #712988;
-@define-color GRAPE_900 #4e195f;
-
-@define-color COCOA_100 #ede6e2;
-@define-color COCOA_300 #c2ab9e;
-@define-color COCOA_500 #865e3c;
-@define-color COCOA_700 #63452c;
-@define-color COCOA_900 #422e1d;
-
-@define-color SLATE_100 #e1e4e6;
-@define-color SLATE_300 #9da7ad;
-@define-color SLATE_500 #606f7b;
-@define-color SLATE_700 #434f59;
-@define-color SLATE_900 #2a3238;
-
-@define-color LATTE_100 #faf0e6;
-@define-color LATTE_300 #dfcca9;
-@define-color LATTE_500 #bfa07a;
-@define-color LATTE_700 #8d6b4f;
-@define-color LATTE_900 #583f2d;
-
 /* ======================================================== */
 /* Light Mode Window Themes (Direct Color Assignment)       */
 /* ======================================================== */
 
-window.themed.BLUEBERRY,
-window.background.themed.BLUEBERRY,
-.BLUEBERRY {
-    background-color: #cde2fc;
-    color: #0f3d7a;
-}
-
-window.themed.MINT,
-window.background.themed.MINT,
-.MINT {
-    background-color: #c2f0d6;
-    color: #0d542c;
-}
-
-window.themed.LIME,
-window.background.themed.LIME,
-.LIME {
-    background-color: #d9f2a7;
-    color: #365e0a;
-}
-
 window.themed.BANANA,
 window.background.themed.BANANA,
 .BANANA {
-    background-color: #fef08a;
-    color: #713f12;
+    background-color: #FFF59D;
+    color: #3A3300;
 }
 
-window.themed.ORANGE,
-window.background.themed.ORANGE,
-.ORANGE {
-    background-color: #fed7aa;
-    color: #7c2d12;
+window.themed.TANGERINE,
+window.background.themed.TANGERINE,
+.TANGERINE {
+    background-color: #FFCC80;
+    color: #4A1A00;
 }
 
-window.themed.STRAWBERRY,
-window.background.themed.STRAWBERRY,
-.STRAWBERRY {
-    background-color: #fecdd3;
-    color: #881337;
+window.themed.PEACH,
+window.background.themed.PEACH,
+.PEACH {
+    background-color: #FFCCBC;
+    color: #421202;
+}
+
+window.themed.WATERMELON,
+window.background.themed.WATERMELON,
+.WATERMELON {
+    background-color: #FFCDD2;
+    color: #470505;
 }
 
 window.themed.BUBBLEGUM,
 window.background.themed.BUBBLEGUM,
 .BUBBLEGUM {
-    background-color: #fbcfe8;
-    color: #831843;
+    background-color: #F8BBD0;
+    color: #36041F;
 }
 
-window.themed.GRAPE,
-window.background.themed.GRAPE,
-.GRAPE {
-    background-color: #e9d5ff;
-    color: #581c87;
+window.themed.LAVENDER,
+window.background.themed.LAVENDER,
+.LAVENDER {
+    background-color: #E1BEE7;
+    color: #1F0442;
 }
 
-window.themed.COCOA,
-window.background.themed.COCOA,
-.COCOA {
-    background-color: #ede0d4;
-    color: #432818;
+window.themed.OCEAN,
+window.background.themed.OCEAN,
+.OCEAN {
+    background-color: #BBDEFB;
+    color: #031B40;
 }
 
-window.themed.SLATE,
-window.background.themed.SLATE,
-.SLATE {
-    background-color: #e2e8f0;
-    color: #0f172a;
+window.themed.SEA_GLASS,
+window.background.themed.SEA_GLASS,
+.SEA_GLASS {
+    background-color: #B2DFDB;
+    color: #00211B;
 }
 
-window.themed.LATTE,
-window.background.themed.LATTE,
-.LATTE {
-    background-color: #faebd7;
-    color: #4a2810;
+window.themed.MINT,
+window.background.themed.MINT,
+.MINT {
+    background-color: #C8E6C9;
+    color: #08290D;
+}
+
+window.themed.PEAR,
+window.background.themed.PEAR,
+.PEAR {
+    background-color: #F0F4C3;
+    color: #142B09;
+}
+
+window.themed.PEBBLE,
+window.background.themed.PEBBLE,
+.PEBBLE {
+    background-color: #F5F5F5;
+    color: #292929;
+}
+
+window.themed.GRAPHITE,
+window.background.themed.GRAPHITE,
+.GRAPHITE {
+    background-color: #B0BEC5;
+    color: #10171A;
 }
 
 /* ======================================================== */
@@ -180,8 +112,8 @@ window.background.themed.LATTE,
 window.themed,
 window.background.themed {
     border-radius: 12px;
-    background-color: @BLUEBERRY_100;
-    color: @BLUEBERRY_900;
+    background-color: #B2DFDB;
+    color: #00211B;
 }
 
 window.themed undershoot,
@@ -324,70 +256,76 @@ window.background.themed.dark {
     color: #f0f0f4;
 }
 
-window.themed.dark.BLUEBERRY,
-window.background.themed.dark.BLUEBERRY {
-    background-color: #1b263b;
-    color: #e0e8f8;
-}
-
-window.themed.dark.MINT,
-window.background.themed.dark.MINT {
-    background-color: #162b20;
-    color: #daf5e5;
-}
-
-window.themed.dark.LIME,
-window.background.themed.dark.LIME {
-    background-color: #232d12;
-    color: #ecf8d2;
-}
-
 window.themed.dark.BANANA,
 window.background.themed.dark.BANANA {
-    background-color: #2e2812;
-    color: #fff9d6;
+    background-color: #423700;
+    color: #FFFBE6;
 }
 
-window.themed.dark.ORANGE,
-window.background.themed.dark.ORANGE {
-    background-color: #312112;
-    color: #ffe9d8;
+window.themed.dark.TANGERINE,
+window.background.themed.dark.TANGERINE {
+    background-color: #5C2800;
+    color: #FFF1E6;
 }
 
-window.themed.dark.STRAWBERRY,
-window.background.themed.dark.STRAWBERRY {
-    background-color: #30171a;
-    color: #fde4e4;
+window.themed.dark.PEACH,
+window.background.themed.dark.PEACH {
+    background-color: #662D29;
+    color: #FFEDED;
+}
+
+window.themed.dark.WATERMELON,
+window.background.themed.dark.WATERMELON {
+    background-color: #5E121E;
+    color: #FFEDF0;
 }
 
 window.themed.dark.BUBBLEGUM,
 window.background.themed.dark.BUBBLEGUM {
-    background-color: #2e1726;
-    color: #fce5f2;
+    background-color: #5C153E;
+    color: #FDE6F2;
 }
 
-window.themed.dark.GRAPE,
-window.background.themed.dark.GRAPE {
-    background-color: #23172e;
-    color: #f2e7f8;
+window.themed.dark.LAVENDER,
+window.background.themed.dark.LAVENDER {
+    background-color: #3D1B63;
+    color: #F2E6FC;
 }
 
-window.themed.dark.COCOA,
-window.background.themed.dark.COCOA {
-    background-color: #261f1a;
-    color: #efe8e4;
+window.themed.dark.OCEAN,
+window.background.themed.dark.OCEAN {
+    background-color: #0D3057;
+    color: #E6F0FA;
 }
 
-window.themed.dark.SLATE,
-window.background.themed.dark.SLATE {
-    background-color: #1d2126;
-    color: #e4e7ea;
+window.themed.dark.SEA_GLASS,
+window.background.themed.dark.SEA_GLASS {
+    background-color: #093D38;
+    color: #E6F9F6;
 }
 
-window.themed.dark.LATTE,
-window.background.themed.dark.LATTE {
-    background-color: #26221c;
-    color: #fbf2e8;
+window.themed.dark.MINT,
+window.background.themed.dark.MINT {
+    background-color: #0E421C;
+    color: #E8F7EC;
+}
+
+window.themed.dark.PEAR,
+window.background.themed.dark.PEAR {
+    background-color: #38450C;
+    color: #F4FCE6;
+}
+
+window.themed.dark.PEBBLE,
+window.background.themed.dark.PEBBLE {
+    background-color: #292929;
+    color: #F2F2F2;
+}
+
+window.themed.dark.GRAPHITE,
+window.background.themed.dark.GRAPHITE {
+    background-color: #151E24;
+    color: #E3EAEF;
 }
 
 window.themed.dark titlebar,
@@ -399,7 +337,7 @@ window.themed.dark editablelabel label,
 window.themed.dark titlebar image,
 window.themed.dark .themedbutton > button > box > image,
 window.themed.dark .themedbutton > image {
-    color: #f0f0f4;
+    color: inherit;
 }
 
 window.themed.dark titlebar,
@@ -422,7 +360,7 @@ window.themed.dark editablelabel label {
     border-bottom-color: transparent;
     box-shadow: none;
     outline: none;
-    color: #f0f0f4;
+    color: inherit;
     text-shadow: none;
 }
 
@@ -451,7 +389,7 @@ window.themed.dark entry {
 }
 
 window.themed.dark editablelabel {
-    color: #f0f0f4;
+    color: inherit;
     text-shadow: none;
     border: 1px solid transparent;
     border-radius: 6px;

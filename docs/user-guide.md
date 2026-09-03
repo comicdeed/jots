@@ -1,210 +1,212 @@
+<!-- 
+  DOC-DIRECTIVE: JOTS USER GUIDE
+  - Target Audience: Everyday Linux desktop users comfortable with Markdown notes and basic Git repository URLs. Not software developers.
+  - Style Guide: GNOME Developer Documentation Style (docs/development/documentation-style.md).
+  - Tone: Task-oriented, direct, active voice, sentence-cased subheadings. No conversational filler or exclamation marks.
+  - Content Scope: Include UI actions, shortcuts, formatting syntax, themes, privacy toggles, backup setup, and basic AI client commands.
+  - Exclusions: Do NOT include internal class names (e.g. MarkdownBuffer), D-Bus IPC details, GApplication activation, or multi-agent taxonomy. Relocate technical internals to docs/architecture.md and docs/development/mcp-server.md.
+  - Skill Reference: .agents/skills/user-guide-review/SKILL.md
+-->
+
 # Jots User Guide
 
-Welcome to Jots! Jots is a lightweight, distraction-free sticky notes application for Linux designed to stay out of your way while keeping your thoughts, checklists, and code snippets organized.
+Jots is a lightweight, distraction-free sticky notes application for Linux. It keeps your thoughts, checklists, and snippets accessible right on your desktop while staying out of your way.
 
 ---
 
-## 📑 Table of Contents
+## Table of contents
 
-* [1. Getting Started & Basic Note Taking](#1-getting-started--basic-note-taking)
-* [2. Keyboard Shortcuts Cheat Sheet](#2-keyboard-shortcuts-cheat-sheet)
-* [3. Typography & Font Customization](#3-typography--font-customization)
-* [4. Markdown Formatting & Live Rendering](#4-markdown-formatting--live-rendering)
-* [5. Themes & Appearance](#5-themes--appearance)
-* [6. Preferences, Privacy & Note Protection](#6-preferences-privacy--note-protection)
-* [7. AI Assistant & MCP Integration](#7-ai-assistant--mcp-integration)
-* [8. Markdown Storage, Backups & Tool Interoperability](#8-markdown-storage-backups--tool-interoperability)
-
----
-
-## 1. Getting Started & Basic Note Taking
-
-### Creating Notes
-* Click the **`+`** button in the bottom-left action bar, or press **`Ctrl + N`**.
-* Each note opens in its own lightweight desktop window that can be moved, resized, and arranged freely across your workspaces.
-
-### Editing Note Titles
-* Click the title label in the top bar to edit the note title.
-* Press `Enter` or click outside to finish editing.
-
-### Closing & Deleting Notes
-* Click the **Trash** icon in the bottom-left action bar, or press **`Ctrl + W`**.
-* The note is closed and removed from your active collection.
-
-### Searching Notes
-* Press **`Ctrl + F`** or **`Ctrl + Shift + F`** to open the interactive **Search Popover**.
-* Start typing to search instantly across all active desktop windows and closed `.md` files on disk.
-* Results display matching note titles, theme color pills, and extracted snippets with highlighted keyword matches.
-* Use `Up`/`Down` arrow keys to navigate and press `Enter` to open or focus the matching note.
-
-### Undoing Deletion (Restore)
-* If you accidentally delete a note, press **`Ctrl + R`** immediately to restore the last deleted note with all its contents, theme, and window dimensions intact.
+* [1. Getting started](#1-getting-started)
+* [2. Keyboard shortcuts](#2-keyboard-shortcuts)
+* [3. Markdown formatting and smart paste](#3-markdown-formatting-and-smart-paste)
+* [4. Themes and typography](#4-themes-and-typography)
+* [5. Privacy and note protection](#5-privacy-and-note-protection)
+* [6. Backups and Git sync](#6-backups-and-git-sync)
+* [7. AI assistant integration (MCP)](#7-ai-assistant-integration-mcp)
+* [8. File storage and interoperability](#8-file-storage-and-interoperability)
 
 ---
 
-## 2. Keyboard Shortcuts Cheat Sheet
+## 1. Getting started
+
+### Creating and managing notes
+* **New note**: Click **`+`** in the bottom toolbar or press **`Ctrl + N`**. Each note opens in its own floating window that you can place anywhere on your desktop.
+* **Edit title**: Click the title in the top bar, type the new name, and press **`Enter`** (or click outside).
+* **Delete note**: Click the **Trash** icon in the bottom toolbar or press **`Ctrl + W`**.
+* **Restore note**: Press **`Ctrl + R`** immediately after deleting a note to reopen it with its content, color, and window position restored.
+
+### Searching notes
+* Press **`Ctrl + F`** (or **`Ctrl + Shift + F`**) to open the search bar.
+* Search matches titles and note contents across both open desktop notes and closed saved notes on disk.
+* Use the **`Up`** / **`Down`** arrows to browse matching results and press **`Enter`** to open or focus the note.
+
+---
+
+## 2. Keyboard shortcuts
 
 | Shortcut | Action | Description |
 | :--- | :--- | :--- |
-| **`Ctrl + N`** | **New Note** | Opens a new sticky note window with a fresh random color theme. |
-| **`Ctrl + F`** / **`Ctrl + Shift + F`** | **Search Notes** | Opens the live full-text search popover across active and stored notes. |
-| **`Ctrl + W`** | **Delete Note** | Deletes and closes the currently focused note window. |
-| **`Ctrl + R`** | **Restore Note** | Undoes the last deletion and reopens the deleted note. |
-| **`Shift + F12`** | **Toggle List** | Toggles list item prefix on the current line or selection. |
-| **`Ctrl + D`** / **`Ctrl + Enter`** | **Toggle Checklist** | Toggles `- [ ]` $\leftrightarrow$ `- [x]` checklist state, or converts bullet/text into a checklist item. |
-| **`Ctrl + V`** | **Smart Paste** | Context-aware paste: converts rich-text/HTML and normalizes loose Markdown bullets/tasks outside code blocks; pastes verbatim inside code blocks. |
-| **`Ctrl + Shift + V`** | **Paste Without Formatting** | Pastes exact literal clipboard text without any Markdown normalization or transformation. |
-| **`Ctrl + M`** | **Toggle Monospace** | Switches between proportional and fixed-width monospace font. |
-| **`Ctrl + T`** | **Toggle Action Bar Auto-Hide** | Toggles whether the bottom formatting toolbar auto-hides on unfocused notes. |
-| **`Ctrl + H`** | **Toggle Scribbly Effect** | Toggles the handwritten blur/scribble privacy effect on unfocused notes. |
-| **`Ctrl + .`** | **Insert Emoji** | Opens the native emoji picker popup. |
-| **`Ctrl + G`** / **`Ctrl + O`** | **Note Preferences** | Opens the theme color palette and monospace font popover. |
-| **`Ctrl + +`** / **`Ctrl + =`** | **Zoom In** | Increases the text size of the note. |
-| **`Ctrl + -`** | **Zoom Out** | Decreases the text size of the note. |
-| **`Ctrl + 0`** | **Reset Zoom** | Resets text zoom to the default 100% scale. |
-| **`Ctrl + Scroll`** | **Smooth Zoom** | Scales text size dynamically using mouse scroll wheel or touchpad pinch. |
-| **`Ctrl + Click`** | **Open Link** | Opens a detected URL or email address in your default web browser or mail app. |
-| **`F1`** | **Quick Cheat Sheet** | Opens, presents, or restores the built-in indestructible quick reference Cheat Sheet note. |
+| **`Ctrl + N`** | **New note** | Opens a new sticky note with a random pastel color. |
+| **`Ctrl + F`** / **`Ctrl + Shift + F`** | **Search** | Opens full-text search across active and saved notes. |
+| **`Ctrl + L`** | **Edit title** | Focuses the note title for editing (`Enter` to confirm). |
+| **`Ctrl + W`** | **Delete note** | Deletes and closes the focused note window. |
+| **`Ctrl + R`** | **Restore note** | Restores the last deleted note with its content and position. |
+| **`Ctrl + S`** | **Save now** | Immediately commits all pending note changes to disk. |
+| **`Shift + F12`** | **Toggle bullet list** | Adds or removes list bullets on the current line or selection. |
+| **`Ctrl + D`** / **`Ctrl + Enter`** | **Toggle checklist** | Toggles `- [ ]` and `- [x]`, or converts text into a task item. |
+| **`Ctrl + V`** | **Smart paste** | Pastes text and converts rich web formatting into clean Markdown. |
+| **`Ctrl + Shift + V`** | **Raw paste** | Pastes exact clipboard text without formatting changes. |
+| **`Ctrl + M`** | **Toggle monospace** | Switches the note to fixed-width monospace font. |
+| **`Ctrl + G`** / **`Ctrl + O`** | **Note menu** | Opens the color palette and note settings popover. |
+| **`Ctrl + .`** | **Emoji picker** | Opens the system emoji picker. |
+| **`Ctrl + H`** | **Scribbly privacy** | Toggles text obfuscation on unfocused notes. |
+| **`Ctrl + T`** | **Toggle toolbar auto-hide** | Controls whether the bottom toolbar hides when unfocused. |
+| **`Ctrl + P`** | **Preferences** | Opens the global Preferences window. |
+| **`Ctrl + +`** | **Zoom in** | Increases note text size. |
+| **`Ctrl + -`** | **Zoom out** | Decreases note text size. |
+| **`Ctrl + 0`** / **`Ctrl + =`** | **Reset zoom** | Resets text zoom to 100%. |
+| **`Ctrl + Scroll`** | **Smooth zoom** | Scales text dynamically with your mouse wheel or touchpad. |
+| **`Ctrl + Click`** | **Open link** | Opens a link or email address in your default application. |
+| **`F1`** | **Cheat sheet** | Opens the built-in reference note with shortcuts and tips. |
+| **`Ctrl + Q`** | **Quit** | Exits Jots. |
 
 ---
 
-## 3. Typography & Font Customization
+## 3. Markdown formatting and smart paste
 
-Jots gives you full control over typography with dedicated settings for general text and code elements:
+Jots renders Markdown live as you type, giving you rich visual styling without a separate preview pane.
 
-* **General Note Font**: Choose your preferred font family and size (e.g. *Inter*, *Cantarell*, *Ubuntu*, *Roboto*) used across proportional sticky notes.
-* **Code & Monospace Font**: Choose your preferred fixed-width font family and size (e.g. *JetBrains Mono*, *Fira Code*, *Hack*, *Monospace*) used for inline code spans, code fences, and full-monospace notes.
-* **Strict Monospace Filtering**: When selecting a code font in Preferences, the font chooser dialog automatically filters the system font catalog to strictly show only fixed-width monospace typefaces.
-* **Instant Live Updates**: Changing font preferences updates all open sticky note windows instantly across the desktop without restarting the app.
-
----
-
-## 4. Markdown Formatting & Live Rendering
-
-Jots features a native, real-time Markdown rendering buffer (`MarkdownBuffer`) that highlights and styles Markdown syntax live as you type without distracting modal preview modes:
-
-| Markdown Syntax | Example | Rendered Behavior |
+| Markdown syntax | Example | Live behavior |
 | :--- | :--- | :--- |
-| **Headings** | `# Heading 1`<br>`## Heading 2`<br>`### Heading 3` | Scaled typography (H1 140% bold, H2 120% bold, H3 110% bold) with subtle header delimiters. |
-| **Bold & Strong** | `**bold text**` | Styled with heavy font weight. |
-| **Italic & Emphasis** | `*italic text*` | Styled with slanted font style. |
-| **Strikethrough** | `~~deleted text~~` | Rendered with a horizontal strikethrough line. |
-| **Task Lists** | `- [ ] Pending item`<br>`- [x] Completed task` | Formatted with hanging list indent; click directly on checkboxes to toggle state, or press **`Ctrl + D`** / **`Ctrl + Enter`**. Checking a box automatically applies strikethrough styling to completed tasks. |
-| **Smart Lists** | `• Item`<br>`- Item` | Automatic hanging indentation, Enter continuation, and Backspace list exiting. |
-| **Blockquotes** | `> Important quote` | Italicized with a muted blockquote tone. |
-| **Inline Code** | `` `const x = 42;` `` | Styled with a rounded highlight pill and dedicated monospace font. |
-| **Code Fences** | ```` ```sh ````<br>`echo "Hello"`<br>```` ``` ```` | Multi-line code container rendered with monospace font and subtle background tint. |
-| **Clickable Links** | `https://example.com`<br>`[Title](https://...)` | Detected and styled as links. **`Ctrl + Click`** opens the URL in your default browser. |
+| **Headings** | `# Heading 1`<br>`## Heading 2`<br>`### Heading 3` | Scaled headers with bold styling and subtle markers. |
+| **Bold** | `**bold text**` | Bold font weight. |
+| **Italic** | `*italic text*` | Slanted emphasis font. |
+| **Strikethrough** | `~~strikethrough~~` | Horizontal line through text. |
+| **Checklists** | `- [ ] Pending item`<br>`- [x] Done item` | Clickable checkboxes with auto-indentation. Completed items are automatically struck through. |
+| **Bullet lists** | `• Item` or `- Item` | Automatic indentation and smart continuation on `Enter`. |
+| **Quotes** | `> Quoted text` | Italicized blockquote styling. |
+| **Inline code** | `` `const x = 42;` `` | Monospace font with background highlight pill. |
+| **Code blocks** | ```` ```python ````<br>`print("Hello")`<br>```` ``` ```` | Multi-line monospace code box with subtle background tint. |
+| **Links** | `https://example.com`<br>`[Site](https://...)` | Clickable links (**`Ctrl + Click`** opens in default browser). |
 
-### Resilient Clipboard & Smart Paste
-* **Context-Aware Smart Paste (`Ctrl + V`)**: When pasting into normal text, Jots automatically converts rich-text/HTML clipboard payloads (from web browsers, office documents, or chat apps) into clean Markdown, and normalizes imprecise bullets (such as `•`, `◦`, `▪`), malformed checklists (e.g. `[X]`, `☐`, `☑`), loose headings (`#Heading`), and HTML entities.
-* **Code Block Protection**: If the cursor is inside an inline backtick or multiline code block (```` ``` ````), smart formatting and HTML conversion are automatically bypassed so code snippets are pasted literally without alteration.
-* **Transient User Feedback**: Whenever pasted content is normalized or converted from rich text, Jots displays a subtle, transient toast notification (*"Formatted as Markdown (Ctrl+Shift+V for raw)"*).
-* **Instant Undo & Raw Paste Bypass (`Ctrl + Shift + V`)**: Press **`Ctrl + Z`** to revert the paste in a single step, or use **`Ctrl + Shift + V`** (or right-click $\rightarrow$ *Paste Without Formatting*) to paste the raw, unformatted clipboard text directly.
-
----
-
-## 5. Themes & Appearance
-
-### 10 Pastel Color Themes
-Jots comes with 10 carefully designed pastel color palettes that adapt seamlessly to both Light and Dark system modes:
-
-| Color Theme | Mood / Accent |
-| :--- | :--- |
-| **🫐 Blueberry** | Calm Blue *(Default first-run theme)* |
-| **🍃 Mint** | Refreshing Green |
-| **🍋 Lime** | Vibrant Yellow-Green |
-| **🍌 Banana** | Warm Yellow |
-| **🍊 Orange** | Energetic Amber |
-| **🍓 Strawberry** | Soft Rose |
-| **🍬 Bubblegum** | Playful Pink |
-| **🍇 Grape** | Rich Purple |
-| **🍫 Cocoa** | Earthy Brown |
-| **🪨 Slate** | Minimal Neutral Gray |
-
-* To change a note's theme, click the **Menu button** (three horizontal lines / menu icon in the bottom-right corner) or press **`Ctrl + G` / `Ctrl + O`** to open the note preferences popover, then select your desired color pill.
-* New notes automatically pick a non-repeating random pastel theme to keep your desktop colorful.
-
-### Monospace Code Mode (`Ctrl + M`)
-* Press **`Ctrl + M`** to instantly toggle the entire note between proportional and fixed-width **Monospace font**.
-
-### Minimal Canvas & Floating Scrollbars
-* **Uncluttered Canvas**: Overshoot and undershoot gradient overlays are removed so text remains crisp and flush against window edges at all scroll positions.
-* **Subtle Floating Scrollbars**: Scrollbars float discreetly over the background without shifting text layout, fading in smoothly when scrolling long notes.
-* **Uniform 12px Rounded Corners**: All four window corners are uniformly contoured across light and dark modes.
+### Smart paste (`Ctrl + V`)
+* **Web and rich-text conversion**: Pasting formatted text from a browser, document, or chat converts it into clean Markdown bullets, headings, and links.
+* **Code block protection**: Pasting inside backticks or code blocks automatically bypasses formatting so your code is pasted verbatim.
+* **Raw paste bypass (`Ctrl + Shift + V`)**: Use **`Ctrl + Shift + V`** (or right-click $\rightarrow$ *Paste Without Formatting*) to paste raw unformatted text.
 
 ---
 
-## 6. Preferences, Privacy & Note Protection
+## 4. Themes and typography
 
-Access global preferences by right-clicking a note or selecting **Preferences** from the app menu. Preferences are organized into category pages (**General**, **Appearance**, **Data & Recovery**, **Backup & Sync**) for faster navigation:
+### 12 Pastel color themes
+Jots includes 12 pastel colors that automatically adjust contrast for system Light and Dark modes:
 
-* **Scribbly Privacy Mode (`Ctrl + H`)**: When enabled, any note window that loses desktop focus immediately obfuscates its text and code elements with playful handwritten squiggles using the embedded `Redacted Script` typeface. Focusing the note instantly restores crystal-clear readable text.
-* **Lock Note (Read-Only)**: Open the note popover menu (**`Ctrl + G`**) and toggle **Lock Note (Read-Only)** to protect sensitive or reference notes from accidental keyboard edits and title modifications.
-* **Always Visible (Privacy Exemption)**: Toggle **Always Visible** in a note's popover menu to exempt that specific sticky note from Scribbly privacy obfuscation, keeping reference checklists or guides crisp and legible even when unfocused.
-* **Built-in Quick Cheat Sheet (`F1`)**: Jots includes a built-in, read-only, privacy-exempt reference note with standard shortcuts and syntax tips. Press **`F1`** anytime to summon it, bring it to the front, or recreate it if closed.
-* **Focus-Aware Action Bar Auto-Hide (`Ctrl + T`)**: By default, the bottom toolbar smoothly hides when a sticky note loses focus, giving you a clean, distraction-free post-it card on your desktop. Focusing a note reveals the toolbar immediately; hovering over an unfocused note smoothly reveals the toolbar after a brief 250ms delay (avoiding flicker during rapid mouse sweeps). You can press **`Ctrl + T`** anytime to toggle the toolbar permanently.
-* **Autostart on Login**: Automatically relaunches all your open sticky notes when you log into your desktop. Supports Flatpak (via XDG Background Portal), AppImage (preserving custom rename or Gear Lever paths), and native packages, automatically synchronizing with your system's autostart configuration on startup.
-* **Import from Jorts Migration Helper**: Seamlessly import your existing sticky notes from Jorts (`io.github.elly_code.jorts`). The import is **100% non-destructive**—your original Jorts `saved_state.json` file is never deleted or altered. You can trigger migration from the first-run prompt or anytime via the **Import from Jorts** button in Preferences.
-* **Backup & Sync**: Configure a remote Git repository URL, choose an automatic sync cadence, run **Sync now** for immediate synchronization, and use **Test connection** to verify remote reachability. Status text reports preparation, local commits, remote sync progress, divergence, and deferred retry states.
+* 🍌 **Banana**
+* 🍊 **Tangerine**
+* 🍑 **Peach**
+* 🍉 **Watermelon**
+* 🍬 **Bubblegum**
+* 💜 **Lavender**
+* 🌊 **Ocean**
+* 🫧 **Sea Glass** *(default)*
+* 🍃 **Mint**
+* 🍐 **Pear**
+* 🪨 **Pebble**
+* ⚫ **Graphite**
 
-### Backup And Sync First-Time Outcomes
+To change a note's theme, click the **Menu button** in the bottom-right corner (or press **`Ctrl + G`**) and select a color. New notes pick a non-repeating random color to keep your desktop vibrant.
 
-When you connect a remote repository for backup, these are the expected outcomes:
-
-* **Local notes repo has no commits, remote is empty**: Jots shows a ready state and waits for your first note change before pushing.
-* **Local notes repo has no commits, remote already has content (for example `main` or `master`)**: Jots shows a remote divergence state so you can resolve direction before syncing.
-* **Local notes repo has commits, remote is empty**: Jots pushes local backup history to the remote on sync.
-* **Local and remote both have commits and differ**: Jots surfaces divergence when histories conflict, or completes sync when one side is cleanly ahead.
-
----
-
-## 7. AI Assistant & MCP Integration (Beta)
-
-Jots includes a native [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server (`jots-mcp`) allowing AI coding assistants (Claude Code, Cursor, Devin Desktop, Claude Desktop) to read, create, search, and update your sticky notes in real time.
-
-### Supported Agent Tiers
-* **Tier 1 — Recommended & Fully Supported (Direct MCP)**:
-  * **[Claude Code CLI](https://code.claude.com/docs/en/overview)**, **[Cursor](https://cursor.com)**, **[Devin Desktop](https://devin.ai/desktop)**, and **[Claude Desktop](https://claude.ai/download)**.
-  * Executes tool operations directly on the root agent with sub-second latency and seamless permissions.
-* **Tier 2 — Experimental (Multi-Agent Subagent Frameworks)**:
-  * **Antigravity CLI** and similar subagent frameworks. Supported via plugin, but subagent orchestration and interactive permissions introduce additional steps.
-
-For full setup and protocol reference, see the canonical guide: [docs/development/mcp-server.md](development/mcp-server.md).
-
-### Quick Setup
-
-Use one of the following launch configurations in your MCP client:
-
-* **AppImage (recommended)**: `command: /path/to/Jots-<version>-<arch>.AppImage`, `args: ["--mcp"]`
-* **Flatpak**: `command: flatpak`, `args: ["run", "--command=jots-mcp", "io.github.comicdeed.jots"]`
-* **Native host install**: `command: jots-mcp`
-
-> **Proactive Auto-Launch**: When using AppImage or Native packages, `jots-mcp` automatically starts the Jots desktop application in the background when an action tool is called if the UI is not already running. On Flatpak, D-Bus service auto-activation or clear launch commands are provided.
-
-### 🧠 Equipping AI Assistants (Companion Skill)
-
-To teach any AI agent how to manage Jots notes instinctively (using deduplication, lossless updates, `- [ ]` checklists, and pastel colors), simply prompt your assistant:
-
-> *"Install the jots-companion skill as a personal skill for yourself from https://raw.githubusercontent.com/comicdeed/jots/main/docs/mcp-skill.md"*
-
-MCP clients can also read the embedded [`jots://instructions`](docs/mcp-skill.md) resource directly at any time.
-
-### Available AI Capabilities
-Your MCP client can:
-
-* **List & Search**: Discover open notes and search note text case-insensitively.
-* **Read Content**: Read full Markdown text, headers, and metadata.
-* **Create Notes**: Spawn new colored sticky notes live on your desktop.
-* **Update Notes**: Append, modify, or retitle notes in real time.
-* **Delete Notes**: Dismiss and delete notes by UUID.
+### Font customization
+Open **Preferences $\rightarrow$ Appearance** to customize typography across all notes:
+* **General font**: Select your preferred system font and size (e.g. *Inter*, *Cantarell*, *Ubuntu*, *Roboto*) for regular notes.
+* **Code font**: Select a fixed-width typeface (e.g. *JetBrains Mono*, *Fira Code*, *Hack*) for code blocks and monospace notes.
+* **Monospace note toggle (`Ctrl + M`)**: Press **`Ctrl + M`** on any note to display the entire note in your selected monospace code font.
 
 ---
 
-## 8. Markdown Storage, Backups & Tool Interoperability
+## 5. Privacy and note protection
 
-### Native Markdown File Storage
-Jots persists every sticky note as a separate, human-readable `.md` Markdown file containing standardized YAML front-matter headers:
+* **Scribbly privacy mode (`Ctrl + H`)**: Obfuscates note text with a handwritten scribble effect whenever a note loses focus. Focusing or hovering over the note restores clear readable text.
+* **Lock note (read-only)**: Open the note menu (**`Ctrl + G`**) and toggle **Lock Note** to protect reference material from accidental edits.
+* **Always visible exemption**: If Scribbly mode is enabled globally, you can mark specific notes as **Always Visible** in their note menu to keep them readable even when unfocused.
+* **Toolbar auto-hide (`Ctrl + T`)**: The bottom formatting bar smoothly fades out when a note loses focus. Focusing the note brings the toolbar back immediately.
+* **Autostart on login**: Enable **Autostart** in Preferences so all open sticky notes are automatically restored when you log into your desktop.
+* **Import from Jorts**: If you previously used the Jorts sticky notes app, click **Import from Jorts** in Preferences to copy your existing notes over non-destructively.
+
+---
+
+## 6. Backups and Git sync
+
+Jots includes built-in Git backup support to keep your notes synchronized and version-controlled.
+
+### Setting up Git sync
+1. Open **Preferences $\rightarrow$ Backup & Sync**.
+2. Enter your remote Git repository URL (HTTPS or SSH, e.g., `git@github.com:username/notes.git` or `https://gitlab.com/username/notes.git`).
+3. Click **Test connection** to verify authentication and reachability.
+4. Choose an automatic sync schedule (e.g. on every change, hourly, or daily), or click **Sync now** at any time.
+
+### Sync status indicators
+* **Ready / Synced**: All local notes are committed and synchronized with your remote repository.
+* **Syncing**: Local changes are being committed and pushed.
+* **Diverged**: The remote repository contains changes that conflict with local notes. Jots flags this so you can inspect your files safely.
+
+---
+
+## 7. AI assistant integration (MCP)
+
+Jots includes a built-in [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server. This allows AI coding assistants (such as Claude Code, Cursor, Devin, and Claude Desktop) to create, read, search, and organize your desktop notes.
+
+### Launch commands for AI clients
+
+Add Jots to your AI client's MCP configuration using the command for your package format:
+
+* **AppImage**:
+  ```json
+  {
+    "mcpServers": {
+      "jots": {
+        "command": "/path/to/Jots.AppImage",
+        "args": ["--mcp"]
+      }
+    }
+  }
+  ```
+* **Flatpak**:
+  ```json
+  {
+    "mcpServers": {
+      "jots": {
+        "command": "flatpak",
+        "args": ["run", "--command=jots-mcp", "io.github.comicdeed.jots"]
+      }
+    }
+  }
+  ```
+* **Native package**:
+  ```json
+  {
+    "mcpServers": {
+      "jots": {
+        "command": "jots-mcp"
+      }
+    }
+  }
+  ```
+
+### What AI assistants can do
+With MCP enabled, your assistant can:
+* Search and read your notes for project context or todo lists.
+* Create new sticky notes on your desktop during a workflow.
+* Update checklists and append notes in real time.
+
+For full protocol specifications and agent configurations, see the [MCP Server Guide](development/mcp-server.md).
+
+---
+
+## 8. File storage and interoperability
+
+### Plain Markdown files
+Every sticky note is stored as an individual, standard Markdown (`.md`) file with lightweight YAML front-matter headers for window settings:
 
 ```markdown
 ---
@@ -222,33 +224,19 @@ height: 320
 - [ ] Central Note Organizer library
 ```
 
-### Storage Locations
+### Storage locations
 
-* **Flatpak Sandbox (Release Build)**:
-  ```text
-  ~/.var/app/io.github.comicdeed.jots/data/io.github.comicdeed.jots/notes/
-  ```
-* **Flatpak Sandbox (Development Build)**:
-  ```text
-  ~/.var/app/io.github.comicdeed.jots.devel/data/io.github.comicdeed.jots.devel/notes/
-  ```
-* **Native & AppImage Packages (Release Build)**:
+* **Native / AppImage packages**:
   ```text
   ~/.local/share/io.github.comicdeed.jots/notes/
   ```
-* **Native & AppImage Packages (Development Build)**:
+* **Flatpak packages**:
   ```text
-  ~/.local/share/io.github.comicdeed.jots.devel/notes/
+  ~/.var/app/io.github.comicdeed.jots/data/io.github.comicdeed.jots/notes/
   ```
 
-### Single-Instance & Cross-Format Execution
-
-* **Unified Identity Model**: Jots maintains a strict binary identity model: **Stable** (`io.github.comicdeed.jots`) and **Development** (`io.github.comicdeed.jots.devel`). Packaging formats (Native, AppImage, Flatpak) share these exact Application IDs rather than fragmenting into format-specific sub-identities.
-* **Mutual Exclusion**: Jots permits only one running instance per application profile at a time. If you launch an AppImage while a Native or Flatpak instance of the same profile is already running (or vice-versa), the secondary process automatically requests the active primary instance to present its windows to the front and then safely exits immediately. This prevents concurrent file access conflicts and note corruption.
-* **Concurrent Testing**: You can safely run a **Development** build (`io.github.comicdeed.jots.devel`) concurrently with your everyday **Stable** release without interference or data collision because their storage spaces, GSettings configurations, and D-Bus bus names are completely isolated.
-
-### External Markdown Tools & Interoperability
-Because notes are saved directly as plain `.md` files with standard YAML front-matter headers:
-* You can potentially point external note-taking tools or vaults (such as **Obsidian** or **Logseq**) to your Jots notes directory to read and edit notes across applications.
-* You can easily version control your notes with `git` or synchronize them with Syncthing / Nextcloud.
-* Automatic migration ensures any legacy `saved_state.json` file from older Jots releases is automatically converted into separate `.md` files upon startup without losing data.
+### Interoperability with other tools
+Because notes are standard Markdown files on disk:
+* **Obsidian & Logseq**: You can point external Markdown knowledge bases or vaults to your Jots notes folder.
+* **Custom sync scripts**: You can synchronize your notes across machines using Syncthing, Nextcloud, or standard shell scripts.
+* **Git CLI**: You can run `git log`, `git diff`, or manage your notes directory directly from your terminal.

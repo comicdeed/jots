@@ -219,9 +219,6 @@ public class Jots.Application : Gtk.Application {
             }
         } else {
             note_manager.init ();
-#if DEVEL
-            action_show_preferences ();
-#endif
         }
 
         if (new_note) {note_manager.create_note (); new_note = false;}
@@ -239,10 +236,15 @@ public class Jots.Application : Gtk.Application {
 
         if (Application.preferences == null) {
             Application.preferences = new Jots.PreferenceWindow (this);
-            Application.preferences.close_request.connect_after (() => {Application.preferences = null; return false;});
+            Application.preferences.close_request.connect (() => {
+                Idle.add (() => {
+                    Application.preferences = null;
+                    return Source.REMOVE;
+                });
+                return false;
+            });
         }
 
-        preferences.show ();
         preferences.present ();
     }
 

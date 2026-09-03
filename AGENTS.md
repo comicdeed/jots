@@ -144,6 +144,7 @@ For local Windows packaging, follow `docs/development/windows.md` in an MSYS2 UC
 
 * **Senior Review Subagent**: After implementing any significant feature or architectural refactor, conduct a thorough Senior Vala code review using the project skill [`.agents/skills/vala-code-review/SKILL.md`](.agents/skills/vala-code-review/SKILL.md).
 * **System-Wide Codebase Audit**: For periodic full-repository health, architectural boundary, and technical debt assessments across all modules, use [`.agents/skills/codebase-audit/SKILL.md`](.agents/skills/codebase-audit/SKILL.md).
+* **End-User Documentation Review**: For auditing, updating, or calibrating user-facing manuals and guides against essential reader attributes and GNOME doc style, use [`.agents/skills/user-guide-review/SKILL.md`](.agents/skills/user-guide-review/SKILL.md).
 * **Smart Confirmation Protocol**: **Always ask the user for confirmation before launching the automated code review subagent**, as the user may prefer to manually inspect changes, test UI behavior interactively, or provide immediate feedback first.
 
 ---

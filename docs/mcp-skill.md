@@ -46,6 +46,7 @@ Do **not** use Jots for long-form project code files or repository documentation
 - You MUST call `read_note(id)` first to retrieve the current full body Markdown.
 - You MUST merge your changes cleanly into the retrieved text.
 - You MUST call `update_note(id, title, content, theme)` with the full merged text. You MUST NOT send only the delta snippet.
+- **Note Re-titling**: When modifying `title`, the note identifier's slug prefix will update (`<new-slug>~<token>`). Always capture and use the updated `id` from the `update_note` response for subsequent operations.
 
 ### 3. Typography & Checklists
 - You SHOULD format actionable todo items with standard Markdown checklists: `- [ ] Pending item` and `- [x] Completed item`.
@@ -57,12 +58,12 @@ Do **not** use Jots for long-form project code files or repository documentation
 ## 🎨 Semantic Theme Palette
 
 You SHOULD choose the pastel theme matching the note's intent:
-- `mint` or `lime`: Action items, todo lists, checklists, active tasks (RECOMMENDED for todos)
-- `banana` or `orange`: Reminders, alerts, schedules, deadlines
-- `strawberry` or `bubblegum`: Urgent items, bugs, blockers, critical alerts
-- `grape`: Architecture designs, brainstorms, concepts
-- `blueberry` or `slate`: General scratchpad, meeting summaries, code snippets (DEFAULT)
-- `cocoa` or `latte`: Long-form reading, documentation notes
+- `mint` or `pear`: Action items, todo lists, checklists, active tasks (RECOMMENDED for todos)
+- `banana` or `tangerine`: Reminders, alerts, schedules, deadlines
+- `watermelon` or `bubblegum`: Urgent items, bugs, blockers, critical alerts
+- `lavender`: Architecture designs, brainstorms, concepts
+- `sea glass` or `pebble`: General scratchpad, meeting summaries, code snippets (DEFAULT)
+- `graphite` or `peach`: Long-form reading, documentation notes
 
 ---
 

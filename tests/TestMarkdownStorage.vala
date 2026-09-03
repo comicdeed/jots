@@ -96,5 +96,56 @@ namespace Jots.Tests {
             assert_cmpint (note.height, GLib.CompareOperator.EQ, Jots.DEFAULT_HEIGHT);
             assert_cmpstr (note.content, GLib.CompareOperator.EQ, "Valid body text");
         });
+
+        /**
+         * UC-20.20.60: Saving a note with a new title renames file on disk and emits note_renamed.
+         */
+        GLib.Test.add_func ("/MarkdownStorage/UC_20_20_60/DynamicRenameOnTitleChange", () => {
+            var temp_dir = GLib.DirUtils.make_tmp ("jots-test-rename-XXXXXX");
+            var storage = new Jots.Storage ();
+            storage.override_notes_dir (temp_dir);
+
+            var note = new Jots.NoteData ();
+            note.id = "initial-title~abc123";
+            note.title = "Initial Title";
+            note.content = "Note body content.";
+            storage.save_note (note);
+
+            var old_file = GLib.File.new_for_path (GLib.Path.build_path (GLib.Path.DIR_SEPARATOR_S, temp_dir, "initial-title~abc123.md"));
+            assert_true (old_file.query_exists ());
+
+            string? renamed_old_id = null;
+            string? renamed_new_id = null;
+            string? renamed_old_path = null;
+            string? renamed_new_path = null;
+
+            storage.note_renamed.connect ((old_id, new_id, old_path, new_path) => {
+                renamed_old_id = old_id;
+                renamed_new_id = new_id;
+                renamed_old_path = old_path;
+                renamed_new_path = new_path;
+            });
+
+            // Modify title and save
+            note.title = "Updated Sprint Goals";
+            storage.save_note (note);
+
+            assert_cmpstr (note.id, GLib.CompareOperator.EQ, "updated-sprint-goals~abc123");
+            assert_false (old_file.query_exists ());
+
+            var new_file = GLib.File.new_for_path (GLib.Path.build_path (GLib.Path.DIR_SEPARATOR_S, temp_dir, "updated-sprint-goals~abc123.md"));
+            assert_true (new_file.query_exists ());
+
+            assert_cmpstr (renamed_old_id, GLib.CompareOperator.EQ, "initial-title~abc123");
+            assert_cmpstr (renamed_new_id, GLib.CompareOperator.EQ, "updated-sprint-goals~abc123");
+            assert_cmpstr (renamed_old_path, GLib.CompareOperator.EQ, old_file.get_path ());
+            assert_cmpstr (renamed_new_path, GLib.CompareOperator.EQ, new_file.get_path ());
+
+            // Clean up temp directory
+            try {
+                new_file.delete ();
+                GLib.File.new_for_path (temp_dir).delete ();
+            } catch (GLib.Error e) {}
+        });
     }
 }

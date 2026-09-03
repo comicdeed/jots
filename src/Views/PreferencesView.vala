@@ -213,7 +213,7 @@ namespace Jots {
             };
             default_font_button = default_font_btn;
             var saved_default_font = Application.settings.get_string (KEY_DEFAULT_FONT);
-            var initial_default_desc = (saved_default_font.strip () != "")
+            var initial_default_desc = (saved_default_font != null && saved_default_font.strip () != "")
                 ? saved_default_font
                 : FontController.get_system_default_font ();
             default_font_btn.font_desc = Pango.FontDescription.from_string (initial_default_desc);
@@ -252,7 +252,7 @@ namespace Jots {
             };
             mono_font_button = mono_font_btn;
             var saved_mono_font = Application.settings.get_string (KEY_MONOSPACE_FONT);
-            var initial_mono_desc = (saved_mono_font.strip () != "")
+            var initial_mono_desc = (saved_mono_font != null && saved_mono_font.strip () != "")
                 ? saved_mono_font
                 : FontController.get_system_monospace_font ();
             mono_font_btn.font_desc = Pango.FontDescription.from_string (initial_mono_desc);
@@ -328,7 +328,8 @@ namespace Jots {
         private Gtk.Widget build_backup_page () {
             var page = make_page_box ();
 
-            var status_value = new Gtk.Label (Application.settings.get_string (KEY_BACKUP_SYNC_STATUS)) {
+            var status_str = Application.settings.get_string (KEY_BACKUP_SYNC_STATUS);
+            var status_value = new Gtk.Label (status_str ?? "") {
                 halign = Gtk.Align.END,
                 valign = Gtk.Align.CENTER,
                 xalign = 1.0f
@@ -338,7 +339,8 @@ namespace Jots {
                 status_value, "label",
                 GLib.SettingsBindFlags.DEFAULT);
 
-            var last_sync_value = new Gtk.Label (Application.settings.get_string (KEY_BACKUP_SYNC_LAST_SYNC)) {
+            var last_sync_str = Application.settings.get_string (KEY_BACKUP_SYNC_LAST_SYNC);
+            var last_sync_value = new Gtk.Label (last_sync_str ?? "") {
                 halign = Gtk.Align.END,
                 valign = Gtk.Align.CENTER,
                 xalign = 1.0f
@@ -369,7 +371,8 @@ namespace Jots {
                 _("Every 5 min"),
                 _("Every 15 min"),
                 _("Every 30 min"),
-                _("Hourly")
+                _("Hourly"),
+                null
             };
             var cadence_dropdown_widget = new Gtk.DropDown.from_strings (cadence_items) {
                 halign = Gtk.Align.END,
@@ -451,7 +454,8 @@ namespace Jots {
 
         private void update_backup_action_sensitivity (Gtk.Button sync_now_button, Gtk.Button test_connection_button) {
             bool backup_enabled = Application.settings.get_boolean (KEY_BACKUP_SYNC_ENABLED);
-            bool has_remote_url = Application.settings.get_string (KEY_BACKUP_SYNC_REMOTE_URL).strip () != "";
+            var remote_url = Application.settings.get_string (KEY_BACKUP_SYNC_REMOTE_URL);
+            bool has_remote_url = (remote_url != null && remote_url.strip () != "");
             bool actions_enabled = backup_enabled && has_remote_url;
             sync_now_button.sensitive = actions_enabled;
             test_connection_button.sensitive = actions_enabled;

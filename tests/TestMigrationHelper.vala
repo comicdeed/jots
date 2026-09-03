@@ -93,7 +93,7 @@ namespace Jots.Tests {
             assert_true (loaded_jots_notes.size == 1);
             assert_cmpstr (loaded_jots_notes.get (0).id, GLib.CompareOperator.EQ, "keep-me");
             assert_cmpstr (loaded_jots_notes.get (0).title, GLib.CompareOperator.EQ, "Important Jorts Note");
-            assert_true (loaded_jots_notes.get (0).theme == Themes.LIME);
+            assert_true (loaded_jots_notes.get (0).theme == Themes.PEAR);
 
             // Verify original Jorts saved_state.json is COMPLETELY UNTOUCHED
             assert_true (FileUtils.test (source_file, FileTest.EXISTS));
@@ -116,7 +116,7 @@ namespace Jots.Tests {
                 id = "conflict-uuid",
                 title = "Jots Existing Note",
                 content = "Existing content in Jots",
-                theme = Themes.BLUEBERRY
+                theme = Themes.OCEAN
             };
             storage.save_note (existing_note);
 
@@ -155,7 +155,7 @@ namespace Jots.Tests {
             assert_cmpstr (reloaded.id, GLib.CompareOperator.EQ, "conflict-uuid");
             assert_cmpstr (reloaded.title, GLib.CompareOperator.EQ, "Jots Existing Note");
             assert_cmpstr (reloaded.content, GLib.CompareOperator.EQ, "Existing content in Jots");
-            assert_true (reloaded.theme == Themes.BLUEBERRY);
+            assert_true (reloaded.theme == Themes.OCEAN);
         }
 
         private static void test_malformed_legacy_json () {
@@ -215,7 +215,7 @@ namespace Jots.Tests {
             assert_cmpstr (reloaded.title, GLib.CompareOperator.EQ, "🚀 Plan (日本語 & Español)");
             assert_true (reloaded.content.contains ("Task 1 ☕"));
             assert_true (reloaded.content.contains ("print(\"hello\")"));
-            assert_true (reloaded.theme == Themes.ORANGE);
+            assert_true (reloaded.theme == Themes.TANGERINE);
         }
 
         private static void test_geometry_and_zoom_preservation () {

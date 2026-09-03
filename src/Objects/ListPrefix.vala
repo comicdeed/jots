@@ -55,6 +55,7 @@ public enum Jots.ListPrefix {
         N_(" • List item"),
         N_(" - List item"),
         N_(" ~ List item"),
-        N_(" . List item")
+        N_(" . List item"),
+        null
     };
 }

@@ -2,7 +2,30 @@
   <img alt="Jots Icon" src="data/icons/default/hicolor/128.png" />
   <h1>Jots</h1>
   <p>Lightweight sticky notes application for the Linux desktop.</p>
-  
+</div>
+
+> 📖 See the **[Jots User Guide](docs/user-guide.md)** for a complete overview of note operations, keyboard shortcuts, formatting, and AI automation.
+
+## Key features
+
+* 📝 **Markdown editing + plain-file storage**: Write with live Markdown formatting, checklists, clickable links, and resilient smart clipboard paste that converts rich-text/HTML and normalizes loose Markdown while protecting code snippets. Notes are saved as standard `.md` files you can back up or use in other tools.
+* 🎨 **Color themes**: Pick from 12 pastel themes that look good in both light and dark mode.
+* 🔤 **Font controls**: Choose your preferred text and code fonts to match how you like to read and write.
+* 🔒 **Privacy mode**: Hide note text when you need to protect sensitive content on screen.
+* 🔁 **Git backup sync**: Connect a Git remote, choose how often to sync, and use **Sync now** when you want an immediate backup.
+* 🤖 **AI-ready with MCP (Beta)**: Connect compatible assistants (Claude Code, Cursor, Devin Desktop, Claude Desktop) to create, search, and manage notes directly from your AI workflows.
+* ⚡ **Fast and lightweight**: Starts quickly and stays responsive.
+
+<p>
+  <a href="https://github.com/comicdeed/jots/releases/latest">
+    <img src="data/badges/download-appimage.svg" alt="Download AppImage" width="180" align="left" style="margin-right: 20px; margin-bottom: 10px; margin-top: 8px" />
+  </a>
+  <em>Download, <code>chmod +x</code>, and run — no install needed. Prefer a GUI? Manage AppImages with <a href="https://github.com/mijorus/gearlever">Gear Lever</a>. See <a href="#installation-and-quick-start">Installation</a> for Flatpak and other options.</em>
+</p>
+
+---
+
+<div align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="data/screenshots/jots-dark.png">
     <source media="(prefers-color-scheme: light)" srcset="data/screenshots/jots-light.png">
@@ -10,33 +33,9 @@
   </picture>
 </div>
 
----
-
-> 📖 **User Guide**: Refer to the **[Jots User Guide](docs/user-guide.md)** for a complete overview of note operations, keyboard shortcuts, formatting, and AI automation.
-
----
-
-## Key features
-
-* 📝 **Markdown editing + plain-file storage**: Write with live Markdown formatting, checklists, clickable links, and resilient smart clipboard paste that converts rich-text/HTML and normalizes loose Markdown while protecting code snippets. Notes are saved as standard `.md` files you can back up or use in other tools.
-* 🎨 **Color themes**: Pick from 10 pastel themes that look good in both light and dark mode.
-* 🔤 **Font controls**: Choose your preferred text and code fonts to match how you like to read and write.
-* 🔒 **Privacy mode**: Hide note text when you need to protect sensitive content on screen.
-* 🔁 **Git backup sync**: Connect a Git remote, choose how often to sync, and use **Sync now** when you want an immediate backup.
-* 🤖 **AI-ready with MCP (Beta)**: Connect compatible assistants (Claude Code, Cursor, Devin Desktop, Claude Desktop) to create, search, and manage notes directly from your AI workflows.
-* ⚡ **Fast and lightweight**: Starts quickly and stays responsive.
-
----
-
 ## Installation and quick start
 
 Jots is currently Linux-first. AppImage and Flatpak are the supported distribution paths. Windows installers are currently not published in automated releases.
-
-**Recommended (Primary Distribution):**
-
-<a href="https://github.com/comicdeed/jots/releases/latest">
-  <img src="data/badges/download-appimage.svg" alt="Download AppImage" width="180" />
-</a>
 
 * **Linux AppImage (Recommended, Click-and-Run)**: Download `Jots-<version>-<arch>.AppImage` (currently `Jots-<version>-x86_64.AppImage` or `Jots-<version>-aarch64.AppImage`) from the [latest release](https://github.com/comicdeed/jots/releases/latest), make it executable (`chmod +x Jots-*.AppImage`), and run directly on any Linux distribution without installation.
 * **Linux Flatpak (Alternative)**: Download `io.github.comicdeed.jots-<version>-x86_64.flatpak` from the [latest release](https://github.com/comicdeed/jots/releases/latest) and install with `flatpak install io.github.comicdeed.jots-*.flatpak`.

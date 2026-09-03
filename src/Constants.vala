@@ -17,10 +17,10 @@ namespace Jots {
 
     // signature theme
 #if HALLOWEEN
-    const Jots.Themes DEFAULT_THEME    = Jots.Themes.ORANGE;
+    const Jots.Themes DEFAULT_THEME    = Jots.Themes.TANGERINE;
     const string DEFAULT_STYLESHEET     = "io.elementary.stylesheet.orange";
 #else
-    const Jots.Themes DEFAULT_THEME    = Jots.Themes.BLUEBERRY;
+    const Jots.Themes DEFAULT_THEME    = Jots.Themes.SEA_GLASS;
     const string DEFAULT_STYLESHEET     = "io.elementary.stylesheet.blueberry";
 #endif
 

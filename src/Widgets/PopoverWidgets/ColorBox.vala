@@ -31,7 +31,7 @@ public class Jots.ColorBox : Gtk.Box {
     private Gtk.DrawingArea drawing_area;
     private Themes[] themes;
     private int hovered_index = -1;
-    private const int BOX_WIDTH = 264;
+    private const int PILL_WIDTH = 26;
     private const int BOX_HEIGHT = 30;
     private const double PILL_RADIUS = 8.5;
 
@@ -54,7 +54,7 @@ public class Jots.ColorBox : Gtk.Box {
             cursor = new Gdk.Cursor.from_name ("pointer", null),
             focusable = true
         };
-        drawing_area.set_content_width (BOX_WIDTH);
+        drawing_area.set_content_width (themes.length * PILL_WIDTH);
         drawing_area.set_content_height (BOX_HEIGHT);
         drawing_area.set_draw_func (draw_colorbox);
 

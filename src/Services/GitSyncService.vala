@@ -7,7 +7,8 @@ namespace Jots {
 
     public enum BackupChangeType {
         TEXT,
-        METADATA
+        METADATA,
+        RENAME
     }
 
     public class BackupCommitIntent : Object {
@@ -16,13 +17,17 @@ namespace Jots {
         public bool deleted { get; set; }
         public BackupChangeType change_type { get; set; }
         public int64 due_usec { get; set; }
+        public string? old_note_id { get; set; default = null; }
+        public string? old_note_path { get; set; default = null; }
 
-        public BackupCommitIntent (string note_id, string note_path, bool deleted, BackupChangeType change_type, int64 due_usec) {
+        public BackupCommitIntent (string note_id, string note_path, bool deleted, BackupChangeType change_type, int64 due_usec, string? old_note_id = null, string? old_note_path = null) {
             this.note_id = note_id;
             this.note_path = note_path;
             this.deleted = deleted;
             this.change_type = change_type;
             this.due_usec = due_usec;
+            this.old_note_id = old_note_id;
+            this.old_note_path = old_note_path;
         }
     }
 
@@ -73,6 +78,7 @@ namespace Jots {
         private uint remote_sync_timer_id = 0;
         private ulong note_saved_handler_id = 0;
         private ulong note_deleted_handler_id = 0;
+        private ulong note_renamed_handler_id = 0;
         private ulong backup_enabled_changed_handler_id = 0;
         private ulong backup_cadence_changed_handler_id = 0;
         private ulong backup_remote_url_changed_handler_id = 0;
@@ -93,6 +99,10 @@ namespace Jots {
 
             if (note_deleted_handler_id == 0) {
                 note_deleted_handler_id = storage.note_deleted.connect (on_note_deleted);
+            }
+
+            if (note_renamed_handler_id == 0) {
+                note_renamed_handler_id = storage.note_renamed.connect (on_note_renamed);
             }
 
             if (backup_enabled_changed_handler_id == 0) {
@@ -131,6 +141,11 @@ namespace Jots {
             if (note_deleted_handler_id != 0) {
                 storage.disconnect (note_deleted_handler_id);
                 note_deleted_handler_id = 0;
+            }
+
+            if (note_renamed_handler_id != 0) {
+                storage.disconnect (note_renamed_handler_id);
+                note_renamed_handler_id = 0;
             }
 
             if (backup_enabled_changed_handler_id != 0) {
@@ -214,7 +229,8 @@ namespace Jots {
                 return false;
             }
 
-            var remote_url = settings.get_string (KEY_BACKUP_SYNC_REMOTE_URL).strip ();
+            var raw_remote_url = settings.get_string (KEY_BACKUP_SYNC_REMOTE_URL);
+            var remote_url = (raw_remote_url != null) ? raw_remote_url.strip () : "";
             if (remote_url == "") {
                 set_status (BACKUP_STATUS_REMOTE_NOT_CONFIGURED, true);
                 return false;
@@ -296,7 +312,19 @@ namespace Jots {
             }
 
             var change_type = classify_change (note, previous_note);
-            queue_commit_intent (note.id, note_path, false, change_type);
+            string? old_id = null;
+            string? old_path = null;
+
+            if (pending_intents.has_key (note_path)) {
+                var existing = pending_intents.get (note_path);
+                if (existing != null && existing.change_type == BackupChangeType.RENAME) {
+                    change_type = BackupChangeType.RENAME;
+                    old_id = existing.old_note_id;
+                    old_path = existing.old_note_path;
+                }
+            }
+
+            queue_commit_intent (note.id, note_path, false, change_type, old_id, old_path);
             set_status (BACKUP_STATUS_PENDING, true);
         }
 
@@ -305,15 +333,55 @@ namespace Jots {
                 return;
             }
 
-            queue_commit_intent (note_id, note_path, true, BackupChangeType.TEXT);
+            string? old_id = null;
+            string? old_path = null;
+
+            if (pending_intents.has_key (note_path)) {
+                var existing = pending_intents.get (note_path);
+                if (existing != null && existing.old_note_path != null) {
+                    old_id = existing.old_note_id;
+                    old_path = existing.old_note_path;
+                }
+                pending_intents.unset (note_path);
+            }
+
+            queue_commit_intent (note_id, note_path, true, BackupChangeType.TEXT, old_id, old_path);
             set_status (BACKUP_STATUS_PENDING, true);
         }
 
-        private void queue_commit_intent (string note_id, string note_path, bool deleted, BackupChangeType change_type) {
+        private void on_note_renamed (string old_id, string new_id, string old_path, string new_path) {
+            if (!enabled || !should_sync_note (old_id) || !should_sync_note (new_id)) {
+                return;
+            }
+
+            string? previous_origin_id = null;
+            string? previous_origin_path = null;
+
+            if (pending_intents.has_key (old_path)) {
+                var existing = pending_intents.get (old_path);
+                if (existing != null) {
+                    previous_origin_id = existing.old_note_id;
+                    previous_origin_path = existing.old_note_path;
+                }
+                pending_intents.unset (old_path);
+            }
+
+            var effective_old_id = (previous_origin_id != null && previous_origin_id != "") ? previous_origin_id : old_id;
+            var effective_old_path = (previous_origin_path != null && previous_origin_path != "") ? previous_origin_path : old_path;
+
+            if (effective_old_path == new_path) {
+                queue_commit_intent (new_id, new_path, false, BackupChangeType.METADATA);
+            } else {
+                queue_commit_intent (new_id, new_path, false, BackupChangeType.RENAME, effective_old_id, effective_old_path);
+            }
+            set_status (BACKUP_STATUS_PENDING, true);
+        }
+
+        private void queue_commit_intent (string note_id, string note_path, bool deleted, BackupChangeType change_type, string? old_note_id = null, string? old_note_path = null) {
             int64 now = GLib.get_monotonic_time ();
             int64 due = now + COMMIT_DEBOUNCE_USEC;
 
-            var intent = new BackupCommitIntent (note_id, note_path, deleted, change_type, due);
+            var intent = new BackupCommitIntent (note_id, note_path, deleted, change_type, due, old_note_id, old_note_path);
             pending_intents.set (note_path, intent);
             arm_debounce_timer_to_earliest ();
         }
@@ -430,6 +498,14 @@ namespace Jots {
                     return;
                 }
 
+                if (intent.old_note_path != null) {
+                    var old_tracked = File.new_for_path (intent.old_note_path).get_basename ();
+                    yield run_git_command_async ({"rm", "--quiet", "--ignore-unmatch", old_tracked});
+                    if (!enabled || epoch != execution_epoch) {
+                        return;
+                    }
+                }
+
                 if (!rm_result.success) {
                     warning ("Git remove failed for %s: %s", tracked_filename, rm_result.stderr_text);
                     set_error_status ("Failed to remove note from backup", rm_result.stderr_text);
@@ -441,6 +517,36 @@ namespace Jots {
                     set_last_sync_now ();
                 }
 
+                return;
+            }
+
+            if (intent.change_type == BackupChangeType.RENAME) {
+                if (intent.old_note_path != null) {
+                    var old_tracked = File.new_for_path (intent.old_note_path).get_basename ();
+                    var rm_result = yield run_git_command_async ({"rm", "--quiet", "--ignore-unmatch", old_tracked});
+                    if (!enabled || epoch != execution_epoch) {
+                        return;
+                    }
+                    if (!rm_result.success) {
+                        warning ("Git remove during rename failed for %s: %s", old_tracked, rm_result.stderr_text);
+                    }
+                }
+
+                var add_result = yield run_git_command_async ({"add", tracked_filename});
+                if (!enabled || epoch != execution_epoch) {
+                    return;
+                }
+
+                if (!add_result.success) {
+                    warning ("Git add failed for %s: %s", tracked_filename, add_result.stderr_text);
+                    set_error_status ("Failed to stage note for backup", add_result.stderr_text);
+                    return;
+                }
+
+                var rename_message = "backup(note): rename %s -> %s".printf (intent.old_note_id ?? intent.note_id, intent.note_id);
+                if (yield commit_staged_changes_async (rename_message, epoch)) {
+                    set_last_sync_now ();
+                }
                 return;
             }
 
@@ -544,7 +650,8 @@ namespace Jots {
                 return;
             }
 
-            var remote_url = settings.get_string (KEY_BACKUP_SYNC_REMOTE_URL).strip ();
+            var raw_remote_url = settings.get_string (KEY_BACKUP_SYNC_REMOTE_URL);
+            var remote_url = (raw_remote_url != null) ? raw_remote_url.strip () : "";
             if (remote_url == "") {
                 set_status (BACKUP_STATUS_REMOTE_NOT_CONFIGURED, true);
                 return;
@@ -611,7 +718,8 @@ namespace Jots {
                 return;
             }
 
-            var remote_url = settings.get_string (KEY_BACKUP_SYNC_REMOTE_URL).strip ();
+            var raw_remote_url = settings.get_string (KEY_BACKUP_SYNC_REMOTE_URL);
+            var remote_url = (raw_remote_url != null) ? raw_remote_url.strip () : "";
             if (remote_url == "") {
                 set_status (BACKUP_STATUS_REMOTE_NOT_CONFIGURED, true);
                 return;

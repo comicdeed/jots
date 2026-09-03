@@ -209,5 +209,37 @@ namespace Jots.Tests {
             assert_true (Jots.GitSyncService.should_sync_note ("custom-note-uuid"));
             assert_true (Jots.GitSyncService.GITIGNORE_CANONICAL.contains ("jots-cheatsheet.md"));
         });
+
+        /**
+         * UC-80.10.50: Rename commit intent captures rename change type and tracks previous origin path.
+         */
+        GLib.Test.add_func ("/GitSyncService/UC_80_10_50/RenameCommitIntentStructure", () => {
+            var intent = new Jots.BackupCommitIntent (
+                "new-title~abc123",
+                "/notes/new-title~abc123.md",
+                false,
+                Jots.BackupChangeType.RENAME,
+                123456789,
+                "old-title~abc123",
+                "/notes/old-title~abc123.md"
+            );
+
+            assert_true (intent.change_type == Jots.BackupChangeType.RENAME);
+            assert_cmpstr (intent.note_id, GLib.CompareOperator.EQ, "new-title~abc123");
+            assert_cmpstr (intent.old_note_id, GLib.CompareOperator.EQ, "old-title~abc123");
+            assert_cmpstr (intent.note_path, GLib.CompareOperator.EQ, "/notes/new-title~abc123.md");
+            assert_cmpstr (intent.old_note_path, GLib.CompareOperator.EQ, "/notes/old-title~abc123.md");
+            assert_false (intent.deleted);
+        });
+
+        /**
+         * UC-80.10.51: Rename commit message formats rename change label clearly.
+         */
+        GLib.Test.add_func ("/GitSyncService/UC_80_10_51/RenameCommitMessageFormatting", () => {
+            var old_id = "meeting-notes~ab12cd";
+            var new_id = "sprint-planning~ab12cd";
+            var message = "backup(note): rename %s -> %s".printf (old_id, new_id);
+            assert_cmpstr (message, GLib.CompareOperator.EQ, "backup(note): rename meeting-notes~ab12cd -> sprint-planning~ab12cd");
+        });
     }
 }

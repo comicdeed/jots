@@ -52,7 +52,7 @@ namespace Jots.Tests {
 
         public string search_notes (string query) throws GLib.Error {
             this.last_searched_query = query;
-            return "[{\"id\":\"search-match-1\",\"title\":\"Match\",\"theme\":\"lime\",\"content_length\":10,\"monospace\":false}]";
+            return "[{\"id\":\"search-match-1\",\"title\":\"Match\",\"theme\":\"pear\",\"content_length\":10,\"monospace\":false}]";
         }
 
         public string ping () throws GLib.Error {
@@ -231,7 +231,7 @@ namespace Jots.Tests {
             builder.set_member_name ("content");
             builder.add_string_value (content);
             builder.set_member_name ("theme");
-            builder.add_string_value ("grape");
+            builder.add_string_value ("lavender");
             builder.end_object ();
             builder.end_object ();
             builder.end_object ();
@@ -244,7 +244,7 @@ namespace Jots.Tests {
             assert_true (resp != null);
             assert_cmpstr (mock.last_created_title, GLib.CompareOperator.EQ, title);
             assert_cmpstr (mock.last_created_content, GLib.CompareOperator.EQ, content);
-            assert_cmpstr (mock.last_created_theme, GLib.CompareOperator.EQ, "grape");
+            assert_cmpstr (mock.last_created_theme, GLib.CompareOperator.EQ, "lavender");
         });
 
         /**

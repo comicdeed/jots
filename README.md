@@ -27,6 +27,8 @@
   <em>Download, <code>chmod +x</code>, and run — no install needed. Prefer a GUI? Manage AppImages with <a href="https://github.com/mijorus/gearlever">Gear Lever</a>. See <a href="#installation-and-quick-start">Installation</a> for Flatpak and other options.</em>
 </p>
 
+---
+
 <div align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="data/screenshots/jots-dark.png">
@@ -34,8 +36,6 @@
     <img class="center" src="data/screenshots/jots-light.png" alt="Jots screenshot">
   </picture>
 </div>
-
----
 
 ## Installation and quick start
 

@@ -1,5 +1,9 @@
 <div align="center">
-  <img alt="Jots Icon" src="data/icons/default/hicolor/128.png" />
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="data/icons/jots_logo_dark_animated.svg">
+    <source media="(prefers-color-scheme: light)" srcset="data/icons/jots_logo_light_animated.svg">
+    <img alt="Jots Icon" src="data/icons/jots_logo_light_animated.svg" width="128" height="128" />
+  </picture>
   <h1>Jots</h1>
   <p>Lightweight sticky notes application for the Linux desktop.</p>
 </div>

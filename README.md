@@ -35,11 +35,7 @@
     <source media="(prefers-color-scheme: light)" srcset="data/screenshots/jots-light.png">
     <img class="center" src="data/screenshots/jots-light.png" alt="Jots screenshot">
   </picture>
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="data/screenshots/other-screenshot-link-dark.svg">
-    <source media="(prefers-color-scheme: light)" srcset="data/screenshots/other-screenshot-link-light.svg">
-    <img src="data/screenshots/other-screenshot-link-light.svg" alt="Click here for dark mode screenshot">
-  </picture>
+  <p>View the screenshot in <a href="data/screenshots/jots-light.png">light mode</a> or <a href="data/screenshots/jots-dark.png">dark mode</a>.</p>
 </div>
 
 ## Installation and quick start

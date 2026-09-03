@@ -20,20 +20,12 @@
 * 🤖 **AI-ready with MCP (Beta)**: Connect compatible assistants (Claude Code, Cursor, Devin Desktop, Claude Desktop) to create, search, and manage notes directly from your AI workflows.
 * ⚡ **Fast and lightweight**: Starts quickly and stays responsive.
 
-<div align="center">
-  <table border="0">
-    <tr>
-      <td>
-        <a href="https://github.com/comicdeed/jots/releases/latest">
-          <img src="data/badges/download-appimage.svg" alt="Download AppImage" width="180" />
-        </a>
-      </td>
-      <td align="left">
-        <em>Download, <code>chmod +x</code>, and run — no install needed. Prefer a GUI? Manage AppImages with <a href="https://github.com/mijorus/gearlever">Gear Lever</a>. See <a href="#installation-and-quick-start">Installation</a> for Flatpak and other options.</em>
-      </td>
-    </tr>
-  </table>
-</div>
+<p>
+  <a href="https://github.com/comicdeed/jots/releases/latest">
+    <img src="data/badges/download-appimage.svg" alt="Download AppImage" width="180" align="left" style="margin-right: 20px; margin-bottom: 10px; margin-top: 8px" />
+  </a>
+  <em>Download, <code>chmod +x</code>, and run — no install needed. Prefer a GUI? Manage AppImages with <a href="https://github.com/mijorus/gearlever">Gear Lever</a>. See <a href="#installation-and-quick-start">Installation</a> for Flatpak and other options.</em>
+</p>
 
 <div align="center">
   <picture>

@@ -93,7 +93,7 @@ graph TD
 4. `NoteManager` and `NoteService` instances are initialized.
 5. During D-Bus registration, `NoteService` binds to `/io/github/comicdeed/jots/Notes` and `/io/github/comicdeed/jots`.
 6. On activation (or first D-Bus method call via `ensure_initialized()`), `NoteManager.init()` loads stored state from `Storage.vala`.
-7. If no storage file exists, a default Blueberry note is spawned. Otherwise, saved notes are deserialized and presented.
+7. If no storage file exists, a default Sea Glass note is spawned. Otherwise, saved notes are deserialized and presented.
 
 ### 3.2 Real-Time Mutation via D-Bus / MCP
 ```mermaid

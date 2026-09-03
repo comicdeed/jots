@@ -79,7 +79,7 @@ namespace Jots.Tests {
                 id = "stored-a",
                 title = "Meeting Notes",
                 content = "Discuss Q3 quarterly architecture roadmap and milestones",
-                theme = Themes.BLUEBERRY
+                theme = Themes.OCEAN
             };
             var note_b = new NoteData () {
                 id = "stored-b",
@@ -327,7 +327,7 @@ namespace Jots.Tests {
                 id = "json-note-1",
                 title = "Release Checklist",
                 content = "Prepare final binary for flathub deployment.",
-                theme = Themes.BLUEBERRY
+                theme = Themes.OCEAN
             };
             storage.save_note (note);
 
@@ -335,7 +335,7 @@ namespace Jots.Tests {
             assert_true (json_str.length > 0);
             assert_true (json_str.contains ("json-note-1"));
             assert_true (json_str.contains ("Release Checklist"));
-            assert_true (json_str.contains ("blueberry"));
+            assert_true (json_str.contains ("ocean"));
             assert_true (json_str.contains ("score"));
             assert_true (json_str.contains ("<b>flathub</b>"));
         }

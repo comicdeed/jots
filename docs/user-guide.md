@@ -98,19 +98,21 @@ Jots renders Markdown live as you type, giving you rich visual styling without a
 
 ## 4. Themes and typography
 
-### 10 Pastel color themes
-Jots includes 10 pastel colors that automatically adjust contrast for system Light and Dark modes:
+### 12 Pastel color themes
+Jots includes 12 pastel colors that automatically adjust contrast for system Light and Dark modes:
 
-* 🫐 **Blueberry** *(default)*
-* 🍃 **Mint**
-* 🍋 **Lime**
 * 🍌 **Banana**
-* 🍊 **Orange**
-* 🍓 **Strawberry**
+* 🍊 **Tangerine**
+* 🍑 **Peach**
+* 🍉 **Watermelon**
 * 🍬 **Bubblegum**
-* 🍇 **Grape**
-* 🍫 **Cocoa**
-* 🪨 **Slate**
+* 💜 **Lavender**
+* 🌊 **Ocean**
+* 🫧 **Sea Glass** *(default)*
+* 🍃 **Mint**
+* 🍐 **Pear**
+* 🪨 **Pebble**
+* ⚫ **Graphite**
 
 To change a note's theme, click the **Menu button** in the bottom-right corner (or press **`Ctrl + G`**) and select a color. New notes pick a non-repeating random color to keep your desktop vibrant.
 

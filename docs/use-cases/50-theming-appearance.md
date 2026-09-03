@@ -11,29 +11,31 @@ Theme color mapping, random color assignment, and dark mode stylesheet overrides
 * **Pre-conditions**: `Themes` enum value passed.
 * **Post-conditions**:
   * Maps each enum to its corresponding CSS class name via `to_css_class()`:
-    * `BLUEBERRY`: `blueberry`
-    * `MINT`: `mint`
-    * `LIME`: `lime`
     * `BANANA`: `banana`
-    * `ORANGE`: `orange`
-    * `STRAWBERRY`: `strawberry`
+    * `TANGERINE`: `tangerine`
+    * `PEACH`: `peach`
+    * `WATERMELON`: `watermelon`
     * `BUBBLEGUM`: `bubblegum`
-    * `GRAPE`: `grape`
-    * `COCOA`: `cocoa`
-    * `SLATE`: `slate`
-    * `LATTE`: `latte` (development builds)
-  * Maps each enum to its canonical 500-shade hex color via `to_hex_color()`:
-    * `BLUEBERRY`: `#4285f4`
-    * `MINT`: `#2ecc71`
-    * `LIME`: `#87d322`
-    * `BANANA`: `#f6d32d`
-    * `ORANGE`: `#ff7800`
-    * `STRAWBERRY`: `#ed333b`
-    * `BUBBLEGUM`: `#e0569a`
-    * `GRAPE`: `#9141ac`
-    * `COCOA`: `#865e3c`
-    * `SLATE`: `#606f7b`
-    * `LATTE`: `#bfa07a`
+    * `LAVENDER`: `lavender`
+    * `OCEAN`: `ocean`
+    * `SEA_GLASS`: `sea_glass`
+    * `MINT`: `mint`
+    * `PEAR`: `pear`
+    * `PEBBLE`: `pebble`
+    * `GRAPHITE`: `graphite`
+  * Maps each enum to its vivid picker chip hex color via `to_hex_color()`:
+    * `BANANA`: `#FFB300`
+    * `TANGERINE`: `#FF6D00`
+    * `PEACH`: `#FF5252`
+    * `WATERMELON`: `#D50000`
+    * `BUBBLEGUM`: `#F50057`
+    * `LAVENDER`: `#AA00FF`
+    * `OCEAN`: `#2979FF`
+    * `SEA_GLASS`: `#00BFA5`
+    * `MINT`: `#00C853`
+    * `PEAR`: `#AEEA00`
+    * `PEBBLE`: `#9E9E9E`
+    * `GRAPHITE`: `#546E7A`
   * Renders discrete circular color pills with matching outer selection rings in `ColorBox` via direct Cairo drawing.
   * Returns localized display name via `to_nicename()`.
 

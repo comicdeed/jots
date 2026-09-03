@@ -19,7 +19,7 @@ Note window creation, deletion, undo restoration, geometry tracking, and applica
 * **Trigger**: Application starts up and `Storage.content` returns an empty array.
 * **Pre-conditions**: First launch or user previously closed all notes.
 * **Post-conditions**:
-  * Creates a default note set to `Themes.BLUEBERRY` with an empty title and standard dimensions.
+  * Creates a default note set to `Themes.SEA_GLASS` with an empty title and standard dimensions.
   * Presents the window on screen.
 
 ### `UC-10.10.30` Session restoration on startup

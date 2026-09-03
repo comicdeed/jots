@@ -22,7 +22,6 @@ namespace Jots {
 
             sb.append_printf ("id: \"%s\"\n", escape_yaml_string (note.id));
             sb.append_printf ("title: \"%s\"\n", escape_yaml_string (note.title));
-            sb.append_printf ("color: %d\n", (int) note.theme);
             sb.append_printf ("theme: \"%s\"\n", note.theme.to_string ());
             sb.append_printf ("monospace: %s\n", note.monospace ? "true" : "false");
             sb.append_printf ("zoom: %d\n", note.zoom);
@@ -131,11 +130,10 @@ namespace Jots {
                         note.title = val;
                         break;
                     case "color":
+                        // Legacy-only: no longer written by serialize(), kept for notes saved before this field was dropped.
                         int color_int;
                         if (int.try_parse (val, out color_int)) {
-                            if (color_int >= 0 && color_int < Themes.all ().length) {
-                                note.theme = (Themes) color_int;
-                            }
+                            note.theme = Themes.from_legacy_ordinal (color_int, note.theme);
                         }
                         break;
                     case "theme":

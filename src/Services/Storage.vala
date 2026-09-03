@@ -139,6 +139,10 @@ namespace Jots {
                         if (elem.get_node_type () == Json.NodeType.OBJECT) {
                             var obj = elem.dup_object ();
                             var note = new NoteData.from_json (obj);
+                            // Jorts files predate the current palette; "color" is the pre-1.x ordinal.
+                            if (obj.has_member ("color")) {
+                                note.theme = Jots.Themes.from_legacy_ordinal ((int) obj.get_int_member ("color"), note.theme);
+                            }
                             list.add (note);
                         }
                     }

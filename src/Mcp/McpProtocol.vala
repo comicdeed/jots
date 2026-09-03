@@ -236,7 +236,7 @@ namespace Jots {
             builder.set_member_name ("type");
             builder.add_string_value ("string");
             builder.set_member_name ("description");
-            builder.add_string_value ("Pastel theme color: blueberry, mint, lime, banana, orange, strawberry, bubblegum, grape, cocoa, slate, latte");
+            builder.add_string_value ("Pastel theme color: banana, tangerine, peach, watermelon, bubblegum, lavender, ocean, sea glass, mint, pear, pebble, graphite");
             builder.end_object ();
 
             builder.end_object (); // properties
@@ -397,7 +397,7 @@ namespace Jots {
                     case "create_note": {
                         var title = args_obj.has_member ("title") ? args_obj.get_string_member ("title") : "";
                         var content = args_obj.has_member ("content") ? args_obj.get_string_member ("content") : "";
-                        var theme = args_obj.has_member ("theme") ? args_obj.get_string_member ("theme") : "blueberry";
+                        var theme = args_obj.has_member ("theme") ? args_obj.get_string_member ("theme") : "sea glass";
 
                         if (content.length > MAX_NOTE_CONTENT_LENGTH) {
                             return format_tool_error (id_node, "Content exceeds maximum length of %d characters.".printf (MAX_NOTE_CONTENT_LENGTH));
@@ -556,12 +556,12 @@ namespace Jots {
                     + "- You MAY use `#tag` pills anywhere in the body for in-text visual badges.\n\n"
                     + "## 4. Semantic Theme Palette\n"
                     + "You SHOULD choose the pastel theme matching the note's intent:\n"
-                    + "- `mint` or `lime`: Action items, todo lists, checklists, active sprint todos (RECOMMENDED for todos)\n"
-                    + "- `banana` or `orange`: Reminders, alerts, schedules, deadlines\n"
-                    + "- `strawberry` or `bubblegum`: Urgent items, bugs, blockers, critical alerts\n"
-                    + "- `grape`: Architecture designs, ideas, brainstorming concepts\n"
-                    + "- `blueberry` or `slate`: General scratchpad, meeting summaries, code snippets (DEFAULT)\n"
-                    + "- `cocoa` or `latte`: Long-form reading, documentation notes\n\n"
+                    + "- `mint` or `pear`: Action items, todo lists, checklists, active sprint todos (RECOMMENDED for todos)\n"
+                    + "- `banana` or `tangerine`: Reminders, alerts, schedules, deadlines\n"
+                    + "- `watermelon` or `bubblegum`: Urgent items, bugs, blockers, critical alerts\n"
+                    + "- `lavender`: Architecture designs, ideas, brainstorming concepts\n"
+                    + "- `sea glass` or `pebble`: General scratchpad, meeting summaries, code snippets (DEFAULT)\n"
+                    + "- `graphite` or `peach`: Long-form reading, documentation notes\n\n"
                     + "## 5. Self-Update Directive\n"
                     + "AI assistants SHOULD periodically re-read `jots://instructions` over MCP to refresh knowledge of new capabilities, schema additions, and theme options.\n";
 
@@ -617,7 +617,7 @@ namespace Jots {
                     + "## Best Practices for AI Assistants\n"
                     + "- Keep note titles concise (max 120 chars).\n"
                     + "- Use checklists (`- [ ]`) for todo items so users can interactively mark them complete.\n"
-                    + "- Select appropriate pastel themes: `mint`/`lime` for tasks, `banana` for reminders, `strawberry`/`bubblegum` for urgent items, `blueberry`/`slate` for general notes.\n";
+                    + "- Select appropriate pastel themes: `mint`/`pear` for tasks, `banana` for reminders, `watermelon`/`bubblegum` for urgent items, `sea glass`/`pebble` for general notes.\n";
 
                 var builder = new Json.Builder ();
                 builder.begin_object ();

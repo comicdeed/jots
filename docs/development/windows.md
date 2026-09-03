@@ -56,7 +56,7 @@ Once completed successfully, a standalone installer `.exe` will be created. The 
 ## 4. Platform Limitations & Differences
 
 Because Jots is designed primarily for Linux, the Windows build has several known limitations:
-* **Static Assets**: Theme-switching icons and Pride variants are not dynamically fetched or changed; the default Blueberry icon is always used.
+* **Static Assets**: Theme-switching icons and Pride variants are not dynamically fetched or changed; the default icon is always used.
 * **Updates**: There is no built-in update mechanism. To update the application, uninstall the current version and install the new version (existing notes are preserved in user directories).
 * **Startup**: The option to launch Jots at Windows system startup is set during installation and cannot be toggled in-app.
 * **Startup Performance**: Launch times may be slower on Windows compared to Linux due to dynamic library loading overhead.

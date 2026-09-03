@@ -86,6 +86,28 @@
     </screenshots>
 
     <releases>
+        <release version="1.4.0-beta.3" date="2026-09-03" type="development">
+            <description>
+                <p>Jots 1.4.0-beta.3 introduces an expanded 12-color sticky note palette, dynamic note filename synchronization with Git sync coalescing, and signal lifecycle hardening.</p>
+                <p>Highlights (✨ indicates new in this beta):</p>
+                <ul>
+                    <li>✨ Vibrant new 12-color sticky note palette with carefully calibrated light and dark mode contrast.</li>
+                    <li>✨ Dynamic note filename synchronization keeps files neatly named on disk while preserving note identity and Git history.</li>
+                    <li>Expanded companion setup guides for Devin Desktop alongside Claude Code, Cursor, and Antigravity.</li>
+                    <li>AI coding assistants connect seamlessly to Jots with instant cold-start background auto-launching.</li>
+                    <li>Universal AI companion skill enables intelligent note search, automated scratchpads, and live checklist updates without manual window management.</li>
+                    <li>MCP requests and tool calls feature real-time latency tracing and robust leveled logging with automatic file rotation.</li>
+                </ul>
+                <p>Technical Notes:</p>
+                <ul>
+                    <li>✨ Dynamic title rename debouncing coalesces Git sync commits to prevent file churn and orphan states.</li>
+                    <li>✨ Hardened popover signal lifecycle during runtime palette and theme transitions.</li>
+                    <li>Consolidated all platform packaging manifests, scripts, and assets under structured packaging/ subdirectories.</li>
+                    <li>Automated sliding-window retention for pre-releases in the release pipeline.</li>
+                    <li>Implemented zero-GTK leveled logging subsystem with pure stderr stream isolation and 4-generation file rotation.</li>
+                </ul>
+            </description>
+        </release>
         <release version="1.4.0-beta.2" date="2026-09-01" type="development">
             <description>
                 <p>Jots 1.4.0-beta.2 introduces unified packaging consolidation under packaging/, automated sliding-window pre-release management, and expanded AI assistant integration guides.</p>

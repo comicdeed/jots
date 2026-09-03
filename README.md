@@ -4,9 +4,7 @@
   <p>Lightweight sticky notes application for the Linux desktop.</p>
 </div>
 
----
-
-> 📖 **User Guide**: Refer to the **[Jots User Guide](docs/user-guide.md)** for a complete overview of note operations, keyboard shortcuts, formatting, and AI automation.
+📖 See the **[Jots User Guide](docs/user-guide.md)** for a complete overview of note operations, keyboard shortcuts, formatting, and AI automation.
 
 ---
 

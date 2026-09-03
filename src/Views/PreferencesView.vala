@@ -14,14 +14,12 @@ namespace Jots {
         public Gtk.Button close_button;
         public Gtk.StackSwitcher page_switcher { get; private set; }
         private Gtk.Stack page_stack;
-        private Gtk.DropDown? list_dropdown = null;
         private Gtk.DropDown? cadence_dropdown = null;
         private Gtk.FontDialogButton? default_font_button = null;
         private Gtk.FontDialogButton? mono_font_button = null;
         private Gtk.Button? import_jorts_button = null;
         private Gtk.Button? sync_now_button = null;
         private Gtk.Button? test_connection_button = null;
-        private ulong list_dropdown_handler_id = 0;
         private ulong cadence_dropdown_handler_id = 0;
         private ulong default_font_button_handler_id = 0;
         private ulong mono_font_button_handler_id = 0;
@@ -128,24 +126,6 @@ namespace Jots {
 
         private Gtk.Widget build_general_page () {
             var page = make_page_box ();
-
-            var list_dropdown_widget = new Gtk.DropDown.from_strings (ListPrefix.ALL) {
-                halign = Gtk.Align.END,
-                hexpand = false,
-                valign = Gtk.Align.CENTER
-            };
-            list_dropdown = list_dropdown_widget;
-            list_dropdown.selected = Application.settings.get_enum (KEY_LIST);
-            list_dropdown_handler_id = list_dropdown_widget.notify["selected"].connect (() => {
-                Application.settings.set_enum (KEY_LIST, (int) list_dropdown_widget.selected);
-            });
-
-            var lists_box = new SettingsBox (
-                _("List item prefix"),
-                null,
-                list_dropdown_widget
-            );
-            page.append (lists_box);
 
 #if LIBPORTAL
             autostart_toggle = new Gtk.Switch ();

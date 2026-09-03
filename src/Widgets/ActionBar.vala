@@ -13,7 +13,6 @@
 public class Jots.ActionBar : Jots.Bin {
 
     public Gtk.ActionBar actionbar;
-    public Gtk.Button list_button;
     public Gtk.MenuButton emoji_button;
     public Gtk.EmojiChooser emojichooser_popover;
     public Gtk.MenuButton menu_button;
@@ -52,19 +51,6 @@ public class Jots.ActionBar : Jots.Bin {
         delete_item.add_css_class (STYLE_THEMEDBUTTON);
 
         /* **** RIGHT **** */
-        list_button = new Gtk.Button () {
-            action_name = TextView.ACTION_PREFIX + TextView.ACTION_TOGGLE_LIST,
-            icon_name = "view-list-symbolic",
-            width_request = ICON_SIZE,
-            height_request = ICON_SIZE,
-            tooltip_markup = Jots.Util.markup_accel_tooltip (
-                _("Toggle list"),
-                "Shift+F12"
-            ),
-            has_frame = false
-        };
-        list_button.add_css_class (STYLE_THEMEDBUTTON);
-
         emojichooser_popover = new Gtk.EmojiChooser ();
         emoji_button = new Gtk.MenuButton () {
             popover = emojichooser_popover,
@@ -103,25 +89,12 @@ public class Jots.ActionBar : Jots.Bin {
         actionbar.pack_start (delete_item);
         actionbar.pack_end (menu_button);
         actionbar.pack_end (emoji_button);
-        actionbar.pack_end (list_button);
 
         handle = new Gtk.WindowHandle () {
             child = actionbar
         };
 
         child = handle;
-
-        // Hide the list button if user has specified no list item symbol
-        on_prefix_changed ();
-        Application.settings.changed[KEY_LIST].connect (on_prefix_changed);
-    }
-
-    /**
-    * If user leaves list prefix blank, then they dont need the button.
-    */
-    private void on_prefix_changed () {
-        var is_disabled = Application.settings.get_enum (KEY_LIST) == ListPrefix.DISABLED;
-        list_button.visible = !is_disabled;
     }
 
     ~ActionBar () {

@@ -52,7 +52,6 @@ Jots is a lightweight, distraction-free sticky notes application for Linux. It k
 | **`Ctrl + W`** | **Delete note** | Deletes and closes the focused note window. |
 | **`Ctrl + R`** | **Restore note** | Restores the last deleted note with its content and position. |
 | **`Ctrl + S`** | **Save now** | Immediately commits all pending note changes to disk. |
-| **`Shift + F12`** | **Toggle bullet list** | Adds or removes list bullets on the current line or selection. |
 | **`Ctrl + D`** / **`Ctrl + Enter`** | **Toggle checklist** | Toggles `- [ ]` and `- [x]`, or converts text into a task item. |
 | **`Ctrl + V`** | **Smart paste** | Pastes text and converts rich web formatting into clean Markdown. |
 | **`Ctrl + Shift + V`** | **Raw paste** | Pastes exact clipboard text without formatting changes. |

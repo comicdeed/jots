@@ -29,7 +29,6 @@ namespace Jots {
 
         public SimpleActionGroup actions { get; construct; }
         public const string ACTION_PREFIX = "textview.";
-        public const string ACTION_TOGGLE_LIST = "action_toggle_list";
         public const string ACTION_TOGGLE_CHECKBOX = "action_toggle_checkbox";
         public const string ACTION_PASTE_RAW = "action_paste_raw";
         public const string ACTION_PASTE_SMART = "action_paste_smart";
@@ -37,7 +36,6 @@ namespace Jots {
         public signal void paste_normalized (string message);
 
         private const GLib.ActionEntry[] ACTION_ENTRIES = {
-            { ACTION_TOGGLE_LIST, toggle_list },
             { ACTION_TOGGLE_CHECKBOX, toggle_checkbox },
             { ACTION_PASTE_RAW, paste_raw },
             { ACTION_PASTE_SMART, paste_smart }
@@ -62,7 +60,6 @@ namespace Jots {
 
             var app = GLib.Application.get_default () as Gtk.Application;
             if (app != null) {
-                app.set_accels_for_action (ACTION_PREFIX + ACTION_TOGGLE_LIST, {"<Shift>F12"});
                 app.set_accels_for_action (ACTION_PREFIX + ACTION_TOGGLE_CHECKBOX, {"<Control>d", "<Control>D", "<Control>Return", "<Control>KP_Enter"});
                 app.set_accels_for_action (ACTION_PREFIX + ACTION_PASTE_RAW, {"<Control><Shift>v", "<Control><Shift>V"});
             }
@@ -226,41 +223,6 @@ namespace Jots {
 
         private void on_mouse_leave () {
             set_cursor_from_name (null);
-        }
-
-        public void toggle_list () {
-            if (!editable) {
-                return;
-            }
-
-            Gtk.TextIter start, end;
-            buffer.get_selection_bounds (out start, out end);
-
-            var first_line = start.get_line ();
-            var last_line = end.get_line ();
-
-            buffer.begin_user_action ();
-            for (int line = first_line; line <= last_line; line++) {
-                Gtk.TextIter line_start, line_end;
-                buffer.get_iter_at_line_offset (out line_start, line, 0);
-                line_end = line_start.copy ();
-                line_end.forward_to_line_end ();
-                var line_str = buffer.get_slice (line_start, line_end, false);
-
-                if (line_str.has_prefix ("- ")) {
-                    // Remove prefix
-                    Gtk.TextIter prefix_end;
-                    buffer.get_iter_at_line_offset (out prefix_end, line, 2);
-                    buffer.delete (ref line_start, ref prefix_end);
-                } else {
-                    // Add prefix
-                    buffer.insert (ref line_start, "- ", -1);
-                }
-            }
-            buffer.end_user_action ();
-
-            markdown_buffer.highlight_markdown ();
-            grab_focus ();
         }
 
         public void toggle_checkbox () {

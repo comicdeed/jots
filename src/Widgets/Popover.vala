@@ -74,7 +74,6 @@ public class Jots.Popover : Gtk.Popover {
         add_binding_action (Gdk.Key.F, Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.SHIFT_MASK, StickyNoteWindow.ACTION_PREFIX + StickyNoteWindow.ACTION_SEARCH, null);
         add_binding_action (Gdk.Key.F1, 0, Application.ACTION_PREFIX + Application.ACTION_SHOW_CHEATSHEET, null);
 
-        add_binding_action (Gdk.Key.F12, Gdk.ModifierType.SHIFT_MASK, TextView.ACTION_PREFIX + TextView.ACTION_TOGGLE_LIST, null);
         add_binding_action (Gdk.Key.d, Gdk.ModifierType.CONTROL_MASK, TextView.ACTION_PREFIX + TextView.ACTION_TOGGLE_CHECKBOX, null);
         add_binding_action (Gdk.Key.Return, Gdk.ModifierType.CONTROL_MASK, TextView.ACTION_PREFIX + TextView.ACTION_TOGGLE_CHECKBOX, null);
     }

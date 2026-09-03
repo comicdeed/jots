@@ -10,7 +10,7 @@ namespace Jots.Tests {
          */
         GLib.Test.add_func ("/MarkdownBuffer/UC_30_20_10/ListPrefixDetection", () => {
             var buffer = new Jots.MarkdownBuffer ();
-            buffer.text = "- Standard item\n* Star item\n- [ ] Todo item\n- [x] Done item\n  - Indented item\n  - [ ] Indented todo\nNot a list item";
+            buffer.text = "- Standard item\n* Star item\n- [ ] Todo item\n- [x] Done item\n  - Indented item\n  - [ ] Indented todo\nNot a list item\n+ [ ] Plus todo\n+ [x] Plus done";
 
             assert_cmpstr (buffer.get_list_prefix (0), GLib.CompareOperator.EQ, "- ");
             assert_cmpstr (buffer.get_list_prefix (1), GLib.CompareOperator.EQ, "* ");
@@ -19,6 +19,8 @@ namespace Jots.Tests {
             assert_cmpstr (buffer.get_list_prefix (4), GLib.CompareOperator.EQ, "  - ");
             assert_cmpstr (buffer.get_list_prefix (5), GLib.CompareOperator.EQ, "  - [ ] ");
             assert_null (buffer.get_list_prefix (6));
+            assert_cmpstr (buffer.get_list_prefix (7), GLib.CompareOperator.EQ, "+ [ ] ");
+            assert_cmpstr (buffer.get_list_prefix (8), GLib.CompareOperator.EQ, "+ [ ] ");
         });
 
         /**
@@ -242,10 +244,6 @@ namespace Jots.Tests {
             var textview = new Jots.TextView ();
             textview.text = "- Item 1\n- Item 2";
             textview.editable = false;
-
-            // Attempt toggle_list
-            textview.toggle_list ();
-            assert_cmpstr (textview.text, GLib.CompareOperator.EQ, "- Item 1\n- Item 2");
 
             // Attempt insert_text_atomic
             textview.insert_text_atomic ("New Text");

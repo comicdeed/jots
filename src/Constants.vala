@@ -57,7 +57,6 @@ namespace Jots {
     // Autocomplete save me
     const string KEY_SCRIBBLY           = "scribbly-mode-active";
     const string KEY_HIDEBAR            = "hide-bar";
-    const string KEY_LIST               = "list-prefix";
 
     // Application actions
     public const string ACTION_APP_PREFIX        = "app.";

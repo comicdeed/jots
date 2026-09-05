@@ -10,15 +10,15 @@ This guide defines shared UI and UX principles for contributor-facing design and
 
 ---
 
-## 2. Core Ethos
+## 2. Design Principles
 
 * Keep Jots fast, calm, and local-first.
-* Prefer clear defaults over growing preference surfaces.
+* Prefer clear defaults over proliferating settings.
 * Favor reversible actions and explicit system state.
 * Keep controls close to the workflow they affect.
 * Prefer lightweight GTK-native patterns over heavy abstractions.
 
-### Responsiveness Pillar
+### UI Responsiveness Rules
 
 The GTK main loop must remain responsive during all user-visible operations.
 
@@ -28,7 +28,7 @@ The GTK main loop must remain responsive during all user-visible operations.
 
 ---
 
-## 3. Preference Surface Rule
+## 3. Settings & Preferences Policy
 
 Add a new persistent preference only when one default cannot serve materially different user needs.
 

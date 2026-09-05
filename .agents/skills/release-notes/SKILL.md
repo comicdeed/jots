@@ -35,7 +35,7 @@ Jots uses a **Living Draft** release notes model: beta release notes serve as th
 * **Technical Notes (with `✨` for new additions)**: Architecture, safety, or build changes (items new to this build prefixed with `✨`).
 
 #### For Stable Releases (`X.Y.Z`)
-* **"Oven Ready" Finalization**: The accumulated beta draft is finalized by removing the `✨` indicator icons and transitioning to the formal milestone release summary.
+* **Finalizing Milestone Notes**: The accumulated beta draft is finalized by removing the `✨` indicator icons and transitioning to the formal milestone release summary.
 
 ---
 

@@ -15,7 +15,7 @@
             <li>Markdown Storage &amp; Live Rendering: Plaintext Markdown files with real-time formatting for headings, lists, interactive checklists (- [ ]), and code blocks</li>
             <li>Full-Text Search: Instant search across open and saved notes with relevance ranking and highlighted snippet previews (Ctrl+F)</li>
             <li>AI Assistant Integration: Native Model Context Protocol (MCP) server over stdio for Claude, Cursor, and developer tools</li>
-            <li>Colourful &amp; Accessible: Eleven pastel themes with automatically derived desaturated dark mode surfaces</li>
+            <li>Colourful &amp; Accessible: Twelve expressive color themes with vibrant and ultra-dark options in dark mode</li>
             <li>Private: Scribbly privacy mode (Ctrl+H) obfuscates text when notes are unfocused or during screen sharing</li>
             <li>Customizable Typography: Configure custom fonts and zoom scaling for standard and monospace notes</li>
             <li>Jorts Migration Helper: Non-destructive import wizard to safely copy existing notes from Jorts</li>

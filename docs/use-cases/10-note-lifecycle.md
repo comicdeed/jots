@@ -43,7 +43,7 @@ Note window creation, deletion, undo restoration, geometry tracking, and applica
   * Immediately saves remaining open notes to disk via `immediately_save()`.
 
 ### `UC-10.20.20` Restoring last deleted note
-* **Trigger**: User presses `Ctrl+R` or activates "Restore note" in Preferences.
+* **Trigger**: User presses `Ctrl+R` or activates "Restore note" in **Preferences $\rightarrow$ General**.
 * **Pre-conditions**: `last_deleted` is non-null and `ACTION_RESTORE_LAST` is enabled.
 * **Post-conditions**:
   * Spawns a new note window populated with the cached `last_deleted` properties.

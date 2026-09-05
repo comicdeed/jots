@@ -86,7 +86,7 @@ Execute the project release notes skill (`.agents/skills/release-notes/SKILL.md`
                    <li>✨ Transient feedback banner notifies you when pasted text was formatted, with single-stroke Ctrl+Z undo and Ctrl+Shift+V raw paste bypass.</li>
                    <li>✨ Updated built-in Cheat Sheet (F1) with all modern keyboard shortcuts.</li>
                    <li>Automated Git backup and sync keeps notes mirrored to remote repositories with background debouncing.</li>
-                   <li>Redesigned Preferences dialog with dedicated General, Theme &amp; Fonts, and Backup &amp; Sync tabs.</li>
+                   <li>Redesigned Preferences dialog with dedicated Appearance, Backup &amp; Sync, and General tabs.</li>
                    <li>Universal desktop autostart with packaging-aware execution detection across AppImage and Flatpak.</li>
                    <li>Window destruction and note closing are hardened against lifecycle crashes.</li>
                    <li>Desktop dark mode and light mode transitions sync reliably across all open sticky notes.</li>

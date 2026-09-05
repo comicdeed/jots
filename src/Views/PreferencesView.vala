@@ -66,10 +66,9 @@ namespace Jots {
                 halign = Gtk.Align.CENTER
             };
 
-            page_stack.add_titled (build_general_page (), "general", _("General"));
             page_stack.add_titled (build_appearance_page (), "appearance", _("Appearance"));
-            page_stack.add_titled (build_data_page (), "data", _("Data & Recovery"));
             page_stack.add_titled (build_backup_page (), "backup", _("Backup & Sync"));
+            page_stack.add_titled (build_general_page (), "general", _("General"));
 
             /*************************************************/
             // Bar at the bottom
@@ -129,6 +128,49 @@ namespace Jots {
 
         private Gtk.Widget build_general_page () {
             var page = make_page_box ();
+
+            var restore_button = new Gtk.Button () {
+                label = _("Restore note"),
+                tooltip_markup = Jots.Util.markup_accel_tooltip (
+                    _("Restore the last deleted sticky note"),
+                    "Ctrl+R"
+                ),
+                action_name = Application.ACTION_PREFIX + Application.ACTION_RESTORE_LAST,
+                width_request = 96,
+            };
+
+            var restore_box = new Jots.SettingsBox (
+                _("Restore note"),
+                _("Restore the last deleted sticky note"),
+                restore_button
+            );
+            page.append (restore_box);
+
+            var import_jorts_btn = new Gtk.Button () {
+                label = _("Import Notes"),
+                tooltip_text = _("Scan and import notes from an existing Jorts installation"),
+                valign = Gtk.Align.CENTER,
+                width_request = 96
+            };
+            import_jorts_button = import_jorts_btn;
+
+            import_jorts_button_handler_id = import_jorts_btn.clicked.connect (() => {
+                var count = Application.note_manager.import_from_jorts ();
+                if (count > 0) {
+                    toast.title = _("Successfully imported %d notes from Jorts").printf (count);
+                    toast.send_notification ();
+                } else {
+                    toast.title = _("No Jorts notes found on system");
+                    toast.send_notification ();
+                }
+            });
+
+            var import_jorts_box = new Jots.SettingsBox (
+                _("Import from Jorts"),
+                _("Copy notes from an existing Jorts installation without modifying originals"),
+                import_jorts_btn
+            );
+            page.append (import_jorts_box);
 
 #if LIBPORTAL
             autostart_toggle = new Gtk.Switch ();
@@ -297,55 +339,6 @@ namespace Jots {
 
             custom_fonts_toggle.bind_property ("active", default_font_btn, "sensitive", GLib.BindingFlags.DEFAULT | GLib.BindingFlags.SYNC_CREATE);
             custom_fonts_toggle.bind_property ("active", mono_font_btn, "sensitive", GLib.BindingFlags.DEFAULT | GLib.BindingFlags.SYNC_CREATE);
-
-            return wrap_page (page);
-        }
-
-        private Gtk.Widget build_data_page () {
-            var page = make_page_box ();
-
-            var restore_button = new Gtk.Button () {
-                label = _("Restore note"),
-                tooltip_markup = Jots.Util.markup_accel_tooltip (
-                    _("Restore the last deleted sticky note"),
-                    "Ctrl+R"
-                ),
-                action_name = Application.ACTION_PREFIX + Application.ACTION_RESTORE_LAST,
-                width_request = 96,
-            };
-
-            var restore_box = new Jots.SettingsBox (
-                _("Restore note"),
-                _("Restore the last deleted sticky note"),
-                restore_button
-            );
-            page.append (restore_box);
-
-            var import_jorts_btn = new Gtk.Button () {
-                label = _("Import Notes"),
-                tooltip_text = _("Scan and import notes from an existing Jorts installation"),
-                valign = Gtk.Align.CENTER,
-                width_request = 96
-            };
-            import_jorts_button = import_jorts_btn;
-
-            import_jorts_button_handler_id = import_jorts_btn.clicked.connect (() => {
-                var count = Application.note_manager.import_from_jorts ();
-                if (count > 0) {
-                    toast.title = _("Successfully imported %d notes from Jorts").printf (count);
-                    toast.send_notification ();
-                } else {
-                    toast.title = _("No Jorts notes found on system");
-                    toast.send_notification ();
-                }
-            });
-
-            var import_jorts_box = new Jots.SettingsBox (
-                _("Import from Jorts"),
-                _("Copy notes from an existing Jorts installation without modifying originals"),
-                import_jorts_btn
-            );
-            page.append (import_jorts_box);
 
             return wrap_page (page);
         }

@@ -83,6 +83,27 @@ actionbar .themedbutton:focus {
     border-radius: 6px;
 }
 
+/* Keep GtkMenuButton's parent transparent so its child supplies one highlight. */
+actionbar menubutton.themedbutton,
+actionbar menubutton.themedbutton > button,
+actionbar menubutton.themedbutton:hover,
+actionbar menubutton.themedbutton:focus,
+actionbar menubutton.themedbutton:checked {
+    background: none;
+    background-image: none;
+    box-shadow: none;
+    border: none;
+    outline: none;
+    transition: none;
+}
+
+actionbar menubutton.themedbutton:hover > button,
+actionbar menubutton.themedbutton:focus > button,
+actionbar menubutton.themedbutton:checked > button {
+    background-color: alpha(currentColor, 0.2);
+    border-radius: 6px;
+}
+
 
 /* Obfuscate note when unfocused */
 window.scribbled.is-unfocused textview,

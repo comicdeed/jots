@@ -77,31 +77,36 @@ actionbar image {
     -gtk-icon-shadow: 0px 1px rgba(255,255,255,0.5);
 }
 
-actionbar .themedbutton:hover,
-actionbar .themedbutton:focus {
-    background-color: alpha(currentColor, 0.2);
-    border-radius: 6px;
-}
-
-/* Keep GtkMenuButton's parent transparent so its child supplies one highlight. */
+/* Base transparent, borderless buttons in actionbar */
+actionbar button.themedbutton,
 actionbar menubutton.themedbutton,
-actionbar menubutton.themedbutton > button,
-actionbar menubutton.themedbutton:hover,
-actionbar menubutton.themedbutton:focus,
-actionbar menubutton.themedbutton:checked {
-    background: none;
+actionbar menubutton.themedbutton > button {
+    background: transparent;
     background-image: none;
     box-shadow: none;
     border: none;
     outline: none;
     transition: none;
+    color: inherit;
 }
 
+/* Unified icon color inheritance across all actionbar button types */
+actionbar .themedbutton image,
+actionbar .themedbutton button image {
+    color: inherit;
+}
+
+/* Unified hover/focus/checked: borderless highlight using alpha(currentColor, 0.2) */
+actionbar button.themedbutton:hover,
+actionbar button.themedbutton:focus,
 actionbar menubutton.themedbutton:hover > button,
 actionbar menubutton.themedbutton:focus > button,
 actionbar menubutton.themedbutton:checked > button {
     background-color: alpha(currentColor, 0.2);
     border-radius: 6px;
+    box-shadow: none;
+    border: none;
+    outline: none;
 }
 
 

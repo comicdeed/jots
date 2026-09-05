@@ -159,8 +159,9 @@ window.themed .headertitle,
 window.themed editablelabel,
 window.themed editablelabel label,
 window.themed titlebar image,
-window.themed .themedbutton > button > box > image,
-window.themed .themedbutton > image,
+window.themed actionbar image,
+window.themed .themedbutton image,
+window.themed .themedbutton button image,
 window.themed {
     color: inherit;
 }
@@ -409,7 +410,9 @@ window.background.themed.dark.GRAPHITE {
 window.themed.dark:not(.ultra-dark) actionbar,
 window.themed.dark:not(.ultra-dark) actionbar button,
 window.themed.dark:not(.ultra-dark) actionbar .themedbutton,
-window.themed.dark:not(.ultra-dark) actionbar .themedbutton image {
+window.themed.dark:not(.ultra-dark) actionbar image,
+window.themed.dark:not(.ultra-dark) actionbar .themedbutton image,
+window.themed.dark:not(.ultra-dark) actionbar .themedbutton button image {
     color: inherit;
     -gtk-icon-shadow: none;
 }
@@ -421,8 +424,9 @@ window.themed.dark .headertitle,
 window.themed.dark editablelabel,
 window.themed.dark editablelabel label,
 window.themed.dark titlebar image,
-window.themed.dark .themedbutton > button > box > image,
-window.themed.dark .themedbutton > image {
+window.themed.dark actionbar image,
+window.themed.dark .themedbutton image,
+window.themed.dark .themedbutton button image {
     color: inherit;
 }
 

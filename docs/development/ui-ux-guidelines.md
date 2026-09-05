@@ -87,3 +87,18 @@ For any PR that changes UI behavior or information architecture:
 * **Header Dismissal**: When the title is in active edit mode, intercepting clicks on the empty header background via `headerbar.pick (x, y)` allows dismissing the edit mode cleanly (`editing = false`) without capturing or distorting standard titlebar double-click gestures.
 * **Pill-Shaped Title Focus**: Active title editing should use subtle rounded pill backgrounds (`border-radius: 6px`) rather than harsh rectangular bounding boxes, and override text shadows in dark mode (`text-shadow: none`) to keep title text crisp.
 
+### Action Bar & Chrome Normalization
+* **Relative Color Contrast (`alpha(currentColor, ...)` vs. hardcoded `rgba`)**: Interactive surface highlights (hover, focus, active editing pills) on tinted or themed windows must always use `alpha(currentColor, <alpha>)` instead of hardcoded `rgba(0,0,0,...)` or `rgba(255,255,255,...)`. Hardcoded white/black breaks when switching between pastel (light), vibrant (dark mode default with dark text), and ultra-dark (dark mode with light text). `currentColor` automatically adapts highlight contrast across all palettes.
+* **Border-Free Hover Highlights**: Action bar buttons (`Gtk.Button` and `Gtk.MenuButton`) must share a single CSS normalization baseline that strips default GTK4/Adwaita hover borders, box-shadows, and background gradients (`box-shadow: none; border: none; outline: none;`). Hover and focus states must strictly use borderless `alpha(currentColor, 0.2)` with `border-radius: 6px`.
+* **Shallow, Resilient CSS Selectors for Icon Color Inheritance**: Never use rigid DOM-path selectors (e.g. `.themedbutton > button > box > image`) for icon recoloring. Use robust class-scoped selectors (`actionbar image`, `.themedbutton image`, `.themedbutton button image`) ensuring runtime palette changes cascade immediately without requiring app restarts.
+
+---
+
+## 9. Component Modularization (The Multi-Element Factory Principle)
+
+When a container or view includes **two or more UI elements sharing the same visual role or interaction pattern** (e.g., action bar buttons, preference rows, dialog entries, menu items, or toolbar tools):
+
+1. **Centralized Factory Construction**: Instantiate them through a dedicated helper factory method (e.g. `create_action_button()`, `create_menu_button()`, `create_preference_row()`) or a reusable sub-widget component rather than manual, inline property configuration.
+2. **Single Source of Truth for Properties**: Common dimensions, framing (`has_frame = false`), style classes (`STYLE_THEMEDBUTTON`), accessibility labels, and accelerator tooltips must be configured in the factory to guarantee absolute visual and behavioral parity.
+3. **Encapsulate Hierarchy Asymmetries**: When elements wrap internal sub-hierarchies (e.g. `Gtk.MenuButton` containing a nested `Gtk.Button` vs. standalone `Gtk.Button`), encapsulate the structural details inside the factory and normalize their CSS selectors so external callers and themes treat them uniformly.
+

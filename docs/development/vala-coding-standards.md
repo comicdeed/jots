@@ -374,6 +374,46 @@ private bool on_key_pressed (uint keyval, ...) {
 
 ---
 
+### Rule VCS-35 · Multi-Element UI Modularization & Factory Patterns
+
+When a container or view includes **two or more UI elements sharing the same visual role or interaction pattern** (e.g. action buttons in an `ActionBar`, preference rows in a `PreferencesView`, or menu popover items):
+
+1. **Never Configure Elements Ad-Hoc Inline**: Inline instantiation creates configuration drift (e.g. mismatched `has_frame`, missing CSS classes, inconsistent sizing, or divergent tooltip accelerators).
+2. **Encapsulate in Dedicated Helper Factories**: Use private helper methods (e.g. `create_action_button()`, `create_menu_button()`, `create_preference_row()`) or standalone reusable sub-widgets.
+3. **Normalize Underlying Widget Differences**: If one item is a `Gtk.Button` and another is a `Gtk.MenuButton`, the factory and CSS layer must normalize their styling baselines and icon color inheritance together so external callers and themes treat them identically.
+
+❌ **Wrong — ad-hoc inline instantiation with diverging properties:**
+```vala
+var new_item = new Gtk.Button () { icon_name = "list-add-symbolic", has_frame = false };
+new_item.add_css_class ("themedbutton");
+
+var delete_item = new Gtk.Button () { icon_name = "user-trash-symbolic" }; // missing has_frame & CSS class!
+
+var menu_item = new Gtk.MenuButton () { icon_name = "open-menu-symbolic" }; // different container & styling!
+```
+
+✅ **Correct — centralized factory methods:**
+```vala
+var new_item = create_action_button (Application.ACTION_PREFIX + Application.ACTION_NEW, "list-add-symbolic", _("New sticky note"), "Ctrl+N");
+var delete_item = create_action_button (StickyNoteWindow.ACTION_PREFIX + StickyNoteWindow.ACTION_DELETE, "user-trash-symbolic", _("Delete sticky note"), "Ctrl+W");
+var menu_item = create_menu_button (popover, "open-menu-symbolic", _("Preferences for this sticky note"), "Ctrl+G", Gtk.ArrowType.UP);
+
+private Gtk.Button create_action_button (string action_name, string icon_name, string tooltip_text, string? accel) {
+    var btn = new Gtk.Button () {
+        action_name = action_name,
+        icon_name = icon_name,
+        width_request = ICON_SIZE,
+        height_request = ICON_SIZE,
+        has_frame = false,
+        tooltip_markup = Jots.Util.markup_accel_tooltip (tooltip_text, accel)
+    };
+    btn.add_css_class (STYLE_THEMEDBUTTON);
+    return btn;
+}
+```
+
+---
+
 ## 6. Error Handling & Robustness
 
 ### Rule VCS-50 · Use `throws` with an Explicit `errordomain`
@@ -499,6 +539,7 @@ Constants live in `src/Constants.vala`. Never hard-code limits inline.
 | **VCS-32** | Services must not cast to concrete window types |
 | **VCS-33** | Use `Object(...)` / `construct` for init; `dispose()` for unmanaged resources |
 | **VCS-34** | Guard custom `TextBuffer` programmatic mutations when view `editable == false` |
+| **VCS-35** | Standardize multi-element UI construction with centralized helper factories |
 | **VCS-40** | Clamp all user content to `MAX_*` constants at ingestion |
 | **VCS-41** | All file I/O routes through `Storage.vala` only |
 | **VCS-50** | `throws` with a named `errordomain` for fallible methods |

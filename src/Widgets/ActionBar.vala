@@ -22,63 +22,38 @@ public class Jots.ActionBar : Jots.Bin {
     const int ICON_SIZE = 32;
 
     construct {
-
         /* **** LEFT **** */
-        var new_item = new Gtk.Button () {
-            action_name = Application.ACTION_PREFIX + Application.ACTION_NEW,
-            icon_name = "list-add-symbolic",
-            width_request = ICON_SIZE,
-            height_request = ICON_SIZE,
-            tooltip_markup = Jots.Util.markup_accel_tooltip (
-                _("New sticky note"),
-                "Ctrl+N"
-            ),
-            has_frame = false
-        };
-        new_item.add_css_class (STYLE_THEMEDBUTTON);
+        var new_item = create_action_button (
+            Application.ACTION_PREFIX + Application.ACTION_NEW,
+            "list-add-symbolic",
+            _("New sticky note"),
+            "Ctrl+N"
+        );
 
-        var delete_item = new Gtk.Button () {
-            action_name = StickyNoteWindow.ACTION_PREFIX + StickyNoteWindow.ACTION_DELETE,
-            icon_name = "user-trash-symbolic",
-            width_request = ICON_SIZE,
-            height_request = ICON_SIZE,
-            tooltip_markup = Jots.Util.markup_accel_tooltip (
-                _("Delete sticky note"),
-                "Ctrl+W"
-            ),
-            has_frame = false
-        };
-        delete_item.add_css_class (STYLE_THEMEDBUTTON);
+        var delete_item = create_action_button (
+            StickyNoteWindow.ACTION_PREFIX + StickyNoteWindow.ACTION_DELETE,
+            "user-trash-symbolic",
+            _("Delete sticky note"),
+            "Ctrl+W"
+        );
 
         /* **** RIGHT **** */
         emojichooser_popover = new Gtk.EmojiChooser ();
-        emoji_button = new Gtk.MenuButton () {
-            popover = emojichooser_popover,
-            icon_name = "face-smile-symbolic",
-            width_request = ICON_SIZE,
-            height_request = ICON_SIZE,
-            tooltip_markup = Jots.Util.markup_accel_tooltip (
-                _("Insert emoji"),
-                "Ctrl+."
-            ),
-            has_frame = false
-        };
-        emoji_button.add_css_class (STYLE_THEMEDBUTTON);
+        emoji_button = create_menu_button (
+            emojichooser_popover,
+            "face-smile-symbolic",
+            _("Insert emoji"),
+            "Ctrl+."
+        );
 
         popover = new Jots.Popover ();
-        menu_button = new Gtk.MenuButton () {
-            popover = popover,
-            icon_name = "open-menu-symbolic",
-            width_request = ICON_SIZE,
-            height_request = ICON_SIZE,
-            tooltip_markup = Jots.Util.markup_accel_tooltip (
-                _("Preferences for this sticky note"),
-                "Ctrl+G"
-            ),
-            has_frame = false,
-            direction = Gtk.ArrowType.UP
-        };
-        menu_button.add_css_class (STYLE_THEMEDBUTTON);
+        menu_button = create_menu_button (
+            popover,
+            "open-menu-symbolic",
+            _("Preferences for this sticky note"),
+            "Ctrl+G",
+            Gtk.ArrowType.UP
+        );
 
         /* **** Widget **** */
         actionbar = new Gtk.ActionBar () {
@@ -95,6 +70,33 @@ public class Jots.ActionBar : Jots.Bin {
         };
 
         child = handle;
+    }
+
+    private Gtk.Button create_action_button (string action_name, string icon_name, string tooltip_text, string? accel) {
+        var btn = new Gtk.Button () {
+            action_name = action_name,
+            icon_name = icon_name,
+            width_request = ICON_SIZE,
+            height_request = ICON_SIZE,
+            has_frame = false,
+            tooltip_markup = Jots.Util.markup_accel_tooltip (tooltip_text, accel)
+        };
+        btn.add_css_class (STYLE_THEMEDBUTTON);
+        return btn;
+    }
+
+    private Gtk.MenuButton create_menu_button (Gtk.Popover popover, string icon_name, string tooltip_text, string? accel, Gtk.ArrowType direction = Gtk.ArrowType.DOWN) {
+        var btn = new Gtk.MenuButton () {
+            popover = popover,
+            icon_name = icon_name,
+            width_request = ICON_SIZE,
+            height_request = ICON_SIZE,
+            has_frame = false,
+            direction = direction,
+            tooltip_markup = Jots.Util.markup_accel_tooltip (tooltip_text, accel)
+        };
+        btn.add_css_class (STYLE_THEMEDBUTTON);
+        return btn;
     }
 
     ~ActionBar () {

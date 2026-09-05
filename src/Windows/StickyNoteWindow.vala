@@ -289,11 +289,27 @@ public class Jots.StickyNoteWindow : Gtk.ApplicationWindow {
     }
 
     public void sync_dark_mode () {
-        if (Application.gtk_settings.gtk_application_prefer_dark_theme) {
+        bool dark_mode = Application.gtk_settings.gtk_application_prefer_dark_theme;
+        bool ultra_dark = false;
+
+        if (dark_mode) {
+            ultra_dark = DarkModeNoteStyle.from_setting_string (
+                Application.settings.get_string (KEY_DARK_NOTE_STYLE)
+            ) == DarkModeNoteStyle.ULTRA_DARK;
+        }
+
+        if (dark_mode) {
             add_css_class ("dark");
         } else {
             remove_css_class ("dark");
         }
+
+        if (ultra_dark) {
+            add_css_class ("ultra-dark");
+        } else {
+            remove_css_class ("ultra-dark");
+        }
+
         queue_draw ();
     }
 

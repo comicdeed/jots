@@ -174,6 +174,44 @@ namespace Jots {
             );
             page.append (hidebar_box);
 
+            var dark_note_style_dropdown = new Gtk.DropDown.from_strings ({
+                _("Vibrant"),
+                _("Ultra Dark")
+            });
+            dark_note_style_dropdown.halign = Gtk.Align.END;
+            dark_note_style_dropdown.valign = Gtk.Align.CENTER;
+
+            var current_dark_note_style = DarkModeNoteStyle.from_setting_string (
+                Application.settings.get_string (KEY_DARK_NOTE_STYLE)
+            );
+            dark_note_style_dropdown.selected = (current_dark_note_style == DarkModeNoteStyle.ULTRA_DARK) ? 1 : 0;
+
+            dark_note_style_dropdown.notify["selected"].connect (() => {
+                var active_style = (dark_note_style_dropdown.selected == 1)
+                    ? DarkModeNoteStyle.ULTRA_DARK
+                    : DarkModeNoteStyle.VIBRANT;
+                Application.settings.set_string (KEY_DARK_NOTE_STYLE, active_style.to_setting_string ());
+            });
+
+            Application.settings.changed[KEY_DARK_NOTE_STYLE].connect (() => {
+                var next_style = DarkModeNoteStyle.from_setting_string (
+                    Application.settings.get_string (KEY_DARK_NOTE_STYLE)
+                );
+                dark_note_style_dropdown.selected = (next_style == DarkModeNoteStyle.ULTRA_DARK) ? 1 : 0;
+            });
+
+            dark_note_style_dropdown.sensitive = Application.gtk_settings.gtk_application_prefer_dark_theme;
+            Application.gtk_settings.notify["gtk-application-prefer-dark-theme"].connect (() => {
+                dark_note_style_dropdown.sensitive = Application.gtk_settings.gtk_application_prefer_dark_theme;
+            });
+
+            var dark_note_style_box = new Jots.SettingsBox (
+                _("Dark mode note style"),
+                _("Choose the default color treatment for notes when the app uses a dark theme"),
+                dark_note_style_dropdown
+            );
+            page.append (dark_note_style_box);
+
             var custom_fonts_toggle = new Gtk.Switch ();
             Application.settings.bind (KEY_CUSTOM_FONTS,
                 custom_fonts_toggle, "active",

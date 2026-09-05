@@ -115,6 +115,8 @@ Jots includes 12 pastel colors that automatically adjust contrast for system Lig
 
 To change a note's theme, click the **Menu button** in the bottom-right corner (or press **`Ctrl + G`**) and select a color. New notes pick a non-repeating random color to keep your desktop vibrant.
 
+When the desktop uses a dark theme, Jots uses the vibrant note palette by default. To reduce brightness, open **Preferences** > **Appearance** and set **Dark mode note style** to **Ultra Dark**. Jots always uses the pastel palette when the desktop uses a light theme.
+
 ### Font customization
 Open **Preferences $\rightarrow$ Appearance** to customize typography across all notes:
 * **General font**: Select your preferred system font and size (e.g. *Inter*, *Cantarell*, *Ubuntu*, *Roboto*) for regular notes.

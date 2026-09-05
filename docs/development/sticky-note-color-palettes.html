@@ -25,7 +25,7 @@
         }
 
         .sticky-note {
-            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.5s ease, color 0.5s ease;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.5s ease, color 0.5s ease, opacity 0.3s ease;
             position: relative;
         }
         
@@ -35,6 +35,7 @@
             z-index: 10;
         }
         
+        /* Simulating a slight curl/fold at the bottom right corner */
         .sticky-note::after {
             content: "";
             position: absolute;
@@ -48,185 +49,281 @@
             transition: opacity 0.5s ease;
         }
 
-        .dark .sticky-note::after {
+        .dark-canvas .sticky-note::after {
             background: linear-gradient(to top left, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.0) 50%);
         }
 
-        .toggle-checkbox:checked {
-            right: 0;
-            border-color: #68D391;
-        }
-        .toggle-checkbox:checked + .toggle-label {
-            background-color: #68D391;
+        /* Toggle disabled state transition */
+        .control-disabled {
+            opacity: 0.4;
+            pointer-events: none;
+            filter: grayscale(100%);
         }
     </style>
 </head>
-<body class="bg-slate-100 text-slate-900 min-h-screen p-6 md:p-12" id="body">
+<body class="bg-slate-900 text-slate-100 min-h-screen p-6 md:p-12 transition-colors duration-500 dark-canvas" id="body">
     
-    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center mb-10 gap-6">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
         <div>
             <h1 class="text-3xl md:text-4xl font-bold tracking-tight mb-2 handlee-font">Sticky Note Palettes</h1>
-            <p class="text-slate-500 max-w-lg" id="subtitle">Explore 12 vibrant themes optimized for legibility and visual comfort.</p>
+            <p class="text-slate-400 max-w-lg transition-colors duration-500" id="subtitle">Testing "Just Works" mapping with an Ultra Dark override.</p>
         </div>
         
-        <div class="flex items-center gap-4 bg-white px-6 py-3 rounded-full shadow-sm border border-slate-200" id="toggle-container">
-            <span class="text-sm font-medium text-slate-600" id="light-label">Light</span>
-            <div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
-                <input type="checkbox" name="toggle" id="mode-toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer z-10 transition-transform duration-300 ease-in-out transform translate-x-0"/>
-                <label for="mode-toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-slate-300 cursor-pointer transition-colors duration-300 ease-in-out"></label>
+        <!-- App Logic Control Panels -->
+        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-8">
+            
+            <!-- 1. System App UI Theme -->
+            <div class="flex flex-col items-start sm:items-end gap-1.5">
+                <span class="text-[10px] uppercase tracking-widest font-bold opacity-60 ml-1">App UI Theme</span>
+                <div class="flex items-center bg-slate-800 p-1.5 rounded-xl shadow-inner border border-slate-700 transition-colors duration-500 toggle-container">
+                    <button class="canvas-btn px-5 py-1.5 rounded-lg text-sm font-semibold transition-all duration-300" data-bg="light">Light UI</button>
+                    <button class="canvas-btn px-5 py-1.5 rounded-lg text-sm font-semibold transition-all duration-300" data-bg="dark">Dark UI</button>
+                </div>
             </div>
-            <span class="text-sm font-medium text-slate-400" id="dark-label">Dark</span>
+
+            <!-- 2. Dark Mode Note Preference -->
+            <div class="flex flex-col items-start sm:items-end gap-1.5 transition-all duration-300" id="pref-wrapper">
+                <div class="flex justify-between w-full items-center">
+                     <span class="text-[10px] uppercase tracking-widest font-bold opacity-60 ml-1">Dark Mode Note Style</span>
+                     <span class="text-[10px] font-medium text-amber-500 hidden" id="light-hint">(Disabled in Light UI)</span>
+                </div>
+                <div class="flex items-center bg-slate-800 p-1.5 rounded-xl shadow-inner border border-slate-700 transition-colors duration-500 toggle-container" id="pref-container">
+                    <button class="palette-btn px-4 py-1.5 rounded-lg text-sm font-semibold transition-all duration-300 relative" data-mode="vibrant">
+                        Vibrant (Default)
+                    </button>
+                    <button class="palette-btn px-4 py-1.5 rounded-lg text-sm font-semibold transition-all duration-300" data-mode="ultradark">
+                        Ultra Dark
+                    </button>
+                </div>
+            </div>
+
         </div>
     </div>
 
-    <div id="matrix-container" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 max-w-6xl mx-auto mb-16">
+    <div id="matrix-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-6xl mx-auto mb-16">
         <!-- Sticky notes will be injected here via JavaScript -->
     </div>
 
-    <div class="max-w-6xl mx-auto border-t border-slate-300 dark:border-slate-700 pt-10 pb-20">
-        <h2 class="text-xl font-bold mb-6 text-center text-slate-500 dark:text-slate-400">Picker UI Simulation</h2>
-        <div id="picker-row" class="flex flex-wrap justify-center gap-3 md:gap-4 p-6 bg-slate-200 dark:bg-slate-800 rounded-2xl shadow-inner max-w-max mx-auto">
+    <div class="max-w-6xl mx-auto border-t border-slate-700 pt-10 pb-20 transition-colors duration-500" id="picker-section">
+        <h2 class="text-xl font-bold mb-6 text-center text-slate-400 transition-colors duration-500" id="picker-title">Picker UI Simulation</h2>
+        <div id="picker-row" class="flex flex-wrap justify-center gap-3 md:gap-4 p-6 bg-slate-800 rounded-2xl shadow-inner max-w-max mx-auto transition-colors duration-500">
             <!-- Picker dots will be injected here via JavaScript -->
         </div>
     </div>
 
     <script>
-        // Data array containing 11 original palettes + 1 new (Graphite)
-        // Updated for WCAG AAA Compliance (7.0:1 Contrast Ratio minimum)
-        // Dark modes tweaked for stronger color identifiability based on their names.
-        // Picker color added for UI representation.
+        // Data array containing 12 palettes
+        // Mode 1: lightBg (Pastels)
+        // Mode 2: mutedBg (Vibrant Rich Mid-tones)
+        // Mode 3: darkBg (Ultra Dark)
         const palettes = [
-            { name: "Banana",       lightBg: "#FFF59D", lightText: "#3A3300", darkBg: "#423700", darkText: "#FFFBE6", picker: "#FFB300" },
-            { name: "Tangerine",    lightBg: "#FFCC80", lightText: "#4A1A00", darkBg: "#5C2800", darkText: "#FFF1E6", picker: "#FF6D00" },
-            { name: "Peach",        lightBg: "#FFCCBC", lightText: "#421202", darkBg: "#662D29", darkText: "#FFEDED", picker: "#FF5252" },
-            { name: "Watermelon",   lightBg: "#FFCDD2", lightText: "#470505", darkBg: "#5E121E", darkText: "#FFEDF0", picker: "#D50000" },
-            { name: "Bubblegum",    lightBg: "#F8BBD0", lightText: "#36041F", darkBg: "#5C153E", darkText: "#FDE6F2", picker: "#F50057" },
-            { name: "Lavender",     lightBg: "#E1BEE7", lightText: "#1F0442", darkBg: "#3D1B63", darkText: "#F2E6FC", picker: "#AA00FF" },
-            { name: "Ocean",        lightBg: "#BBDEFB", lightText: "#031B40", darkBg: "#0D3057", darkText: "#E6F0FA", picker: "#2979FF" },
-            { name: "Sea Glass",    lightBg: "#B2DFDB", lightText: "#00211B", darkBg: "#093D38", darkText: "#E6F9F6", picker: "#00BFA5" },
-            { name: "Mint",         lightBg: "#C8E6C9", lightText: "#08290D", darkBg: "#0E421C", darkText: "#E8F7EC", picker: "#00C853" },
-            { name: "Pear",         lightBg: "#F0F4C3", lightText: "#142B09", darkBg: "#38450C", darkText: "#F4FCE6", picker: "#AEEA00" },
-            { name: "Pebble",       lightBg: "#F5F5F5", lightText: "#292929", darkBg: "#292929", darkText: "#F2F2F2", picker: "#9E9E9E" },
-            { name: "Graphite",     lightBg: "#B0BEC5", lightText: "#10171A", darkBg: "#151E24", darkText: "#E3EAEF", picker: "#546E7A" }
+            { name: "Banana",       lightBg: "#FFF59D", lightText: "#3A3300", mutedBg: "#F0B429", mutedText: "#2E1E00", darkBg: "#423700", darkText: "#FFFBE6", picker: "#FFB300" },
+            { name: "Tangerine",    lightBg: "#FFCC80", lightText: "#4A1A00", mutedBg: "#ED7D31", mutedText: "#330C00", darkBg: "#5C2800", darkText: "#FFF1E6", picker: "#FF6D00" },
+            { name: "Peach",        lightBg: "#FFCCBC", lightText: "#421202", mutedBg: "#E66057", mutedText: "#360502", darkBg: "#662D29", darkText: "#FFEDED", picker: "#FF5252" },
+            { name: "Watermelon",   lightBg: "#FFCDD2", lightText: "#470505", mutedBg: "#D14354", mutedText: "#360009", darkBg: "#5E121E", darkText: "#FFEDF0", picker: "#D50000" },
+            { name: "Bubblegum",    lightBg: "#F8BBD0", lightText: "#36041F", mutedBg: "#D15E93", mutedText: "#360017", darkBg: "#5C153E", darkText: "#FDE6F2", picker: "#F50057" },
+            { name: "Lavender",     lightBg: "#E1BEE7", lightText: "#1F0442", mutedBg: "#9973C2", mutedText: "#25054A", darkBg: "#3D1B63", darkText: "#F2E6FC", picker: "#AA00FF" },
+            { name: "Ocean",        lightBg: "#BBDEFB", lightText: "#031B40", mutedBg: "#5C9DDE", mutedText: "#031B38", darkBg: "#0D3057", darkText: "#E6F0FA", picker: "#2979FF" },
+            { name: "Sea Glass",    lightBg: "#B2DFDB", lightText: "#00211B", mutedBg: "#3BA89B", mutedText: "#002B25", darkBg: "#093D38", darkText: "#E6F9F6", picker: "#00BFA5" },
+            { name: "Mint",         lightBg: "#C8E6C9", lightText: "#08290D", mutedBg: "#2BB063", mutedText: "#002B0F", darkBg: "#0E421C", darkText: "#E8F7EC", picker: "#00C853" },
+            { name: "Pear",         lightBg: "#F0F4C3", lightText: "#142B09", mutedBg: "#B8C74E", mutedText: "#1F2900", darkBg: "#38450C", darkText: "#F4FCE6", picker: "#AEEA00" },
+            { name: "Pebble",       lightBg: "#F5F5F5", lightText: "#292929", mutedBg: "#9E9E9E", mutedText: "#141414", darkBg: "#292929", darkText: "#F2F2F2", picker: "#9E9E9E" },
+            { name: "Graphite",     lightBg: "#B0BEC5", lightText: "#10171A", mutedBg: "#6F8A99", mutedText: "#06151F", darkBg: "#151E24", darkText: "#E3EAEF", picker: "#546E7A" }
         ];
 
-        // Assigning sample text separately to keep the object clean
         palettes.forEach(p => p.sample = "Sample note text ensuring AAA contrast legibility...");
 
+        // State Variables (Defaults as per the new hybrid approach)
+        let currentAppMode = 'dark'; // 'light' or 'dark'
+        let currentDarkPref = 'vibrant'; // 'vibrant' or 'ultradark'
+
+        // DOM Elements
         const container = document.getElementById('matrix-container');
         const pickerRow = document.getElementById('picker-row');
-        const toggle = document.getElementById('mode-toggle');
         const body = document.getElementById('body');
-        const toggleContainer = document.getElementById('toggle-container');
-        const lightLabel = document.getElementById('light-label');
-        const darkLabel = document.getElementById('dark-label');
+        const toggleContainers = document.querySelectorAll('.toggle-container');
         const subtitle = document.getElementById('subtitle');
+        const canvasButtons = document.querySelectorAll('.canvas-btn');
+        const paletteButtons = document.querySelectorAll('.palette-btn');
+        const pickerSection = document.getElementById('picker-section');
+        const pickerTitle = document.getElementById('picker-title');
+        
+        const prefWrapper = document.getElementById('pref-wrapper');
+        const lightHint = document.getElementById('light-hint');
 
-        function renderNotes(isDark) {
-            container.innerHTML = '';
+        function renderNotes() {
+            // Apply a quick fade out/in effect for the notes
+            container.style.opacity = '0.5';
             
-            palettes.forEach(palette => {
-                const bg = isDark ? palette.darkBg : palette.lightBg;
-                const text = isDark ? palette.darkText : palette.lightText;
+            setTimeout(() => {
+                container.innerHTML = '';
                 
-                // Construct the HTML for an individual sticky note
-                const noteEl = document.createElement('div');
-                noteEl.className = 'sticky-note handlee-font rounded-lg p-6 shadow-md flex flex-col justify-between aspect-square w-full';
-                noteEl.style.backgroundColor = bg;
-                noteEl.style.color = text;
+                palettes.forEach(palette => {
+                    let bg, text;
+                    
+                    // Logic Core: The "Just Works" mapping
+                    if (currentAppMode === 'light') {
+                        // Light Mode ALWAYS uses Pastels
+                        bg = palette.lightBg;
+                        text = palette.lightText;
+                    } else {
+                        // Dark Mode checks user preference
+                        if (currentDarkPref === 'ultradark') {
+                            bg = palette.darkBg;
+                            text = palette.darkText;
+                        } else {
+                            bg = palette.mutedBg;
+                            text = palette.mutedText;
+                        }
+                    }
+                    
+                    const noteEl = document.createElement('div');
+                    noteEl.className = 'sticky-note handlee-font rounded-lg p-6 shadow-md flex flex-col justify-between min-h-[16rem] w-full';
+                    noteEl.style.backgroundColor = bg;
+                    noteEl.style.color = text;
+                    
+                    noteEl.innerHTML = `
+                        <div class="relative flex flex-col flex-grow">
+                            <!-- Small picker dot in top right -->
+                            <div class="absolute -top-2 -right-2 w-4 h-4 rounded-full shadow-sm border border-current opacity-70" style="background-color: ${palette.picker};"></div>
+                            
+                            <h3 class="text-xl md:text-2xl font-bold mb-3 pr-4">${palette.name}</h3>
+                            <p class="text-lg md:text-xl leading-snug opacity-90">${palette.sample}</p>
+                        </div>
+                        <div class="mt-6 pt-3 border-t border-current opacity-30 shrink-0">
+                            <p class="text-xs font-mono font-medium tracking-wide flex justify-between">
+                                <span>BG: ${bg}</span>
+                                <span>TX: ${text}</span>
+                            </p>
+                        </div>
+                    `;
+                    
+                    container.appendChild(noteEl);
+                });
                 
-                noteEl.innerHTML = `
-                    <div class="relative h-full flex flex-col">
-                        <!-- Small picker dot in top right -->
-                        <div class="absolute -top-2 -right-2 w-4 h-4 rounded-full shadow-sm border border-current opacity-70" style="background-color: ${palette.picker};"></div>
-                        
-                        <h3 class="text-xl md:text-2xl font-bold mb-3 pr-4">${palette.name}</h3>
-                        <p class="text-lg md:text-xl leading-snug opacity-90 flex-grow">${palette.sample}</p>
-                    </div>
-                    <div class="mt-4 pt-3 border-t border-current opacity-30">
-                        <p class="text-sm font-medium tracking-wide flex justify-between">
-                            <span>BG: ${bg}</span>
-                            <span>TX: ${text}</span>
-                        </p>
-                    </div>
-                `;
-                
-                container.appendChild(noteEl);
-            });
+                container.style.opacity = '1';
+            }, 150);
         }
 
         function renderPickerRow() {
             pickerRow.innerHTML = '';
             palettes.forEach(palette => {
                 const dot = document.createElement('div');
-                // approx 20px radius = 40px width/height. Tailwind w-10 h-10 is 40px.
                 dot.className = 'w-10 h-10 rounded-full cursor-pointer shadow-sm border-2 border-transparent hover:scale-110 transition-transform duration-200';
                 dot.style.backgroundColor = palette.picker;
                 dot.title = palette.name;
                 
-                // Add a subtle border specifically for the lighter Pebble color to ensure it shows up on light backgrounds
                 if (palette.name === "Pebble") {
-                     dot.classList.add('border-slate-300', 'dark:border-transparent');
+                     dot.classList.add('border-slate-400', 'dark:border-transparent');
                 }
 
                 pickerRow.appendChild(dot);
             });
         }
 
-        function updateUI(isDark) {
-            // Update Page Theme
-            if (isDark) {
-                body.classList.remove('bg-slate-100', 'text-slate-900');
-                body.classList.add('bg-slate-900', 'text-slate-100', 'dark');
-                
-                // Update Toggle Container styling
-                toggleContainer.classList.remove('bg-white', 'border-slate-200');
-                toggleContainer.classList.add('bg-slate-800', 'border-slate-700');
-                
-                // Update Labels
-                lightLabel.classList.remove('text-slate-800');
-                lightLabel.classList.add('text-slate-500');
-                darkLabel.classList.remove('text-slate-400');
-                darkLabel.classList.add('text-slate-200');
-                
-                subtitle.classList.remove('text-slate-500');
-                subtitle.classList.add('text-slate-400');
-
-                // Animate toggle switch
-                toggle.style.transform = 'translateX(100%)';
-            } else {
-                body.classList.add('bg-slate-100', 'text-slate-900');
-                body.classList.remove('bg-slate-900', 'text-slate-100', 'dark');
-                
-                // Update Toggle Container styling
-                toggleContainer.classList.add('bg-white', 'border-slate-200');
-                toggleContainer.classList.remove('bg-slate-800', 'border-slate-700');
-                
-                // Update Labels
-                lightLabel.classList.add('text-slate-800');
-                lightLabel.classList.remove('text-slate-500');
-                darkLabel.classList.add('text-slate-400');
-                darkLabel.classList.remove('text-slate-200');
-                
-                subtitle.classList.add('text-slate-500');
-                subtitle.classList.remove('text-slate-400');
-
-                // Animate toggle switch
-                toggle.style.transform = 'translateX(0)';
-            }
+        function applyAppTheme() {
+            // Reset Base Classes
+            body.classList.remove('bg-slate-100', 'text-slate-900', 'bg-slate-900', 'text-slate-100', 'dark-canvas');
+            subtitle.classList.remove('text-slate-500', 'text-slate-400');
+            pickerSection.classList.remove('border-slate-300', 'border-slate-700');
+            pickerRow.classList.remove('bg-slate-200', 'bg-slate-800');
+            pickerTitle.classList.remove('text-slate-500', 'text-slate-400');
             
-            // Re-render notes with new colors
-            renderNotes(isDark);
+            toggleContainers.forEach(container => {
+                container.classList.remove('bg-slate-200', 'border-slate-300', 'bg-slate-800', 'border-slate-700');
+            });
+
+            if (currentAppMode === 'dark') {
+                // Apply Dark UI styling
+                body.classList.add('bg-slate-900', 'text-slate-100', 'dark-canvas');
+                subtitle.classList.add('text-slate-400');
+                pickerSection.classList.add('border-slate-700');
+                pickerRow.classList.add('bg-slate-800');
+                pickerTitle.classList.add('text-slate-400');
+                
+                toggleContainers.forEach(container => {
+                    container.classList.add('bg-slate-800', 'border-slate-700');
+                });
+                
+                // Enable the secondary preference toggle
+                prefWrapper.classList.remove('control-disabled');
+                lightHint.classList.add('hidden');
+                
+            } else {
+                // Apply Light UI styling
+                body.classList.add('bg-slate-100', 'text-slate-900');
+                subtitle.classList.add('text-slate-500');
+                pickerSection.classList.add('border-slate-300');
+                pickerRow.classList.add('bg-slate-200');
+                pickerTitle.classList.add('text-slate-500');
+                
+                toggleContainers.forEach(container => {
+                    container.classList.add('bg-slate-200', 'border-slate-300');
+                });
+                
+                // Disable the secondary preference toggle (Pastels are forced in Light Mode)
+                prefWrapper.classList.add('control-disabled');
+                lightHint.classList.remove('hidden');
+            }
+
+            // Sync toggle buttons styling
+            syncButtonsStyles(canvasButtons, currentAppMode);
+            syncButtonsStyles(paletteButtons, currentDarkPref);
         }
 
-        // Event Listener for the toggle switch
-        toggle.addEventListener('change', (e) => {
-            updateUI(e.target.checked);
+        function syncButtonsStyles(buttonsNodeList, activeValue) {
+            buttonsNodeList.forEach(btn => {
+                const btnValue = btn.dataset.bg || btn.dataset.mode;
+                
+                // Clear previous classes
+                btn.className = 'px-4 py-1.5 rounded-lg text-sm font-semibold transition-all duration-300 relative';
+                if (btn.classList.contains('canvas-btn')) btn.classList.add('canvas-btn');
+                if (btn.classList.contains('palette-btn')) btn.classList.add('palette-btn');
+                
+                // Keep wider padding for main canvas buttons
+                if (btn.dataset.bg) btn.classList.add('px-5');
+
+                if (btnValue === activeValue) {
+                    // Active State
+                    if (currentAppMode === 'dark') {
+                        btn.classList.add('bg-slate-700', 'text-white', 'shadow-sm', 'ring-1', 'ring-white/10');
+                    } else {
+                        btn.classList.add('bg-white', 'text-slate-800', 'shadow-sm', 'ring-1', 'ring-slate-900/5');
+                    }
+                } else {
+                    // Inactive State
+                    if (currentAppMode === 'dark') {
+                        btn.classList.add('bg-transparent', 'text-slate-400', 'hover:text-slate-200');
+                    } else {
+                        btn.classList.add('bg-transparent', 'text-slate-500', 'hover:text-slate-800');
+                    }
+                }
+            });
+        }
+
+        // Event Listeners
+        canvasButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                if (currentAppMode === e.currentTarget.dataset.bg) return; // Prevent unnecessary renders
+                currentAppMode = e.currentTarget.dataset.bg;
+                applyAppTheme();
+                renderNotes();
+            });
         });
 
-        // Initial Render
+        paletteButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                if (currentDarkPref === e.currentTarget.dataset.mode) return;
+                currentDarkPref = e.currentTarget.dataset.mode;
+                applyAppTheme(); 
+                renderNotes(); 
+            });
+        });
+
+        // Initialize Application
         renderPickerRow();
-        updateUI(false);
+        applyAppTheme(); // Default is Dark Mode
+        renderNotes();   // Default is Vibrant
 
     </script>
 </body>

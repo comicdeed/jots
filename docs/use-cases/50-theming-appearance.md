@@ -56,6 +56,18 @@ Theme color mapping, random color assignment, and dark mode stylesheet overrides
   * Synchronizes `.dark` CSS class on `StickyNoteWindow` instances.
   * Adjusts background and text CSS variables to dark palette values.
 
+### `UC-50.20.20` Dark mode note palette preference
+* **Trigger**: User changes **Dark mode note style** in **Preferences** > **Appearance**.
+* **Pre-conditions**: The `dark-note-style` GSettings key contains `vibrant` or `ultra-dark`.
+* **Post-conditions**:
+  * Light app UI always uses the pastel note palette.
+  * Dark app UI uses the vibrant palette when the setting is `vibrant`.
+  * Dark app UI uses the Ultra Dark palette when the setting is `ultra-dark`.
+  * Changing the setting updates all open note windows without reopening them.
+* **Boundary cases**:
+  * Missing, invalid, or legacy setting values fall back to `vibrant`.
+  * The preference control is disabled while the app UI uses a light theme.
+
 ### `UC-50.20.30` Environment theme overrides
 * **Trigger**: Application starts with `FORCE_DARK=1` or `FORCE_LIGHT=1` set.
 * **Pre-conditions**: Process environment inspected at startup.

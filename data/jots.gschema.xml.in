@@ -19,6 +19,11 @@
 			<summary>Auto-hide actionbar</summary>
 			<description>Whether to auto-hide the actionbar on unfocused sticky notes</description>
 		</key>
+		<key name="dark-note-style" type="s">
+			<default>'vibrant'</default>
+			<summary>Dark mode note palette style</summary>
+			<description>Selects the default dark-mode note palette: vibrant or ultra-dark.</description>
+		</key>
 		<key name="autostart" type="b">
 			<default>false</default>
 			<summary>Autostart the app</summary>

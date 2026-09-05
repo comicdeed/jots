@@ -256,76 +256,162 @@ window.background.themed.dark {
     color: #f0f0f4;
 }
 
-window.themed.dark.BANANA,
-window.background.themed.dark.BANANA {
+window.themed.dark.ultra-dark,
+window.background.themed.dark.ultra-dark {
+    background-color: #101214;
+    color: #f5f7fa;
+}
+
+window.themed.dark.ultra-dark.BANANA,
+window.background.themed.dark.ultra-dark.BANANA {
     background-color: #423700;
     color: #FFFBE6;
 }
 
-window.themed.dark.TANGERINE,
-window.background.themed.dark.TANGERINE {
+window.themed.dark.ultra-dark.TANGERINE,
+window.background.themed.dark.ultra-dark.TANGERINE {
     background-color: #5C2800;
     color: #FFF1E6;
 }
 
-window.themed.dark.PEACH,
-window.background.themed.dark.PEACH {
+window.themed.dark.ultra-dark.PEACH,
+window.background.themed.dark.ultra-dark.PEACH {
     background-color: #662D29;
     color: #FFEDED;
 }
 
-window.themed.dark.WATERMELON,
-window.background.themed.dark.WATERMELON {
+window.themed.dark.ultra-dark.WATERMELON,
+window.background.themed.dark.ultra-dark.WATERMELON {
     background-color: #5E121E;
     color: #FFEDF0;
 }
 
-window.themed.dark.BUBBLEGUM,
-window.background.themed.dark.BUBBLEGUM {
+window.themed.dark.ultra-dark.BUBBLEGUM,
+window.background.themed.dark.ultra-dark.BUBBLEGUM {
     background-color: #5C153E;
     color: #FDE6F2;
 }
 
-window.themed.dark.LAVENDER,
-window.background.themed.dark.LAVENDER {
+window.themed.dark.ultra-dark.LAVENDER,
+window.background.themed.dark.ultra-dark.LAVENDER {
     background-color: #3D1B63;
     color: #F2E6FC;
 }
 
-window.themed.dark.OCEAN,
-window.background.themed.dark.OCEAN {
+window.themed.dark.ultra-dark.OCEAN,
+window.background.themed.dark.ultra-dark.OCEAN {
     background-color: #0D3057;
     color: #E6F0FA;
 }
 
-window.themed.dark.SEA_GLASS,
-window.background.themed.dark.SEA_GLASS {
+window.themed.dark.ultra-dark.SEA_GLASS,
+window.background.themed.dark.ultra-dark.SEA_GLASS {
     background-color: #093D38;
     color: #E6F9F6;
 }
 
-window.themed.dark.MINT,
-window.background.themed.dark.MINT {
+window.themed.dark.ultra-dark.MINT,
+window.background.themed.dark.ultra-dark.MINT {
     background-color: #0E421C;
     color: #E8F7EC;
 }
 
-window.themed.dark.PEAR,
-window.background.themed.dark.PEAR {
+window.themed.dark.ultra-dark.PEAR,
+window.background.themed.dark.ultra-dark.PEAR {
     background-color: #38450C;
     color: #F4FCE6;
 }
 
-window.themed.dark.PEBBLE,
-window.background.themed.dark.PEBBLE {
+window.themed.dark.ultra-dark.PEBBLE,
+window.background.themed.dark.ultra-dark.PEBBLE {
     background-color: #292929;
     color: #F2F2F2;
 }
 
-window.themed.dark.GRAPHITE,
-window.background.themed.dark.GRAPHITE {
+window.themed.dark.ultra-dark.GRAPHITE,
+window.background.themed.dark.ultra-dark.GRAPHITE {
     background-color: #151E24;
     color: #E3EAEF;
+}
+
+window.themed.dark.BANANA,
+window.background.themed.dark.BANANA {
+    background-color: #F0B429;
+    color: #2E1E00;
+}
+
+window.themed.dark.TANGERINE,
+window.background.themed.dark.TANGERINE {
+    background-color: #ED7D31;
+    color: #330C00;
+}
+
+window.themed.dark.PEACH,
+window.background.themed.dark.PEACH {
+    background-color: #E66057;
+    color: #360502;
+}
+
+window.themed.dark.WATERMELON,
+window.background.themed.dark.WATERMELON {
+    background-color: #D14354;
+    color: #360009;
+}
+
+window.themed.dark.BUBBLEGUM,
+window.background.themed.dark.BUBBLEGUM {
+    background-color: #D15E93;
+    color: #360017;
+}
+
+window.themed.dark.LAVENDER,
+window.background.themed.dark.LAVENDER {
+    background-color: #9973C2;
+    color: #25054A;
+}
+
+window.themed.dark.OCEAN,
+window.background.themed.dark.OCEAN {
+    background-color: #5C9DDE;
+    color: #031B38;
+}
+
+window.themed.dark.SEA_GLASS,
+window.background.themed.dark.SEA_GLASS {
+    background-color: #3BA89B;
+    color: #002B25;
+}
+
+window.themed.dark.MINT,
+window.background.themed.dark.MINT {
+    background-color: #2BB063;
+    color: #002B0F;
+}
+
+window.themed.dark.PEAR,
+window.background.themed.dark.PEAR {
+    background-color: #B8C74E;
+    color: #1F2900;
+}
+
+window.themed.dark.PEBBLE,
+window.background.themed.dark.PEBBLE {
+    background-color: #9E9E9E;
+    color: #141414;
+}
+
+window.themed.dark.GRAPHITE,
+window.background.themed.dark.GRAPHITE {
+    background-color: #6F8A99;
+    color: #06151F;
+}
+
+window.themed.dark:not(.ultra-dark) actionbar,
+window.themed.dark:not(.ultra-dark) actionbar button,
+window.themed.dark:not(.ultra-dark) actionbar .themedbutton,
+window.themed.dark:not(.ultra-dark) actionbar .themedbutton image {
+    color: inherit;
+    -gtk-icon-shadow: none;
 }
 
 window.themed.dark titlebar,
@@ -408,11 +494,20 @@ window.themed.dark editablelabel.editing {
     border-color: transparent;
 }
 
-window.themed.dark:backdrop editablelabel {
+window.themed.dark:backdrop:not(.ultra-dark) editablelabel {
+    color: inherit;
+}
+
+window.themed.dark.ultra-dark:backdrop editablelabel {
     color: rgba(255, 255, 255, 0.6);
 }
 
-window.themed.dark:backdrop actionbar,
-window.themed.dark:backdrop actionbar image {
+window.themed.dark:backdrop:not(.ultra-dark) actionbar,
+window.themed.dark:backdrop:not(.ultra-dark) actionbar image {
+    color: inherit;
+}
+
+window.themed.dark.ultra-dark:backdrop actionbar,
+window.themed.dark.ultra-dark:backdrop actionbar image {
     color: rgba(255, 255, 255, 0.5);
 }

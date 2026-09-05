@@ -199,3 +199,30 @@ public enum Jots.Themes {
         }
     }
 }
+
+public enum Jots.DarkModeNoteStyle {
+    VIBRANT,
+    ULTRA_DARK;
+
+    public string to_setting_string () {
+        switch (this) {
+            case VIBRANT: return "vibrant";
+            case ULTRA_DARK: return "ultra-dark";
+            default: return "vibrant";
+        }
+    }
+
+    public static DarkModeNoteStyle from_setting_string (string? value, DarkModeNoteStyle fallback = DarkModeNoteStyle.VIBRANT) {
+        if (value == null) {
+            return fallback;
+        }
+
+        var normalized = value.strip ().ascii_down ().replace ("_", "-");
+        switch (normalized) {
+            case "vibrant": return DarkModeNoteStyle.VIBRANT;
+            case "ultra-dark":
+            case "ultradark": return DarkModeNoteStyle.ULTRA_DARK;
+            default: return fallback;
+        }
+    }
+}

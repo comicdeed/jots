@@ -1,5 +1,9 @@
 <div align="center">
-  <img alt="Jots Icon" src="data/icons/default/hicolor/128.png" />
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="data/icons/jots_logo_dark_animated.svg">
+    <source media="(prefers-color-scheme: light)" srcset="data/icons/jots_logo_light_animated.svg">
+    <img alt="Jots Icon" src="data/icons/jots_logo_light_animated.svg" width="128" height="128" />
+  </picture>
   <h1>Jots</h1>
   <p>Lightweight sticky notes application for the Linux desktop.</p>
 </div>
@@ -31,6 +35,7 @@
     <source media="(prefers-color-scheme: light)" srcset="data/screenshots/jots-light.png">
     <img class="center" src="data/screenshots/jots-light.png" alt="Jots screenshot">
   </picture>
+  <p>View the screenshot in <a href="data/screenshots/jots-light.png">light mode</a> or <a href="data/screenshots/jots-dark.png">dark mode</a>.</p>
 </div>
 
 ## Installation and quick start

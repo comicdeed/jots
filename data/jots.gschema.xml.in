@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist>
-  <enum id="@APP_ID@.list-prefix">
-    <value value='0' nick="disabled"/>
-    <value value='1' nick="bullet"/>
-    <value value='2' nick="dash"/>
-    <value value='3' nick="wave"/>
-    <value value='4' nick="dot"/>
-  </enum>
-
 	<enum id="@APP_ID@.backup-sync-cadence">
 		<value value='0' nick="disabled"/>
 		<value value='1' nick="every-5-min"/>
@@ -27,11 +19,11 @@
 			<summary>Auto-hide actionbar</summary>
 			<description>Whether to auto-hide the actionbar on unfocused sticky notes</description>
 		</key>
-		<key enum="@APP_ID@.list-prefix" name="list-prefix">
-      		<default>'bullet'</default>
-      		<summary>List item prefix</summary>
-      		<description>The string to use at the start of a list item</description>
-    	</key>
+		<key name="dark-note-style" type="s">
+			<default>'vibrant'</default>
+			<summary>Dark mode note palette style</summary>
+			<description>Selects the default dark-mode note palette: vibrant or ultra-dark.</description>
+		</key>
 		<key name="autostart" type="b">
 			<default>false</default>
 			<summary>Autostart the app</summary>

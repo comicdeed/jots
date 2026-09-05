@@ -14,7 +14,6 @@ public static int main (string[] args) {
     Jots.Tests.register_markdown_storage_tests ();
     Jots.Tests.register_markdown_buffer_tests ();
     Jots.Tests.register_themes_tests ();
-    Jots.Tests.register_text_buffer_tests ();
     Jots.Tests.register_zoom_tests ();
     Jots.Tests.register_scribbly_controller_tests ();
     Jots.Tests.register_chrome_controller_tests ();

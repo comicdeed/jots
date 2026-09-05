@@ -501,6 +501,8 @@ namespace Jots {
             if (rest.has_prefix ("- [x] ")) return indent + "- [ ] ";
             if (rest.has_prefix ("* [ ] ")) return indent + "* [ ] ";
             if (rest.has_prefix ("* [x] ")) return indent + "* [ ] ";
+            if (rest.has_prefix ("+ [ ] ")) return indent + "+ [ ] ";
+            if (rest.has_prefix ("+ [x] ")) return indent + "+ [ ] ";
             if (rest.has_prefix ("- ")) return indent + "- ";
             if (rest.has_prefix ("* ")) return indent + "* ";
             if (rest.has_prefix ("+ ")) return indent + "+ ";

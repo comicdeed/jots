@@ -16,11 +16,9 @@ A curated backlog of architectural enhancements, capabilities, and feature candi
     - [3.3 Free-Form In-Text Tagging with Autocompletion](#33-free-form-in-text-tagging-with-autocompletion)
   - [4. Planned Backlog (Tier 2)](#4-planned-backlog-tier-2)
     - [4.1 Intelligent Note Deletion Safety & Trash Lifecycle](#41-intelligent-note-deletion-safety--trash-lifecycle)
-    - [4.2 Focus-Aware Minimalist Desktop Chrome](#42-focus-aware-minimalist-desktop-chrome)
-    - [4.3 Retire List Item Prefix Preference](#43-retire-list-item-prefix-preference)
-    - [4.4 Bidirectional Note Linking (`[[Note Title]]`)](#44-bidirectional-note-linking-note-title)
-    - [4.5 AppImage Provenance and Signature Verification](#45-appimage-provenance-and-signature-verification)
-    - [4.6 AppImage Update Information Embedding](#46-appimage-update-information-embedding)
+    - [4.2 Bidirectional Note Linking (`[[Note Title]]`)](#42-bidirectional-note-linking-note-title)
+    - [4.3 AppImage Provenance and Signature Verification](#43-appimage-provenance-and-signature-verification)
+    - [4.4 AppImage Update Information Embedding](#44-appimage-update-information-embedding)
   - [5. Deferred / Incubating Concepts (Tier 4)](#5-deferred--incubating-concepts-tier-4)
     - [5.1 Google Keep Backend Synchronization](#51-google-keep-backend-synchronization)
     - [5.2 Windows Backup and Sync Compatibility Hardening](#52-windows-backup-and-sync-compatibility-hardening)
@@ -32,6 +30,7 @@ A curated backlog of architectural enhancements, capabilities, and feature candi
     - [6.5 Daily Routine Adoption \& Presence](#65-daily-routine-adoption--presence)
     - [6.6 Automated Git Backup and Remote Synchronization](#66-automated-git-backup-and-remote-synchronization)
     - [6.7 Focus-Aware Minimalist Desktop Chrome](#67-focus-aware-minimalist-desktop-chrome)
+    - [6.8 Retire List Item Prefix Preference](#68-retire-list-item-prefix-preference)
 
 ---
 
@@ -45,7 +44,6 @@ The score matrix is curated to include only non-completed roadmap candidates (ac
 | **List & Checklist Ergonomics & Typography** | 4.2 | 4.5 | 4.0 | **4.26** | 🟢 Tier 1 (Active Priority) |
 | **Free-Form In-Text Tagging (`#tag`)** | 4.0 | 4.0 | 3.8 | **3.95** | 🟢 Tier 1 (Active Priority) |
 | **Intelligent Deletion Safety & Trash Lifecycle** | 4.0 | 4.0 | 3.8 | **3.95** | 🟢 Tier 1 (Active Priority) |
-| **Retire List Item Prefix Preference** | 3.4 | 4.5 | 4.6 | **4.09** | 🟡 Tier 2 (Planned Backlog) |
 | **AppImage Provenance & Signatures** | 3.2 | 4.4 | 4.0 | **3.92** | 🟡 Tier 2 (Planned Backlog) |
 | **AppImage Update Info Embedding** | 3.0 | 4.2 | 4.5 | **3.72** | 🟡 Tier 2 (Planned Backlog) |
 | **Bidirectional Note Linking (`[[Note]]`)** | 3.8 | 3.6 | 3.4 | **3.63** | 🟡 Tier 2 (Planned Backlog) |
@@ -108,24 +106,14 @@ Targeted, self-contained fixes and ergonomics refinements to address active fric
   * **Git Sync Unsaved Check**: When Git Backup is active, check local Git repository status and warn explicitly if deleting notes with uncommitted changes.
   * **Soft-Delete Archive (`.trash/`)**: Move deleted `.md` files to a `.trash/` subfolder rather than instant permanent deletion, enabling easy recovery from the Note Organizer.
 
-### 4.2 Retire List Item Prefix Preference
-* **Score**: `4.09` (Tier 2: Planned Backlog)
-* **Goal**: Reduce preference-surface complexity by removing the list item prefix selector and standardizing newly inserted Markdown unordered list markers.
-* **Background**: Markdown unordered list markers (`-`, `*`, `+`) are semantically equivalent for parsing and rendering. With Markdown-native storage now canonical, prefix selection is mostly a style choice and no longer a core functional setting.
-* **Implementation Strategy**:
-  * **Standardized insertion marker**: Use a single default marker for newly inserted list items (recommended: `-`) while preserving support for existing notes containing `*` or `+`.
-  * **Preferences simplification**: Remove the list prefix control from Preferences and associated user-facing explanatory copy.
-  * **Compatibility-first parsing**: Keep list detection and rendering behavior marker-agnostic so historical notes remain unchanged and require no migration.
-  * **Config cleanup**: Remove the `list-prefix` GSettings key and related constants only after behavior and test updates are complete.
-
-### 4.3 Bidirectional Note Linking (`[[Note Title]]`)
+### 4.2 Bidirectional Note Linking (`[[Note Title]]`)
 * **Score**: `3.63` (Tier 2: Planned Backlog)
 * **Goal**: Inter-note navigation using wiki-style `[[Note Title]]` links that open or focus target sticky notes on click.
 * **Implementation Strategy**:
   * Recognize `[[...]]` patterns in `MarkdownBuffer` and render as clickable note links.
   * Resolve target note by UUID or Title in `NoteManager`.
 
-### 4.4 AppImage Provenance and Signature Verification
+### 4.3 AppImage Provenance and Signature Verification
 * **Score**: `3.92` (Tier 2: Planned Backlog)
 * **Goal**: Improve release trust and provenance by cryptographically signing shipped AppImages and publishing verification material.
 * **Implementation Strategy**:
@@ -133,7 +121,7 @@ Targeted, self-contained fixes and ergonomics refinements to address active fric
   * Enable AppImage signing in `packaging/appimage/build-appimage.sh` for both `x86_64` and `aarch64` outputs.
   * Attach signature verification instructions (`VERIFY.md`) to GitHub releases.
 
-### 4.5 AppImage Update Information Embedding
+### 4.4 AppImage Update Information Embedding
 * **Score**: `3.72` (Tier 2: Planned Backlog)
 * **Goal**: Embed AppImage update information into released binaries for efficient delta auto-updates via `AppImageUpdate` / `zsyncmake`.
 * **Implementation Strategy**:
@@ -191,3 +179,8 @@ Targeted, self-contained fixes and ergonomics refinements to address active fric
 * **Status**: ✅ **Completed** (v1.3.0)
 * **Summary**: Added dynamic focus-aware auto-hiding for sticky note toolbars via `Jots.ChromeController`. Unfocused notes smoothly hide their bottom action bar to present a pure post-it note aesthetic while keeping note titles visible. Hovering over unfocused notes triggers a 250ms debounced reveal to prevent mouse-sweep flicker, and active popovers lock the toolbar in view.
 * **Documentation**: See [`docs/use-cases/50-theming-appearance.md`](use-cases/50-theming-appearance.md#5030-focus-aware-minimalist-desktop-chrome) and [`docs/user-guide.md`](user-guide.md#6-preferences-privacy--note-protection).
+
+### 6.8 Retire List Item Prefix Preference
+* **Status**: ✅ **Completed** (v1.4.0)
+* **Summary**: Removed the configurable list item prefix (Preferences dropdown, `list-prefix` GSettings key, `Jots.ListPrefix` enum, and the unused `Jots.TextBuffer` class it backed). Unordered list markers (`-`, `*`, `+`) remain parsed and rendered as equivalent via `MarkdownBuffer`, marker-agnostic, with no migration needed for existing notes.
+* **Documentation**: See [`docs/use-cases/30-text-editing.md`](use-cases/30-text-editing.md).

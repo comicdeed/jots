@@ -367,6 +367,10 @@ public class Jots.Application : Gtk.Application {
         gtk_settings.notify["gtk-application-prefer-dark-theme"].connect (() => {
             update_all_windows_dark_mode ();
         });
+
+        settings.changed[KEY_DARK_NOTE_STYLE].connect (() => {
+            update_all_windows_dark_mode ();
+        });
     }
 
     private void on_portal_setting_changed (GLib.DBusConnection connection,

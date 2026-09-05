@@ -33,7 +33,7 @@ Jots is a lightweight, distraction-free sticky notes application for Linux. It k
 * **New note**: Click **`+`** in the bottom toolbar or press **`Ctrl + N`**. Each note opens in its own floating window that you can place anywhere on your desktop.
 * **Edit title**: Click the title in the top bar, type the new name, and press **`Enter`** (or click outside).
 * **Delete note**: Click the **Trash** icon in the bottom toolbar or press **`Ctrl + W`**.
-* **Restore note**: Press **`Ctrl + R`** immediately after deleting a note to reopen it with its content, color, and window position restored.
+* **Restore note**: Press **`Ctrl + R`** immediately after deleting a note (or click **Restore note** in **Preferences $\rightarrow$ General**) to reopen it with its content, color, and window position restored.
 
 ### Searching notes
 * Press **`Ctrl + F`** (or **`Ctrl + Shift + F`**) to open the search bar.
@@ -52,7 +52,6 @@ Jots is a lightweight, distraction-free sticky notes application for Linux. It k
 | **`Ctrl + W`** | **Delete note** | Deletes and closes the focused note window. |
 | **`Ctrl + R`** | **Restore note** | Restores the last deleted note with its content and position. |
 | **`Ctrl + S`** | **Save now** | Immediately commits all pending note changes to disk. |
-| **`Shift + F12`** | **Toggle bullet list** | Adds or removes list bullets on the current line or selection. |
 | **`Ctrl + D`** / **`Ctrl + Enter`** | **Toggle checklist** | Toggles `- [ ]` and `- [x]`, or converts text into a task item. |
 | **`Ctrl + V`** | **Smart paste** | Pastes text and converts rich web formatting into clean Markdown. |
 | **`Ctrl + Shift + V`** | **Raw paste** | Pastes exact clipboard text without formatting changes. |
@@ -98,8 +97,8 @@ Jots renders Markdown live as you type, giving you rich visual styling without a
 
 ## 4. Themes and typography
 
-### 12 Pastel color themes
-Jots includes 12 pastel colors that automatically adjust contrast for system Light and Dark modes:
+### 12 Color themes
+Jots includes 12 expressive color themes that adapt automatically to your desktop mode. Light desktop themes use a gentle pastel palette, while dark desktop themes use a vibrant palette by default.
 
 * 🍌 **Banana**
 * 🍊 **Tangerine**
@@ -116,6 +115,8 @@ Jots includes 12 pastel colors that automatically adjust contrast for system Lig
 
 To change a note's theme, click the **Menu button** in the bottom-right corner (or press **`Ctrl + G`**) and select a color. New notes pick a non-repeating random color to keep your desktop vibrant.
 
+When the desktop uses a dark theme, Jots uses the vibrant note palette by default. To reduce brightness, open **Preferences $\rightarrow$ Appearance** and set **Dark mode note style** to **Ultra Dark**. Jots always uses the pastel palette when the desktop uses a light theme.
+
 ### Font customization
 Open **Preferences $\rightarrow$ Appearance** to customize typography across all notes:
 * **General font**: Select your preferred system font and size (e.g. *Inter*, *Cantarell*, *Ubuntu*, *Roboto*) for regular notes.
@@ -126,12 +127,12 @@ Open **Preferences $\rightarrow$ Appearance** to customize typography across all
 
 ## 5. Privacy and note protection
 
-* **Scribbly privacy mode (`Ctrl + H`)**: Obfuscates note text with a handwritten scribble effect whenever a note loses focus. Focusing or hovering over the note restores clear readable text.
+* **Scribbly privacy mode (`Ctrl + H`)**: Obfuscates note text with a handwritten scribble effect whenever a note loses focus (configure in **Preferences $\rightarrow$ Appearance**). Focusing or hovering over the note restores clear readable text.
 * **Lock note (read-only)**: Open the note menu (**`Ctrl + G`**) and toggle **Lock Note** to protect reference material from accidental edits.
 * **Always visible exemption**: If Scribbly mode is enabled globally, you can mark specific notes as **Always Visible** in their note menu to keep them readable even when unfocused.
-* **Toolbar auto-hide (`Ctrl + T`)**: The bottom formatting bar smoothly fades out when a note loses focus. Focusing the note brings the toolbar back immediately.
-* **Autostart on login**: Enable **Autostart** in Preferences so all open sticky notes are automatically restored when you log into your desktop.
-* **Import from Jorts**: If you previously used the Jorts sticky notes app, click **Import from Jorts** in Preferences to copy your existing notes over non-destructively.
+* **Toolbar auto-hide (`Ctrl + T`)**: The bottom formatting bar smoothly fades out when a note loses focus (configure in **Preferences $\rightarrow$ Appearance**). Focusing the note brings the toolbar back immediately.
+* **Autostart on login**: Enable **Show notes on log in** in **Preferences $\rightarrow$ General** so all open sticky notes are automatically restored when you log into your desktop.
+* **Import from Jorts**: If you previously used the Jorts sticky notes app, click **Import Notes** in **Preferences $\rightarrow$ General** to copy your existing notes over non-destructively.
 
 ---
 

@@ -102,7 +102,7 @@ JSON serialization of `NoteData`, disk I/O handling in `Storage`, legacy state m
 ## 20.50 Non-destructive Jorts Migration Helper
 
 ### `UC-20.50.10` Legacy candidate discovery
-* **Trigger**: Application starts up or user clicks "Import from Jorts" in Preferences.
+* **Trigger**: Application starts up or user clicks "Import Notes" in **Preferences $\rightarrow$ General**.
 * **Pre-conditions**: System contains existing Jorts installations (`~/.local/share/io.github.elly_code.jorts/` or Flatpak `~/.var/app/io.github.elly_code.jorts/`).
 * **Post-conditions**:
   * Scans candidate locations in priority order and returns existing `saved_state.json` paths.

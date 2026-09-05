@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+    <defs>
+        <style>
+            @keyframes move-j {
+                0%, 16.67% { transform: translateX(0); }
+                20%, 76.67% { transform: translateX(-35px); }
+                83.33%, 100% { transform: translateX(0); }
+            }
+
+            @keyframes draw-ots {
+                0%, 20% { stroke-dashoffset: 2000; opacity: 1; }
+                26.67%, 76.67% { stroke-dashoffset: 0; opacity: 1; }
+                83.33% { stroke-dashoffset: 0; opacity: 0; }
+                84%, 100% { stroke-dashoffset: 2000; opacity: 0; }
+            }
+
+            @keyframes draw-cross {
+                0%, 23.33% { stroke-dashoffset: 100; opacity: 1; }
+                26.67%, 76.67% { stroke-dashoffset: 0; opacity: 1; }
+                83.33% { stroke-dashoffset: 0; opacity: 0; }
+                84%, 100% { stroke-dashoffset: 100; opacity: 0; }
+            }
+
+            .j-group {
+                animation: move-j 30s infinite ease-in-out;
+            }
+
+            .ots-stroke {
+                stroke-dasharray: 2000;
+                stroke-dashoffset: 2000;
+                animation: draw-ots 30s infinite ease-in-out;
+            }
+
+            .t-cross {
+                stroke-dasharray: 100;
+                stroke-dashoffset: 100;
+                animation: draw-cross 30s infinite ease-in-out;
+            }
+        </style>
+        <filter id="note-shadow-dark" x="-10%" y="-10%" width="125%" height="130%" filterUnits="userSpaceOnUse">
+            <feDropShadow dx="0" dy="18" stdDeviation="16" flood-color="#001411" flood-opacity="0.30" />
+            <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#001411" flood-opacity="0.15" />
+        </filter>
+        <filter id="dogear-shadow-dark" x="-30%" y="-30%" width="160%" height="160%">
+            <feDropShadow dx="-6" dy="10" stdDeviation="8" flood-color="#001411" flood-opacity="0.25" />
+            <feDropShadow dx="-2" dy="3" stdDeviation="3" flood-color="#001411" flood-opacity="0.12" />
+        </filter>
+        <linearGradient id="note-grad-dark" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#135E56" />
+            <stop offset="40%" stop-color="#093D38" />
+            <stop offset="100%" stop-color="#04211E" />
+        </linearGradient>
+        <linearGradient id="fold-grad-dark" x1="0%" y1="100%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#279184" />
+            <stop offset="45%" stop-color="#145A51" />
+            <stop offset="100%" stop-color="#093D38" />
+        </linearGradient>
+    </defs>
+    <g filter="url(#note-shadow-dark)">
+        <path d="M 112 40 L 352 40 Q 360 40 366 46 L 466 146 Q 472 152 472 160 L 472 400 C 472 440 440 472 400 472 L 112 472 C 72 472 40 440 40 400 L 40 112 C 40 72 72 40 112 40 Z" fill="url(#note-grad-dark)" />
+    </g>
+    <path d="M 352 40 C 352 95 365 160 472 160 L 366 46 Z" fill="url(#fold-grad-dark)" filter="url(#dogear-shadow-dark)" />
+    <g class="j-group">
+        <path d="M 175 142 C 210 134 260 126 325 120 C 334 119 340 126 336 135 C 330 148 314 156 295 158 C 292 195 285 260 270 318 C 255 372 225 398 178 398 C 134 398 112 362 114 322 C 116 288 140 270 162 272 C 180 274 188 290 184 308 C 178 334 162 346 154 348 C 160 360 172 368 192 366 C 220 362 242 334 250 285 C 260 225 264 170 265 146 C 230 152 194 162 174 170 C 165 174 158 164 164 154 C 167 148 171 144 175 142 Z" fill="#E6F9F6" />
+    </g>
+    <g stroke="#E6F9F6" stroke-width="15" stroke-linecap="round" stroke-linejoin="round" fill="none">
+        <path class="ots-stroke" d="M 285 255 C 263 255, 252 275, 252 295 C 252 320, 268 330, 285 330 C 302 330, 315 310, 315 290 C 315 270, 300 255, 285 255 C 275 258, 282 276, 296 274 C 310 272, 325 280, 344 260 C 350 230, 352 195, 352 170 C 352 170, 348 295, 344 312 C 342 320, 352 322, 360 316 C 370 302, 384 268, 394 248 C 402 256, 414 272, 408 294 C 402 312, 382 316, 374 306 C 382 308, 398 304, 416 292" />
+        <path class="t-cross" d="M 330 242 L 374 235" />
+    </g>
+</svg>

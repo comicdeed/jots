@@ -14,14 +14,15 @@ namespace Jots {
         public Gtk.Button close_button;
         public Gtk.StackSwitcher page_switcher { get; private set; }
         private Gtk.Stack page_stack;
-        private Gtk.DropDown? list_dropdown = null;
+        private Gtk.DropDown? dark_note_style_dropdown = null;
         private Gtk.DropDown? cadence_dropdown = null;
         private Gtk.FontDialogButton? default_font_button = null;
         private Gtk.FontDialogButton? mono_font_button = null;
         private Gtk.Button? import_jorts_button = null;
         private Gtk.Button? sync_now_button = null;
         private Gtk.Button? test_connection_button = null;
-        private ulong list_dropdown_handler_id = 0;
+        private ulong dark_note_style_dropdown_handler_id = 0;
+        private ulong dark_note_style_settings_handler_id = 0;
         private ulong cadence_dropdown_handler_id = 0;
         private ulong default_font_button_handler_id = 0;
         private ulong mono_font_button_handler_id = 0;
@@ -65,10 +66,9 @@ namespace Jots {
                 halign = Gtk.Align.CENTER
             };
 
-            page_stack.add_titled (build_general_page (), "general", _("General"));
             page_stack.add_titled (build_appearance_page (), "appearance", _("Appearance"));
-            page_stack.add_titled (build_data_page (), "data", _("Data & Recovery"));
             page_stack.add_titled (build_backup_page (), "backup", _("Backup & Sync"));
+            page_stack.add_titled (build_general_page (), "general", _("General"));
 
             /*************************************************/
             // Bar at the bottom
@@ -129,23 +129,48 @@ namespace Jots {
         private Gtk.Widget build_general_page () {
             var page = make_page_box ();
 
-            var list_dropdown_widget = new Gtk.DropDown.from_strings (ListPrefix.ALL) {
-                halign = Gtk.Align.END,
-                hexpand = false,
-                valign = Gtk.Align.CENTER
+            var restore_button = new Gtk.Button () {
+                label = _("Restore note"),
+                tooltip_markup = Jots.Util.markup_accel_tooltip (
+                    _("Restore the last deleted sticky note"),
+                    "Ctrl+R"
+                ),
+                action_name = Application.ACTION_PREFIX + Application.ACTION_RESTORE_LAST,
+                width_request = 96,
             };
-            list_dropdown = list_dropdown_widget;
-            list_dropdown.selected = Application.settings.get_enum (KEY_LIST);
-            list_dropdown_handler_id = list_dropdown_widget.notify["selected"].connect (() => {
-                Application.settings.set_enum (KEY_LIST, (int) list_dropdown_widget.selected);
+
+            var restore_box = new Jots.SettingsBox (
+                _("Restore note"),
+                _("Restore the last deleted sticky note"),
+                restore_button
+            );
+            page.append (restore_box);
+
+            var import_jorts_btn = new Gtk.Button () {
+                label = _("Import Notes"),
+                tooltip_text = _("Scan and import notes from an existing Jorts installation"),
+                valign = Gtk.Align.CENTER,
+                width_request = 96
+            };
+            import_jorts_button = import_jorts_btn;
+
+            import_jorts_button_handler_id = import_jorts_btn.clicked.connect (() => {
+                var count = Application.note_manager.import_from_jorts ();
+                if (count > 0) {
+                    toast.title = _("Successfully imported %d notes from Jorts").printf (count);
+                    toast.send_notification ();
+                } else {
+                    toast.title = _("No Jorts notes found on system");
+                    toast.send_notification ();
+                }
             });
 
-            var lists_box = new SettingsBox (
-                _("List item prefix"),
-                null,
-                list_dropdown_widget
+            var import_jorts_box = new Jots.SettingsBox (
+                _("Import from Jorts"),
+                _("Copy notes from an existing Jorts installation without modifying originals"),
+                import_jorts_btn
             );
-            page.append (lists_box);
+            page.append (import_jorts_box);
 
 #if LIBPORTAL
             autostart_toggle = new Gtk.Switch ();
@@ -193,6 +218,48 @@ namespace Jots {
                 hidebar_toggle
             );
             page.append (hidebar_box);
+
+            var dark_note_style_dropdown_widget = new Gtk.DropDown.from_strings ({
+                _("Vibrant"),
+                _("Ultra Dark")
+            }) {
+                halign = Gtk.Align.END,
+                valign = Gtk.Align.CENTER
+            };
+            dark_note_style_dropdown = dark_note_style_dropdown_widget;
+
+            var current_dark_note_style = DarkModeNoteStyle.from_setting_string (
+                Application.settings.get_string (KEY_DARK_NOTE_STYLE)
+            );
+            dark_note_style_dropdown_widget.selected = (current_dark_note_style == DarkModeNoteStyle.ULTRA_DARK) ? 1 : 0;
+
+            dark_note_style_dropdown_handler_id = dark_note_style_dropdown_widget.notify["selected"].connect (() => {
+                var active_style = (dark_note_style_dropdown_widget.selected == 1)
+                    ? DarkModeNoteStyle.ULTRA_DARK
+                    : DarkModeNoteStyle.VIBRANT;
+                Application.settings.set_string (KEY_DARK_NOTE_STYLE, active_style.to_setting_string ());
+            });
+
+            dark_note_style_settings_handler_id = Application.settings.changed[KEY_DARK_NOTE_STYLE].connect (() => {
+                var next_style = DarkModeNoteStyle.from_setting_string (
+                    Application.settings.get_string (KEY_DARK_NOTE_STYLE)
+                );
+                dark_note_style_dropdown_widget.selected = (next_style == DarkModeNoteStyle.ULTRA_DARK) ? 1 : 0;
+            });
+
+            Application.gtk_settings.bind_property (
+                "gtk-application-prefer-dark-theme",
+                dark_note_style_dropdown_widget,
+                "sensitive",
+                GLib.BindingFlags.SYNC_CREATE
+            );
+
+            var dark_note_style_box = new Jots.SettingsBox (
+                _("Dark mode note style"),
+                _("Choose the default color treatment for notes when the app uses a dark theme"),
+                dark_note_style_dropdown_widget
+            );
+            page.append (dark_note_style_box);
 
             var custom_fonts_toggle = new Gtk.Switch ();
             Application.settings.bind (KEY_CUSTOM_FONTS,
@@ -272,55 +339,6 @@ namespace Jots {
 
             custom_fonts_toggle.bind_property ("active", default_font_btn, "sensitive", GLib.BindingFlags.DEFAULT | GLib.BindingFlags.SYNC_CREATE);
             custom_fonts_toggle.bind_property ("active", mono_font_btn, "sensitive", GLib.BindingFlags.DEFAULT | GLib.BindingFlags.SYNC_CREATE);
-
-            return wrap_page (page);
-        }
-
-        private Gtk.Widget build_data_page () {
-            var page = make_page_box ();
-
-            var restore_button = new Gtk.Button () {
-                label = _("Restore note"),
-                tooltip_markup = Jots.Util.markup_accel_tooltip (
-                    _("Restore the last deleted sticky note"),
-                    "Ctrl+R"
-                ),
-                action_name = Application.ACTION_PREFIX + Application.ACTION_RESTORE_LAST,
-                width_request = 96,
-            };
-
-            var restore_box = new Jots.SettingsBox (
-                _("Restore note"),
-                _("Restore the last deleted sticky note"),
-                restore_button
-            );
-            page.append (restore_box);
-
-            var import_jorts_btn = new Gtk.Button () {
-                label = _("Import Notes"),
-                tooltip_text = _("Scan and import notes from an existing Jorts installation"),
-                valign = Gtk.Align.CENTER,
-                width_request = 96
-            };
-            import_jorts_button = import_jorts_btn;
-
-            import_jorts_button_handler_id = import_jorts_btn.clicked.connect (() => {
-                var count = Application.note_manager.import_from_jorts ();
-                if (count > 0) {
-                    toast.title = _("Successfully imported %d notes from Jorts").printf (count);
-                    toast.send_notification ();
-                } else {
-                    toast.title = _("No Jorts notes found on system");
-                    toast.send_notification ();
-                }
-            });
-
-            var import_jorts_box = new Jots.SettingsBox (
-                _("Import from Jorts"),
-                _("Copy notes from an existing Jorts installation without modifying originals"),
-                import_jorts_btn
-            );
-            page.append (import_jorts_box);
 
             return wrap_page (page);
         }
@@ -441,6 +459,11 @@ namespace Jots {
         }
 
         ~PreferencesView () {
+            if (dark_note_style_settings_handler_id != 0) {
+                Application.settings.disconnect (dark_note_style_settings_handler_id);
+                dark_note_style_settings_handler_id = 0;
+            }
+
             if (backup_enabled_handler_id != 0) {
                 Application.settings.disconnect (backup_enabled_handler_id);
                 backup_enabled_handler_id = 0;

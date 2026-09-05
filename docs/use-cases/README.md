@@ -22,9 +22,9 @@ All use cases follow a hierarchical decimal structure to allow additions without
 | :--- | :--- | :--- |
 | **`UC-10`** | [10-note-lifecycle.md](10-note-lifecycle.md) | Window spawning (`Ctrl+N`), first-run fallback, note deletion (`Ctrl+W`), and undo restoration (`Ctrl+R`). |
 | **`UC-20`** | [20-data-persistence.md](20-data-persistence.md) | JSON serialization/deserialization, disk storage I/O, legacy data migration, and debounced auto-saving. |
-| **`UC-30`** | [30-text-editing.md](30-text-editing.md) | Custom `TextBuffer` formatting, bullet prefixes (`-`, `*`, `1.`), hanging indentation, and keypress handling (`Enter`/`Backspace`). |
+| **`UC-30`** | [30-text-editing.md](30-text-editing.md) | List continuation on keypress (`Enter`/`Backspace`) and Markdown syntax highlighting in `Jots.TextView` and `Jots.MarkdownBuffer`. |
 | **`UC-40`** | [40-hyperlink-content.md](40-hyperlink-content.md) | `HyperTextView` URL and email detection, Unicode-safe offset calculations, debounce buffer scans, and `Ctrl+Click` interactions. |
-| **`UC-50`** | [50-theming-appearance.md](50-theming-appearance.md) | The 10 pastel color themes, random theme generation, dark mode styling overrides, and environment variable flags. |
+| **`UC-50`** | [50-theming-appearance.md](50-theming-appearance.md) | The 12 pastel color themes, random theme generation, dark mode palette preferences, and environment variable flags. |
 | **`UC-60`** | [60-global-settings.md](60-global-settings.md) | GSettings bindings, action bar hiding (`Ctrl+T`), scribbly blur effect (`Ctrl+H`), and XDG autostart portal integration. |
 | **`UC-70`** | [70-mcp-agent-integration.md](70-mcp-agent-integration.md) | Model Context Protocol (MCP) JSON-RPC tooling, live D-Bus session IPC, resources, prompts, and performance guardrails. |
 | **`UC-80`** | [80-search-discovery.md](80-search-discovery.md) | Full-text search engine, real-time popover search (`Ctrl+F`), relevance scoring, and highlighted snippet extraction. |

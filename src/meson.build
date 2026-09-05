@@ -26,7 +26,6 @@ sources = files (
     'Objects' / 'Themes.vala',
     'Objects' / 'NoteData.vala',
     'Objects' / 'SearchResult.vala',
-    'Objects' / 'ListPrefix.vala',
 
     'Utils' / 'Logger.vala',
     'Utils' / 'Random.vala',
@@ -53,7 +52,6 @@ sources = files (
     'Widgets' / 'EditableLabel.vala',
     'Widgets' / 'TextView.vala',
     'Widgets' / 'ActionBar.vala',
-    'Widgets' / 'TextBuffer.vala',
     'Widgets' / 'MarkdownBuffer.vala',
 
     'Widgets' / 'PopoverWidgets' / 'ColorPill.vala',

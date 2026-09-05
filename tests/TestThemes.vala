@@ -94,5 +94,18 @@ namespace Jots.Tests {
             assert_true (Themes.from_legacy_ordinal (10) == Themes.PEACH);   // Latte
             assert_true (Themes.from_legacy_ordinal (99) == Themes.PEBBLE);  // out of range fallback
         });
+
+        /**
+         * UC-50.20.20: Dark mode note style selection and compatibility parsing
+         */
+        GLib.Test.add_func ("/Themes/UC_50_20_20/DarkModeNoteStyleSelection", () => {
+            assert_true (DarkModeNoteStyle.from_setting_string ("vibrant") == DarkModeNoteStyle.VIBRANT);
+            assert_true (DarkModeNoteStyle.from_setting_string ("ultra-dark") == DarkModeNoteStyle.ULTRA_DARK);
+            assert_true (DarkModeNoteStyle.from_setting_string ("ultra_dark") == DarkModeNoteStyle.ULTRA_DARK);
+            assert_true (DarkModeNoteStyle.from_setting_string ("ultradark") == DarkModeNoteStyle.ULTRA_DARK);
+            assert_true (DarkModeNoteStyle.from_setting_string (null) == DarkModeNoteStyle.VIBRANT);
+            assert_cmpstr (DarkModeNoteStyle.VIBRANT.to_setting_string (), GLib.CompareOperator.EQ, "vibrant");
+            assert_cmpstr (DarkModeNoteStyle.ULTRA_DARK.to_setting_string (), GLib.CompareOperator.EQ, "ultra-dark");
+        });
     }
 }

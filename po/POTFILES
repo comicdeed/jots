@@ -3,7 +3,6 @@
 data/jots.desktop.in.in
 data/jots.metainfo.xml.in.in
 src/Application.vala
-src/Objects/ListPrefix.vala
 src/Objects/NoteData.vala
 src/Objects/Themes.vala
 src/Utils/Autostart.vala

@@ -6,8 +6,21 @@ Welcome! This document provides core development guidelines, build commands, and
 
 ## 🧭 Progressive Documentation Index
 
-To maintain focus and avoid context bloat, refer to specialized documentation on demand:
+To maintain focus and avoid context bloat, follow this task-based lookup policy:
 
+### 🎯 When to Consult Specialized Docs:
+* **Planning or Designing a Feature / Refactor**:
+  * **UI, Widgets, Views, Chrome, or CSS**: **MUST consult** [`docs/development/ui-ux-guidelines.md`](docs/development/ui-ux-guidelines.md) (IA, relative contrast, multi-element factories) and [`docs/development/vala-coding-standards.md`](docs/development/vala-coding-standards.md) (GTK4 idioms, signal lifecycles, `VCS-30–35`) *before writing code*.
+  * **Architecture, D-Bus IPC, or Storage Flows**: Consult [`docs/architecture.md`](docs/architecture.md) and [`docs/use-cases/README.md`](docs/use-cases/README.md).
+* **Preparing Releases or Curating Release Notes**: Consult [`.agents/skills/release-notes/SKILL.md`](.agents/skills/release-notes/SKILL.md) and [`docs/development/release-workflow.md`](docs/development/release-workflow.md).
+* **Auditing or Writing User-Facing Manuals**: Consult [`.agents/skills/user-guide-review/SKILL.md`](.agents/skills/user-guide-review/SKILL.md) and [`docs/user-guide.md`](docs/user-guide.md).
+
+### 🚫 When NOT to Consult These Docs (Stay Lean & Fast):
+* **Debugging & Bug Triage**: Do **not** load high-level design guidelines. Focus directly on reproduction steps, log traces, stack traces, and the specific faulty code path.
+* **Running Builds & Test Suites**: Execute standard test commands directly without loading design docs.
+* **Minor Text, Typo, or Asset Tweaks**: Edit directly without full architectural review.
+
+### 📚 Documentation Map:
 * **User Guide**: [`docs/user-guide.md`](docs/user-guide.md) — Comprehensive, single-page end-user guide covering note operations, keyboard shortcuts, formatting, and AI features.
 * **System Architecture**: [`docs/architecture.md`](docs/architecture.md) — Comprehensive component hierarchy, subsystem boundaries, D-Bus service specs, sequence diagrams, and lifecycles.
 * **Behavioral Use Cases**: [`docs/use-cases/README.md`](docs/use-cases/README.md) — Domain behavioral specifications (`UC-10` to `UC-70`) cross-referenced in unit tests.

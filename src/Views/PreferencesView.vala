@@ -14,12 +14,15 @@ namespace Jots {
         public Gtk.Button close_button;
         public Gtk.StackSwitcher page_switcher { get; private set; }
         private Gtk.Stack page_stack;
+        private Gtk.DropDown? dark_note_style_dropdown = null;
         private Gtk.DropDown? cadence_dropdown = null;
         private Gtk.FontDialogButton? default_font_button = null;
         private Gtk.FontDialogButton? mono_font_button = null;
         private Gtk.Button? import_jorts_button = null;
         private Gtk.Button? sync_now_button = null;
         private Gtk.Button? test_connection_button = null;
+        private ulong dark_note_style_dropdown_handler_id = 0;
+        private ulong dark_note_style_settings_handler_id = 0;
         private ulong cadence_dropdown_handler_id = 0;
         private ulong default_font_button_handler_id = 0;
         private ulong mono_font_button_handler_id = 0;
@@ -174,41 +177,45 @@ namespace Jots {
             );
             page.append (hidebar_box);
 
-            var dark_note_style_dropdown = new Gtk.DropDown.from_strings ({
+            var dark_note_style_dropdown_widget = new Gtk.DropDown.from_strings ({
                 _("Vibrant"),
                 _("Ultra Dark")
-            });
-            dark_note_style_dropdown.halign = Gtk.Align.END;
-            dark_note_style_dropdown.valign = Gtk.Align.CENTER;
+            }) {
+                halign = Gtk.Align.END,
+                valign = Gtk.Align.CENTER
+            };
+            dark_note_style_dropdown = dark_note_style_dropdown_widget;
 
             var current_dark_note_style = DarkModeNoteStyle.from_setting_string (
                 Application.settings.get_string (KEY_DARK_NOTE_STYLE)
             );
-            dark_note_style_dropdown.selected = (current_dark_note_style == DarkModeNoteStyle.ULTRA_DARK) ? 1 : 0;
+            dark_note_style_dropdown_widget.selected = (current_dark_note_style == DarkModeNoteStyle.ULTRA_DARK) ? 1 : 0;
 
-            dark_note_style_dropdown.notify["selected"].connect (() => {
-                var active_style = (dark_note_style_dropdown.selected == 1)
+            dark_note_style_dropdown_handler_id = dark_note_style_dropdown_widget.notify["selected"].connect (() => {
+                var active_style = (dark_note_style_dropdown_widget.selected == 1)
                     ? DarkModeNoteStyle.ULTRA_DARK
                     : DarkModeNoteStyle.VIBRANT;
                 Application.settings.set_string (KEY_DARK_NOTE_STYLE, active_style.to_setting_string ());
             });
 
-            Application.settings.changed[KEY_DARK_NOTE_STYLE].connect (() => {
+            dark_note_style_settings_handler_id = Application.settings.changed[KEY_DARK_NOTE_STYLE].connect (() => {
                 var next_style = DarkModeNoteStyle.from_setting_string (
                     Application.settings.get_string (KEY_DARK_NOTE_STYLE)
                 );
-                dark_note_style_dropdown.selected = (next_style == DarkModeNoteStyle.ULTRA_DARK) ? 1 : 0;
+                dark_note_style_dropdown_widget.selected = (next_style == DarkModeNoteStyle.ULTRA_DARK) ? 1 : 0;
             });
 
-            dark_note_style_dropdown.sensitive = Application.gtk_settings.gtk_application_prefer_dark_theme;
-            Application.gtk_settings.notify["gtk-application-prefer-dark-theme"].connect (() => {
-                dark_note_style_dropdown.sensitive = Application.gtk_settings.gtk_application_prefer_dark_theme;
-            });
+            Application.gtk_settings.bind_property (
+                "gtk-application-prefer-dark-theme",
+                dark_note_style_dropdown_widget,
+                "sensitive",
+                GLib.BindingFlags.SYNC_CREATE
+            );
 
             var dark_note_style_box = new Jots.SettingsBox (
                 _("Dark mode note style"),
                 _("Choose the default color treatment for notes when the app uses a dark theme"),
-                dark_note_style_dropdown
+                dark_note_style_dropdown_widget
             );
             page.append (dark_note_style_box);
 
@@ -459,6 +466,11 @@ namespace Jots {
         }
 
         ~PreferencesView () {
+            if (dark_note_style_settings_handler_id != 0) {
+                Application.settings.disconnect (dark_note_style_settings_handler_id);
+                dark_note_style_settings_handler_id = 0;
+            }
+
             if (backup_enabled_handler_id != 0) {
                 Application.settings.disconnect (backup_enabled_handler_id);
                 backup_enabled_handler_id = 0;

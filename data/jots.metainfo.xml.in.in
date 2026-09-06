@@ -64,12 +64,16 @@
 
     <screenshots>
         <screenshot type="default">
-            <caption>Sticky notes with colourful pastel themes, live Markdown rendering, and checklists</caption>
+            <caption>Sticky notes with colourful pastel themes in light mode, live Markdown rendering, and checklists</caption>
             <image>https://raw.githubusercontent.com/@PUBLISHER@/@APP_NAME@/@APP_VERSION@/data/screenshots/jots-light.png</image>
         </screenshot>
         <screenshot>
-            <caption>Sticky notes with high-contrast desaturated colors in dark mode</caption>
+            <caption>Sticky notes with vibrant themes in dark mode</caption>
             <image>https://raw.githubusercontent.com/@PUBLISHER@/@APP_NAME@/@APP_VERSION@/data/screenshots/jots-dark.png</image>
+        </screenshot>
+        <screenshot>
+            <caption>Sticky notes in Ultra Dark mode for reduced brightness</caption>
+            <image>https://raw.githubusercontent.com/@PUBLISHER@/@APP_NAME@/@APP_VERSION@/data/screenshots/jots-dark-ultra.png</image>
         </screenshot>
         <screenshot>
             <caption>Streaming? Worried of someone looking above your shoulder? Try the Scribbly Mode!</caption>

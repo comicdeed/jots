@@ -4,7 +4,7 @@
 """
 Generate GitHub Social Preview image (1280x640) for Jots by compositing
 the three screenshot variants (Light, Vibrant Dark, Ultra-Dark) with
-seamless diagonal cuts through the sticky notes.
+seamless diagonal cuts across sticky notes within the GitHub 40pt safe area.
 """
 
 import argparse
@@ -47,14 +47,66 @@ def prepare_base_image(image_path, target_w, target_h):
         return img_resized.crop((0, top, target_w, top + target_h))
 
 
+def assemble_from_windows(
+    windows_dir,
+    day_wallpaper,
+    night_wallpaper,
+    pos_orange=(175, 90),
+    pos_green=(85, 140),
+    pos_pref=(640, 115)
+):
+    """
+    Assemble the three theme scenes from individual window PNGs and day/night wallpapers.
+    """
+    day_wp = Image.open(day_wallpaper).convert('RGBA')
+    night_wp = Image.open(night_wallpaper).convert('RGBA')
+
+    # Fit and crop wallpaper to target 1280x640 canvas
+    def fit_wallpaper(wp):
+        scale = max(WIDTH / wp.width, HEIGHT / wp.height)
+        scaled_w = int(wp.width * scale)
+        scaled_h = int(wp.height * scale)
+        scaled_wp = wp.resize((scaled_w, scaled_h), LANCZOS)
+        offset_x = (scaled_w - WIDTH) // 2
+        offset_y = (scaled_h - HEIGHT) // 2
+        return scaled_wp.crop((offset_x, offset_y, offset_x + WIDTH, offset_y + HEIGHT))
+
+    day_bg = fit_wallpaper(day_wp)
+    night_bg = fit_wallpaper(night_wp)
+
+    # Load individual window captures
+    green_light = Image.open(os.path.join(windows_dir, 'light1.png')).convert('RGBA')
+    green_vibrant = Image.open(os.path.join(windows_dir, 'vibrant2.png')).convert('RGBA')
+    green_ultra = Image.open(os.path.join(windows_dir, 'ultra-dark2.png')).convert('RGBA')
+
+    orange_light = Image.open(os.path.join(windows_dir, 'light2.png')).convert('RGBA')
+    orange_vibrant = Image.open(os.path.join(windows_dir, 'vibrant1.png')).convert('RGBA')
+    orange_ultra = Image.open(os.path.join(windows_dir, 'ultra-dark1.png')).convert('RGBA')
+
+    pref = Image.open(os.path.join(windows_dir, 'preference.png')).convert('RGBA')
+
+    def build_scene(bg, green_note, orange_note, pref_img):
+        canvas = bg.copy()
+        canvas.paste(orange_note, pos_orange, orange_note)
+        canvas.paste(green_note, pos_green, green_note)
+        canvas.paste(pref_img, pos_pref, pref_img)
+        return canvas
+
+    scene_light = build_scene(day_bg, green_light, orange_light, pref)
+    scene_vibrant = build_scene(night_bg, green_vibrant, orange_vibrant, pref)
+    scene_ultra = build_scene(night_bg, green_ultra, orange_ultra, pref)
+
+    return scene_light, scene_vibrant, scene_ultra
+
+
 def create_composite(
     light_img,
     dark_img,
     ultra_img,
-    cut1_top=0.18,
-    cut1_bottom=0.09,
-    cut2_top=0.35,
-    cut2_bottom=0.26,
+    cut1_top=0.23,
+    cut1_bottom=0.13,
+    cut2_top=0.42,
+    cut2_bottom=0.32,
     divider_width=0,
     divider_color=(255, 255, 255, 90)
 ):
@@ -110,26 +162,40 @@ def create_composite(
 
 def main():
     parser = argparse.ArgumentParser(description="Generate GitHub Social Preview banner for Jots")
-    parser.add_argument('--light', default=DEFAULT_LIGHT_PATH, help="Path to light screenshot")
-    parser.add_argument('--dark', default=DEFAULT_DARK_PATH, help="Path to dark screenshot")
-    parser.add_argument('--ultra', default=DEFAULT_ULTRA_PATH, help="Path to ultra-dark screenshot")
+    parser.add_argument('--assemble', action='store_true', help="Assemble from individual window captures & wallpapers")
+    parser.add_argument('--windows-dir', default=None, help="Directory containing individual window PNGs")
+    parser.add_argument('--day-wallpaper', default=None, help="Path to light/day wallpaper image")
+    parser.add_argument('--night-wallpaper', default=None, help="Path to dark/night wallpaper image")
+    parser.add_argument('--light', default=DEFAULT_LIGHT_PATH, help="Path to full light screenshot")
+    parser.add_argument('--dark', default=DEFAULT_DARK_PATH, help="Path to full dark screenshot")
+    parser.add_argument('--ultra', default=DEFAULT_ULTRA_PATH, help="Path to full ultra-dark screenshot")
     parser.add_argument('--output', default=DEFAULT_OUTPUT_PATH, help="Output PNG path")
-    parser.add_argument('--cut1-top', type=float, default=0.18, help="Top ratio for cut 1")
-    parser.add_argument('--cut1-bottom', type=float, default=0.09, help="Bottom ratio for cut 1")
-    parser.add_argument('--cut2-top', type=float, default=0.35, help="Top ratio for cut 2")
-    parser.add_argument('--cut2-bottom', type=float, default=0.26, help="Bottom ratio for cut 2")
+    parser.add_argument('--cut1-top', type=float, default=0.23, help="Top ratio for cut 1")
+    parser.add_argument('--cut1-bottom', type=float, default=0.13, help="Bottom ratio for cut 1")
+    parser.add_argument('--cut2-top', type=float, default=0.42, help="Top ratio for cut 2")
+    parser.add_argument('--cut2-bottom', type=float, default=0.32, help="Bottom ratio for cut 2")
     parser.add_argument('--divider', type=int, default=0, help="Divider line width in px (0 for seamless)")
     args = parser.parse_args()
 
-    for p in [args.light, args.dark, args.ultra]:
-        if not os.path.exists(p):
-            print(f"Error: Screenshot file not found: {p}", file=sys.stderr)
+    if args.assemble or (args.windows_dir and args.day_wallpaper and args.night_wallpaper):
+        if not (args.windows_dir and args.day_wallpaper and args.night_wallpaper):
+            print("Error: --assemble requires --windows-dir, --day-wallpaper, and --night-wallpaper.", file=sys.stderr)
             sys.exit(1)
-
-    print("Cropping and resizing source screenshots...")
-    light_img = prepare_base_image(args.light, WIDTH, HEIGHT)
-    dark_img = prepare_base_image(args.dark, WIDTH, HEIGHT)
-    ultra_img = prepare_base_image(args.ultra, WIDTH, HEIGHT)
+        print("Assembling scenes from window captures and wallpapers...")
+        light_img, dark_img, ultra_img = assemble_from_windows(
+            args.windows_dir,
+            args.day_wallpaper,
+            args.night_wallpaper
+        )
+    else:
+        for p in [args.light, args.dark, args.ultra]:
+            if not os.path.exists(p):
+                print(f"Error: Screenshot file not found: {p}", file=sys.stderr)
+                sys.exit(1)
+        print("Cropping and resizing full-desktop screenshots...")
+        light_img = prepare_base_image(args.light, WIDTH, HEIGHT)
+        dark_img = prepare_base_image(args.dark, WIDTH, HEIGHT)
+        ultra_img = prepare_base_image(args.ultra, WIDTH, HEIGHT)
 
     print(f"Compositing diagonal slices across notes into {WIDTH}x{HEIGHT}...")
     result = create_composite(

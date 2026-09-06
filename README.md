@@ -13,7 +13,7 @@
 ## Key features
 
 * 📝 **Markdown editing + plain-file storage**: Write with live Markdown formatting, checklists, clickable links, and resilient smart clipboard paste that converts rich-text/HTML and normalizes loose Markdown while protecting code snippets. Notes are saved as standard `.md` files you can back up or use in other tools.
-* 🎨 **Color themes**: Pick from 12 pastel themes that look good in both light and dark mode.
+* 🎨 **Color themes**: Pick from 12 expressive themes tailored for light mode, vibrant dark mode, and ultra-dark mode.
 * 🔤 **Font controls**: Choose your preferred text and code fonts to match how you like to read and write.
 * 🔒 **Privacy mode**: Hide note text when you need to protect sensitive content on screen.
 * 🔁 **Git backup sync**: Connect a Git remote, choose how often to sync, and use **Sync now** when you want an immediate backup.
@@ -35,7 +35,7 @@
     <source media="(prefers-color-scheme: light)" srcset="data/screenshots/jots-light.png">
     <img class="center" src="data/screenshots/jots-light.png" alt="Jots screenshot">
   </picture>
-  <p>View the screenshot in <a href="data/screenshots/jots-light.png">light mode</a> or <a href="data/screenshots/jots-dark.png">dark mode</a>.</p>
+  <p>View screenshots in <a href="data/screenshots/jots-light.png">light mode</a>, <a href="data/screenshots/jots-dark.png">dark mode (vibrant)</a>, or <a href="data/screenshots/jots-dark-ultra.png">ultra-dark mode</a>.</p>
 </div>
 
 ## Installation and quick start
